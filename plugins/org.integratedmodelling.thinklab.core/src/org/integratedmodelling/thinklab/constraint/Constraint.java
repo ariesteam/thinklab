@@ -110,7 +110,7 @@ public class Constraint implements IQuery {
 	}
 	
 	public Constraint() {
-		this.concept = KnowledgeManager.Thing();
+		this.concept = Thinklab.Thing();
     }
 
 	public Restriction getMetadataRestrictions() {
@@ -123,7 +123,7 @@ public class Constraint implements IQuery {
 	 * @category Creation API
 	 */
 	public Constraint(IConcept concept) {
-		this.concept = concept == null ? KnowledgeManager.Thing() : concept;
+		this.concept = concept == null ? Thinklab.Thing() : concept;
 	}
    
 	/** 
@@ -172,7 +172,7 @@ public class Constraint implements IQuery {
 			body = (Restriction)Restriction.AND(restrictions.toArray(new Restriction[restrictions.size()]));
 		
 		if (concept == null) {
-			concept = KnowledgeManager.Thing();
+			concept = Thinklab.Thing();
 		}
 	}
 
@@ -388,7 +388,7 @@ public class Constraint implements IQuery {
 	}
 
 	public void reset() {
-		reset(KnowledgeManager.Thing());
+		reset(Thinklab.Thing());
 	}
 	
 	public void reset(String concept) throws ThinklabException {
@@ -400,7 +400,7 @@ public class Constraint implements IQuery {
 	 * @return true if body is null.
 	 */
 	public boolean empty() {
-		return body == null && concept.equals(KnowledgeManager.Thing());
+		return body == null && concept.equals(Thinklab.Thing());
 	}
 	
 	/**
@@ -416,7 +416,7 @@ public class Constraint implements IQuery {
 	 * @return
 	 */
 	public boolean hasConceptScope() {
-		return !concept.equals(KnowledgeManager.Thing());
+		return !concept.equals(Thinklab.Thing());
 	}
 	
     /* (non-Javadoc)

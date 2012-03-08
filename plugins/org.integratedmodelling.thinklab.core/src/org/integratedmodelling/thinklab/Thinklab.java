@@ -151,9 +151,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		 * defaulting to protege (for now) and single session.
 		 */
 		if (_km == null) {
-			_km = new KnowledgeManager();
-			_km.setPluginManager(getManager());
-			_km.initialize();
+
 		}
 		
 		/*
@@ -439,10 +437,10 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		literalImplementationClasses.put(concept, cls);	
 	}
 	
-	public void registerXSDTypeMapping(String xsd, String type) {
-		xsdMappings.put(xsd, type);	
-	}
-	
+//	public void registerXSDTypeMapping(String xsd, String type) {
+//		xsdMappings.put(xsd, type);	
+//	}
+//	
 	public static File getPluginLoadDirectory(Plugin plugin) {
 
 		String lf = new File(plugin.getDescriptor().getLocation().getFile()).getAbsolutePath();
@@ -570,5 +568,89 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	 * ---------------------------------------------------------------------------------------- 
 	 * ---------------------------------------------------------------------------------------- 
 	 */
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Double() {
+		return _this._km.doubleType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Boolean() {
+		return _this._km.booleanType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Text() {
+		return _this._km.textType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Long() {
+		return _this._km.longType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Integer() {
+		return _this._km.integerType;
+	}
+	
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Float() {
+		return _this._km.floatType;
+	}
+
+	/**
+	 * Provided to simplify access to core types when we are sure that we have a knowledge
+	 * manager.
+	 * @return
+	 */
+	public static IConcept Number() {
+		return _this._km.numberType;
+	}
+	
+	public static IConcept Thing() {
+		return _this._km.knowledgeRepository.getRootConcept();
+	}
+
+
+	public static IConcept BooleanRanking() {
+		return _this._km.booleanRankingType;
+	}
+	
+	public static IConcept OrdinalRanking() {
+		return _this._km.ordinalRankingType;
+	}
+
+	public static IConcept OrderedRangeMapping() {
+		return _this._km.ordinalRangeMappingType;
+	}
+	
+	public static IConcept Nothing() {
+		return _this._km.knowledgeRepository.getNothingType();
+	}
+
 	
 }

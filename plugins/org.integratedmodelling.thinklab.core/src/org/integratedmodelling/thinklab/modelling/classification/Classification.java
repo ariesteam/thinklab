@@ -33,6 +33,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
@@ -240,7 +241,7 @@ public class Classification implements IClassification {
 			/*
 			 * we don't allow ordered range mappings to have disjoint intervals
 			 */
-			if (typeIs(Type.ORDERED_RANGE_MAPPING) || observable.is(KnowledgeManager.OrderedRangeMapping())
+			if (typeIs(Type.ORDERED_RANGE_MAPPING) || observable.is(Thinklab.OrderedRangeMapping())
 					&& Double.compare(pd.getFirst(), last) != 0) {
 				throw new ThinklabValidationException(
 						"disjoint intervals for ordered range mapping of "
@@ -380,7 +381,7 @@ public class Classification implements IClassification {
 			int n = start;
 			for (String s : order) {
 				String c = type.getConceptSpace() + ":" + s;
-				ret.put(KnowledgeManager.getConcept(c), n++);
+				ret.put(Thinklab.c(c), n++);
 			}
 		
 			this._hasZeroCategory = start == 0;	
@@ -391,7 +392,7 @@ public class Classification implements IClassification {
 		 * if presence-absence, map the "No*" or "notpresent" to 0 and the other
 		 * to 1, then return. Must be two concepts at most.
 		 */
-		if (typeIs(Type.BOOLEAN_RANKING) || type.is(KnowledgeManager.BooleanRanking())) {
+		if (typeIs(Type.BOOLEAN_RANKING) || type.is(Thinklab.BooleanRanking())) {
 			
 			_type = Type.BOOLEAN_RANKING;
 			
@@ -421,10 +422,10 @@ public class Classification implements IClassification {
 			
 		} else if ( typeIs(Type.ORDERED_RANKING) ||
 				typeIs(Type.ORDERED_RANGE_MAPPING) ||
-				type.is(KnowledgeManager.OrdinalRanking()) ||
-				type.is(KnowledgeManager.OrderedRangeMapping())) {
+				type.is(Thinklab.OrdinalRanking()) ||
+				type.is(Thinklab.OrderedRangeMapping())) {
 
-			if (typeIs(Type.ORDERED_RANKING) || type.is(KnowledgeManager.OrdinalRanking()))
+			if (typeIs(Type.ORDERED_RANKING) || type.is(Thinklab.OrdinalRanking()))
 				_type = Type.ORDERED_RANKING;
 			else
 				_type = Type.ORDERED_RANGE_MAPPING;

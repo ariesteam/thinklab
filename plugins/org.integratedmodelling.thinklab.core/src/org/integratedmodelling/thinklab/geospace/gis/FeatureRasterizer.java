@@ -38,10 +38,8 @@ import org.geotools.feature.type.NumericAttributeType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.geospace.feature.AttributeTable;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGridMask;
@@ -280,7 +278,7 @@ public class FeatureRasterizer {
     	
     	if (valueType != null) {
     		
-    		if ( !(valueType.is(KnowledgeManager.Number()))) {
+    		if ( !(valueType.is(Thinklab.Number()))) {
     			if (classification == null) {
     				classification = new HashMap<String, Integer>();
     			}

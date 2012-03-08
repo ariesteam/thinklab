@@ -12,13 +12,17 @@ import org.integratedmodelling.thinklab.api.modelling.INamespace;
 public class NamespaceImpl implements INamespace {
 
 	Namespace _bean;
-	ArrayList<IModelObject> _modelObjects;
+	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
 	IOntology _ontology;
 	
 	public NamespaceImpl() {}
 	
 	public NamespaceImpl(Namespace bean) {
 		initialize(bean);
+	}
+	
+	public NamespaceImpl(IOntology ontology) {
+		this._ontology = ontology;
 	}
 	
 	private void initialize(Namespace bean) {
@@ -48,5 +52,9 @@ public class NamespaceImpl implements INamespace {
 	@Override
 	public long getLastModification() {
 		return _bean.getTimeStamp();
+	}
+
+	public void setOntology(IOntology ontology) {
+		this._ontology = ontology;
 	}
 }

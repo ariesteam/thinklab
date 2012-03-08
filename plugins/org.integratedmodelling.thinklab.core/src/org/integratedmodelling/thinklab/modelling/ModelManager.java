@@ -58,7 +58,6 @@ import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.modelling.factories.IModelManager;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -406,7 +405,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 	}
 	
 	private ModelManager() {
-		_session = new Session();
 		_map = new ModelMap();
 	}
 	
@@ -492,7 +490,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 	}
 
 	@Override
-	public synchronized INamespace loadFile(String resourceId, IProject project) throws ThinklabException {
+	public synchronized INamespace loadFile(String resourceId, String namespaceId, IProject project) throws ThinklabException {
 
 		INamespace ret = null;
 		
@@ -515,9 +513,21 @@ public class ModelManager implements IModelManager, IModelFactory {
 			
 		} else if (resourceId.endsWith(".owl")) {
 
-			/*
-			 * TODO use OWL parser, then reconstruct ontology while storing namespace
-			 */
+			File ofile = new File(resourceId);
+			try {
+				Thinklab.get().getKnowledgeRepository().
+					refreshOntology(ofile.toURI().toURL(), namespaceId, false);
+			} catch (MalformedURLException e) {
+				throw new ThinklabIOException(e);
+			}
+			IOntology ontology = Thinklab.get().getKnowledgeRepository().requireOntology(namespaceId);
+			Namespace ns = new Namespace();
+			ns.setId(namespaceId);
+			ns.setSourceFile(ofile);
+			ns.setTimeStamp(ofile.lastModified());
+			ret = new NamespaceImpl(ns);
+			((NamespaceImpl)ret).setOntology(ontology);
+			
 		}
 		
 		return ret;
@@ -573,54 +583,38 @@ public class ModelManager implements IModelManager, IModelFactory {
 		return ret;
 	}
 
+	public Collection<INamespace> loadSourceDirectory(File sourcedir) throws ThinklabException {
+
+		ArrayList<INamespace> ret = new ArrayList<INamespace>();
+		HashSet<File> read = new HashSet<File>();
+		
+		loadInternal(sourcedir, read, ret, "", null);
+
+		return ret;
+	}
+	
 	private void loadInternal(File f, HashSet<File> read, ArrayList<INamespace> ret, String path,
 			IProject project) throws ThinklabException {
 
+
 		if (f.isDirectory()) {
-			
-			String pth = path + "." + MiscUtilities.getFileBaseName(f.toString());
+
+			String pth = path.isEmpty() ? "" : (path + "." + MiscUtilities.getFileBaseName(f.toString()));
 
 			for (File fl : f.listFiles()) {
 				loadInternal(fl, read, ret, pth, project);
 			}
 			
 		} else if (f.toString().endsWith(".owl")) {
-			try {
-				KnowledgeManager.get().getKnowledgeRepository().refreshOntology(
-						f.toURI().toURL(), 
-						MiscUtilities.getFileBaseName(f.toString()), false);
-			} catch (MalformedURLException e) {
-				throw new ThinklabValidationException(e);
+
+			INamespace ns = loadFile(f.toString(), path + "." + MiscUtilities.getFileBaseName(f.toString()), project);
+			if (ns != null) {
+				ret.add(ns);
 			}
-			
-			/*
-			 * validate ontology URL vs. namespace path
-			 */
-			IOntology o = 
-					KnowledgeManager.get().getKnowledgeRepository().requireOntology(
-							MiscUtilities.getFileBaseName(f.toString()));
-			String uri = 
-					project.getOntologyNamespacePrefix() + "/" + path.replaceAll(".", "/") + 
-					MiscUtilities.getFileBaseName(f.toString());
-					
-			if (!o.getURI().equals(uri)) {
-				throw new ThinklabValidationException(
-						"illegal ontology namespace in " + f + 
-						": file path requires " + uri + ", " +
-						o.getURI() + " found");
-			}
-			
-			/*
-			 * TODO add namespace and project to ontology metadata
-			 */
-			
-			/*
-			 * TODO if auto sync is requested and configured, upload newer ontologies 
-			 * to location matching URI
-			 */
 			
 		} else if (f.toString().endsWith(".tcl") || f.toString().endsWith(".clj")) {
-			INamespace ns = loadFile(f.toString(), project);
+			
+			INamespace ns = loadFile(f.toString(), path + "." + MiscUtilities.getFileBaseName(f.toString()), project);
 			if (ns != null) {
 				ret.add(ns);
 			}

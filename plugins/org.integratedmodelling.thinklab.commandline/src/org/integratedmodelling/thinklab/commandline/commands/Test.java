@@ -25,7 +25,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.modelling.ModelManager;
 
 @ThinklabCommand(name="test",argumentNames="arg",argumentTypes="thinklab-core:Text", argumentDescriptions="test argument")
 public class Test implements ICommandHandler {
@@ -33,7 +32,6 @@ public class Test implements ICommandHandler {
 	@Override
 	public ISemanticObject execute(Command command, ISession session)
 			throws ThinklabException {
-		ModelManager.get().loadFile(command.getArgumentAsString("arg"), null);
 		return null;
 	}
 

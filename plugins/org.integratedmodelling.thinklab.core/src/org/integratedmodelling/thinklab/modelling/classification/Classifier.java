@@ -19,6 +19,7 @@
  */
 package org.integratedmodelling.thinklab.modelling.classification;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import org.integratedmodelling.exceptions.ThinklabException;
@@ -29,8 +30,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
 import org.integratedmodelling.thinklab.literals.IntervalValue;
-
-import clojure.lang.IFn;
 
 /**
  * A powerful classifier of objects meant to be defined from a Clojure classification model.
@@ -43,8 +42,8 @@ public class Classifier implements IClassifier {
 	Double number = null;
 	IntervalValue interval = null;
 	IConcept concept = null;
-	IExpression code = null;
 	String string = null;
+	private IExpression closure = null;
 	
 	/*
 	 * if true, this is an :otherwise classifier, that needs to be known
@@ -58,10 +57,6 @@ public class Classifier implements IClassifier {
 	 */
 	private boolean isNil = false;
 	
-	/**
-	 * @deprecated find a way to use an IExpression
-	 */
-	private IFn closure = null;
 	
 	public Classifier(String s) throws ThinklabException {
 		parse(s);
@@ -173,7 +168,10 @@ public class Classifier implements IClassifier {
 				 * TODO find an elegant way to communicate external
 				 * parameter maps, and set :self = o in it.
 				 */
-				//return (Boolean)closure.invoke(o);
+				HashMap<String, Object> parms = new HashMap<String, Object>();
+				parms.put("self", o);
+				return (Boolean)closure.eval(parms);
+
 			} catch (Exception e) {
 				throw new ThinklabRuntimeException(e);
 			}
@@ -279,10 +277,10 @@ public class Classifier implements IClassifier {
 		return this.isNil;
 	}
 
-	public void setClosure(IFn closure) {
-		this.closure = closure;
+	public void setExpression(IExpression e) {
+		this.closure = e;
 	}
-
+	
 	@Override
 	public String asText() {
 		return toString();

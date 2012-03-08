@@ -281,51 +281,21 @@ public class ThinklabProject implements IProject {
 			IProject project) throws ThinklabException {
 
 		if (f. isDirectory()) {
-			
-			String pth = path + "." + MiscUtilities.getFileBaseName(f.toString());
+
+			String pth = path.isEmpty() ? "" : (path + "." + MiscUtilities.getFileBaseName(f.toString()));
 
 			for (File fl : f.listFiles()) {
 				loadInternal(fl, read, ret, pth, project);
 			}
 			
 		} else if (f.toString().endsWith(".owl")) {
-			try {
-				Thinklab.get().getKnowledgeRepository().refreshOntology(
-						f.toURI().toURL(), 
-						MiscUtilities.getFileBaseName(f.toString()), false);
-			} catch (MalformedURLException e) {
-				throw new ThinklabValidationException(e);
-			}
-			
-			/*
-			 * TODO validate ontology URL vs. namespace path
-			 */
-			IOntology o = 
-					Thinklab.get().getKnowledgeRepository().requireOntology(
-							MiscUtilities.getFileBaseName(f.toString()));
-			String uri = 
-					project.getOntologyNamespacePrefix() + "/" + path.replaceAll(".", "/") + 
-					MiscUtilities.getFileBaseName(f.toString());
-					
-			if (!o.getURI().equals(uri)) {
-				throw new ThinklabValidationException(
-						"illegal ontology namespace in " + f + 
-						": file path requires " + uri + ", " +
-						o.getURI() + " found");
-			}
-			
-			/*
-			 * TODO add namespace and project to ontology metadata
-			 */
-			
-			/*
-			 * TODO if auto sync is requested and configured, upload newer ontologies 
-			 * to location matching URI
-			 */
+
+			INamespace ns = ModelManager.get().loadFile(f.toString(), path + "." + MiscUtilities.getFileBaseName(f.toString()), this);
+			ret.add(ns);
 			
 		} else if (f.toString().endsWith(".tql") || f.toString().endsWith(".clj")) {
 
-			INamespace ns = ModelManager.get().loadFile(f.toString(), this);
+			INamespace ns = ModelManager.get().loadFile(f.toString(), path + "." + MiscUtilities.getFileBaseName(f.toString()), this);
 			ret.add(ns);
 		}
 		

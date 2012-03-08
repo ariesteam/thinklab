@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -39,7 +39,7 @@ public abstract class SemanticLiteral implements ISemanticObject {
 	public IConcept concept;
 	
     public SemanticLiteral()  {
-        concept = KnowledgeManager.Thing();
+        concept = Thinklab.Thing();
     }
 
     public SemanticLiteral(IConcept c) {

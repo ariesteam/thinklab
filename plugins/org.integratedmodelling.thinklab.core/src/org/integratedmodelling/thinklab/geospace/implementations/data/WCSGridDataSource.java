@@ -19,18 +19,10 @@
  */
 package org.integratedmodelling.thinklab.geospace.implementations.data;
 
-import java.util.Properties;
-
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
-import org.integratedmodelling.thinklab.geospace.Geospace;
-import org.integratedmodelling.thinklab.geospace.coverage.AbstractRasterCoverage;
-import org.integratedmodelling.thinklab.geospace.coverage.WCSCoverage;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 
 @Concept("geospace:WCSDataSource")
 public class WCSGridDataSource extends RegularRasterGridDataSource {

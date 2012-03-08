@@ -335,12 +335,7 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#isLiteralProperty()
 	 */
 	public boolean isLiteralProperty() {
-		try {
-			return entity.isOWLDataProperty() ||
-				   is(KnowledgeManager.get().getReifiedLiteralProperty());
-		} catch (ThinklabException e) {
-		}
-		return false;
+		return entity.isOWLDataProperty();
 	}
 
 	/* (non-Javadoc)

@@ -23,6 +23,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
@@ -41,22 +42,22 @@ public class NumberValue extends SemanticLiteral implements IParseable {
     public double value;
     
    public NumberValue() {
-      super(KnowledgeManager.Number());
+      super(Thinklab.Number());
       value = 0.0;
    }
     
    public NumberValue(int i) {        
-       super(KnowledgeManager.Integer());
+       super(Thinklab.Integer());
        value = i;
    }
    
    public NumberValue(double d) {
-       super(KnowledgeManager.Double());
+       super(Thinklab.Double());
        value = d;
    }
 
     public NumberValue(float f) {
-        super(KnowledgeManager.Float());
+        super(Thinklab.Float());
         value = f;
     }
         
@@ -75,7 +76,7 @@ public class NumberValue extends SemanticLiteral implements IParseable {
     }
     
     public NumberValue (long l) {
-        super(KnowledgeManager.Long());
+        super(Thinklab.Long());
         value = l;
     }
     
@@ -88,7 +89,7 @@ public class NumberValue extends SemanticLiteral implements IParseable {
 		} catch (Exception e) {
 	 		throw new ThinklabValidationException("validation of number " + s + " failed");
 	 	 }
-		concept = KnowledgeManager.Number();
+		concept = Thinklab.Number();
 		value   = v;
     }
 

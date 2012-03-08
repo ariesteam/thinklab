@@ -35,9 +35,8 @@ import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.semanticweb.owl.model.OWLAnnotation;
@@ -100,8 +99,6 @@ public class ThinklabOWLManager {
 
 	public static OWLProperty<?,?> abstractAnnotationProperty;
 	public static OWLProperty<?,?> classLiteralAnnotationProperty;
-	public static OWLProperty<?,?> extendedLiteralAnnotationProperty;
-
 	
 	public static ThinklabOWLManager get() throws ThinklabException {
 
@@ -114,8 +111,6 @@ public class ThinklabOWLManager {
 				(OWLProperty<?,?>) ((Property)KnowledgeManager.get().getAbstractProperty()).entity;
 			classLiteralAnnotationProperty = 
 				(OWLProperty<?,?>) ((Property)KnowledgeManager.get().getClassificationProperty()).entity;
-			extendedLiteralAnnotationProperty = 
-				(OWLProperty<?,?>) ((Property)KnowledgeManager.get().getReifiedLiteralProperty()).entity;
 			
 		}
 		return owlManager;
@@ -139,10 +134,10 @@ public class ThinklabOWLManager {
 	 * @param property
 	 * @return
 	 */
-	Collection<ISemanticLiteral> translateRelationship(OWLOntology ontology,
+	Collection<ISemanticObject> translateRelationship(OWLOntology ontology,
 			OWLIndividual cl, OWLEntity property, Properties properties) throws ThinklabException {
 
-		ArrayList<ISemanticLiteral> ret = new ArrayList<ISemanticLiteral>();
+		ArrayList<ISemanticObject> ret = new ArrayList<ISemanticObject>();
 
 //		if (!property.isOWLObjectProperty() && !property.isOWLDataProperty()) {
 //			// just return anything else with no error
@@ -889,24 +884,24 @@ public class ThinklabOWLManager {
 	 * We are passed an IValue but we need to set an OWL dataproperty from it. Return the 
 	 * POD object that matches the type, or throw an exception if no POD type does.
 	 */
-	public OWLConstant translateIValueToDatatype(ISemanticLiteral value) throws ThinklabValidationException {
-
-		Object ret = null;
-		
-//		if (value.isText()) {
-//			ret = ((TextValue)value).value;
-//		} else if (value.isNumber()) {
-//			ret = ((NumberValue)value).getPODValue();
-//		} else if (value.isBoolean()) {
-//			ret = ((BooleanValue)value).truthValue();
-//		}
-		
-		if (ret == null)
-			throw new ThinklabValidationException("internal: non-POD value being assigned to data property: " + value);
-		
-		return OWLAPI.getOWLConstant(ret);
-		
-	}
+//	public OWLConstant translateIValueToDatatype(ISemanticObject value) throws ThinklabValidationException {
+//
+//		Object ret = null;
+//		
+////		if (value.isText()) {
+////			ret = ((TextValue)value).value;
+////		} else if (value.isNumber()) {
+////			ret = ((NumberValue)value).getPODValue();
+////		} else if (value.isBoolean()) {
+////			ret = ((BooleanValue)value).truthValue();
+////		}
+//		
+//		if (ret == null)
+//			throw new ThinklabValidationException("internal: non-POD value being assigned to data property: " + value);
+//		
+//		return OWLAPI.getOWLConstant(ret);
+//		
+//	}
 
 
 	public Collection<IProperty> getValuedProperties(OWLOntology ontology,
@@ -1114,6 +1109,12 @@ public class ThinklabOWLManager {
 				id,
 				connector);
 		
+	}
+
+
+	public OWLConstant getDatatype(ISemanticObject o) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

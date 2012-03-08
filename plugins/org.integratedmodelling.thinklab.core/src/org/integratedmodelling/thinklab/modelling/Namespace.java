@@ -27,6 +27,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -159,7 +160,7 @@ public class Namespace implements INamespace {
 
 		IConcept ret = null;
 		if (string.contains(":")) {
-			ret = KnowledgeManager.getConcept(string); 
+			ret = Thinklab.c(string); 
 		} else {
 			ret = getOntology().getConcept(string);
 			if (ret == null) {

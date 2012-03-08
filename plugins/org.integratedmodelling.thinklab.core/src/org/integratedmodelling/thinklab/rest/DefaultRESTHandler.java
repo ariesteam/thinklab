@@ -33,7 +33,6 @@ import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.list.Escape;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -126,7 +125,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		}
 		
 		ISemanticObject user = getSession().getUserModel().getUser();
-		if (user == null || !user.is(KnowledgeManager.getConcept(concept))) {
+		if (user == null || !user.is(Thinklab.c(concept))) {
 			fail("not enough user privileges for command");
 			return false;
 		}

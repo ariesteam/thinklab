@@ -29,7 +29,7 @@ import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.semanticweb.owl.model.OWLIndividual;
 
@@ -45,10 +45,10 @@ import org.semanticweb.owl.model.OWLIndividual;
 public class Relationship  {
 
 	public IProperty property = null;
-	public ISemanticLiteral     literal  = null;
+	public ISemanticObject     literal  = null;
 	public OWLIndividual object;
 	
-	public Relationship(IProperty p, ISemanticLiteral v) {
+	public Relationship(IProperty p, ISemanticObject v) {
 		property = p;
 		literal = v;
 	}
@@ -92,7 +92,7 @@ public class Relationship  {
         	domain + 
         	" -> {";
         if (isLiteral()) {
-        	ret += literal.getConcept().toString();
+        	ret += literal.getDirectType().toString();
         } else {
         	for (IConcept c : property.getRange())
         		ret += c + " ";
@@ -112,12 +112,12 @@ public class Relationship  {
 		return property;
 	}
 
-	public ISemanticLiteral getValue() {
+	public ISemanticObject getValue() {
 		return literal;
 	}
 	
 	public IConcept getConcept() {
-		return literal.getConcept();
+		return literal.getDirectType();
 	}
 
 	public IList asList(HashMap<String, String> references) throws ThinklabException {
@@ -133,15 +133,14 @@ public class Relationship  {
 
 		} else if (isLiteral()) {
 			
-			// FIXME could be annotation property, too, not sure it gets here
 			if (((Property)property).entity.isOWLDataProperty()) {
 				alist.add(literal.toString());
 			
 			} else {
 				
 				/* extended literal: store concept and ID, if any, as well */
-				String cid = literal.getConcept().toString();
-				String lid = null; // literal.toString();
+				String cid = literal.getDirectType().toString();
+				String lid = literal.toString();
 				if (lid != null && !lid.equals(""))
 					cid += "#" + lid;
 				
@@ -149,7 +148,7 @@ public class Relationship  {
 				alist.add(PolyList.fromArray(llist));
 			}
 		} else if (isClassification()) {
-			alist.add(literal.getConcept());
+			alist.add(literal.getDirectType());
 		}
 		return PolyList.fromArray(alist.toArray());
 	}
@@ -171,11 +170,11 @@ public class Relationship  {
 			} else {
 				
 				/* extended literal */
-				String cid = literal.getConcept().toString();
+				String cid = literal.getDirectType().toString();
 				ret += ",[" + cid+ "|" + literal.toString() + "]";
 			}
 		} else if (isClassification()) {
-			ret += ",{" + literal.getConcept() + "}";
+			ret += ",{" + literal.getDirectType() + "}";
 		}
 		
 		return ret + "}";

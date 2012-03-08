@@ -21,7 +21,7 @@ package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.Semantics;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -41,12 +41,12 @@ public class BooleanValue extends SemanticLiteral implements IParseable {
     }
     
     public BooleanValue() {
-        super(KnowledgeManager.Boolean());
+        super(Thinklab.Boolean());
         value = false;
     }
 
     public BooleanValue(boolean c)  {
-        super(KnowledgeManager.Boolean());
+        super(Thinklab.Boolean());
         value = c;
     }
 

@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
@@ -38,11 +38,9 @@ import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.utils.NameGenerator;
 import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLIndividual;
@@ -89,25 +87,24 @@ public class Instance extends Knowledge  {
 	 * @see org.integratedmodelling.thinklab.interfaces.Instance#addLiteralRelationship(org.integratedmodelling.thinklab.interfaces.IProperty, java.lang.Object)
 	 */
 	public void addLiteralRelationship(IProperty p, Object literal)
-			throws ThinklabException {
+		throws ThinklabException {
 
-		/*
-		 * TODO FIX 
-		 */
-		if (literal instanceof ISemanticLiteral) {
+		ISemanticObject o = Thinklab.get().annotate(literal);
+		if (o != null && o.isLiteral()) {
 
 			if (((Property)p).entity.isOWLDataProperty()) {
 				OWLAPI.setOWLDataPropertyValue(
 						getOWLOntology(),
 						entity.asOWLIndividual(),
 						((Property)p).entity.asOWLDataProperty(), 
-						ThinklabOWLManager.get().translateIValueToDatatype((ISemanticLiteral)literal));
+						ThinklabOWLManager.get().getDatatype(o));
 				
 			} else {
 				
 				/*
 				 * FIXME should never happen or it's an error.
 				 */
+				throw new ThinklabInternalErrorException("can't find datatype for literal: " + o);
 			}
 			
 		} else {
@@ -306,13 +303,13 @@ public class Instance extends Knowledge  {
 		Set<Relationship> ret = new HashSet<Relationship>();
 
 		for (IProperty p : ThinklabOWLManager.get().getValuedProperties(getOWLOntology(), entity.asOWLIndividual())) {
-			Collection<ISemanticLiteral> rrel = 
+			Collection<ISemanticObject> rrel = 
 				ThinklabOWLManager.get().translateRelationship(
 						getOWLOntology(),
 						entity.asOWLIndividual(), 
 						((Property)p).entity, null);
 
-			for (ISemanticLiteral v : rrel) {
+			for (ISemanticObject v : rrel) {
 				ret.add(new Relationship(p,v));
 			}
 			
@@ -330,13 +327,13 @@ public class Instance extends Knowledge  {
 
 		IProperty p = KnowledgeManager.get().requireProperty(property);
 
-		Collection<ISemanticLiteral> rrel = 
+		Collection<ISemanticObject> rrel = 
 			ThinklabOWLManager.get().translateRelationship(
 					getOWLOntology(),
 					entity.asOWLIndividual(), 
 					((Property)p).entity, null);
 
-		for (ISemanticLiteral v : rrel) {
+		for (ISemanticObject v : rrel) {
 			ret.add(new Relationship(p,v));
 		}
 
@@ -355,13 +352,13 @@ public class Instance extends Knowledge  {
 		pp.add(p);
 
 		for (IProperty prop : pp) {
-			Collection<ISemanticLiteral> rrel = 
+			Collection<ISemanticObject> rrel = 
 				ThinklabOWLManager.get().translateRelationship(
 						getOWLOntology(),
 						entity.asOWLIndividual(), 
 						((Property)prop).entity, null);
 
-			for (ISemanticLiteral v : rrel) {
+			for (ISemanticObject v : rrel) {
 				ret.add(new Relationship(prop,v));
 			}
 		}

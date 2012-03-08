@@ -25,7 +25,7 @@ import org.geotools.referencing.CRS;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.Semantics;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -252,7 +252,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		boolean ok = false;
 		
 		/* if that's all we ask for, let it have it */
-		if (concept.equals(KnowledgeManager.Thing()) ||
+		if (concept.equals(Thinklab.Thing()) ||
 			concept.equals(Geospace.get().Shape())) {
 			setConceptWithoutValidation(Geospace.get().Shape());
 			return;

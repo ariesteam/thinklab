@@ -53,7 +53,6 @@ public class PingService extends DefaultRESTHandler {
 			oret.put("thinklab.status", Version.STATUS);
 			oret.put("thinklab.inst", System.getenv("THINKLAB_INST"));
 			oret.put("thinklab.home", System.getenv("THINKLAB_HOME"));
-			oret.put("boot.time", KnowledgeManager.get().activeSince().getTime());
 			oret.put("current.time", new Date().getTime());
 			oret.put("memory.total", runtime.totalMemory());
 			oret.put("memory.max", runtime.maxMemory());

@@ -42,7 +42,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
@@ -369,7 +369,7 @@ public class VectorCoverage implements ICoverage {
 		return sourceUrl;
 	}
 
-	public ISemanticLiteral getSubdivisionValue(int subdivisionOrder, ArealExtent extent)
+	public ISemanticObject getSubdivisionValue(int subdivisionOrder, ArealExtent extent)
 			throws ThinklabValidationException {
 		// TODO Auto-generated method stub
 		return null;
