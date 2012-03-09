@@ -278,7 +278,7 @@ public class FeatureRasterizer {
     	
     	if (valueType != null) {
     		
-    		if ( !(valueType.is(Thinklab.Number()))) {
+    		if ( !(valueType.is(Thinklab.NUMBER))) {
     			if (classification == null) {
     				classification = new HashMap<String, Integer>();
     			}

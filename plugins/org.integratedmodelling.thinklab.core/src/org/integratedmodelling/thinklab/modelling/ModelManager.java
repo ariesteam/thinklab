@@ -60,6 +60,7 @@ import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
+import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.Plugin;
 import org.java.plugin.registry.PluginPrerequisite;
@@ -309,7 +310,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 		public ConceptObject resolveExternalConcept(String id,
 				Namespace namespace, int line) throws ThinklabException {
 
-			if (KnowledgeManager.get().retrieveConcept(id) == null) {
+			if (KnowledgeManager.get().getConcept(id) == null) {
 				onException(new ThinklabValidationException("concept " + id + " unknown"), line);
 			}
 			
@@ -328,7 +329,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 		public PropertyObject resolveExternalProperty(String id,
 				Namespace namespace, int line) throws ThinklabException {
 
-			if (KnowledgeManager.get().retrieveProperty(id) == null) {
+			if (KnowledgeManager.get().getProperty(id) == null) {
 				onException(new ThinklabValidationException("concept " + id + " unknown"), line);
 			}
 			
@@ -515,12 +516,12 @@ public class ModelManager implements IModelManager, IModelFactory {
 
 			File ofile = new File(resourceId);
 			try {
-				Thinklab.get().getKnowledgeRepository().
+				KnowledgeManager.get().getKnowledgeRepository().
 					refreshOntology(ofile.toURI().toURL(), namespaceId, false);
 			} catch (MalformedURLException e) {
 				throw new ThinklabIOException(e);
 			}
-			IOntology ontology = Thinklab.get().getKnowledgeRepository().requireOntology(namespaceId);
+			IOntology ontology = KnowledgeManager.get().getKnowledgeRepository().requireOntology(namespaceId);
 			Namespace ns = new Namespace();
 			ns.setId(namespaceId);
 			ns.setSourceFile(ofile);
@@ -588,7 +589,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 		ArrayList<INamespace> ret = new ArrayList<INamespace>();
 		HashSet<File> read = new HashSet<File>();
 		
-		loadInternal(sourcedir, read, ret, "", null);
+		loadInternal(sourcedir, read, ret, null, null);
 
 		return ret;
 	}
@@ -596,28 +597,27 @@ public class ModelManager implements IModelManager, IModelFactory {
 	private void loadInternal(File f, HashSet<File> read, ArrayList<INamespace> ret, String path,
 			IProject project) throws ThinklabException {
 
+		String pth = 
+				path == null ? 
+					"" : 
+					(path + (path.isEmpty() ? "" : ".") + CamelCase.toLowerCase(MiscUtilities.getFileBaseName(f.toString()), '-'));
 
+		INamespace ns = null;
+		
 		if (f.isDirectory()) {
-
-			String pth = path.isEmpty() ? "" : (path + "." + MiscUtilities.getFileBaseName(f.toString()));
-
 			for (File fl : f.listFiles()) {
 				loadInternal(fl, read, ret, pth, project);
 			}
 			
 		} else if (f.toString().endsWith(".owl")) {
+			ns = loadFile(f.toString(), pth, project);
+		} else if (f.toString().endsWith(".tcl") || f.toString().endsWith(".clj")) {			
+			ns = loadFile(f.toString(), pth, project);
+		}
 
-			INamespace ns = loadFile(f.toString(), path + "." + MiscUtilities.getFileBaseName(f.toString()), project);
-			if (ns != null) {
-				ret.add(ns);
-			}
-			
-		} else if (f.toString().endsWith(".tcl") || f.toString().endsWith(".clj")) {
-			
-			INamespace ns = loadFile(f.toString(), path + "." + MiscUtilities.getFileBaseName(f.toString()), project);
-			if (ns != null) {
-				ret.add(ns);
-			}
+		if (ns != null) {
+			Thinklab.get().logger().info("namespace " + ns.getNamespace() + " created from " + f);
+			ret.add(ns);
 		}
 		
 	}

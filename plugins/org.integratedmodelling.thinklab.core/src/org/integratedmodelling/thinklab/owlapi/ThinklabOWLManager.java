@@ -108,9 +108,9 @@ public class ThinklabOWLManager {
 
 			/* TODO set properties */
 			abstractAnnotationProperty = 
-				(OWLProperty<?,?>) ((Property)KnowledgeManager.get().getAbstractProperty()).entity;
+				(OWLProperty<?,?>) ((Property)Thinklab.ABSTRACT_PROPERTY).entity;
 			classLiteralAnnotationProperty = 
-				(OWLProperty<?,?>) ((Property)KnowledgeManager.get().getClassificationProperty()).entity;
+				(OWLProperty<?,?>) ((Property)Thinklab.CLASSIFICATION_PROPERTY).entity;
 			
 		}
 		return owlManager;
@@ -980,7 +980,8 @@ public class ThinklabOWLManager {
 				((OWLDataAllRestriction)r).getFiller();
 			if (range.isDataType()) {
 				OWLDataType dtype = (OWLDataType) range;
-				String tltype = Thinklab.get().getXSDMapping(dtype.getURI().toString());
+				// FIXME fix!
+				String tltype = null; // Thinklab.get().getXSDMapping(dtype.getURI().toString());
 				if (tltype != null) {
 					try {
 						ret = 
@@ -999,7 +1000,8 @@ public class ThinklabOWLManager {
 				((OWLDataSomeRestriction)r).getFiller();
 			if (range.isDataType()) {
 				OWLDataType dtype = (OWLDataType) range;
-				String tltype = Thinklab.get().getXSDMapping(dtype.getURI().toString());
+				// FIXME!
+				String tltype = null; // Thinklab.get().getXSDMapping(dtype.getURI().toString());
 				if (tltype != null) {
 					try {
 						ret =

@@ -39,7 +39,7 @@ public abstract class SemanticLiteral implements ISemanticObject {
 	public IConcept concept;
 	
     public SemanticLiteral()  {
-        concept = Thinklab.Thing();
+        concept = Thinklab.THING;
     }
 
     public SemanticLiteral(IConcept c) {

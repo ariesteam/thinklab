@@ -29,7 +29,7 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
@@ -83,7 +83,7 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public boolean isAbstract() {
 		try{
-			return (getAnnotationProperties().contains(KnowledgeManager.get().getAbstractProperty()));
+			return (getAnnotationProperties().contains(Thinklab.ABSTRACT_PROPERTY));
 		} catch (Exception e) {
 			return false;
 		}

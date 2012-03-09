@@ -41,12 +41,12 @@ public class BooleanValue extends SemanticLiteral implements IParseable {
     }
     
     public BooleanValue() {
-        super(Thinklab.Boolean());
+        super(Thinklab.BOOLEAN);
         value = false;
     }
 
     public BooleanValue(boolean c)  {
-        super(Thinklab.Boolean());
+        super(Thinklab.BOOLEAN);
         value = c;
     }
 

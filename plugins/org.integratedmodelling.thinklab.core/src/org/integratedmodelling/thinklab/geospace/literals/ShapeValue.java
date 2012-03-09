@@ -252,7 +252,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		boolean ok = false;
 		
 		/* if that's all we ask for, let it have it */
-		if (concept.equals(Thinklab.Thing()) ||
+		if (concept.equals(Thinklab.THING) ||
 			concept.equals(Geospace.get().Shape())) {
 			setConceptWithoutValidation(Geospace.get().Shape());
 			return;

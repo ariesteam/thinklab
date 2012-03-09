@@ -38,6 +38,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
+import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.java.plugin.JpfException;
@@ -279,10 +280,13 @@ public class ThinklabProject implements IProject {
 
 	private void loadInternal(File f, HashSet<File> read, ArrayList<INamespace> ret, String path,
 			IProject project) throws ThinklabException {
+		
+		String pth = 
+				path == null ? 
+					"" : 
+					(path + (path.isEmpty() ? "" : ".") + CamelCase.toLowerCase(MiscUtilities.getFileBaseName(f.toString()), '-'));
 
 		if (f. isDirectory()) {
-
-			String pth = path.isEmpty() ? "" : (path + "." + MiscUtilities.getFileBaseName(f.toString()));
 
 			for (File fl : f.listFiles()) {
 				loadInternal(fl, read, ret, pth, project);
@@ -290,12 +294,12 @@ public class ThinklabProject implements IProject {
 			
 		} else if (f.toString().endsWith(".owl")) {
 
-			INamespace ns = ModelManager.get().loadFile(f.toString(), path + "." + MiscUtilities.getFileBaseName(f.toString()), this);
+			INamespace ns = ModelManager.get().loadFile(f.toString(), pth, this);
 			ret.add(ns);
 			
 		} else if (f.toString().endsWith(".tql") || f.toString().endsWith(".clj")) {
 
-			INamespace ns = ModelManager.get().loadFile(f.toString(), path + "." + MiscUtilities.getFileBaseName(f.toString()), this);
+			INamespace ns = ModelManager.get().loadFile(f.toString(), pth, this);
 			ret.add(ns);
 		}
 		

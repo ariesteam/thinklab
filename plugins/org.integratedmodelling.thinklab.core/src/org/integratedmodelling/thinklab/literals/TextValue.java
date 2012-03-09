@@ -33,12 +33,12 @@ public class TextValue extends SemanticLiteral implements IParseable {
     public String value;
     
     public TextValue() {
-        super(Thinklab.Text());
+        super(Thinklab.TEXT);
         value = "";
     }
     
     public TextValue(String s)  {
-        super(Thinklab.Text());
+        super(Thinklab.TEXT);
         value = s;
     }
     

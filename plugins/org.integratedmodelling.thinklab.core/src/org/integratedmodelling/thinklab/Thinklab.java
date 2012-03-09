@@ -23,7 +23,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
@@ -33,7 +32,6 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.Escape;
-import org.integratedmodelling.thinklab.annotation.AnnotationFactory;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -43,7 +41,6 @@ import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
-import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.project.ThinklabProjectInstaller;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -55,7 +52,9 @@ import org.restlet.service.MetadataService;
 
 /**
  * Activating this plugin means loading the knowledge manager, effectively booting the
- * Thinklab system.
+ * Thinklab system. KnowledgeManager is the actual KM, but it remains hidden in this
+ * package, using Thinklab as a proxy for everthing except those activities that need
+ * a knowledge manager before Thinklab exists.
  * 
  * @author Ferdinando Villa
  *
@@ -63,6 +62,23 @@ import org.restlet.service.MetadataService;
 public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.core";
+	
+	
+	public static IConcept DOUBLE;
+	public static IConcept BOOLEAN;
+	public static IConcept TEXT;
+	public static IConcept LONG;
+	public static IConcept INTEGER;
+	public static IConcept FLOAT;
+	public static IConcept NUMBER;
+	public static IConcept THING;
+	public static IConcept NOTHING;
+	public static IConcept ORDERED_RANGE_MAPPING;
+	public static IConcept ORDINAL_RANKING;
+	public static IConcept BOOLEAN_RANKING;
+	
+	public static IProperty CLASSIFICATION_PROPERTY;
+	public static IProperty ABSTRACT_PROPERTY;
 	
 	/**
 	 * Return the only instance of Thinklab, your favourite knowledge manager.
@@ -103,31 +119,11 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	
 	
-	AnnotationFactory _annotationFactory = 
-			new AnnotationFactory();
-	
-	private HashMap<String, IKbox> _kboxes = new HashMap<String, IKbox>();
-	
-	KnowledgeManager _km = null;
 	private HashMap<String, Class<?>> _projectLoaders = 
 		new HashMap<String, Class<?>>();
 
 	private MetadataService _metadataService;
 
-	/*
-	 * maps XSD URIs to thinklab types for translation of literals.
-	 */
-	private Hashtable<String, String> xsdMappings = new Hashtable<String, String>();
-
-	private Hashtable<String, Class<?>> instanceImplementationClasses = new Hashtable<String, Class<?>>();
-	private Hashtable<String, Class<?>> literalImplementationClasses = new Hashtable<String, Class<?>>();
-
-	// reverse - implementation to (declared) concept. One day I'll start using those delicious
-	// bidirectional maps and get it over with.
-	private Hashtable<Class<?>, String> instanceImplementationConcepts = new Hashtable<Class<?>, String>();
-	
-	// only for this plugin, very ugly, but we need to access logging etc. before doStart() has
-	// finished and the plugin has been published.
 	static Thinklab _this = null;
 	
 	public Thinklab() {
@@ -146,59 +142,29 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		if (config != null)
 			LocalConfiguration.loadProperties(config);
 
-		/*
-		 * KM is created with the knowledge rep and session manager configured in the properties,
-		 * defaulting to protege (for now) and single session.
-		 */
-		if (_km == null) {
-
-		}
+		INTEGER  = getConcept(NS.INTEGER);
+		FLOAT    = getConcept(NS.FLOAT);
+		TEXT     = getConcept(NS.TEXT);
+		LONG     = getConcept(NS.LONG);
+		DOUBLE   = getConcept(NS.DOUBLE);
+		NUMBER   = getConcept(NS.NUMBER);
+		BOOLEAN  = getConcept(NS.BOOLEAN);
+		BOOLEAN_RANKING  = getConcept(NS.BOOLEAN_RANKING);
+		ORDINAL_RANKING  = getConcept(NS.ORDINAL_RANKING);
+		ORDERED_RANGE_MAPPING  = getConcept(NS.ORDINAL_RANGE_MAPPING);
 		
+		CLASSIFICATION_PROPERTY = getProperty(NS.CLASSIFICATION_PROPERTY);
+		ABSTRACT_PROPERTY = getProperty(NS.ABSTRACT_PROPERTY);
+							
 		/*
 		 * install listener to handle non-code Thinklab projects
 		 */
 		getManager().registerListener(new ThinklabProjectInstaller());
-		
-//		/*
-//		 * scan all plugins and initialize thinklab projects from them if they
-//		 * have the thinklab admin directories
-//		 */
-//		for (PluginDescriptor pd : getManager().getRegistry().getPluginDescriptors()) {
-//			
-//			String lf = 
-//				Escape.fromURL(new File(pd.getLocation().getFile()).getAbsolutePath());
-//			File ploc = MiscUtilities.getPath(lf);
-//			
-//			File loc = 
-//				new File(
-//						ploc +
-//						File.separator +
-//						"META-INF" +
-//						File.separator +
-//						"thinklab.properties");
-//		
-//			if (loc.exists()) {
-//			
-//				/*
-//				 * install project wrapper in global register
-//				 */
-//				try {
-//					ProjectFactory.get().registerProject(ploc);
-//				} catch (ThinklabException e) {
-//					throw new ThinklabRuntimeException(e);
-//				}
-//			
-//				Thinklab.get().logger().info("thinklab project " + pd.getId() + " registered");
-//			}
-//		}
 
 	}
 
-	/*
-	 * FIXME we should use this class as support, but its 
-	 */
 	public IKnowledgeRepository getKnowledgeRepository() {
-		return _km.getKnowledgeRepository();
+		return KnowledgeManager.KM.getKnowledgeRepository();
 	}
 
 	@Override
@@ -226,11 +192,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	@Override
 	protected void unload() throws ThinklabException {
-
-		if (_km != null) {
-			_km.shutdown();
-			_km = null;
-		}
+		KnowledgeManager.KM.shutdown();
 	}
 	
 	
@@ -369,76 +331,13 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 			}
 		}.start();
 	}
-
-//    /**
-//     * Return a new (parseable) literal of the proper type to handle the passed concept.
-//     * The returned literal will need to be initialized by making it parse a 
-//     * string value. It will implement IParseable, but best to check just in case.
-//     * 
-//     * @param type the concept
-//     * @return a raw literal or null if none is configured to handle the concept
-//     * @throws ThinklabException if there is ambiguity
-//     * 
-//     * TODO make it use the declared classes, abolish validators
-//     */
-//    public ISemanticLiteral getRawLiteral(IConcept type) throws ThinklabValidationException {
 //
-//        class vmatch implements ConceptVisitor.ConceptMatcher {
-//
-//            private Hashtable<String, Class<?>> coll;
-//
-//            public Class<?> ret = null;
-//            
-//            public vmatch(Hashtable<String, Class<?>> c) {
-//                coll = c;
-//            }
-//            
-//            public boolean match(IConcept c) {
-//                ret = coll.get(c.toString());
-//                return(ret != null);	
-//            }    
-//        }
-//        
-//        vmatch matcher = new vmatch(literalImplementationClasses);
-//        
-//        IConcept cms = 
-//            ConceptVisitor.findMatchUpwards(matcher, type);
-//
-//        ISemanticLiteral ret = null;
-//        
-//        if (cms != null) {
-//        	try {
-//				ret = (ISemanticLiteral) matcher.ret.newInstance();
-//			} catch (Exception e) {
-//				throw new ThinklabValidationException("cannot create literal: " + e.getMessage());
-//			}
-//        }
-//        
-//        return ret;
-//    }
-//
-    
-	/**
-	 * If a mapping between the URI of an XSD type and a thinklab semantic type has been
-	 * defined, return the correspondent type; otherwise return null.
-	 * 
-	 * @param XSDUri
-	 * @return
-	 */
-	public String getXSDMapping(String XSDUri) {
-		return xsdMappings.get(XSDUri);
-	}
-
-	public void registerInstanceImplementationClass(String concept, Class<?> cls) {
-		instanceImplementationClasses.put(concept, cls);
-	}
-	
-	public void registerLiteralImplementationClass(String concept, Class<?> cls) {
-		literalImplementationClasses.put(concept, cls);	
-	}
-	
-//	public void registerXSDTypeMapping(String xsd, String type) {
-//		xsdMappings.put(xsd, type);	
+//	public void registerInstanceImplementationClass(String concept, Class<?> cls) {
+//		instanceImplementationClasses.put(concept, cls);
+//	}
+//	
+//	public void registerLiteralImplementationClass(String concept, Class<?> cls) {
+//		literalImplementationClasses.put(concept, cls);	
 //	}
 //	
 	public static File getPluginLoadDirectory(Plugin plugin) {
@@ -457,69 +356,60 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 
 	@Override
 	public IProperty getProperty(String prop) {
-		return _km.retrieveProperty(prop);
+		return KnowledgeManager.KM.getProperty(prop);
 	}
 
 	@Override
 	public IConcept getConcept(String prop) {
-		return _km.retrieveConcept(prop);
+		return KnowledgeManager.KM.getConcept(prop);
 	}
 
-	public Class<?> getClassForConcept(IConcept type) {
-		
-        class vmatch implements ConceptVisitor.ConceptMatcher {
-
-            private Hashtable<String, Class<?>> coll;
-            
-            public vmatch(Hashtable<String, Class<?>> c) {
-                coll = c;
-            }
-            
-            public boolean match(IConcept c) {
-                Class<?> cc = coll.get(c.toString());
-                return (cc != null);
-            }    
-        }
-        
-        /*
-         * I may be wrong, but there's no problem finding more than one constructor - just return the
-         * least general one... 
-         * There IS a problem if the ambiguity comes from a logical union - this should be checked, but
-         * not now.
-         */
-        return
-    	  new ConceptVisitor<Class<?>>().findMatchingInMapUpwards(
-    			  instanceImplementationClasses, 
-    			  new vmatch(instanceImplementationClasses), type);
-	}
+//	public Class<?> getClassForConcept(IConcept type) {
+//		
+//        class vmatch implements ConceptVisitor.ConceptMatcher {
+//
+//            private Hashtable<String, Class<?>> coll;
+//            
+//            public vmatch(Hashtable<String, Class<?>> c) {
+//                coll = c;
+//            }
+//            
+//            public boolean match(IConcept c) {
+//                Class<?> cc = coll.get(c.toString());
+//                return (cc != null);
+//            }    
+//        }
+//        
+//        /*
+//         * I may be wrong, but there's no problem finding more than one constructor - just return the
+//         * least general one... 
+//         * There IS a problem if the ambiguity comes from a logical union - this should be checked, but
+//         * not now.
+//         */
+//        return
+//    	  new ConceptVisitor<Class<?>>().findMatchingInMapUpwards(
+//    			  instanceImplementationClasses, 
+//    			  new vmatch(instanceImplementationClasses), type);
+//	}
 
 	@Override
 	public IConcept getLeastGeneralCommonConcept(IConcept... cc) {
-		return _km.getLeastGeneralCommonConcept(Arrays.asList(cc));
+		return KnowledgeManager.KM.getLeastGeneralCommonConcept(Arrays.asList(cc));
 	}
 
 	@Override
 	public IKbox createKbox(String uri) throws ThinklabException {
-
-		if (!uri.contains("://")) {
-			File kf = new File(getScratchPath() + File.separator + "kbox" + File.separator + uri);
-			kf.mkdirs();
-			return new NeoKBox(kf.toString());
-		}
-		
-		return null;
+		return KnowledgeManager.KM.createKbox(uri);
 	}
 
 	@Override
 	public void dropKbox(String uri) throws ThinklabException {
-		// TODO Auto-generated method stub
+		KnowledgeManager.KM.dropKbox(uri);
 	}
 
 	@Override
 	public IKbox requireKbox(String uri) throws ThinklabException {
-		if (_kboxes.containsKey(uri))
-			return _kboxes.get(uri);
-		return createKbox(uri);
+		return KnowledgeManager.KM.requireKbox(uri);
 	}
 
 	/**
@@ -544,23 +434,22 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	@Override
 	public ISemanticObject parse(String literal, IConcept concept)
 			throws ThinklabException {
-		return _annotationFactory.parse(literal, concept);
+		return KnowledgeManager.KM.parse(literal, concept);
 	}
 
 	@Override
 	public ISemanticObject annotate(Object object) throws ThinklabException {
-		return _annotationFactory.annotate(object);
+		return KnowledgeManager.KM.annotate(object);
 	}
 
 	@Override
 	public Object instantiate(Semantics semantics) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return _annotationFactory.instantiate(semantics);
+		return KnowledgeManager.KM.instantiate(semantics);
 	}
 
 	@Override
 	public Semantics conceptualize(Object object) throws ThinklabException {
-		return _annotationFactory.conceptualize(object);
+		return KnowledgeManager.KM.conceptualize(object);
 	}
 
 	
@@ -568,89 +457,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	 * ---------------------------------------------------------------------------------------- 
 	 * ---------------------------------------------------------------------------------------- 
 	 */
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Double() {
-		return _this._km.doubleType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Boolean() {
-		return _this._km.booleanType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Text() {
-		return _this._km.textType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Long() {
-		return _this._km.longType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Integer() {
-		return _this._km.integerType;
-	}
-	
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Float() {
-		return _this._km.floatType;
-	}
-
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept Number() {
-		return _this._km.numberType;
-	}
-	
-	public static IConcept Thing() {
-		return _this._km.knowledgeRepository.getRootConcept();
-	}
 
 
-	public static IConcept BooleanRanking() {
-		return _this._km.booleanRankingType;
-	}
-	
-	public static IConcept OrdinalRanking() {
-		return _this._km.ordinalRankingType;
-	}
 
-	public static IConcept OrderedRangeMapping() {
-		return _this._km.ordinalRangeMappingType;
-	}
-	
-	public static IConcept Nothing() {
-		return _this._km.knowledgeRepository.getNothingType();
-	}
-
-	
 }

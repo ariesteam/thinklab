@@ -42,22 +42,22 @@ public class NumberValue extends SemanticLiteral implements IParseable {
     public double value;
     
    public NumberValue() {
-      super(Thinklab.Number());
+      super(Thinklab.NUMBER);
       value = 0.0;
    }
     
    public NumberValue(int i) {        
-       super(Thinklab.Integer());
+       super(Thinklab.NUMBER);
        value = i;
    }
    
    public NumberValue(double d) {
-       super(Thinklab.Double());
+       super(Thinklab.DOUBLE);
        value = d;
    }
 
     public NumberValue(float f) {
-        super(Thinklab.Float());
+        super(Thinklab.FLOAT);
         value = f;
     }
         
@@ -76,7 +76,7 @@ public class NumberValue extends SemanticLiteral implements IParseable {
     }
     
     public NumberValue (long l) {
-        super(Thinklab.Long());
+        super(Thinklab.LONG);
         value = l;
     }
     
@@ -89,7 +89,7 @@ public class NumberValue extends SemanticLiteral implements IParseable {
 		} catch (Exception e) {
 	 		throw new ThinklabValidationException("validation of number " + s + " failed");
 	 	 }
-		concept = Thinklab.Number();
+		concept = Thinklab.NUMBER;
 		value   = v;
     }
 

@@ -160,21 +160,21 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 * @see org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository#initialize()
 	 */
 	public void initialize() throws ThinklabException {
-		FilenameFilter owlfilter = new FileTypeFilter(
-				FileTypeFilter.OWLFileType);
-		for (File f : repositoryDirectory.listFiles(owlfilter)) {
-			String nspace = null;
-			try {
-				URL url = f.toURI().toURL();
-				// This is the filename without the .owl ending. It will be used
-				// as the short namespace!
-				nspace = f.getName().substring(0, f.getName().length() - 4);
-				importOntology(url, nspace, false);
-			} catch (Exception ex) {
-				// log.warn("Cant load ontology for the file: " + f.getName()
-				// + " " + ex.getMessage());
-			}
-		}
+//		FilenameFilter owlfilter = new FileTypeFilter(
+//				FileTypeFilter.OWLFileType);
+//		for (File f : repositoryDirectory.listFiles(owlfilter)) {
+//			String nspace = null;
+//			try {
+//				URL url = f.toURI().toURL();
+//				// This is the filename without the .owl ending. It will be used
+//				// as the short namespace!
+//				nspace = f.getName().substring(0, f.getName().length() - 4);
+//				importOntology(url, nspace, false);
+//			} catch (Exception ex) {
+//				// log.warn("Cant load ontology for the file: " + f.getName()
+//				// + " " + ex.getMessage());
+//			}
+//		}
 		/*
 		 * either connect to a configured DIG reasoner, or use a simple transitive one.
 		 */

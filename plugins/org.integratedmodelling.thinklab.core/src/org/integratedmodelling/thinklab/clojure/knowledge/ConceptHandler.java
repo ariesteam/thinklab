@@ -21,7 +21,7 @@ package org.integratedmodelling.thinklab.clojure.knowledge;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 
@@ -39,7 +39,7 @@ public class ConceptHandler {
 		_id = concept;
 		
 		if (SemanticType.validate(concept)) {
-			_concept = KnowledgeManager.get().retrieveConcept(concept);
+			_concept = Thinklab.get().getConcept(concept);
 		}
 	}
 	

@@ -161,14 +161,19 @@ public abstract class ThinklabPlugin extends Plugin
 	@Override
 	protected final void doStart() throws Exception {
 		
+		/*
+		 * ensure we have a knowledge manager first of all.
+		 */
+		KnowledgeManager km = KnowledgeManager.get();
+		km.setPluginManager(getManager());
+
+		
 		loadConfiguration();
 
 		for (IPluginLifecycleListener lis : KnowledgeManager.getPluginListeners()) {
 			lis.prePluginLoaded(this);
 		}
 
-		KnowledgeManager km = KnowledgeManager.get();
-		km.setPluginManager(getManager());
 		
 		loadKnowledge();
 

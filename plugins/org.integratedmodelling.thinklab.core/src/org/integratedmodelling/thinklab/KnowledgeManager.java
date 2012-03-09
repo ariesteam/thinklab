@@ -19,7 +19,9 @@
  */
 package org.integratedmodelling.thinklab;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,11 +32,17 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
+import org.integratedmodelling.lang.Semantics;
+import org.integratedmodelling.thinklab.annotation.AnnotationFactory;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
+import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
 import org.java.plugin.PluginManager;
@@ -46,7 +54,7 @@ import org.java.plugin.PluginManager;
  * @author Ferd
  * 
  */
-public class KnowledgeManager {
+public class KnowledgeManager implements IKnowledgeManager {
 
 	/** 
 	 * <p>The Knowledge Manager is a singleton. This is created by the initializer and an exception 
@@ -57,34 +65,20 @@ public class KnowledgeManager {
      * 
 	 */
 	public static KnowledgeManager KM = null;
-	
-	IConcept integerType;
-	IConcept floatType;	
-	IConcept textType;
-	IConcept numberType;
-	IConcept booleanType;
-	IConcept longType;
-	IConcept doubleType;
-	IConcept ordinalRankingType;
-	IConcept booleanRankingType;
-	IConcept ordinalRangeMappingType;
- 
-    private IProperty classificationProperty;
-    private IProperty abstractProperty;
-	private IProperty additionalRestrictionsProperty;
-    
-    private SemanticType rootTypeID;
-
+   
 	protected IKnowledgeRepository knowledgeRepository;
 
 	protected PluginManager pluginManager = null;
 	
 	protected CommandManager commandManager;
 	
-	public static final String EXCLUDE_ONTOLOGY_PROPERTY = "thinklab.ontology.exclude";
+	AnnotationFactory _annotationFactory = new AnnotationFactory();
 	
+	private HashMap<String, IKbox> _kboxes = new HashMap<String, IKbox>();
+
 	/**
 	 * colon-separated path to find resources
+	 * FIXME see if this is still used
 	 */
 	public static final String RESOURCE_PATH_PROPERTY = "thinklab.resource.path";
 	
@@ -139,6 +133,68 @@ public class KnowledgeManager {
 		knowledgeRepository = kr;
 	}
 
+
+	@Override
+	public ISemanticObject parse(String literal, IConcept concept)
+			throws ThinklabException {
+		return _annotationFactory.parse(literal, concept);
+	}
+
+	@Override
+	public ISemanticObject annotate(Object object) throws ThinklabException {
+		return _annotationFactory.annotate(object);
+	}
+
+	@Override
+	public Object instantiate(Semantics semantics) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return _annotationFactory.instantiate(semantics);
+	}
+
+	@Override
+	public Semantics conceptualize(Object object) throws ThinklabException {
+		return _annotationFactory.conceptualize(object);
+	}
+
+	@Override
+	public IConcept getLeastGeneralCommonConcept(IConcept... cc) {
+		return getLeastGeneralCommonConcept(Arrays.asList(cc));
+	}
+
+	@Override
+	public IKbox createKbox(String uri) throws ThinklabException {
+
+		if (!uri.contains("://")) {
+			File kf = new File(Thinklab.get().getScratchPath() + File.separator + "kbox" + File.separator + uri);
+			kf.mkdirs();
+			return new NeoKBox(kf.toString());
+		}
+		
+		return null;
+	}
+
+	@Override
+	public void dropKbox(String uri) throws ThinklabException {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public IKbox requireKbox(String uri) throws ThinklabException {
+		if (_kboxes.containsKey(uri))
+			return _kboxes.get(uri);
+		return createKbox(uri);
+	}
+
+	@Override
+	public IProperty getProperty(String prop) {
+		return retrieveProperty(new SemanticType(prop));
+	}
+
+	@Override
+	public IConcept getConcept(String conc) {
+		return retrieveConcept(new SemanticType(conc));
+	}
+	
 	public IKnowledgeRepository getKnowledgeRepository() {
 		return knowledgeRepository;
 	}
@@ -147,51 +203,12 @@ public class KnowledgeManager {
         return knowledgeRepository.getRootConcept();
     }
     
-	public IProperty getAbstractProperty() throws ThinklabException {
-		if (!typesInitialized)
-			initializeThinklabTypes();
-		return abstractProperty;
-	}
-
-	public IProperty getClassificationProperty() throws ThinklabException {
-		if (!typesInitialized)
-			initializeThinklabTypes();
-		return classificationProperty;
-	}
-
-	private void initializeThinklabTypes() throws ThinklabException {
-
-		integerType  = requireConcept(NS.INTEGER);
-		floatType    = requireConcept(NS.FLOAT);
-		textType     = requireConcept(NS.TEXT);
-		longType     = requireConcept(NS.LONG);
-		doubleType   = requireConcept(NS.DOUBLE);
-		numberType   = requireConcept(NS.NUMBER);
-		booleanType  = requireConcept(NS.BOOLEAN);
-		booleanRankingType  = requireConcept(NS.BOOLEAN_RANKING);
-		ordinalRankingType  = requireConcept(NS.ORDINAL_RANKING);
-		ordinalRangeMappingType  = requireConcept(NS.ORDINAL_RANGE_MAPPING);
-		
-		classificationProperty = requireProperty(NS.CLASSIFICATION_PROPERTY);
-		abstractProperty = requireProperty(NS.ABSTRACT_PROPERTY);
-				
-		typesInitialized = true;
-	}
-	
 	public void initialize() throws ThinklabException {
 	
 		/* link and initialize knowledge repository */
 	    knowledgeRepository.initialize();
-	    
-	    // TODO  this must be put outside but only after the KM is first initialized, or better, in Thinklab.
-        /* initialize types before we register plugins */
-        initializeThinklabTypes();
-
-        commandManager = new CommandManager();
-        				
-		Thinklab.get().logger().info("knowledge manager initialized successfully");
-		
-	}
+	    commandManager = new CommandManager();
+ 	}
 
 	
 	public void shutdown() {
@@ -199,7 +216,7 @@ public class KnowledgeManager {
 		/* TODO any other cleanup actions */
 	}
 
-	
+
 	/** 
 	 * This one is used by all classes to access the knowledge manager.
 	 * @return The one and only knowledge manager for this application.
@@ -276,7 +293,7 @@ public class KnowledgeManager {
 		INamespace ns = ModelManager.get().getNamespace(t.getConceptSpace());
 	    if (ns != null)
 	    	ret = ns.getOntology().getConcept(t.getLocalName());
-	    if (ret == null && t.toString().equals(rootTypeID.toString()))	{
+	    if (ret == null && t.toString().equals(knowledgeRepository.getRootConcept().toString()))	{
 	    	ret = getRootConcept();
 	    }
 	    return ret;
@@ -289,20 +306,6 @@ public class KnowledgeManager {
 	    if (ns != null)
 	    	ret = ns.getOntology().getProperty(t.getLocalName());
 	    return ret;
-	}
-	
-	public IProperty retrieveProperty(String prop) {
-		return retrieveProperty(new SemanticType(prop));
-	}
-	
-	public IConcept retrieveConcept(String conc) {
-				
-		IConcept ret = null;
-
-		return 
-			ret == null ?
-				retrieveConcept(new SemanticType(conc)) :
-				ret;
 	}
 
 	public IConcept getLeastGeneralCommonConcept(String semanticType, String otherConcept) throws ThinklabException {
@@ -332,25 +335,7 @@ public class KnowledgeManager {
 		
 		return ret;
 	}
-	/**
-	 * Provided to simplify access to core types when we are sure that we have a knowledge
-	 * manager.
-	 * @return
-	 */
-	public static IConcept NumberType() {
-		return KM.numberType;
-	}
 	
-	public static IConcept ThingType() {
-		return KM.knowledgeRepository.getRootConcept();
-	}
-
-
-	public IProperty getAdditionalRestrictionProperty() {
-		// TODO Auto-generated method stub
-		return additionalRestrictionsProperty;
-	}
-
 	public CommandManager getCommandManager() {
 		return commandManager;
 	}

@@ -241,7 +241,7 @@ public class Classification implements IClassification {
 			/*
 			 * we don't allow ordered range mappings to have disjoint intervals
 			 */
-			if (typeIs(Type.ORDERED_RANGE_MAPPING) || observable.is(Thinklab.OrderedRangeMapping())
+			if (typeIs(Type.ORDERED_RANGE_MAPPING) || observable.is(Thinklab.ORDERED_RANGE_MAPPING)
 					&& Double.compare(pd.getFirst(), last) != 0) {
 				throw new ThinklabValidationException(
 						"disjoint intervals for ordered range mapping of "
@@ -392,7 +392,7 @@ public class Classification implements IClassification {
 		 * if presence-absence, map the "No*" or "notpresent" to 0 and the other
 		 * to 1, then return. Must be two concepts at most.
 		 */
-		if (typeIs(Type.BOOLEAN_RANKING) || type.is(Thinklab.BooleanRanking())) {
+		if (typeIs(Type.BOOLEAN_RANKING) || type.is(Thinklab.BOOLEAN_RANKING)) {
 			
 			_type = Type.BOOLEAN_RANKING;
 			
@@ -422,10 +422,10 @@ public class Classification implements IClassification {
 			
 		} else if ( typeIs(Type.ORDERED_RANKING) ||
 				typeIs(Type.ORDERED_RANGE_MAPPING) ||
-				type.is(Thinklab.OrdinalRanking()) ||
-				type.is(Thinklab.OrderedRangeMapping())) {
+				type.is(Thinklab.ORDINAL_RANKING) ||
+				type.is(Thinklab.ORDERED_RANGE_MAPPING)) {
 
-			if (typeIs(Type.ORDERED_RANKING) || type.is(Thinklab.OrdinalRanking()))
+			if (typeIs(Type.ORDERED_RANKING) || type.is(Thinklab.ORDINAL_RANKING))
 				_type = Type.ORDERED_RANKING;
 			else
 				_type = Type.ORDERED_RANGE_MAPPING;

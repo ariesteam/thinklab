@@ -271,8 +271,8 @@ public class Property extends Knowledge implements IProperty {
 
 					if (c.isDataType()) {
 						OWLDataType dtype = (OWLDataType) c;
-						String tltype = Thinklab.get().getXSDMapping(
-								dtype.getURI().toString());
+						// FIXME! complete this
+						String tltype = null; // Thinklab.get().getXSDMapping(dtype.getURI().toString());
 						if (tltype != null) {
 							try {
 								ret.add(KnowledgeManager.get().requireConcept(
@@ -314,11 +314,7 @@ public class Property extends Knowledge implements IProperty {
 	 * @see org.integratedmodelling.thinklab.interfaces.IProperty#isClassification()
 	 */
 	public boolean isClassification() {
-		try {
-			return is(KnowledgeManager.get().getClassificationProperty());
-		} catch (ThinklabException e) {
-		}
-		return false;
+		return is(Thinklab.CLASSIFICATION_PROPERTY);
 	}
 
 	/* (non-Javadoc)
