@@ -290,13 +290,7 @@ public class DurationValue extends SemanticLiteral implements IParseable {
 	public String getOriginalUnit() {
 		return origUnit;
 	}
-
-	@Override
-	public Semantics getSemantics() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public Object getObject() {
 		// TODO Auto-generated method stub

@@ -356,4 +356,18 @@ public class KnowledgeManager implements IKnowledgeManager {
 		return pluginListeners;
 	}
 
+
+	public void registerAnnotation(Class<?> clls, String[] value) throws ThinklabException {
+
+		for (String s : value) {
+			_annotationFactory.registerAnnotationConcept(requireConcept(s), clls);
+		}
+	}
+
+
+	public void registerLiteralAnnotation(Class<?> clls, String concept,
+			String datatype, Class<?> javaClass) throws ThinklabException {
+		_annotationFactory.registerLiteralAnnotation(clls, requireConcept(concept), datatype, javaClass);
+	}
+
 }

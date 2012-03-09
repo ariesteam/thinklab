@@ -20,11 +20,15 @@
 package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.lang.Semantics;
+import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
+import org.integratedmodelling.thinklab.metadata.Metadata;
 
 @ThinklabCommand(name="test",argumentNames="arg",argumentTypes="thinklab:Text", argumentDescriptions="test argument")
 public class Test implements ICommandHandler {
@@ -32,7 +36,25 @@ public class Test implements ICommandHandler {
 	@Override
 	public ISemanticObject execute(Command command, ISession session)
 			throws ThinklabException {
-		return null;
+		
+		Metadata metadata = new Metadata();
+		metadata.put(Metadata.DC_COMMENT, "Stocazzo");
+		metadata.put(Metadata.DC_CONTRIBUTOR, "Piccione");
+		
+		ISemanticObject o = Thinklab.get().annotate(metadata);
+		
+		Semantics semantics = o.getSemantics();
+		
+		for (Semantics rel : semantics.getRelationships()) {
+			System.out.println(rel);
+		}
+		
+		Object porco = Thinklab.get().instantiate(semantics);
+		
+		session.print(PolyList.prettyPrint(semantics.asList()));
+		session.print("\n" + porco);
+		
+		return o;
 	}
 
 }

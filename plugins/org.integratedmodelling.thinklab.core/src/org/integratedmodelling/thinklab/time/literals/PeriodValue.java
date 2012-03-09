@@ -113,11 +113,6 @@ public class PeriodValue extends SemanticLiteral implements IParseable {
     	return interval.getEndMillis();
     }
 
-	@Override
-	public Semantics getSemantics() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Object getObject() {

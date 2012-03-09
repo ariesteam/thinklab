@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.LanguageElement;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -20,7 +21,7 @@ import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
  * @author Ferd
  *
  */
-@Concept("observation:Observation")
+@Concept(NS.OBSERVATION)
 public class ObservationImpl implements IObservation {
 
 	@Override

@@ -227,9 +227,7 @@ public abstract class ThinklabPlugin extends Plugin
 					}
 				}, 
 				this.getClassLoader());
-		
 	}
-
 	
 	private void registerFunction(Class<?> cls, Function annotation) throws ThinklabException {
 
@@ -243,7 +241,6 @@ public abstract class ThinklabPlugin extends Plugin
 	}
 
 	private void registerListingProvider(Class<?> cls, ListingProvider annotation) throws ThinklabException {
-		// TODO Auto-generated method stub
 		
 		String name = annotation.label();
 		String sname = annotation.itemlabel();
@@ -320,14 +317,12 @@ public abstract class ThinklabPlugin extends Plugin
 		
 	}
 
-	private void registerAnnotation(Class<?> clls, Concept a) {
-		// TODO Auto-generated method stub
-		
+	private void registerAnnotation(Class<?> clls, Concept a) throws ThinklabException {
+		KnowledgeManager.get().registerAnnotation(clls, a.value());
 	}
 
-	private void registerLiteral(Class<?> clls, Literal a) {
-		// TODO Auto-generated method stub
-		
+	private void registerLiteral(Class<?> clls, Literal a) throws ThinklabException {
+		KnowledgeManager.get().registerLiteralAnnotation(clls, a.concept(), a.datatype(), a.javaClass());
 	}
 	
 	private Properties getThinklabPluginProperties() throws ThinklabIOException {

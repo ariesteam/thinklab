@@ -21,7 +21,6 @@ package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -30,10 +29,6 @@ import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementa
 import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 
 /**
- * <p>A specialized Value that holds numbers and has all math operations with automatic unit conversion.</p>
- * <p>We keep it simple for now, and represent numbers internally as doubles, no matter what their actual semantic type is. The 
- * type is remembered and conversions are done after operations if necessary. Being Java, I'm not sure we want to go to the extent
- * we'd go in C++ to maintain efficiency in number operations.</p>
  * @author Ferdinando Villa
  */
 @LiteralImplementation(concept=NS.NUMBER)
@@ -99,12 +94,6 @@ public class NumberValue extends SemanticLiteral implements IParseable {
 
 	public void assign(double d) {
 		value = d;
-	}
-
-	@Override
-	public Semantics getSemantics() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

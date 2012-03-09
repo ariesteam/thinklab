@@ -26,14 +26,24 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 
+/**
+ * For now, simply a conceptualizable hash map that knows the DC constants.
+ * 
+ * @author Ferd
+ *
+ */
 @Concept(NS.METADATA)
 public class Metadata implements IMetadata {
 
 	@Property(NS.METADATA_HAS_FIELD)
-	HashMap<String, Object> _md = new HashMap<String, Object>();
+	public HashMap<String, Object> _md = new HashMap<String, Object>();
 	
 	@Override
 	public Object get(String string) {
 		return _md.get(string);
+	}
+
+	public void put(String key, Object value) {
+		_md.put(key, value);
 	}
 }

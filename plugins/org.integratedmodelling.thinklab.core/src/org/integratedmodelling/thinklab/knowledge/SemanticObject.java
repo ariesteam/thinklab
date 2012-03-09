@@ -30,6 +30,11 @@ public class SemanticObject implements ISemanticObject {
 		this._object = object;
 	}
 	
+	public SemanticObject(Semantics semantics, Object object) {
+		this._semantics = semantics;
+		this._object = object;
+	}
+
 	@Override
 	public Semantics getSemantics() {
 		if (_semantics == null) {
@@ -129,4 +134,8 @@ public class SemanticObject implements ISemanticObject {
 		return getSemantics().toString();
 	}
 
+	public String toString() {
+		return "[" + getDirectType() + " " + _object + "]";
+	}
+	
 }

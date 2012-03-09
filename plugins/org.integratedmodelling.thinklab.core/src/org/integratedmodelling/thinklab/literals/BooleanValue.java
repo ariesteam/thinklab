@@ -20,7 +20,7 @@
 package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.lang.Semantics;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
@@ -28,7 +28,7 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 
-@Literal(datatype="xsd:boolean", javaClass=java.lang.Boolean.class, concept="core:Boolean")
+@Literal(datatype="xsd:boolean", javaClass=java.lang.Boolean.class, concept=NS.BOOLEAN)
 public class BooleanValue extends SemanticLiteral implements IParseable {
 
     public Boolean value;
@@ -96,11 +96,6 @@ public class BooleanValue extends SemanticLiteral implements IParseable {
 		return value;
 	}
 
-	@Override
-	public Semantics getSemantics() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Object getObject() {

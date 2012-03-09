@@ -58,7 +58,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.searchengine/lib/PDFBox-0.7.3.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.thinkscape/lib/growl.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.thinkscape/lib/prefuse.jar"/>
-	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.time/lib/joda-time-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/im-boot.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/owlapi-bin.jar" sourcepath="owlapi-src.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/aterm-java-1.6.jar"/>
@@ -427,5 +426,6 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/science/optimization.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/science/ostermillerutils_1_06_00.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/science/ssj.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/joda-time-1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

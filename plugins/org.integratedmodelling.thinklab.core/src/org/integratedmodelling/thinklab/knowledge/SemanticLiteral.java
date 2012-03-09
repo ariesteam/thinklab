@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.Semantics;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
@@ -62,8 +64,12 @@ public abstract class SemanticLiteral implements ISemanticObject {
     }
     
 	@Override
+	public Semantics getSemantics() {
+		return new Semantics(PolyList.list(concept, getObject()), Thinklab.get());
+	}
+    
+	@Override
 	public IConcept getDirectType() {
-		// TODO Auto-generated method stub
 		return concept;
 	}
 

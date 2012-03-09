@@ -271,11 +271,6 @@ public class TimeValue extends SemanticLiteral implements IParseable {
 		
 	}
 
-	@Override
-	public Semantics getSemantics() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Object getObject() {

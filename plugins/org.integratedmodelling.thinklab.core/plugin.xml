@@ -329,6 +329,9 @@
 		</library>	
 		
 		<!-- core -->
+		<library id="time" path="lib/joda-time-1.4.jar" type="code">
+			<export prefix="*"/>
+		</library>
 		<library id="concurrent" path="lib/concurrent-1.3.4.jar" type="code"/>
 		<library id="http" path="lib/http.jar" type="code"/>
 		<library id="icu4j" path="lib/icu4j_3_4.jar" type="code"/>
