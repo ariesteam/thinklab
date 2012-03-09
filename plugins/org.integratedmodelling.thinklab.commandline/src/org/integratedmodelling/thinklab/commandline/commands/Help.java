@@ -21,6 +21,7 @@ package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
@@ -33,7 +34,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 	name="help", description="list commands and their options", 
 	optionalArgumentNames="topic", optionalArgumentDefaultValues="__none", 
 	optionalArgumentDescriptions="command to get help on",
-	optionalArgumentTypes="thinklab-core:Text",
+	optionalArgumentTypes=NS.TEXT,
 	optionArgumentLabels="command")
 public class Help implements ICommandHandler {
 

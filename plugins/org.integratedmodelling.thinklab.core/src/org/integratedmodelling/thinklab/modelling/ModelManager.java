@@ -78,9 +78,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 	private Hashtable<String, IAgentModel> agentsById = new Hashtable<String, IAgentModel>();
 	private Hashtable<String, INamespace> namespacesById = new Hashtable<String, INamespace>();
 	
-	// API source beans for all the model objects
-	private Hashtable<String, Namespace> namespaceBeans = new Hashtable<String, Namespace>();
-
 	class FunctionDescriptor {
 		public FunctionDescriptor(String id, String[] parameterNames,
 				Class<?> cls) {
@@ -267,7 +264,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 				try {
 					ret = new ModelAdapter().createNamespace(namespace);
 					namespacesById.put(namespace.getId(), ret);
-					namespaceBeans.put(namespace.getId(), namespace);
 				} catch (ThinklabException e) {
 					onException(e, 0);
 				}		
@@ -521,6 +517,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 			} catch (MalformedURLException e) {
 				throw new ThinklabIOException(e);
 			}
+			
 			IOntology ontology = KnowledgeManager.get().getKnowledgeRepository().requireOntology(namespaceId);
 			Namespace ns = new Namespace();
 			ns.setId(namespaceId);
@@ -528,7 +525,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 			ns.setTimeStamp(ofile.lastModified());
 			ret = new NamespaceImpl(ns);
 			((NamespaceImpl)ret).setOntology(ontology);
-			
+			namespacesById.put(namespaceId, ret);
 		}
 		
 		return ret;
@@ -590,7 +587,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 		HashSet<File> read = new HashSet<File>();
 		
 		loadInternal(sourcedir, read, ret, null, null);
-
+		
 		return ret;
 	}
 	

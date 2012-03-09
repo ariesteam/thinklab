@@ -68,7 +68,7 @@ public class Classification implements IClassification {
 	
 	/*
 	 * these are recognized as ordinal prefixes. In order for an order to be
-	 * recognized, all concepts must be children of thinklab-core:OrdinalRanking
+	 * recognized, all concepts must be children of thinklab:OrdinalRanking
 	 * and their name must start with one of these prefixes.
 	 */
 	static String[] orderNarrative = { "^No[A-Z].*", "^Not[A-Z].*",

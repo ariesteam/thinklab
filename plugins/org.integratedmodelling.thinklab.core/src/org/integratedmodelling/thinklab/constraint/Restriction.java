@@ -372,8 +372,8 @@ public class Restriction  {
 	private static IOperator retrieveOperator(String op) throws ThinklabException {
 		
 		IOperator ret = null;
-		if (!SemanticType.validate(op))
-			op = "thinklab-core:" + op;
+//		if (!SemanticType.validate(op))
+//			op = "thinklab-core:" + op;
 		
 //		ISemanticObject o = KnowledgeManager.get().retrieveInstance(op);
 //		

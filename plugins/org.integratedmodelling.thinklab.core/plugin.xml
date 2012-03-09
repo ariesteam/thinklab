@@ -5,7 +5,6 @@
 		<library id="core" path="classes/" type="code">
 			<export prefix="*"/>
 		</library>
-		<library id="ontologies" path="ontologies/" type="resources"/>
 		<library id="config" path="config/" type="resources"/>
 		<library id="clj" path="clj/" type="resources"/>
 		<library id="agg_classes" path="lib/agg_V1622_classes.jar" type="code"/>
@@ -74,6 +73,262 @@
 		<library id="zookeeper" path="lib/neo4j/zookeeper-3.3.2.jar" type="code"/>
 		
 		
+		<!-- geotools. TODO: resolve redundancies -->
+		<library id="batik-anim" path="lib/geotools/batik-anim-1.7.jar" type="code"/>
+		<library id="batik-awt-util" path="lib/geotools/batik-awt-util-1.7.jar" type="code"/>
+		<library id="batik-bridge" path="lib/geotools/batik-bridge-1.7.jar" type="code"/>
+		<library id="batik-css" path="lib/geotools/batik-css-1.7.jar" type="code"/>
+		<library id="batik-dom" path="lib/geotools/batik-dom-1.7.jar" type="code"/>
+		<library id="batik-ext" path="lib/geotools/batik-ext-1.7.jar" type="code"/>
+		<library id="batik-gvt" path="lib/geotools/batik-gvt-1.7.jar" type="code"/>
+		<library id="batik-parser" path="lib/geotools/batik-parser-1.7.jar" type="code"/>
+		<library id="batik-script" path="lib/geotools/batik-script-1.7.jar" type="code"/>
+		<library id="batik-svg-dom" path="lib/geotools/batik-svg-dom-1.7.jar" type="code"/>
+		<library id="batik-svggen" path="lib/geotools/batik-svggen-1.7.jar" type="code"/>
+		<library id="batik-transcoder" path="lib/geotools/batik-transcoder-1.7.jar" type="code"/>
+		<library id="batik-util" path="lib/geotools/batik-util-1.7.jar" type="code"/>
+		<library id="batik-xml" path="lib/geotools/batik-xml-1.7.jar" type="code"/>
+		<library id="bufr" path="lib/geotools/bufr-1.1.00.jar" type="code"/>
+		<library id="deegree" path="lib/geotools/deegree2.jar" type="code"/>
+		<library id="ecore" path="lib/geotools/ecore-2.2.2.jar" type="code">
+				<export prefix="*"/>
+		</library>
+		<library id="geoapi" path="lib/geotools/geoapi-2.3-M1.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="geoapi-pending" path="lib/geotools/geoapi-pending-2.3-M1.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gnu-regexp" path="lib/geotools/gnu-regexp-1.1.4.jar" type="code"/>
+		<library id="grib" path="lib/geotools/grib-5.1.03.jar" type="code"/>
+		<library id="gt-api" path="lib/geotools/gt-api-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-arcgrid" path="lib/geotools/gt-arcgrid-2.6.5.jar" type="code"/>
+		<library id="gt2-arcsde" path="lib/geotools/gt-arcsde-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-brewer" path="lib/geotools/gt-brewer-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-charts" path="lib/geotools/gt-charts-2.6.5.jar" type="code"/>		
+		<library id="gt2-coverage" path="lib/geotools/gt-coverage-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-coverage-io" path="lib/geotools/gt-coverage-io-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-coverage-netcdf" path="lib/geotools/gt-coverage-netcdf-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-coveragetools" path="lib/geotools/gt-coveragetools-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-cql" path="lib/geotools/gt-cql-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-data" path="lib/geotools/gt-data-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-db2" path="lib/geotools/gt-db2-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-directory" path="lib/geotools/gt-directory-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-epsg-hsql" path="lib/geotools/gt-epsg-hsql-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-epsg-extension" path="lib/geotools/gt-epsg-extension-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-feature-pregeneralized" path="lib/geotools/gt-feature-pregeneralized-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-geotiff" path="lib/geotools/gt-geotiff-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-gmlparsing" path="lib/geotools/gt-gmlparsing-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="gt2-graph" path="lib/geotools/gt-graph-2.6.5.jar" type="code"/>		
+		<library id="gt2-gtopo30" path="lib/geotools/gt-gtopo30-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-image" path="lib/geotools/gt-image-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-imageio-ext-gdal" path="lib/geotools/gt-imageio-ext-gdal-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-imagemosaic" path="lib/geotools/gt-imagemosaic-2.6.5.jar" type="code"/>
+		<library id="gt2-imagemosaic-JDBC" path="lib/geotools/gt-imagemosaic-jdbc-2.6.5.jar" type="code"/>
+		<library id="gt2-imagepyramid" path="lib/geotools/gt-imagepyramid-2.6.5.jar" type="code"/>
+		<library id="gt2-legacy" path="lib/geotools/gt-legacy-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-jdbc" path="lib/geotools/gt-jdbc-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>		
+		<library id="gt2-main" path="lib/geotools/gt-main-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-mappane" path="lib/geotools/gt-mappane-2.5-SNAPSHOT.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-metadata" path="lib/geotools/gt-metadata-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-postgis" path="lib/geotools/gt-postgis-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-process" path="lib/geotools/gt-process-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-property" path="lib/geotools/gt-property-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-referencing" path="lib/geotools/gt-referencing-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-referencing3D" path="lib/geotools/gt-referencing3D-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-render" path="lib/geotools/gt-render-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-sde-dummy" path="lib/geotools/gt-sde-dummy-2.6.5.jar" type="code"/>
+		<library id="gt2-shapefile" path="lib/geotools/gt-shapefile-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-shapefile-renderer" path="lib/geotools/gt-shapefile-renderer-2.6.5.jar" type="code"/>
+		<library id="gt2-svgsupport" path="lib/geotools/gt-svgsupport-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-temporal" path="lib/geotools/gt-temporal-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-validation" path="lib/geotools/gt-validation-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-wfs" path="lib/geotools/gt-wfs-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-widgets-swing" path="lib/geotools/gt-widgets-swing-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-wms" path="lib/geotools/gt-wms-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-xml" path="lib/geotools/gt-xml-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-core" path="lib/geotools/gt-xsd-core-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-filter" path="lib/geotools/gt-xsd-filter-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-gml2" path="lib/geotools/gt-xsd-gml2-2.6.5.jar" type="code">
+				<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-gml3" path="lib/geotools/gt-xsd-gml3-2.6.5.jar" type="code">
+				<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-kml" path="lib/geotools/gt-xsd-kml-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-ows" path="lib/geotools/gt-xsd-ows-2.6.5.jar" type="code">
+				<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-sld" path="lib/geotools/gt-xsd-sld-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-wcs" path="lib/geotools/gt-xsd-wcs-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-wfs" path="lib/geotools/gt-xsd-wfs-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="gt2-xsd-wps" path="lib/geotools/gt-xsd-wps-2.6.5.jar" type="code"/>
+		<library id="h2" path="lib/geotools/h2-1.1.104.jar" type="code"/>
+		<library id="hsqldb" path="lib/geotools/hsqldb-1.8.0.7.jar" type="code"/>
+		<library id="imageio-ext-arcgrid" path="lib/geotools/imageio-ext-arcgrid-1.0.6-1.jar" type="code"/>
+		<library id="imageio-ext-customstreams" path="lib/geotools/imageio-ext-customstreams-1.0.6-1.jar" type="code"/>
+		<library id="imageio-ext-tiff" path="lib/geotools/imageio-ext-tiff-1.0.6-1.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="imageio-ext-utilities" path="lib/geotools/imageio-ext-utilities-1.0.6-1.jar" type="code"/>
+		<library id="jai-codec" path="lib/geotools/jai_codec-1.1.3.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="jai-core" path="lib/geotools/jai_core.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="jaxb-api" path="lib/geotools/jaxb-api-1.3.jar" type="code"/>
+		<library id="jaxb-impl" path="lib/geotools/jaxb-impl-1.3.jar" type="code"/>
+		<library id="jaxb-libs" path="lib/geotools/jaxb-libs-1.3.jar" type="code"/>
+		<library id="jdom" path="lib/geotools/jdom-1.0.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="jlfgr" path="lib/geotools/jlfgr-1.0.jar" type="code"/>
+		<library id="jsqlparser" path="lib/geotools/jsqlparser-0.3.14.jar" type="code"/>
+		<library id="jsr108" path="lib/geotools/jsr108-0.01.jar" type="code"/>
+		<library id="jts" path="lib/geotools/jts-1.10.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="mysql-connector" path="lib/geotools/mysql-connector-java-5.1.5.jar" type="code"/>
+		<library id="netcdf" path="lib/geotools/netcdf-2.2.20.jar" type="code"/>
+		<library id="picocontainer" path="lib/geotools/picocontainer-1.2.jar" type="code"/>
+		<library id="postgis-driver" path="lib/geotools/postgis-driver-1.0.jar" type="code"/>
+		<library id="slf4j-jdk" path="lib/geotools/slf4j-jdk14-1.4.0.jar" type="code"/>
+		<library id="vecmath" path="lib/geotools/vecmath-1.3.1.jar" type="code"/>
+		<library id="opengis-ows" path="lib/geotools/net.opengis.ows-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="opengis-wcs" path="lib/geotools/net.opengis.wcs-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="opengis-wfs" path="lib/geotools/net.opengis.wfs-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="opengis-wfsv" path="lib/geotools/net.opengis.wfsv-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="opengis-wps" path="lib/geotools/net.opengis.wps-2.6.5.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="xpp3" path="lib/geotools/xpp3-1.1.3.4.O.jar" type="code"/>
+		<library id="xlink" path="lib/geotools/org.w3.xlink-2.6.5.jar" type="code"/>		
+		
+		<!-- science -->
+		<library id="ext" path="lib/science/ext-1.1.1.jar" type="code"/>
+		<library id="flanagan" path="lib/science/flanagan.jar" type="code"/>
+		<library id="javolution" path="lib/science/javolution.jar" type="code"/>
+		<library id="jscience" path="lib/science/jscience.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="jung" path="lib/science/jung-1.7.6.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="ostermillerutils" path="lib/science/ostermillerutils_1_06_00.jar" type="code">
+			<export prefix="*"/>
+		</library>
+		<library id="blas" path="lib/science/Blas.jar" type="code">
+			<export prefix="*"/>
+		</library>	
+		<library id="jcommon" path="lib/science/jcommon-1.0.13.jar" type="code"/>	
+		<library id="colt" path="lib/science/colt.jar" type="code">
+			<export prefix="*"/>
+		</library>	
+		<library id="optimization" path="lib/science/optimization.jar" type="code">
+			<export prefix="*"/>
+		</library>	
+		<library id="ssj" path="lib/science/ssj.jar" type="code">
+			<export prefix="*"/>
+		</library>	
+		
+		<!-- core -->
 		<library id="concurrent" path="lib/concurrent-1.3.4.jar" type="code"/>
 		<library id="http" path="lib/http.jar" type="code"/>
 		<library id="icu4j" path="lib/icu4j_3_4.jar" type="code"/>

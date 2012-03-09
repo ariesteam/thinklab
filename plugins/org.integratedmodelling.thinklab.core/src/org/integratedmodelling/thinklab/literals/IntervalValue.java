@@ -28,6 +28,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
@@ -38,7 +39,7 @@ import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
  * @author Ferdinando Villa
  *
  */
-@Literal(concept="core:NumericInterval", datatype="", javaClass=IntervalValue.class)
+@Literal(concept=NS.NUMERIC_INTERVAL, datatype="", javaClass=IntervalValue.class)
 public class IntervalValue extends SemanticLiteral implements IParseable {
 
 	double lowerBound = 0.0;
@@ -54,7 +55,7 @@ public class IntervalValue extends SemanticLiteral implements IParseable {
 
 	public IntervalValue() {
 		try {
-			setConcept(KnowledgeManager.get().requireConcept("thinklab-core:NumericInterval"));
+			setConcept(KnowledgeManager.get().requireConcept(NS.NUMERIC_INTERVAL));
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}

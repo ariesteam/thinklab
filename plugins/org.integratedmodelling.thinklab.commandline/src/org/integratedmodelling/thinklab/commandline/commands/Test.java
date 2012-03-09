@@ -26,7 +26,7 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 
-@ThinklabCommand(name="test",argumentNames="arg",argumentTypes="thinklab-core:Text", argumentDescriptions="test argument")
+@ThinklabCommand(name="test",argumentNames="arg",argumentTypes="thinklab:Text", argumentDescriptions="test argument")
 public class Test implements ICommandHandler {
 
 	@Override

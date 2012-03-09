@@ -21,13 +21,14 @@ package org.integratedmodelling.thinklab.literals;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.Semantics;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 
-@LiteralImplementation(concept="thinklab-core:Text")
+@LiteralImplementation(concept=NS.TEXT)
 public class TextValue extends SemanticLiteral implements IParseable {
     
     public String value;

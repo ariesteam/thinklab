@@ -59,15 +59,15 @@ import com.vividsolutions.jts.geom.Geometry;
 @ThinklabCommand(
 		name="shapeops",
 		argumentNames="source",
-		argumentTypes="thinklab-core:Text",
+		argumentTypes="thinklab:Text",
 		argumentDescriptions="source of shapes (file)",
 		optionalArgumentNames="arg1",
 		optionalArgumentDefaultValues="__NONE__",
-		optionalArgumentTypes="thinklab-core:Text",
+		optionalArgumentTypes="thinklab:Text",
 		optionalArgumentDescriptions="argument",
 		optionNames="op,s,o,b",
 		optionLongNames="operation,simplify,output,wkb-output",
-		optionTypes="thinklab-core:Text,owl:Nothing,thinklab-core:Text,owl:Nothing",
+		optionTypes="thinklab:Text,owl:Nothing,thinklab:Text,owl:Nothing",
 		optionArgumentLabels="operation,simplify flag,output,wkb output",
 		optionDescriptions="operation to perform,simplify result,save result to shapefile,outputs results in WKB instead of WKT")
 public class ShapeOps implements ICommandHandler {

@@ -36,12 +36,12 @@ import org.integratedmodelling.thinklab.rest.RESTManager;
 @ThinklabCommand(
 		name="rest",
 		argumentNames="cmd",
-		argumentTypes="thinklab-core:Text",
+		argumentTypes="thinklab:Text",
 		argumentDescriptions="command (start|stop|restart|status)",
 		optionNames="p,server",
 		optionLongNames="port,server",
 		optionDescriptions="port,do not return",
-		optionTypes="thinklab-core:Integer,owl:Nothing",
+		optionTypes="thinklab:Integer,owl:Nothing",
 		optionArgumentLabels="port, "
 		)
 public class Rest implements ICommandHandler {

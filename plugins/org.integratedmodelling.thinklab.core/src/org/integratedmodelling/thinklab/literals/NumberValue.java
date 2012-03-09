@@ -22,7 +22,7 @@ package org.integratedmodelling.thinklab.literals;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.Semantics;
-import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
@@ -36,7 +36,7 @@ import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
  * we'd go in C++ to maintain efficiency in number operations.</p>
  * @author Ferdinando Villa
  */
-@LiteralImplementation(concept="thinklab-core:Number")
+@LiteralImplementation(concept=NS.NUMBER)
 public class NumberValue extends SemanticLiteral implements IParseable {	
 	
     public double value;

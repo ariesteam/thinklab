@@ -58,7 +58,7 @@ import org.w3c.dom.Node;
 	name="wfs2opal",
 	argumentNames="server",
 	argumentDescriptions="WFS server URL",
-	argumentTypes="thinklab-core:Text")
+	argumentTypes="thinklab:Text")
 public class WFSToOPAL extends InteractiveSubcommandHandler {
 
 	int nCovs = 0;

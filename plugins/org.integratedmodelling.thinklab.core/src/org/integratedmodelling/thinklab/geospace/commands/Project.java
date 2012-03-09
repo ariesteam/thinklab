@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 		description="project a point from a coordinate system to another",
 		argumentNames="source-srid,destination-srid,x-coordinate,y-coordinate",
 		argumentDescriptions="source EPSG code,destination EPSG code, X coordinate, Y coordinate",
-		argumentTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text,thinklab-core:Text,")
+		argumentTypes="thinklab:Text,thinklab:Text,thinklab:Text,thinklab:Text,")
 public class Project implements ICommandHandler {
 
 	@Override

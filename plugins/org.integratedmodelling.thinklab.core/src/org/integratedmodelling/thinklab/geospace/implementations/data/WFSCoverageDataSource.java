@@ -40,21 +40,21 @@ public class WFSCoverageDataSource extends VectorCoverageDataSource {
 
 		Properties p = new Properties();
 		p.putAll(Thinklab.get().getProperties());
-		ISemanticObject server = i.get(Thinklab.p(NS.GEOSPACE_HAS_0));
-		String covId = i.get(Thinklab.p(NS.GEOSPACE_HAS_1)).toString();
+		ISemanticObject server = i.get(Thinklab.p(NS.GEOSPACE_HAS_SERVICE_URL));
+		String covId = i.get(Thinklab.p(NS.GEOSPACE_HAS_COVERAGE_ID)).toString();
 		if (server != null)
 			p.put(CoverageFactory.WFS_SERVICE_PROPERTY, server.toString());
 		p.put(CoverageFactory.COVERAGE_ID_PROPERTY, covId);
-		ISemanticObject attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_2));
+		ISemanticObject attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_VALUE_ATTRIBUTE));
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, attr.toString());
-		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_3));
+		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_VALUE_TYPE));
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_TYPE_PROPERTY, attr.toString());
-		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_4));
+		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_VALUE_EXPRESSION));
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_EXPRESSION_PROPERTY, attr.toString());
-		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_5));
+		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_VALUE_DEFAULT));
 		if (attr != null)
 			p.put(CoverageFactory.VALUE_DEFAULT_PROPERTY, attr.toString());
 		attr = i.get(Thinklab.p(Geospace.HAS_FILTER_PROPERTY));

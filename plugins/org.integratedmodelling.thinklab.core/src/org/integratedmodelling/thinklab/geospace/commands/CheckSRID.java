@@ -20,6 +20,7 @@
 package org.integratedmodelling.thinklab.geospace.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
@@ -30,7 +31,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 @ThinklabCommand(
 		name="checksrid", 
 		argumentNames="srid", 
-		argumentTypes="thinklab-core:Text", 
+		argumentTypes=NS.TEXT, 
 		argumentDescriptions="SRID code to check (with authority)")
 public class CheckSRID implements ICommandHandler {
 

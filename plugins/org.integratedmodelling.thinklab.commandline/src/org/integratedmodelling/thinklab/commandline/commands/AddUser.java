@@ -34,7 +34,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 		description="add a user to the current authentication manager",
 		argumentNames="user,password",
 		argumentDescriptions="name of new user,password for new user",
-		argumentTypes="thinklab-core:Text,thinklab-core:Text")
+		argumentTypes="thinklab:Text,thinklab:Text")
 public class AddUser implements ICommandHandler {
 
 	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {

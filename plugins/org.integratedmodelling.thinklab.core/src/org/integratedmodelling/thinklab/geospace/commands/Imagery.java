@@ -33,11 +33,11 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 		description="locate a name in the installed gazetteers and produce an image of the earth at that location",
 		optionalArgumentDefaultValues="_",
 		optionalArgumentDescriptions="region to locate",
-		optionalArgumentTypes="thinklab-core:Text",
+		optionalArgumentTypes="thinklab:Text",
 		optionalArgumentNames="location",
 		optionNames="r,d",
 		optionLongNames="resolution,draw-shape",
-		optionTypes="thinklab-core:Integer,owl:Nothing",
+		optionTypes="thinklab:Integer,owl:Nothing",
 		optionDescriptions="linear resolution of widest side of image (default 800),draw the outline of the region",
 		optionArgumentLabels="res, "
 )

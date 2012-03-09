@@ -51,15 +51,15 @@ import org.integratedmodelling.thinklab.kbox.sql.postgres.PostgreSQLServer;
  */
 @ThinklabCommand(name="gazetteer",
 		argumentNames="action",
-		argumentTypes="thinklab-core:Text",
+		argumentTypes="thinklab:Text",
 		argumentDescriptions="action {create|delete|reset|import}",
 		optionalArgumentNames="arg0,arg1,arg2",
 		optionalArgumentDefaultValues="_,_,_",
-		optionalArgumentTypes="thinklab-core:Text,thinklab-core:Text,thinklab-core:Text",
+		optionalArgumentTypes="thinklab:Text,thinklab:Text,thinklab:Text",
 		optionalArgumentDescriptions=" , , ",
 		optionNames="g",
 		optionLongNames="gazetteer",
-		optionTypes="thinklab-core:Text",
+		optionTypes="thinklab:Text",
 		optionDescriptions="name of gazetteer to use (default to personal gazetteer)",
 		optionArgumentLabels="gazetteer"
 )

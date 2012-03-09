@@ -34,11 +34,11 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 		description="locate a name in the installed gazetteers or list known locations",
 		optionalArgumentDefaultValues="_",
 		optionalArgumentDescriptions="region to locate",
-		optionalArgumentTypes="thinklab-core:Text",
+		optionalArgumentTypes="thinklab:Text",
 		optionalArgumentNames="location",
 		optionNames="i,g",
 		optionLongNames="import,gazetteer",
-		optionTypes="thinklab-core:Text,thinklab-core:Text",
+		optionTypes="thinklab:Text,thinklab:Text",
 		optionDescriptions="URL to import from,name of gazetteer to use (default all)",
 		optionArgumentLabels="import,gazetteer"
 )

@@ -39,7 +39,7 @@ import org.java.plugin.PluginLifecycleException;
 @ThinklabCommand(name="pload",description="load the named plugin",
                  argumentNames="plugin", 
                  argumentDescriptions="plugin to load (partial names allowed)", 
-                 argumentTypes="thinklab-core:Text")	
+                 argumentTypes="thinklab:Text")	
 public class PLoad implements ICommandHandler {
 
 	@Override
