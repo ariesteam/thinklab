@@ -30,11 +30,11 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
@@ -443,12 +443,12 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	}
 
 	@Override
-	public Object instantiate(Semantics semantics) throws ThinklabException {
+	public Object instantiate(ISemantics semantics) throws ThinklabException {
 		return KnowledgeManager.KM.instantiate(semantics);
 	}
 
 	@Override
-	public Semantics conceptualize(Object object) throws ThinklabException {
+	public ISemantics conceptualize(Object object) throws ThinklabException {
 		return KnowledgeManager.KM.conceptualize(object);
 	}
 

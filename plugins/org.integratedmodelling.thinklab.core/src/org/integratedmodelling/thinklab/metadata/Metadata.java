@@ -27,7 +27,8 @@ import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 
 /**
- * For now, simply a conceptualizable hash map that knows the DC constants.
+ * For now, simply a conceptualizable hash map that knows the DC constants. Use 
+ * conceptualizable objects for the values, and everything will be OK.
  * 
  * @author Ferd
  *

@@ -40,7 +40,6 @@ import javax.measure.quantity.Duration;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -298,7 +297,7 @@ public class DurationValue extends SemanticLiteral implements IParseable {
 	}
 
 	@Override
-	public boolean is(ISemanticObject object) {
+	public boolean is(Object object) {
 		// TODO Auto-generated method stub
 		return false;
 	}

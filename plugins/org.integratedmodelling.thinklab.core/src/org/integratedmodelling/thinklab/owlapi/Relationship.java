@@ -24,12 +24,12 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.semanticweb.owl.model.OWLIndividual;
 
@@ -128,7 +128,7 @@ public class Relationship  {
 		
 		if (isObject()) {
 		
-			Semantics oo = Thinklab.get().conceptualize(object);
+			ISemantics oo = Thinklab.get().conceptualize(object);
 			alist.add(oo.asList());
 
 		} else if (isLiteral()) {

@@ -104,9 +104,9 @@ public class BooleanValue extends SemanticLiteral implements IParseable {
 	}
 
 	@Override
-	public boolean is(ISemanticObject object) {
+	public boolean is(Object object) {
 		// TODO Auto-generated method stub
-		return concept.is(object.getDirectType()) && value.equals(object.asBoolean());
+		return false; // concept.is(object.getDirectType()) && value.equals(object.asBoolean());
 	}
 
 	@Override

@@ -20,10 +20,10 @@
 package org.integratedmodelling.thinklab.commandline.commands;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -37,15 +37,19 @@ public class Test implements ICommandHandler {
 	public ISemanticObject execute(Command command, ISession session)
 			throws ThinklabException {
 		
+		Metadata metadue = new Metadata();
+		metadue.put(Metadata.DC_COMMENT, "Diopungolo");
+
 		Metadata metadata = new Metadata();
 		metadata.put(Metadata.DC_COMMENT, "Stocazzo");
 		metadata.put(Metadata.DC_CONTRIBUTOR, "Piccione");
+		metadata.put(Metadata.DC_COVERAGE_SPATIAL, metadue);
 		
 		ISemanticObject o = Thinklab.get().annotate(metadata);
 		
-		Semantics semantics = o.getSemantics();
+		ISemantics semantics = o.getSemantics();
 		
-		for (Semantics rel : semantics.getRelationships()) {
+		for (ISemantics rel : semantics.getRelationships()) {
 			System.out.println(rel);
 		}
 		

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
@@ -74,8 +73,9 @@ public abstract class SemanticLiteral implements ISemanticObject {
 	}
 
 	@Override
-	public boolean is(IConcept concept) {
-		return this.concept.is(concept);
+	public boolean is(Object concept) {
+		
+		return false; // this.concept.is(concept);
 	}
 
 	@Override

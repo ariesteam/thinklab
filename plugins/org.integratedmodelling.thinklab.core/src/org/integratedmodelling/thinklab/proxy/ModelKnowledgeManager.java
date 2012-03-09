@@ -20,11 +20,11 @@
 package org.integratedmodelling.thinklab.proxy;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 
@@ -83,12 +83,12 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public Semantics conceptualize(Object object) throws ThinklabException {
+	public ISemantics conceptualize(Object object) throws ThinklabException {
 		return KnowledgeManager.get().conceptualize(object);
 	}
 
 	@Override
-	public Object instantiate(Semantics a) throws ThinklabException {
+	public Object instantiate(ISemantics a) throws ThinklabException {
 		return KnowledgeManager.get().instantiate(a);
 	}
 

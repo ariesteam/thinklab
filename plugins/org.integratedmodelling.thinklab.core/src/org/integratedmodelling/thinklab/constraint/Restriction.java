@@ -28,12 +28,12 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -591,7 +591,7 @@ public class Restriction  {
 		return PolyList.fromArray(ret.toArray());
 	}
 	
-	private boolean matchConnector(Semantics c) throws ThinklabException {
+	private boolean matchConnector(ISemantics c) throws ThinklabException {
 		
 		boolean ret = false;
 		
@@ -619,13 +619,13 @@ public class Restriction  {
     	return ret;
 	}
 	
-	private boolean matchRelationships(Semantics c) throws ThinklabException {
+	private boolean matchRelationships(ISemantics c) throws ThinklabException {
 		
 		boolean ret = false;
         int tot = 0;
         int match = 0;
         
-        for (Semantics ipc : c.getRelationships(property)) {
+        for (ISemantics ipc : c.getRelationships(property)) {
 
         	tot ++;
 
@@ -690,7 +690,7 @@ public class Restriction  {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.Restriction#match(org.integratedmodelling.thinklab.api.knowledge.IInstance)
 	 */
-	public boolean match(Semantics ilist) throws ThinklabException {
+	public boolean match(ISemantics ilist) throws ThinklabException {
 
 		boolean ok = false;
 		if (isConnector()) {

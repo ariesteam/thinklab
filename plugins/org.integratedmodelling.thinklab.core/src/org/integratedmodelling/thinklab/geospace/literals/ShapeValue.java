@@ -24,11 +24,9 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -59,7 +57,7 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
  *
  */
 @Literal(concept="geospace:SpatialRecord", datatype="", javaClass=Geometry.class)
-public class ShapeValue extends SemanticLiteral implements IParseable, ITopologicallyComparable {
+public class ShapeValue extends SemanticLiteral implements IParseable, ITopologicallyComparable<ShapeValue> {
 
 	Geometry shape = null;
 	PrecisionModel precisionModel = null;
@@ -469,10 +467,8 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		return transform(Geospace.get().getMetersCRS());
 	}
 
-//	@Override
-	public boolean contains(ITopologicallyComparable o)
-			throws ThinklabException {
-
+	@Override
+	public boolean contains(ShapeValue o) throws ThinklabException {
 		if (! (o instanceof ShapeValue))
 			throw new ThinklabValidationException(
 					"shapes can only be topologically compared with other shapes");
@@ -480,18 +476,8 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		return shape.contains(((ShapeValue)o).transform(crs).shape);
 	}
 
-	public boolean intersects(ITopologicallyComparable<ShapeValue> o)
-			throws ThinklabException {
-
-		if (! (o instanceof ShapeValue))
-			throw new ThinklabValidationException(
-					"shapes can only be topologically compared with other shapes");
-		return shape.intersects(((ShapeValue)o).transform(crs).shape);
-	}
-
-	public boolean overlaps(ITopologicallyComparable<ShapeValue> o)
-			throws ThinklabException {
-
+	@Override
+	public boolean overlaps(ShapeValue o) throws ThinklabException {
 		if (! (o instanceof ShapeValue))
 			throw new ThinklabValidationException(
 					"shapes can only be topologically compared with other shapes");
@@ -500,21 +486,11 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 	}
 
 	@Override
-	public boolean contains(Object o) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean overlaps(Object o) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean intersects(Object o) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean intersects(ShapeValue o) throws ThinklabException {
+		if (! (o instanceof ShapeValue))
+			throw new ThinklabValidationException(
+					"shapes can only be topologically compared with other shapes");
+		return shape.intersects(((ShapeValue)o).transform(crs).shape);
 	}
 
 	public void wrap(Object o) {
@@ -529,7 +505,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 	}
 
 	@Override
-	public boolean is(ISemanticObject object) {
+	public boolean is(Object object) {
 		// TODO Auto-generated method stub
 		return false;
 	}

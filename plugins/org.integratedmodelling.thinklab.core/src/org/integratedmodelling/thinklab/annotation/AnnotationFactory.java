@@ -1,5 +1,6 @@
 package org.integratedmodelling.thinklab.annotation;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -15,18 +16,20 @@ import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.annotation.utils.SKeyValue;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.knowledge.SemanticObject;
+import org.integratedmodelling.thinklab.knowledge.Semantics;
 
 /**
  * Class doing the hard work of instantiation and conceptualization from class
@@ -52,7 +55,7 @@ public class AnnotationFactory {
 	 * -----------------------------------------------------------------------------
 	 */
 	
-	public Semantics conceptualize(Object o) throws ThinklabException {
+	public ISemantics conceptualize(Object o) throws ThinklabException {
 
 		if (o instanceof IConceptualizable) {
 			return ((IConceptualizable) o).conceptualize();
@@ -62,13 +65,16 @@ public class AnnotationFactory {
 		
 		/*
 		 * first check if it can be stored as a literal
+		 * FIXME it would be nice to not do this treatment to save some of the thinklab-api
+		 * types, but at the moment I don't know how to.
 		 */
 		if (o instanceof Pair<?,?>) {
 			
 			return new Semantics(
 					PolyList.list(
 						Thinklab.c(NS.PAIR),
-						PolyList.list(Thinklab.p(NS.HAS_FIRST_FIELD), conceptualize(((Pair<?,?>)o).getFirst()).asList()),
+						PolyList.list(Thinklab.p(NS.HAS_FIRST_FIELD), 
+								conceptualize(((Pair<?,?>)o).getFirst()).asList()),
 						PolyList.list(Thinklab.p(NS.HAS_SECOND_FIELD), conceptualize(((Pair<?,?>)o).getSecond()).asList())),
 					Thinklab.get());
 			
@@ -128,7 +134,7 @@ public class AnnotationFactory {
 					}
 					for (Object v : getAllInstances(value)) {
 							
-						Semantics semantics = conceptualize(v);
+						ISemantics semantics = conceptualize(v);
 						if (semantics == null) {
 							throw new ThinklabValidationException("cannot conceptualize field " + f.getName() + " of object " + o);
 						}
@@ -159,15 +165,26 @@ public class AnnotationFactory {
 		return ret;
 	}
 
-	public Object instantiate(Semantics annotation) throws ThinklabException {
+	@SuppressWarnings("unchecked")
+	public Object instantiate(ISemantics annotation) throws ThinklabException {
 	
 		Object ret = null;
+		
+		/*
+		 * check first if it's just a literal we're instantiating. If so, we
+		 * have it already, and the way Semantics works it should be already
+		 * in the right form.
+		 */
+		Class<?> cls = _annotatedLiteralClass.get(annotation.getConcept());
+		if (cls != null) {
+			return annotation.getTargetLiteral();
+		}
 		
 		/*
 		 * find class. If an IConceptualizable, create object, call instantiate() and
 		 * return it.
 		 */
-		Class<?> cls = _concept2class.get(annotation.getConcept());
+		cls = _concept2class.get(annotation.getConcept());
 		
 		if (cls == null)
 			return null;
@@ -203,7 +220,7 @@ public class AnnotationFactory {
 			return null;
 		
 		/*
-		 * TODO find all fields with property annotations and process the content of the 
+		 * find all fields with property annotations and process the content of the 
 		 * semantic annotation.
 		 */
 		for (Field f : cls.getFields()) {
@@ -211,10 +228,70 @@ public class AnnotationFactory {
 
 				Property pann = f.getAnnotation(Property.class);
 				IProperty p = Thinklab.get().getProperty(pann.value());
+				int rcount = annotation.getRelationshipsCount(p);
 				
-				for (Semantics r : annotation.getRelationships(p)) {
+				if (rcount == 0)
+					continue;
+				/*
+				 * if object is a collection to fill in, see if the constructor
+				 * created it, and if not, create it. If any of the following three
+				 * isn't null, that's what we add the target to. Otherwise we set the field
+				 * to the target.
+				 */
+				Map<?,?> map = null;
+				Collection<?> collection = null;
+				Object[] array = null;
+				boolean mustSet = false;
+				
+				try {
+					if (Map.class.isAssignableFrom(f.getType())) {
+						map = (Map<?, ?>) f.getType().newInstance();
+						mustSet = true;
+					} else if (Collection.class.isAssignableFrom(f.getType())) {
+						collection = (Collection<?>) f.getType().newInstance();
+						mustSet = true;
+					} else if (f.getType().isArray()) {
+						array = (Object[]) Array.newInstance(f.getType().getComponentType(), rcount);
+						mustSet = true;
+					}
+				} catch (Exception e) {
+					throw new ThinklabInternalErrorException(e);
+				}
+
+				int n = 0;
+				for (ISemantics r : annotation.getRelationships(p)) {
+
+					ISemanticObject tg = r.getTarget();
+					Object obj = tg.getObject();					
+					try {
+						if (map != null && obj instanceof SKeyValue) {
+							((Map<Object,Object>)map).put(((SKeyValue)obj).key, ((SKeyValue)obj).value);
+						} else if (collection != null) {
+							((Collection<Object>)collection).add(obj);
+						} else if (array != null) {
+							array[n] = obj;
+						} else {
+							f.set(ret, obj);
+						}
+					} catch (Exception e) {
+						throw new ThinklabInternalErrorException(e);
+					}
 					
-					System.out.println("trying to attribute " + r.getTarget() + " to field " + f.getName());
+					n++;
+				}
+				
+				if (mustSet) {
+					try {
+						if (map != null) {
+							f.set(ret, map);
+						} else if (collection != null) {
+							f.set(ret, collection);
+						} else if (array != null) {
+							f.set(ret, array);
+						}
+					} catch (Exception e) {
+						throw new ThinklabInternalErrorException(e);
+					}
 				}
 			}
 		}
@@ -276,9 +353,12 @@ public class AnnotationFactory {
 
 		if (object instanceof ISemanticObject)
 			return (ISemanticObject)object;
+		
+		if (object instanceof ISemantics)
+			return new SemanticObject((ISemantics)object, null);
 
 		ISemanticObject ret = null;
-		Semantics semantics = conceptualize(object);
+		ISemantics semantics = conceptualize(object);
 		if (semantics != null) {
 			ret = new SemanticObject(semantics, object);
 		}

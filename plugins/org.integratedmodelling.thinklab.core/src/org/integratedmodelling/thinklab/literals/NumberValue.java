@@ -103,7 +103,7 @@ public class NumberValue extends SemanticLiteral implements IParseable {
 	}
 
 	@Override
-	public boolean is(ISemanticObject object) {
+	public boolean is(Object object) {
 		// TODO Auto-generated method stub
 		return false;
 	}

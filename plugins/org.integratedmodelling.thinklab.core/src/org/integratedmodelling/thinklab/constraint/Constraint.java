@@ -25,12 +25,12 @@ import java.util.Collection;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
-import org.integratedmodelling.lang.Semantics;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
@@ -425,7 +425,7 @@ public class Constraint implements IQuery {
     @Override
 	public boolean match(Object i) throws ThinklabException {
         
-    	Semantics ilist = Thinklab.get().conceptualize(i);
+    	ISemantics ilist = Thinklab.get().conceptualize(i);
     	
     	boolean ok = concept.is(ilist.getConcept());
     	
