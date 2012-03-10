@@ -49,7 +49,7 @@
 		</library>
 		
 		<!-- neo4j support -->
-		<library id="geronimo-jta" path="lib/neo4j/geronimo-jta_1.1_spec.jar" type="code"/>
+		<library id="geronimo-jta" path="lib/neo4j/geronimo-jta_1.1_spec-1.1.1.jar" type="code"/>
 		<library id="lucene-core" path="lib/neo4j/lucene-core-3.5.0.jar" type="code"/>
 		<library id="neo4j-backup" path="lib/neo4j/neo4j-backup-1.6.jar" type="code"/>
 		<library id="neo4j-com" path="lib/neo4j/neo4j-com-1.6.jar" type="code"/>

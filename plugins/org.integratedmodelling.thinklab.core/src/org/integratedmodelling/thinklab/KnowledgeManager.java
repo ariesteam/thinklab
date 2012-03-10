@@ -20,6 +20,7 @@
 package org.integratedmodelling.thinklab;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +29,7 @@ import java.util.Iterator;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
@@ -163,13 +165,19 @@ public class KnowledgeManager implements IKnowledgeManager {
 	@Override
 	public IKbox createKbox(String uri) throws ThinklabException {
 
+		IKbox ret = null;
 		if (!uri.contains("://")) {
 			File kf = new File(Thinklab.get().getScratchPath() + File.separator + "kbox" + File.separator + uri);
 			kf.mkdirs();
-			return new NeoKBox(kf.toString());
+			try {
+				ret = new NeoKBox(kf.toURI().toURL().toString());
+				_kboxes.put(uri, ret);
+			} catch (MalformedURLException e) {
+				throw new ThinklabInternalErrorException(e);
+			}
 		}
 		
-		return null;
+		return ret;
 	}
 
 	@Override

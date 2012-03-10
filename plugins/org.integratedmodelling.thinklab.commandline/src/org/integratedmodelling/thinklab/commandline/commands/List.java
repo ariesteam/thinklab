@@ -122,7 +122,7 @@ public class List implements ICommandHandler {
 
 		outputWriter.getOutputStream().println("Listing contents of kBox " + kbname);
 		
-		java.util.List<Object> result = kbox.query(null);
+		java.util.List<ISemanticObject> result = kbox.query(null);
 
 		if (result.size() > 0) {
 

@@ -129,6 +129,76 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Coincidence -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Coincidence">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#TopologicalComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Comparison -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Comparison"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Conformance -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Conformance">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IdentityComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Connection -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Connection">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#TopologicalComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#TopologicalComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Contains -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Contains">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Disjunction -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Disjunction">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#TopologicalComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Equal -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Equal">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Equality -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Equality">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IdentityComparison"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#FloatingPoint -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#FloatingPoint">
@@ -137,10 +207,50 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterEqual -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterEqual">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterThan -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterThan">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Identity -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Identity">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IdentityComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IdentityComparison -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IdentityComparison">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Comparison"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Integer -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Integer">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Number"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Intersection -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Intersection">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#TopologicalComparison"/>
     </owl:Class>
     
 
@@ -158,6 +268,22 @@
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#KeyValuePair">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Tuple"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Like -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Like">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Comparison"/>
     </owl:Class>
     
 
@@ -182,6 +308,22 @@
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LongInteger">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Integer"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LowerEqual -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LowerEqual">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LowerThan -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LowerThan">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
     </owl:Class>
     
 
@@ -257,6 +399,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#SoundLike -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#SoundLike">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType">
@@ -266,10 +416,34 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Subsumption -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Subsumption">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IdentityComparison"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Tangency -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Tangency">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#TopologicalComparison"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Text -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Text">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#TopologicalComparison -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#TopologicalComparison">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Comparison"/>
     </owl:Class>
     
 

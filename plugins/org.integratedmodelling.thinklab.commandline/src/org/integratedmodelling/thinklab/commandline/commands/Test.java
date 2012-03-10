@@ -25,6 +25,7 @@ import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
@@ -51,6 +52,11 @@ public class Test implements ICommandHandler {
 		session.print(PolyList.prettyPrint(semantics.asList()));
 		session.print("\n" + porco);
 
+		IKbox kbox = Thinklab.get().requireKbox("thinklab");
+		if (kbox != null) {
+			kbox.store(o);
+		}
+		
 		ISemanticObject quaranta = Thinklab.get().annotate(40);
 		session.print(PolyList.prettyPrint(quaranta.getSemantics().asList()));
 		

@@ -5,8 +5,15 @@ import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 public class NeoKBox implements IKbox {
@@ -35,9 +42,56 @@ public class NeoKBox implements IKbox {
 	@Override
 	public long store(Object o) throws ThinklabException {
 
-		return -1l;
-//		SemanticAnnotation instance = Thinklab.get().conceptualize(o);		
-//		return storeInstanceList(instance, _db.getReferenceNode());
+		long ret = -1;
+		ISemanticObject instance = Thinklab.get().annotate(o);		
+		Transaction tx = _db.beginTx();
+		try {
+			ret = storeInstanceInternal(instance.getSemantics(), _db.getReferenceNode(), null).getId();
+		} finally {
+			tx.finish();
+		}
+		return ret;
+	}
+
+	private Node storeInstanceInternal(ISemantics instance, Node referenceNode, final IProperty property) {
+
+		Node node = _db.createNode();
+		
+		if (property != null) {
+			/*
+			 * create relationship
+			 */
+			referenceNode.createRelationshipTo(node, new RelationshipType() {
+				@Override
+				public String name() {
+					return property.toString();
+				}
+			});
+		}
+		
+		for (ISemantics s : instance.getRelationships()) {
+			if (s.isLiteral()) {
+				storeProperty(node, s);
+			} else {
+				storeObject(node, s);
+			}
+		}
+		
+		return node;
+	}
+
+	private void storeProperty(Node node, ISemantics s) {
+
+		IProperty p = s.getProperty();
+		node.setProperty(p.toString(), translateLiteral(s.getTargetLiteral()));
+	}
+
+	private Object translateLiteral(Object literal) {
+		return literal;
+	}
+
+	private void storeObject(Node node, ISemantics s) {
+		storeInstanceInternal(s.getTargetSemantics(), node, s.getProperty());
 	}
 
 	@Override
@@ -53,7 +107,7 @@ public class NeoKBox implements IKbox {
 	}
 
 	@Override
-	public List<Object> query(IQuery query) throws ThinklabException {
+	public List<ISemanticObject> query(IQuery query) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -75,16 +129,11 @@ public class NeoKBox implements IKbox {
 	}
 
 	@Override
-	public Object retrieve(long id) throws ThinklabException {
+	public ISemanticObject retrieve(long id) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public Object retrieve(long id, int flags) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void removeAll(IQuery query) {
@@ -92,9 +141,4 @@ public class NeoKBox implements IKbox {
 		
 	}
 
-	@Override
-	public List<Object> query(IQuery query, int flags) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
