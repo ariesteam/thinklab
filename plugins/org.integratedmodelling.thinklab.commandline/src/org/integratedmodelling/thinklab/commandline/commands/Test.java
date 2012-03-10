@@ -19,6 +19,7 @@
  */
 package org.integratedmodelling.thinklab.commandline.commands;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -36,28 +37,24 @@ public class Test implements ICommandHandler {
 	@Override
 	public ISemanticObject execute(Command command, ISession session)
 			throws ThinklabException {
-		
-		Metadata metadue = new Metadata();
-		metadue.put(Metadata.DC_COMMENT, "Diopungolo");
-
+				
 		Metadata metadata = new Metadata();
+		metadata.put(Metadata.DC_COVERAGE_SPATIAL, new Pair<String,String>("cazzo","bestia"));
 		metadata.put(Metadata.DC_COMMENT, "Stocazzo");
 		metadata.put(Metadata.DC_CONTRIBUTOR, "Piccione");
-		metadata.put(Metadata.DC_COVERAGE_SPATIAL, metadue);
 		
 		ISemanticObject o = Thinklab.get().annotate(metadata);
 		
-		ISemantics semantics = o.getSemantics();
-		
-		for (ISemantics rel : semantics.getRelationships()) {
-			System.out.println(rel);
-		}
-		
+		ISemantics semantics = o.getSemantics();		
 		Object porco = Thinklab.get().instantiate(semantics);
 		
 		session.print(PolyList.prettyPrint(semantics.asList()));
 		session.print("\n" + porco);
+
+		ISemanticObject quaranta = Thinklab.get().annotate(40);
+		session.print(PolyList.prettyPrint(quaranta.getSemantics().asList()));
 		
+
 		return o;
 	}
 

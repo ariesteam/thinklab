@@ -22,6 +22,7 @@ package org.integratedmodelling.thinklab.modelling.classification;
 import java.util.HashMap;
 import java.util.Vector;
 
+import org.integratedmodelling.collections.NumericInterval;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
@@ -29,7 +30,6 @@ import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
-import org.integratedmodelling.thinklab.literals.IntervalValue;
 
 /**
  * A powerful classifier of objects meant to be defined from a Clojure classification model.
@@ -40,7 +40,7 @@ public class Classifier implements IClassifier {
 
 	Vector<Classifier> classifiers = null;
 	Double number = null;
-	IntervalValue interval = null;
+	NumericInterval interval = null;
 	IConcept concept = null;
 	String string = null;
 	private IExpression closure = null;
@@ -73,7 +73,7 @@ public class Classifier implements IClassifier {
 		if (selector.equals("num:")) {
 			number = Double.parseDouble(def);
 		} else if (selector.equals("int:")) {
-			interval = new IntervalValue(def);
+			interval = new NumericInterval(def);
 		} else if (selector.equals("con:")) {
 			concept = KnowledgeManager.get().requireConcept(def);
 		} else if (selector.equals("mul:")) {
@@ -220,7 +220,7 @@ public class Classifier implements IClassifier {
 			concept = c;
 	}
 
-	public void setInterval(IntervalValue interval) {
+	public void setInterval(NumericInterval interval) {
 		this.interval = interval;
 	}
 
@@ -268,7 +268,7 @@ public class Classifier implements IClassifier {
 		return interval != null;
 	}
 
-	public IntervalValue getInterval() {
+	public NumericInterval getInterval() {
 		return interval;
 	}
 

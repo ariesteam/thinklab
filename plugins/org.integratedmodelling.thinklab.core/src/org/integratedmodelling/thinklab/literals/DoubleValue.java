@@ -23,55 +23,50 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 
 /**
  * @author Ferdinando Villa
  */
-@LiteralImplementation(concept=NS.NUMBER)
-public class NumberValue extends SemanticLiteral implements IParseable {	
+@Literal(datatype="xsd:double", javaClass=Double.class, concept=NS.DOUBLE)
+public class DoubleValue extends SemanticLiteral implements IParseable {	
 	
-    public double value;
+   public double value;
     
-   public NumberValue() {
-      super(Thinklab.NUMBER);
-      value = 0.0;
+   public DoubleValue() {
+      super(Thinklab.DOUBLE);
+      value = 0;
    }
     
-   public NumberValue(int i) {        
-       super(Thinklab.NUMBER);
+   public DoubleValue(int i) {        
+       super(Thinklab.DOUBLE);
        value = i;
    }
    
-   public NumberValue(double d) {
+   public DoubleValue(double d) {
        super(Thinklab.DOUBLE);
        value = d;
    }
 
-    public NumberValue(float f) {
-        super(Thinklab.FLOAT);
+    public DoubleValue(float f) {
+        super(Thinklab.DOUBLE);
         value = f;
     }
-        
-    public void wrap(Object o) {
-    	value = ((Number)o).doubleValue();
-    }
-    
+            
     /**
      * The Number concept manager will validate units and numbers when numbers are read from a string.
      * @param s
      * @throws ThinklabValidationException
      * @throws ThinklabNoKMException
      */
-    public NumberValue(String s) throws ThinklabException {
+    public DoubleValue(String s) throws ThinklabException {
         parse(s);
     }
     
-    public NumberValue (long l) {
-        super(Thinklab.LONG);
+    public DoubleValue (long l) {
+        super(Thinklab.DOUBLE);
         value = l;
     }
     
@@ -84,7 +79,7 @@ public class NumberValue extends SemanticLiteral implements IParseable {
 		} catch (Exception e) {
 	 		throw new ThinklabValidationException("validation of number " + s + " failed");
 	 	 }
-		concept = Thinklab.NUMBER;
+		concept = Thinklab.DOUBLE;
 		value   = v;
     }
 
@@ -92,26 +87,19 @@ public class NumberValue extends SemanticLiteral implements IParseable {
         return ""+value;
     }
 
-	public void assign(double d) {
-		value = d;
-	}
-
 	@Override
 	public Object getObject() {
-		// TODO Auto-generated method stub
-		return null;
+		return value;
 	}
 
 	@Override
 	public boolean is(Object object) {
-		// TODO Auto-generated method stub
-		return false;
+		return (object instanceof Number) && new Double(((Number)object).doubleValue()).equals(value);
 	}
 
 	@Override
 	public String asText() {
-		// TODO Auto-generated method stub
-		return null;
+		return asString();
 	}
 
 }

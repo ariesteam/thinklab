@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.integratedmodelling.collections.NumericInterval;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
@@ -37,7 +38,6 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
-import org.integratedmodelling.thinklab.literals.IntervalValue;
 
 /**
  * Reference implementation for IClassification. Also holds the global catalog of user-defined
@@ -192,7 +192,7 @@ public class Classification implements IClassification {
 		for (Classifier c : cls) {
 			if (!c.isInterval())
 				return null;
-			IntervalValue iv = c.getInterval();
+			NumericInterval iv = c.getInterval();
 			IConcept concept = classes == null ? null : classes.get(i++);
 			double d1 = iv.isLeftInfinite() ? Double.NEGATIVE_INFINITY : iv
 					.getMinimumValue();

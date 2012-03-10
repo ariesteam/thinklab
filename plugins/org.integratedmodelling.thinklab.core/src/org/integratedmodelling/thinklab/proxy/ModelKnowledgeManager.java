@@ -92,5 +92,11 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 		return KnowledgeManager.get().instantiate(a);
 	}
 
+	@Override
+	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

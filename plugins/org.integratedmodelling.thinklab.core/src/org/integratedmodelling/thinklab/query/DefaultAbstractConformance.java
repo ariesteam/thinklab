@@ -1,3 +1,4 @@
+package org.integratedmodelling.thinklab.query;
 ///**
 // * Copyright 2011 The ARIES Consortium (http://www.ariesonline.org) and
 // * www.integratedmodelling.org. 

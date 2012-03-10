@@ -19,8 +19,6 @@
  */
 package org.integratedmodelling.thinklab.modelling;
 
-import java.util.List;
-
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.AgentModel;
@@ -33,19 +31,15 @@ import org.integratedmodelling.lang.model.Observer;
 import org.integratedmodelling.lang.model.Scenario;
 import org.integratedmodelling.lang.model.Storyline;
 import org.integratedmodelling.thinklab.KnowledgeManager;
-import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
-import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
-import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.project.IProject;
-import org.integratedmodelling.thinklab.constraint.Constraint;
 import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 
 /**

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.integratedmodelling.collections.Pair;
@@ -30,6 +31,8 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.knowledge.SemanticObject;
 import org.integratedmodelling.thinklab.knowledge.Semantics;
+import org.integratedmodelling.utils.CamelCase;
+import org.integratedmodelling.utils.StringUtils;
 
 /**
  * Class doing the hard work of instantiation and conceptualization from class
@@ -49,6 +52,121 @@ public class AnnotationFactory {
 	HashMap<String, Class<?>> _annotatedLiteralDatatype =
 			new HashMap<String, Class<?>>();
 
+
+	/**
+	 * Assignable fields have 
+	 * @param cls
+	 * @return
+	 */
+	private Collection<Pair<Field, IProperty>> getAssignableFields(Class<?> cls) {
+		return getAssignableFieldsInternal(cls, new ArrayList<Pair<Field,IProperty>>());
+	}
+
+
+	private IProperty getPropertyFromFieldName(Field f, IConcept main) {
+
+		String name = f.getName();
+		Class<?> ptype = f.getClass();
+
+		boolean multiple =
+				ptype.isArray() ||
+				Map.class.isAssignableFrom(ptype) ||
+				Collection.class.isAssignableFrom(ptype);
+		
+		while (name.startsWith("_"))
+			name = name.substring(1);
+		
+		if (multiple && name.endsWith("s")) {
+			name = StringUtils.chomp(name, "s");
+		}
+		
+		name = CamelCase.toUpperCamelCase(name, '_');
+		
+		/* determine if the primitive type is boolean */
+		boolean isBoolean = 
+				ptype.equals(Boolean.class) || ptype.getName().equals("boolean");
+		
+		if (!isBoolean && multiple) {
+			if (ptype.isArray()) {
+				isBoolean = 
+						ptype.getComponentType().equals(Boolean.class) || 
+						ptype.getComponentType().getName().equals("boolean");
+			} else if (Map.class.isAssignableFrom(ptype)) {
+				isBoolean = 
+						ptype.getTypeParameters()[1].equals(Boolean.class);				
+			} else if (Collection.class.isAssignableFrom(ptype)) {
+				isBoolean = 
+						ptype.getTypeParameters()[0].equals(Boolean.class);
+			}
+		}
+		
+		name =  isBoolean ? ("is" + name) : ("has" + name);
+		
+		return Thinklab.get().getProperty(main.getConceptSpace() + ":" + name);
+	}
+
+	/*
+	 * Collect fields we can use from the class to annotate. Rules are:
+	 * 1. the class (or superclass) must be registered with the 
+	 *    annotation factory, either directly or through a @Concept annotation;
+	 * 2. if the class has one or more @Property field annotations, we only check fields 
+	 *     that have it; otherwise all fields are game.
+	 * 3. If we use non-annotated fields, their name must map to an existing
+	 *    property in the namespace of the concept mapped to the class they're defined in.
+	 * 4. Property names are obtained by removing any leading underscores, capitalizing
+	 *    the first letter and prefixing the resulting string with "is" for boolean
+	 *    fields and "has" for all others. If the field points to a collection or
+	 *    map, a trailing "s" is also removed to make the property a singular. If the
+	 *    string contains underscores, those are removed and the segments between 
+	 *    underscores are capitalized to a nice camelcase syntax, more typical of
+	 *    OWL properties.
+	 */
+	private Collection<Pair<Field,IProperty>> getAssignableFieldsInternal(Class<?> cls, List<Pair<Field, IProperty>> ret) {
+
+		/*
+		 * eventually we get passed null as a superclass.
+		 */
+		if (cls == null)
+			return ret;
+		
+		/*
+		 * scan parents first. This is done even if our own type isn't registered.
+		 */
+		getAssignableFieldsInternal(cls.getSuperclass(), ret);
+		
+		/* no fun if we are not registered. */
+		IConcept main = _class2concept.get(cls);
+		if (main == null)
+			return ret;
+		
+		boolean useAnnotation = false;
+		for (Field f : cls.getDeclaredFields()) {
+			if (f.isAnnotationPresent(Property.class)) {
+				useAnnotation = true;
+				break;
+			}
+		}
+		
+		/*
+		 * now go collect them
+		 */
+		for (Field f : cls.getDeclaredFields()) {
+
+			IProperty p = null; 
+			if (useAnnotation && f.isAnnotationPresent(Property.class)) {
+				p = Thinklab.p(f.getAnnotation(Property.class).value());
+			} else {
+				p = getPropertyFromFieldName(f, main);
+			}
+			
+			if (p != null) {
+				ret.add(new Pair<Field, IProperty>(f,p));
+			}
+		}
+		
+		return ret;
+	}
+
 	/*
 	 * -----------------------------------------------------------------------------
 	 * the actually useful methods
@@ -61,34 +179,12 @@ public class AnnotationFactory {
 			return ((IConceptualizable) o).conceptualize();
 		}
 
-		Class<?> cls = null;
-		
 		/*
 		 * first check if it can be stored as a literal
 		 * FIXME it would be nice to not do this treatment to save some of the thinklab-api
 		 * types, but at the moment I don't know how to.
 		 */
-		if (o instanceof Pair<?,?>) {
-			
-			return new Semantics(
-					PolyList.list(
-						Thinklab.c(NS.PAIR),
-						PolyList.list(Thinklab.p(NS.HAS_FIRST_FIELD), 
-								conceptualize(((Pair<?,?>)o).getFirst()).asList()),
-						PolyList.list(Thinklab.p(NS.HAS_SECOND_FIELD), conceptualize(((Pair<?,?>)o).getSecond()).asList())),
-					Thinklab.get());
-			
-		} else if (o instanceof Triple<?,?,?>) {
-			
-			return new Semantics(
-					PolyList.list(
-						Thinklab.c(NS.TRIPLE),
-						PolyList.list(Thinklab.p(NS.HAS_FIRST_FIELD), conceptualize(((Triple<?,?,?>)o).getFirst()).asList()),
-						PolyList.list(Thinklab.p(NS.HAS_SECOND_FIELD), conceptualize(((Triple<?,?,?>)o).getSecond()).asList()),
-						PolyList.list(Thinklab.p(NS.HAS_THIRD_FIELD), conceptualize(((Triple<?,?,?>)o).getThird()).asList())),
-					Thinklab.get());
-			
-		} else if (o instanceof Map.Entry<?,?>) {
+		if (o instanceof Map.Entry<?,?>) {
 			
 			return new Semantics(
 					PolyList.list(
@@ -96,17 +192,16 @@ public class AnnotationFactory {
 						PolyList.list(Thinklab.p(NS.HAS_FIRST_FIELD), conceptualize(((Map.Entry<?,?>)o).getKey()).asList()),
 						PolyList.list(Thinklab.p(NS.HAS_SECOND_FIELD), conceptualize(((Map.Entry<?,?>)o).getValue()).asList())),
 					Thinklab.get());
+		} 
 			
-		} else {
-			
-			cls = o.getClass();
-			IConcept literalType = _class2literal.get(cls);
-			if (literalType != null) {
-				return new Semantics(
-						PolyList.list(literalType, o),
-						Thinklab.get());
-			} 	
-		}
+		Class<?> cls = o.getClass();
+		IConcept literalType = _class2literal.get(cls);
+		if (literalType != null) {
+			return new Semantics(
+					PolyList.list(literalType, o),
+					Thinklab.get());
+		} 	
+
 		
 		/*
 		 * if we get here, we need a @Concept annotation to proceed.
@@ -118,31 +213,31 @@ public class AnnotationFactory {
 		ArrayList<Object> sa = new ArrayList<Object>();
 		sa.add(mainc);
 
-		for (Field f : cls.getFields()) {
-			if (f.isAnnotationPresent(Property.class)) {
+		for (Pair<Field, IProperty> pp : getAssignableFields(cls)) {
 
-				Property pann = f.getAnnotation(Property.class);
-				IProperty p = Thinklab.get().getProperty(pann.value());
+			Field f = pp.getFirst();
+			IProperty p = pp.getSecond();
 
-				if (p != null) {
+			if (p != null) {
 					
-					Object value = null;
-					try {
-						value = f.get(o);
-					} catch (Exception e) {
-							throw new ThinklabInternalErrorException(e);
-					}
-					for (Object v : getAllInstances(value)) {
-							
-						ISemantics semantics = conceptualize(v);
-						if (semantics == null) {
-							throw new ThinklabValidationException("cannot conceptualize field " + f.getName() + " of object " + o);
-						}
-						sa.add(PolyList.list(p, semantics.asList()));
-					} 
+				Object value = null;
+				try {
+					f.setAccessible(true);
+					value = f.get(o);
+				} catch (Exception e) {
+					throw new ThinklabInternalErrorException(e);
 				}
+				for (Object v : getAllInstances(value)) {
+					
+					ISemantics semantics = conceptualize(v);
+					if (semantics == null) {
+						throw new ThinklabValidationException("cannot conceptualize field " + f.getName() + " of object " + o);
+					}
+					sa.add(PolyList.list(p, semantics.asList()));
+				} 
 			}
 		}
+
 
 		return sa.size() == 0 ? null : new Semantics(
 				PolyList.fromCollection(sa), Thinklab.get());
@@ -196,7 +291,7 @@ public class AnnotationFactory {
 		boolean hasEmptyConstructor = false;
 		for (Constructor<?> cc : cls.getConstructors()) {
 			Class<?>[] pt = cc.getParameterTypes();
-			if (pt.length == 1 && Semantics.class.isAssignableFrom(pt[0])) {
+			if (pt.length == 1 && ISemantics.class.isAssignableFrom(pt[0])) {
 				try {
 					ret = cc.newInstance(annotation);
 					break;
@@ -218,87 +313,93 @@ public class AnnotationFactory {
 		
 		if (ret == null)
 			return null;
-		
+
+		/*
+		 * if it's conceptualizable, just call its define() method
+		 * and leave everything else to the user.
+		 */
+		if (IConceptualizable.class.isAssignableFrom(cls)) {
+			((IConceptualizable)ret).define(annotation); 
+			return ret;
+		} 		
+
 		/*
 		 * find all fields with property annotations and process the content of the 
 		 * semantic annotation.
 		 */
-		for (Field f : cls.getFields()) {
-			if (f.isAnnotationPresent(Property.class)) {
+		for (Pair<Field,IProperty> fp : getAssignableFields(cls)) {
 
-				Property pann = f.getAnnotation(Property.class);
-				IProperty p = Thinklab.get().getProperty(pann.value());
-				int rcount = annotation.getRelationshipsCount(p);
-				
-				if (rcount == 0)
-					continue;
-				/*
-				 * if object is a collection to fill in, see if the constructor
-				 * created it, and if not, create it. If any of the following three
-				 * isn't null, that's what we add the target to. Otherwise we set the field
-				 * to the target.
-				 */
-				Map<?,?> map = null;
-				Collection<?> collection = null;
-				Object[] array = null;
-				boolean mustSet = false;
-				
+			Field f = fp.getFirst();
+			IProperty p = fp.getSecond();
+			
+			int rcount = annotation.getRelationshipsCount(p);	
+			if (rcount == 0)
+				continue;
+			/*
+			 * if object is a collection to fill in, see if the constructor
+			 * created it, and if not, create it. If any of the following three
+			 * isn't null, that's what we add the target to. Otherwise we set the field
+			 * to the target.
+			 */
+			Map<?,?> map = null;
+			Collection<?> collection = null;
+			Object[] array = null;
+			boolean mustSet = false;
+			
+			try {
+				if (Map.class.isAssignableFrom(f.getType())) {
+					map = (Map<?, ?>) f.getType().newInstance();
+					mustSet = true;
+				} else if (Collection.class.isAssignableFrom(f.getType())) {
+					collection = (Collection<?>) f.getType().newInstance();
+					mustSet = true;
+				} else if (f.getType().isArray()) {
+					array = (Object[]) Array.newInstance(f.getType().getComponentType(), rcount);
+					mustSet = true;
+				}
+			} catch (Exception e) {
+				throw new ThinklabInternalErrorException(e);
+			}
+
+			int n = 0;
+			for (ISemantics r : annotation.getRelationships(p)) {	
+
+				ISemanticObject tg = r.getTarget();
+				Object obj = tg.getObject();					
 				try {
-					if (Map.class.isAssignableFrom(f.getType())) {
-						map = (Map<?, ?>) f.getType().newInstance();
-						mustSet = true;
-					} else if (Collection.class.isAssignableFrom(f.getType())) {
-						collection = (Collection<?>) f.getType().newInstance();
-						mustSet = true;
-					} else if (f.getType().isArray()) {
-						array = (Object[]) Array.newInstance(f.getType().getComponentType(), rcount);
-						mustSet = true;
+					if (map != null && obj instanceof SKeyValue) {
+						((Map<Object,Object>)map).put(((SKeyValue)obj).key, ((SKeyValue)obj).value);
+					} else if (collection != null) {
+						((Collection<Object>)collection).add(obj);
+					} else if (array != null) {
+						array[n] = obj;
+					} else {
+						f.setAccessible(true);
+						f.set(ret, obj);
 					}
 				} catch (Exception e) {
 					throw new ThinklabInternalErrorException(e);
 				}
-
-				int n = 0;
-				for (ISemantics r : annotation.getRelationships(p)) {
-
-					ISemanticObject tg = r.getTarget();
-					Object obj = tg.getObject();					
-					try {
-						if (map != null && obj instanceof SKeyValue) {
-							((Map<Object,Object>)map).put(((SKeyValue)obj).key, ((SKeyValue)obj).value);
-						} else if (collection != null) {
-							((Collection<Object>)collection).add(obj);
-						} else if (array != null) {
-							array[n] = obj;
-						} else {
-							f.set(ret, obj);
-						}
-					} catch (Exception e) {
-						throw new ThinklabInternalErrorException(e);
-					}
-					
-					n++;
-				}
 				
-				if (mustSet) {
-					try {
-						if (map != null) {
-							f.set(ret, map);
-						} else if (collection != null) {
-							f.set(ret, collection);
-						} else if (array != null) {
-							f.set(ret, array);
-						}
-					} catch (Exception e) {
-						throw new ThinklabInternalErrorException(e);
+				n++;
+			}
+				
+			if (mustSet) {
+				try {
+					f.setAccessible(true);
+					if (map != null) {
+						f.set(ret, map);
+					} else if (collection != null) {
+						f.set(ret, collection);
+					} else if (array != null) {
+						f.set(ret, array);
 					}
+				} catch (Exception e) {
+					throw new ThinklabInternalErrorException(e);
 				}
 			}
 		}
 		
-		if (IConceptualizable.class.isAssignableFrom(cls)) {
-			((IConceptualizable)ret).define(annotation); 
-		} 		
 		
 		/*
 		 * if there is a public initialize() method with no parameters, invoke it.
@@ -380,7 +481,6 @@ public class AnnotationFactory {
 	 * -----------------------------------------------------------------------------
 	 */
 	
-
 	public void registerAnnotationConcept(IConcept concept, Class<?> clls) {
 		_class2concept.put(clls, concept);
 		_concept2class.put(concept, clls);
@@ -392,5 +492,6 @@ public class AnnotationFactory {
 		_class2datatype.put(javaClass, datatype);
 		_annotatedLiteralClass.put(concept, clls);
 		_annotatedLiteralDatatype.put(datatype, clls);
-	}	
+	}
+
 }

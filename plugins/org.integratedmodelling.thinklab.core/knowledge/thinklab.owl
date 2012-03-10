@@ -49,6 +49,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#concept -->
+
+    <rdfs:Datatype rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#concept">
+        <owl:equivalentClass rdf:resource="&xsd;Name"/>
+    </rdfs:Datatype>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -60,25 +68,25 @@
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasFirstField -->
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasFirst -->
 
-    <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasFirstField">
+    <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasFirst">
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Tuple"/>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasSecondField -->
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasSecond -->
 
-    <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasSecondField">
+    <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasSecond">
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Tuple"/>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasThirdField -->
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasThird -->
 
-    <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasThirdField">
+    <owl:ObjectProperty rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#hasThird">
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Tuple"/>
     </owl:ObjectProperty>
     
@@ -112,51 +120,11 @@
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#CaseInsensitiveLike -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#CaseInsensitiveLike">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#CaseSensitiveLike -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#CaseSensitiveLike">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Categorical -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Categorical">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType"/>
         <rdfs:comment>Concepts whose children express alternative categorization of a state or entity.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Division -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Division">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Equality -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Equality">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
     </owl:Class>
     
 
@@ -169,42 +137,10 @@
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterOrEqual -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterOrEqual">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterThan -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterThan">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Inequality -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Inequality">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Integer -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Integer">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Number"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Intersection -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Intersection">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
     </owl:Class>
     
 
@@ -222,22 +158,6 @@
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#KeyValuePair">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Tuple"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LessOrEqual -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LessOrEqual">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LessThan -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LessThan">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
     </owl:Class>
     
 
@@ -266,14 +186,6 @@
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Multiplication -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Multiplication">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Number -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Number">
@@ -287,15 +199,6 @@
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NumericInterval">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Interval"/>
         <rdfs:comment>A numeric range specified by a literal of the form (x,y], with square or round parentheses meaning open (exclusive) or closed (inclusive) interval, and partial forms like [4, or 5) meaning &quot;4 or above&quot; or &quot;up to 5, not inclusive&quot;.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation">
-        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
-        <rdfs:comment>Operation instances are operators, created in ontologies to provide implementations that can be used in constraints. The instance itself or its semantic type can be used directly in a constraint list, and its Java peer must implement IOperator.</rdfs:comment>
     </owl:Class>
     
 
@@ -344,14 +247,6 @@
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Remainder -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Remainder">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ShortInteger -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ShortInteger">
@@ -367,22 +262,6 @@
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#StorageType">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValued"/>
         <rdfs:comment rdf:datatype="&xsd;string">Base storage type classes for use to create the basic ThinkLab literal types. Can be made equivalent to other storage types provided by more sophisticated representation ontologies.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Subtraction -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Subtraction">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Summation -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Summation">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
     </owl:Class>
     
 
@@ -412,14 +291,6 @@
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#WithinInterval -->
-
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#WithinInterval">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Operation"/>
-    </owl:Class>
-    
-
-
     <!-- http://www.w3.org/2002/07/owl#Thing -->
 
     <owl:Class rdf:about="&owl;Thing"/>
@@ -439,151 +310,91 @@
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#between -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#between">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#WithinInterval"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#between"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#contains -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#contains">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#contains"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#div -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#div">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Division"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#div"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#eq -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#eq">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Equality"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#eq"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ge -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ge">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterOrEqual"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ge"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ilike -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ilike">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#CaseInsensitiveLike"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ilike"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#intersects -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#intersects">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Intersection"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#intersects"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#le -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#le">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LessOrEqual"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#le"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#like -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#like">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#CaseSensitiveLike"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#like"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#lt -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#lt">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LessThan"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#lt"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#mul -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#mul">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Multiplication"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#mul"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ne -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ne">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Inequality"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#ne"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#rem -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#rem">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Remainder"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#rem"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#sub -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#sub">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Subtraction"/>
-    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#sub"/>
     
 
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#sum -->
 
-    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#sum">
-        <rdf:type rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Summation"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // General axioms
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    <rdf:Description>
-        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
-        <owl:members rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#CaseInsensitiveLike"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Division"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Equality"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterOrEqual"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#GreaterThan"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Inequality"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LessOrEqual"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LessThan"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Multiplication"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Remainder"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Subtraction"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Summation"/>
-            <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#WithinInterval"/>
-        </owl:members>
-    </rdf:Description>
+    <owl:NamedIndividual rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#sum"/>
 </rdf:RDF>
 
 

@@ -35,8 +35,8 @@ import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.constraint.Constraint;
-import org.integratedmodelling.thinklab.constraint.Restriction;
+import org.integratedmodelling.thinklab.query.Query;
+import org.integratedmodelling.thinklab.query.Restriction;
 import org.semanticweb.owl.inference.OWLReasonerAdapter;
 import org.semanticweb.owl.inference.OWLReasonerException;
 import org.semanticweb.owl.model.OWLAnnotation;
@@ -601,7 +601,7 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public IQuery getDefinition() {
 
-		Constraint ret = null;
+		Query ret = null;
 		ArrayList<OWLRestriction<?>> rs = new ArrayList<OWLRestriction<?>>();
 
 		try {
@@ -625,7 +625,7 @@ public class Concept extends Knowledge implements IConcept {
 
 						if (c != null)
 							ret.restrict(new Restriction(q, p,
-									new Constraint(c)));
+									new Query(c)));
 
 					} else if (r instanceof OWLDataSomeRestriction
 							|| r instanceof OWLObjectSomeRestriction) {
@@ -637,7 +637,7 @@ public class Concept extends Knowledge implements IConcept {
 
 						if (c != null)
 							ret.restrict(new Restriction(q, p,
-									new Constraint(c)));
+									new Query(c)));
 
 					} else if (r instanceof OWLDataExactCardinalityRestriction) {
 
@@ -704,7 +704,7 @@ public class Concept extends Knowledge implements IConcept {
 
 			// merge in any further constraints from Thinklab-specific
 			// annotations
-			Constraint tlc = null; // ThinklabOWLManager.get().getAdditionalConstraints(this);
+			Query tlc = null; // ThinklabOWLManager.get().getAdditionalConstraints(this);
 
 			if (tlc != null) {
 				ret.merge(tlc, LogicalConnector.INTERSECTION);
@@ -726,7 +726,7 @@ public class Concept extends Knowledge implements IConcept {
 	 * If there are multiple parents, this will stop at the first that matches the
 	 * stop condition. Which is probably not the right thing to do.
 	 */ 
-	private static Constraint getDefinitionInternal(IConcept c, Collection<OWLRestriction<?>> restrictions) 
+	private static Query getDefinitionInternal(IConcept c, Collection<OWLRestriction<?>> restrictions) 
 		throws ThinklabException {
 		
 		Collection<OWLRestriction<?>> rs = OWLAPI.getRestrictions((Concept)c, false);
@@ -746,10 +746,10 @@ public class Concept extends Knowledge implements IConcept {
 		}
 		
 		if (!found)
-			return new Constraint(c);
+			return new Query(c);
 		
 		for (IConcept cc : c.getParents()) {
-			Constraint ret = getDefinitionInternal(cc, restrictions);
+			Query ret = getDefinitionInternal(cc, restrictions);
 			if (ret != null)
 				return ret;	
 		}

@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.constraint;
+package org.integratedmodelling.thinklab.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,14 +27,12 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.LogicalConnector;
 import org.integratedmodelling.lang.Quantifier;
-import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
-import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
 
@@ -77,9 +75,9 @@ public class Restriction  {
 	
 	Quantifier quantifier = new Quantifier(Quantifier.ANY);
 	IProperty  property = null;
-	Constraint constraint = null;
+	Query constraint = null;
 	Object[] opArgs = null;
-	IOperator operator = null;
+	IQuery operator = null;
 	IConcept classification = null;
 	LogicalConnector connector = LogicalConnector.INTERSECTION;
 	ArrayList<Restriction> siblings = new ArrayList<Restriction>();	
@@ -301,7 +299,7 @@ public class Restriction  {
 	 */
 	public Restriction(IProperty property, IQuery constraint) {
 		this.property = property;
-		this.constraint = (Constraint)constraint;
+		this.constraint = (Query)constraint;
 	}
 
 	/**
@@ -339,7 +337,7 @@ public class Restriction  {
 	 * @param property
 	 * @param constraint
 	 */
-	public Restriction(String property, Constraint constraint) throws ThinklabException {
+	public Restriction(String property, Query constraint) throws ThinklabException {
 		this.property = KnowledgeManager.get().requireProperty(property);
 		this.constraint = constraint;
 	}
@@ -369,16 +367,16 @@ public class Restriction  {
 		this.opArgs = values;
 	}
 
-	private static IOperator retrieveOperator(String op) throws ThinklabException {
+	private static IQuery retrieveOperator(String op) throws ThinklabException {
 		
-		IOperator ret = null;
+		IQuery ret = null;
 //		if (!SemanticType.validate(op))
 //			op = "thinklab-core:" + op;
 		
 //		ISemanticObject o = KnowledgeManager.get().retrieveInstance(op);
 //		
 //		if (o != null && o.is(KnowledgeManager.OperatorType())) {
-//			ret = (IOperator) o.getImplementation();
+//			ret = (IQuery) o.getImplementation();
 //		}
 //		
 //		if (ret == null) {
@@ -395,7 +393,7 @@ public class Restriction  {
 	 * @param property
 	 * @param constraint
 	 */
-	public Restriction(Quantifier quantifier, IProperty property, Constraint constraint) {
+	public Restriction(Quantifier quantifier, IProperty property, Query constraint) {
 		this.quantifier = quantifier;
 		this.property = property;
 		this.constraint = constraint;
@@ -433,7 +431,7 @@ public class Restriction  {
 	 * @param property
 	 * @param constraint
 	 */
-	public Restriction(Quantifier quantifier, String property, Constraint constraint) throws ThinklabException {
+	public Restriction(Quantifier quantifier, String property, Query constraint) throws ThinklabException {
 		this.quantifier = quantifier;
 		this.property = KnowledgeManager.get().requireProperty(property);
 		this.constraint = constraint;
@@ -530,14 +528,14 @@ public class Restriction  {
 				Object rest = objs[start];
 
 				if (rest instanceof IList) {
-					ret.constraint = new Constraint((IList)rest);
+					ret.constraint = new Query((IList)rest);
 				} else {
 					
 					/*
 					 * should be an operator, possibly with arguments
 					 */
 					if (rest instanceof ISemanticObject) {
-						ret.operator = (IOperator)((ISemanticObject)rest).getObject();
+						ret.operator = (IQuery)((ISemanticObject)rest).getObject();
 					} else {
 						ret.operator = retrieveOperator(rest.toString());
 					}
@@ -676,7 +674,7 @@ public class Restriction  {
         return ret;
 	}
 
-	private boolean matchOperator(IOperator operator, ISemanticObject value, Object[] opArgs) throws ThinklabException {
+	private boolean matchOperator(IQuery operator, ISemanticObject value, Object[] opArgs) throws ThinklabException {
 
 		/* FIXME TLC-31: Implement type declarations for arguments to op() in IValue
 				 http://ecoinformatics.uvm.edu:8080/jira/browse/TLC-31
@@ -725,14 +723,14 @@ public class Restriction  {
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getSubQuery()
 	 */
-	public Constraint getSubQuery() {
+	public Query getSubQuery() {
 		return constraint;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.Restriction#getOperator()
 	 */
-	public IOperator getOperator() {
+	public IQuery getOperator() {
 		return operator;
 	}
 

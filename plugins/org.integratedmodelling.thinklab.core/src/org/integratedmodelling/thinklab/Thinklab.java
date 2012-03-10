@@ -25,6 +25,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.integratedmodelling.collections.NumericInterval;
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
@@ -154,8 +157,19 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		ORDERED_RANGE_MAPPING  = getConcept(NS.ORDINAL_RANGE_MAPPING);
 		
 		CLASSIFICATION_PROPERTY = getProperty(NS.CLASSIFICATION_PROPERTY);
-		ABSTRACT_PROPERTY = getProperty(NS.ABSTRACT_PROPERTY);
+		ABSTRACT_PROPERTY       = getProperty(NS.ABSTRACT_PROPERTY);
 							
+		/*
+		 * install known, useful API classes into annotation factory.
+		 */
+		registerAnnotatedClass(Pair.class, getConcept(NS.PAIR));
+		registerAnnotatedClass(Triple.class, getConcept(NS.TRIPLE));
+		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL));
+		
+		/*
+		 * TODO modeling beans
+		 */
+		
 		/*
 		 * install listener to handle non-code Thinklab projects
 		 */
@@ -331,15 +345,7 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 			}
 		}.start();
 	}
-//
-//	public void registerInstanceImplementationClass(String concept, Class<?> cls) {
-//		instanceImplementationClasses.put(concept, cls);
-//	}
-//	
-//	public void registerLiteralImplementationClass(String concept, Class<?> cls) {
-//		literalImplementationClasses.put(concept, cls);	
-//	}
-//	
+
 	public static File getPluginLoadDirectory(Plugin plugin) {
 
 		String lf = new File(plugin.getDescriptor().getLocation().getFile()).getAbsolutePath();
@@ -363,34 +369,6 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 	public IConcept getConcept(String prop) {
 		return KnowledgeManager.KM.getConcept(prop);
 	}
-
-//	public Class<?> getClassForConcept(IConcept type) {
-//		
-//        class vmatch implements ConceptVisitor.ConceptMatcher {
-//
-//            private Hashtable<String, Class<?>> coll;
-//            
-//            public vmatch(Hashtable<String, Class<?>> c) {
-//                coll = c;
-//            }
-//            
-//            public boolean match(IConcept c) {
-//                Class<?> cc = coll.get(c.toString());
-//                return (cc != null);
-//            }    
-//        }
-//        
-//        /*
-//         * I may be wrong, but there's no problem finding more than one constructor - just return the
-//         * least general one... 
-//         * There IS a problem if the ambiguity comes from a logical union - this should be checked, but
-//         * not now.
-//         */
-//        return
-//    	  new ConceptVisitor<Class<?>>().findMatchingInMapUpwards(
-//    			  instanceImplementationClasses, 
-//    			  new vmatch(instanceImplementationClasses), type);
-//	}
 
 	@Override
 	public IConcept getLeastGeneralCommonConcept(IConcept... cc) {
@@ -452,12 +430,9 @@ public class Thinklab extends ThinklabPlugin implements IKnowledgeManager {
 		return KnowledgeManager.KM.conceptualize(object);
 	}
 
-	
-	/*
-	 * ---------------------------------------------------------------------------------------- 
-	 * ---------------------------------------------------------------------------------------- 
-	 */
-
-
+	@Override
+	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
+		KnowledgeManager.KM.registerAnnotatedClass(cls, concept);
+	}
 
 }

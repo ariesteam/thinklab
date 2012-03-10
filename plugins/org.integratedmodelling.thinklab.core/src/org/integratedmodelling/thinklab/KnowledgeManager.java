@@ -357,7 +357,6 @@ public class KnowledgeManager implements IKnowledgeManager {
 
 
 	public void registerAnnotation(Class<?> clls, String[] value) throws ThinklabException {
-
 		for (String s : value) {
 			_annotationFactory.registerAnnotationConcept(requireConcept(s), clls);
 		}
@@ -367,6 +366,12 @@ public class KnowledgeManager implements IKnowledgeManager {
 	public void registerLiteralAnnotation(Class<?> clls, String concept,
 			String datatype, Class<?> javaClass) throws ThinklabException {
 		_annotationFactory.registerLiteralAnnotation(clls, requireConcept(concept), datatype, javaClass);
+	}
+
+
+	@Override
+	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
+		_annotationFactory.registerAnnotationConcept(concept, cls);
 	}
 
 }

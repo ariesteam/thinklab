@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.constraint;
+package org.integratedmodelling.thinklab.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +31,6 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
-import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
@@ -78,7 +77,7 @@ import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
  * @author Ferdinando Villa
  * @date August 16, 2007 from scratch
  */
-public class Constraint implements IQuery {
+public class Query implements IQuery {
 
 	public Restriction body = null;
 	public String id = null;
@@ -97,7 +96,7 @@ public class Constraint implements IQuery {
 	 * @param s
 	 * @throws ThinklabException 
 	 */
-	public Constraint(String concept) throws ThinklabException {
+	public Query(String concept) throws ThinklabException {
 		this.concept = KnowledgeManager.get().requireConcept(concept);
 	}
 	
@@ -105,11 +104,11 @@ public class Constraint implements IQuery {
 	 * Create a constraint from a list.
 	 * @param l
 	 */
-	public Constraint(IList l)  throws ThinklabException {
+	public Query(IList l)  throws ThinklabException {
 		createFromList(l);
 	}
 	
-	public Constraint() {
+	public Query() {
 		this.concept = Thinklab.THING;
     }
 
@@ -122,7 +121,7 @@ public class Constraint implements IQuery {
 	 * @param concept
 	 * @category Creation API
 	 */
-	public Constraint(IConcept concept) {
+	public Query(IConcept concept) {
 		this.concept = concept == null ? Thinklab.THING : concept;
 	}
    
@@ -219,27 +218,27 @@ public class Constraint implements IQuery {
 	 * @returns self, not a new constraint; it's done only to enable shorter idioms when creating
 	 * a constraint like new Constraint(..).restrict(...);
 	 */
-	public Constraint restrict(Restriction ... restrictions) {
+	public Query restrict(Restriction ... restrictions) {
 		return restrict(LogicalConnector.INTERSECTION, restrictions);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#restrict(java.util.Collection)
 	 */
-	public Constraint restrict(Collection<Restriction> restrictions) {
+	public Query restrict(Collection<Restriction> restrictions) {
 		return restrict(
 				restrictions.toArray(
 						new Restriction[restrictions.size()]));
 	}
 	
-	public Constraint restrict(String property, String operator, Object value) throws ThinklabException {
+	public Query restrict(String property, String operator, Object value) throws ThinklabException {
 		return restrict(LogicalConnector.INTERSECTION, new Restriction(property, operator, value));
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#restrict(org.integratedmodelling.lang.LogicalConnector, org.integratedmodelling.thinklab.constraint.Restriction)
 	 */
-	public Constraint restrict(LogicalConnector connector, Restriction ... restrictions) {
+	public Query restrict(LogicalConnector connector, Restriction ... restrictions) {
 		
 		/*
 		 * remove all NULLs from the restriction array. A bit messy but the convenience is 
@@ -300,12 +299,12 @@ public class Constraint implements IQuery {
 			// COW
 			return this;
 		
-		if (! (query instanceof Constraint)) {
+		if (! (query instanceof Query)) {
 			throw new ThinklabValidationException("constraints are incompatible");
 		}
 		
-		Constraint constraint = (Constraint)query;		
-		Constraint ret = null;
+		Query constraint = (Query)query;		
+		Query ret = null;
 		
 		/* merge concepts if possible. Must match of course. */
         IConcept c1 = concept;
@@ -325,7 +324,7 @@ public class Constraint implements IQuery {
                         c2);
         }
 		
-        ret = new Constraint(ck);
+        ret = new Query(ck);
         
         /* merge bodies if necessary */
 		if (constraint.body == null)
@@ -347,7 +346,7 @@ public class Constraint implements IQuery {
 	 * @see org.integratedmodelling.thinklab.constraint.IConstraint#addObjectRestriction(java.lang.String, org.integratedmodelling.thinklab.constraint.Constraint)
 	 */
 	public void addObjectRestriction(String propertyType, IQuery objectConstraint) throws ThinklabException {
-		restrict(new Restriction(propertyType, (Constraint)objectConstraint));
+		restrict(new Restriction(propertyType, (Query)objectConstraint));
 	}
 	
 	/* (non-Javadoc)
@@ -461,9 +460,9 @@ public class Constraint implements IQuery {
 		}
 	}
 
-	public static Constraint parseConstraint(String query) throws ThinklabValidationException {
+	public static Query parseConstraint(String query) throws ThinklabValidationException {
 
-		Constraint ret = new Constraint();
+		Query ret = new Query();
 		try {
 			ret.createFromList(PolyList.parse(query));
 		} catch (Exception e) {
@@ -501,14 +500,13 @@ public class Constraint implements IQuery {
 	}
 
 	@Override
-	public IQuery restrict(IProperty property, IOperator... operator) {
+	public IQuery restrict(IProperty property, IQuery... operator) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public IQuery restrict(LogicalConnector connector, IProperty property,
-			IOperator... restrictions) {
+	public IQuery restrict(LogicalConnector connector, IProperty property, IQuery... restrictions) {
 		// TODO Auto-generated method stub
 		return null;
 	}

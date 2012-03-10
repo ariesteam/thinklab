@@ -23,46 +23,48 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.knowledge.SemanticLiteral;
 
-@Literal(concept=NS.TEXT, datatype="xsd:string", javaClass=String.class)
-public class TextValue extends SemanticLiteral implements IParseable {
+/**
+ * This is what happens if we annotate a concept.
+ * @author Ferd
+ *
+ */
+@Literal(concept=NS.THING, datatype="thinklab:concept", javaClass=IConcept.class)
+public class ConceptValue extends SemanticLiteral implements IParseable {
     
-    String value;
-    
-    public TextValue() {
-        super(Thinklab.TEXT);
-        value = "";
+    public ConceptValue() {
+        super(Thinklab.NOTHING);
     }
     
-    public TextValue(String s)  {
-        super(Thinklab.TEXT);
-        value = s;
+    public ConceptValue(IConcept c)  {
+        super(c);
     }
     
 	@Override
 	public Object getObject() {
-		return value;
+		return getDirectType();
 	}
 
 	@Override
 	public boolean is(Object object) {
-		return object instanceof String && value.equals(object.toString());
+		return object instanceof IConcept && ((IConcept)object).is(getDirectType());
 	}
 
 	@Override
 	public void parse(String string) throws ThinklabException {
-		value = string;
+		setConcept(Thinklab.c(string));
 	}
 
 	@Override
 	public String toString() {
-		return value;
+		return getDirectType().toString();
 	}
 	
 	@Override
 	public String asText() {
-		return value;
+		return getDirectType().toString();
 	}
 }
