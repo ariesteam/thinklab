@@ -6,11 +6,6 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>ccw.builder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
 			<name>net.sourceforge.texlipse.builder.TexlipseBuilder</name>
 			<arguments>
 			</arguments>
@@ -24,6 +19,5 @@
 	<natures>
 		<nature>net.sourceforge.texlipse.builder.TexlipseNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>ccw.nature</nature>
 	</natures>
 </projectDescription>

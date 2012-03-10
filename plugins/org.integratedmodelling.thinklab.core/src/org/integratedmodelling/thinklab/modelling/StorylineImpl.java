@@ -5,8 +5,8 @@ import java.util.Set;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.Storyline;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
-import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 
 public class StorylineImpl implements IModelObject  {
 

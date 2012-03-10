@@ -19,7 +19,7 @@
  */
 package org.integratedmodelling.thinklab.modelling.internal;
 
-import org.integratedmodelling.thinklab.api.INamespaceQualified;
+import org.integratedmodelling.thinklab.api.lang.INamespaceQualified;
 
 public class NamespaceQualified implements INamespaceQualified {
 

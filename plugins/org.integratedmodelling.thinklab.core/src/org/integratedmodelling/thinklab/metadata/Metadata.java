@@ -24,7 +24,7 @@ import java.util.HashMap;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
-import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 
 /**
  * For now, simply a conceptualizable hash map that knows the DC constants. Use 

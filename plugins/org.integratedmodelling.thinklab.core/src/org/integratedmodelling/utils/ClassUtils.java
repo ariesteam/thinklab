@@ -2,6 +2,7 @@ package org.integratedmodelling.utils;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,7 +87,7 @@ public class ClassUtils {
 
 	/**
 	 * Visit all classes in a package, using the file structure (must be unpacked). Loads the
-	 * classes in the process.
+	 * classes in the process. Visits only member classes that are static and public.
 	 * 
 	 * @param packageName
 	 * @param visitor
@@ -120,8 +121,16 @@ public class ClassUtils {
 							files[i].length() - 6);
 					try {
 						Class<?> clls = Class.forName(packageName + "." + classname, true, cloader);
-						
 						visitor.visit(clls);
+						
+						/*
+						 * scan all the direct, static and public member classes.
+						 */
+						for (Class<?> cllls : clls.getClasses())
+							if (cllls.getDeclaringClass().equals(clls) &&
+								Modifier.isPublic(cllls.getModifiers()) &&
+								Modifier.isStatic(cllls.getModifiers()))
+								visitor.visit(cllls);
 						
 					} catch (ClassNotFoundException e) {
 						Thinklab.get().logger().warn("task class " + packageName + "." + classname + " could not be created: " + e.getMessage());

@@ -36,8 +36,8 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.modelling.classification.IClassification;
-import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
+import org.integratedmodelling.thinklab.api.modelling.IClassification;
+import org.integratedmodelling.thinklab.api.modelling.IClassifier;
 
 /**
  * Reference implementation for IClassification. Also holds the global catalog of user-defined

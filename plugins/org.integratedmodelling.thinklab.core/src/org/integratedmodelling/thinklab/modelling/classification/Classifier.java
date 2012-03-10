@@ -29,7 +29,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
-import org.integratedmodelling.thinklab.api.modelling.classification.IClassifier;
+import org.integratedmodelling.thinklab.api.modelling.IClassifier;
 
 /**
  * A powerful classifier of objects meant to be defined from a Clojure classification model.

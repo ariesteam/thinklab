@@ -26,38 +26,27 @@ import java.util.Set;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
-import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.lang.LogicalConnector;
-import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.query.Query;
-import org.integratedmodelling.thinklab.query.Restriction;
 import org.semanticweb.owl.inference.OWLReasonerAdapter;
 import org.semanticweb.owl.inference.OWLReasonerException;
 import org.semanticweb.owl.model.OWLAnnotation;
 import org.semanticweb.owl.model.OWLAnnotationAxiom;
 import org.semanticweb.owl.model.OWLClass;
-import org.semanticweb.owl.model.OWLDataAllRestriction;
-import org.semanticweb.owl.model.OWLDataExactCardinalityRestriction;
 import org.semanticweb.owl.model.OWLDataMaxCardinalityRestriction;
 import org.semanticweb.owl.model.OWLDataMinCardinalityRestriction;
 import org.semanticweb.owl.model.OWLDataProperty;
-import org.semanticweb.owl.model.OWLDataSomeRestriction;
-import org.semanticweb.owl.model.OWLDataValueRestriction;
 import org.semanticweb.owl.model.OWLDescription;
 import org.semanticweb.owl.model.OWLException;
 import org.semanticweb.owl.model.OWLObjectAllRestriction;
-import org.semanticweb.owl.model.OWLObjectExactCardinalityRestriction;
 import org.semanticweb.owl.model.OWLObjectMaxCardinalityRestriction;
 import org.semanticweb.owl.model.OWLObjectMinCardinalityRestriction;
 import org.semanticweb.owl.model.OWLObjectProperty;
 import org.semanticweb.owl.model.OWLObjectSomeRestriction;
-import org.semanticweb.owl.model.OWLObjectValueRestriction;
 import org.semanticweb.owl.model.OWLOntology;
 import org.semanticweb.owl.model.OWLRestriction;
 
@@ -592,171 +581,171 @@ public class Concept extends Knowledge implements IConcept {
 //		
 //	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @Override
-	 * 
-	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getDefinition()
-	 */
-	public IQuery getDefinition() {
-
-		Query ret = null;
-		ArrayList<OWLRestriction<?>> rs = new ArrayList<OWLRestriction<?>>();
-
-		try {
-
-			ret = getDefinitionInternal(this, rs);
-			Ontology ont = getThinklabOntology();
-
-			if (rs != null)
-				for (OWLRestriction<?> r : rs) {
-
-					IProperty p = new Property(r.getProperty());
-					Quantifier q = null;
-
-					if (r instanceof OWLDataAllRestriction
-							|| r instanceof OWLObjectAllRestriction) {
-
-						q = new Quantifier("all");
-
-						IConcept c = ThinklabOWLManager.get()
-								.getRestrictionFiller(r, ont);
-
-						if (c != null)
-							ret.restrict(new Restriction(q, p,
-									new Query(c)));
-
-					} else if (r instanceof OWLDataSomeRestriction
-							|| r instanceof OWLObjectSomeRestriction) {
-
-						q = new Quantifier("any");
-
-						IConcept c = ThinklabOWLManager.get()
-								.getRestrictionFiller(r, ont);
-
-						if (c != null)
-							ret.restrict(new Restriction(q, p,
-									new Query(c)));
-
-					} else if (r instanceof OWLDataExactCardinalityRestriction) {
-
-						int card = ((OWLDataExactCardinalityRestriction) r)
-								.getCardinality();
-						q = new Quantifier(Integer.toString(card));
-						ret.restrict(new Restriction(q, p));
-
-					} else if (r instanceof OWLObjectExactCardinalityRestriction) {
-
-						int card = ((OWLObjectExactCardinalityRestriction) r)
-								.getCardinality();
-						q = new Quantifier(Integer.toString(card));
-						ret.restrict(new Restriction(q, p));
-
-					} else if (r instanceof OWLDataMinCardinalityRestriction) {
-
-						int card = ((OWLDataMinCardinalityRestriction) r)
-								.getCardinality();
-						q = new Quantifier(card + ":");
-						ret.restrict(new Restriction(q, p));
-
-					} else if (r instanceof OWLObjectMinCardinalityRestriction) {
-
-						int card = ((OWLObjectMinCardinalityRestriction) r)
-								.getCardinality();
-						q = new Quantifier(card + ":");
-						ret.restrict(new Restriction(q, p));
-
-					} else if (r instanceof OWLDataMaxCardinalityRestriction) {
-
-						int card = ((OWLDataMaxCardinalityRestriction) r)
-								.getCardinality();
-						q = new Quantifier(":" + card);
-						ret.restrict(new Restriction(q, p));
-
-					} else if (r instanceof OWLObjectMaxCardinalityRestriction) {
-
-						int card = ((OWLObjectMaxCardinalityRestriction) r)
-								.getCardinality();
-						q = new Quantifier(":" + card);
-						ret.restrict(new Restriction(q, p));
-
-					} else if (r instanceof OWLDataValueRestriction) {
-
-						ret.restrict(new Restriction(new Quantifier("all"), p,
-								"=", (((OWLDataValueRestriction) r).getValue()
-										.toString())));
-
-					} else if (r instanceof OWLObjectValueRestriction) {
-
-						// ret.restrict(
-						// new Restriction(
-						// new Quantifier("all"),
-						// p,
-						// "=",
-						// ((OWLHasValue)r).getHasValue().toString()));
-					}
-					/*
-					 * TODO there are more restrictions in OWL > 1.0; must check
-					 * which ones go into a constraint
-					 */
-				}
-
-			// merge in any further constraints from Thinklab-specific
-			// annotations
-			Query tlc = null; // ThinklabOWLManager.get().getAdditionalConstraints(this);
-
-			if (tlc != null) {
-				ret.merge(tlc, LogicalConnector.INTERSECTION);
-			}
-
-		} catch (Exception e) {
-			throw new ThinklabRuntimeException(e);
-		}
-
-		return ret;
-
-	}
-
-	/* 
-	 * accumulate suitable restrictions recursively until no more restrictions on
-	 * inherited properties are found; return constraint initialized with stop concept, or null if we must
-	 * continue.
-	 * 
-	 * If there are multiple parents, this will stop at the first that matches the
-	 * stop condition. Which is probably not the right thing to do.
-	 */ 
-	private static Query getDefinitionInternal(IConcept c, Collection<OWLRestriction<?>> restrictions) 
-		throws ThinklabException {
-		
-		Collection<OWLRestriction<?>> rs = OWLAPI.getRestrictions((Concept)c, false);
-				
-		boolean found = false;
-		if (rs != null) {
-			for (OWLRestriction<?> r : rs) {
-
-				IProperty p = new Property(r.getProperty());
-			
-				if (p.getDomain().equals(c))
-					continue;
-				
-				restrictions.add(r);
-				found = true;
-			}
-		}
-		
-		if (!found)
-			return new Query(c);
-		
-		for (IConcept cc : c.getParents()) {
-			Query ret = getDefinitionInternal(cc, restrictions);
-			if (ret != null)
-				return ret;	
-		}
-		
-		return null;
-	}
-
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @Override
+//	 * 
+//	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getDefinition()
+//	 */
+//	public IQuery getDefinition() {
+//
+//		Query ret = null;
+//		ArrayList<OWLRestriction<?>> rs = new ArrayList<OWLRestriction<?>>();
+//
+//		try {
+//
+//			ret = getDefinitionInternal(this, rs);
+//			Ontology ont = getThinklabOntology();
+//
+//			if (rs != null)
+//				for (OWLRestriction<?> r : rs) {
+//
+//					IProperty p = new Property(r.getProperty());
+//					Quantifier q = null;
+//
+//					if (r instanceof OWLDataAllRestriction
+//							|| r instanceof OWLObjectAllRestriction) {
+//
+//						q = new Quantifier("all");
+//
+//						IConcept c = ThinklabOWLManager.get()
+//								.getRestrictionFiller(r, ont);
+//
+//						if (c != null)
+//							ret.restrict(new Restriction(q, p,
+//									new Query(c)));
+//
+//					} else if (r instanceof OWLDataSomeRestriction
+//							|| r instanceof OWLObjectSomeRestriction) {
+//
+//						q = new Quantifier("any");
+//
+//						IConcept c = ThinklabOWLManager.get()
+//								.getRestrictionFiller(r, ont);
+//
+//						if (c != null)
+//							ret.restrict(new Restriction(q, p,
+//									new Query(c)));
+//
+//					} else if (r instanceof OWLDataExactCardinalityRestriction) {
+//
+//						int card = ((OWLDataExactCardinalityRestriction) r)
+//								.getCardinality();
+//						q = new Quantifier(Integer.toString(card));
+//						ret.restrict(new Restriction(q, p));
+//
+//					} else if (r instanceof OWLObjectExactCardinalityRestriction) {
+//
+//						int card = ((OWLObjectExactCardinalityRestriction) r)
+//								.getCardinality();
+//						q = new Quantifier(Integer.toString(card));
+//						ret.restrict(new Restriction(q, p));
+//
+//					} else if (r instanceof OWLDataMinCardinalityRestriction) {
+//
+//						int card = ((OWLDataMinCardinalityRestriction) r)
+//								.getCardinality();
+//						q = new Quantifier(card + ":");
+//						ret.restrict(new Restriction(q, p));
+//
+//					} else if (r instanceof OWLObjectMinCardinalityRestriction) {
+//
+//						int card = ((OWLObjectMinCardinalityRestriction) r)
+//								.getCardinality();
+//						q = new Quantifier(card + ":");
+//						ret.restrict(new Restriction(q, p));
+//
+//					} else if (r instanceof OWLDataMaxCardinalityRestriction) {
+//
+//						int card = ((OWLDataMaxCardinalityRestriction) r)
+//								.getCardinality();
+//						q = new Quantifier(":" + card);
+//						ret.restrict(new Restriction(q, p));
+//
+//					} else if (r instanceof OWLObjectMaxCardinalityRestriction) {
+//
+//						int card = ((OWLObjectMaxCardinalityRestriction) r)
+//								.getCardinality();
+//						q = new Quantifier(":" + card);
+//						ret.restrict(new Restriction(q, p));
+//
+//					} else if (r instanceof OWLDataValueRestriction) {
+//
+//						ret.restrict(new Restriction(new Quantifier("all"), p,
+//								"=", (((OWLDataValueRestriction) r).getValue()
+//										.toString())));
+//
+//					} else if (r instanceof OWLObjectValueRestriction) {
+//
+//						// ret.restrict(
+//						// new Restriction(
+//						// new Quantifier("all"),
+//						// p,
+//						// "=",
+//						// ((OWLHasValue)r).getHasValue().toString()));
+//					}
+//					/*
+//					 * TODO there are more restrictions in OWL > 1.0; must check
+//					 * which ones go into a constraint
+//					 */
+//				}
+//
+//			// merge in any further constraints from Thinklab-specific
+//			// annotations
+//			Query tlc = null; // ThinklabOWLManager.get().getAdditionalConstraints(this);
+//
+//			if (tlc != null) {
+//				ret.merge(tlc, LogicalConnector.INTERSECTION);
+//			}
+//
+//		} catch (Exception e) {
+//			throw new ThinklabRuntimeException(e);
+//		}
+//
+//		return ret;
+//
+//	}
+//
+//	/* 
+//	 * accumulate suitable restrictions recursively until no more restrictions on
+//	 * inherited properties are found; return constraint initialized with stop concept, or null if we must
+//	 * continue.
+//	 * 
+//	 * If there are multiple parents, this will stop at the first that matches the
+//	 * stop condition. Which is probably not the right thing to do.
+//	 */ 
+//	private static Query getDefinitionInternal(IConcept c, Collection<OWLRestriction<?>> restrictions) 
+//		throws ThinklabException {
+//		
+//		Collection<OWLRestriction<?>> rs = OWLAPI.getRestrictions((Concept)c, false);
+//				
+//		boolean found = false;
+//		if (rs != null) {
+//			for (OWLRestriction<?> r : rs) {
+//
+//				IProperty p = new Property(r.getProperty());
+//			
+//				if (p.getDomain().equals(c))
+//					continue;
+//				
+//				restrictions.add(r);
+//				found = true;
+//			}
+//		}
+//		
+//		if (!found)
+//			return new Query(c);
+//		
+//		for (IConcept cc : c.getParents()) {
+//			Query ret = getDefinitionInternal(cc, restrictions);
+//			if (ret != null)
+//				return ret;	
+//		}
+//		
+//		return null;
+//	}
+//
 
 	@Override
 	public boolean is(IKnowledge c) {
@@ -781,5 +770,11 @@ public class Concept extends Knowledge implements IConcept {
 		Collection<IConcept> collection = getAllParents();
 		collection.add(this);
 		return collection.contains(c);
+	}
+
+	@Override
+	public IQuery getDefinition() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

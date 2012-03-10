@@ -5,7 +5,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IMeasuringObserver;
-import org.integratedmodelling.thinklab.api.modelling.units.IUnit;
+import org.integratedmodelling.thinklab.api.modelling.IUnit;
 
 public class MeasurementImpl extends ObserverImpl implements
 		IMeasuringObserver {

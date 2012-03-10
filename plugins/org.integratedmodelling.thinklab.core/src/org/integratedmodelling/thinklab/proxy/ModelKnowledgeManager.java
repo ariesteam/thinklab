@@ -21,11 +21,11 @@ package org.integratedmodelling.thinklab.proxy;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.api.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
-import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 
 /**

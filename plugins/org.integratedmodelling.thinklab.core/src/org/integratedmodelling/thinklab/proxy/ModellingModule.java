@@ -19,8 +19,8 @@
  */
 package org.integratedmodelling.thinklab.proxy;
 
-import org.integratedmodelling.thinklab.api.knowledge.factories.IKnowledgeManager;
-import org.integratedmodelling.thinklab.api.modelling.factories.IModelFactory;
+import org.integratedmodelling.thinklab.api.factories.IKnowledgeManager;
+import org.integratedmodelling.thinklab.api.factories.IModelFactory;
 import org.integratedmodelling.thinklab.api.project.IProject;
 
 import com.google.inject.AbstractModule;

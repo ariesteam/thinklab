@@ -24,8 +24,8 @@ import java.util.Set;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.Scenario;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
-import org.integratedmodelling.thinklab.api.modelling.metadata.IMetadata;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class ScenarioImpl extends NamespaceQualified implements IScenario {
