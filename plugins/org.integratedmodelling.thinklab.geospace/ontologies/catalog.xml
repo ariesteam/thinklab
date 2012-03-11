@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<catalog id="file:/C:/Users/Ferdinando/thinkspace/thinklab/plugins/org.integratedmodelling.thinklab.geospace/ontologies/" prefer="public" xml:base="file:/C:/Users/Ferdinando/thinkspace/thinklab/plugins/org.integratedmodelling.thinklab.geospace/ontologies/" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-    <uri name="http://www.integratedmodelling.org/geospace/geofeatures.owl" uri="geofeatures.owl"/>
-    <uri name="http://www.geonames.org/ontology" uri="geonames.owl"/>
-    <uri name="http://www.integratedmodelling.org/ks/geospace/geophysics.owl" uri="geophysics.owl"/>
-    <uri name="http://www.integratedmodelling.org/ks/geospace/geospace.owl" uri="geospace.owl"/>
-</catalog>
