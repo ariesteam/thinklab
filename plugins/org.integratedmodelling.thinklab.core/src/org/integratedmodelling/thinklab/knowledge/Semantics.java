@@ -130,7 +130,8 @@ public class Semantics implements ISemantics {
 			Object o = oo[i];
 			if (predicate instanceof IConcept) {
 				/*
-				 * anything but the predicate must be a relationship, i.e. a IList
+				 * anything but the predicate must be a relationship, i.e. a IList; if
+				 * not a list, we're dealing with a literal.
 				 */
 				if (o instanceof IList) {					
 					relationships.add(new Semantics((IList)o, _km));
@@ -266,7 +267,9 @@ public class Semantics implements ISemantics {
 	@Override
 	public boolean isLiteral() {
 		getRelationships();
-		return literal != null;
+		return 
+			targetSemantics != null && 
+			((Semantics)targetSemantics).literal != null;
 	}
 
 	/* (non-Javadoc)
@@ -321,7 +324,7 @@ public class Semantics implements ISemantics {
 	 * @see org.integratedmodelling.lang.ISemantics#getTargetLiteral()
 	 */
 	@Override
-	public Object getTargetLiteral() {
+	public Object getLiteral() {
 		getRelationships();
 		return literal;
 	}

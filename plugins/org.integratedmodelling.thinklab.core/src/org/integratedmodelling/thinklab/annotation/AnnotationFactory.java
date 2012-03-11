@@ -272,7 +272,7 @@ public class AnnotationFactory {
 		 */
 		Class<?> cls = _annotatedLiteralClass.get(annotation.getConcept());
 		if (cls != null) {
-			return annotation.getTargetLiteral();
+			return annotation.getLiteral();
 		}
 		
 		/*

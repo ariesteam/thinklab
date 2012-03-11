@@ -60,7 +60,9 @@
 		<library id="neo4j-ha" path="lib/neo4j/neo4j-ha-1.6.jar" type="code"/>
 		<library id="neo4j-jmx" path="lib/neo4j/neo4j-jmx-1.6.jar" type="code"/>
 		<library id="neo4j-kernel" path="lib/neo4j/neo4j-kernel-1.6.jar" type="code"/>
-		<library id="neo4j-lucene-index" path="lib/neo4j/neo4j-lucene-index-1.6.jar" type="code"/>
+		<library id="neo4j-lucene-index" path="lib/neo4j/neo4j-lucene-index-1.6.jar" type="code">
+			<export prefix="*"/>
+		</library>
 		<library id="neo4j-management" path="lib/neo4j/neo4j-management-1.6.jar" type="code"/>
 		<library id="neo4j-shell" path="lib/neo4j/neo4j-shell-1.6.jar" type="code"/>
 		<library id="neo4j-udc" path="lib/neo4j/neo4j-udc-1.6.jar" type="code"/>
@@ -71,6 +73,10 @@
 		<library id="server-api" path="lib/neo4j/server-api-1.6.jar" type="code"/>
 		<library id="slf4j-api" path="lib/neo4j/slf4j-api-1.6.jar" type="code"/>
 		<library id="zookeeper" path="lib/neo4j/zookeeper-3.3.2.jar" type="code"/>
+		<library id="blueprints-core" path="lib/neo4j/blueprints-core-1.2.jar" type="code"/>
+		<library id="blueprints-graph-jung" path="lib/neo4j/blueprints-graph-jung-1.2.jar" type="code"/>
+		<library id="blueprints-neo4j-graph" path="lib/neo4j/blueprints-neo4j-graph-1.2.jar" type="code"/>
+		<library id="blueprints-neo4jbatch-graph" path="lib/neo4j/blueprints-neo4jbatch-graph-1.2.jar" type="code"/>
 		
 		
 		<!-- geotools. TODO: resolve redundancies -->

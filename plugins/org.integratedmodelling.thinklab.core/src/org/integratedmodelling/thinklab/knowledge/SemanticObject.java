@@ -10,14 +10,20 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
+import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 
 /**
  * Base class for a general non-literal semantic object.
+ * Proxies the object's metadata if it has any.
+ * 
+ * TODO make it proxy other things such as IComparable and hash/equals.
+ * TODO check what should be done (if anything) for cloning.
  * 
  * @author Ferd
  *
  */
-public class SemanticObject implements ISemanticObject {
+public class SemanticObject implements ISemanticObject, IMetadataHolder {
 
 	private ISemantics _semantics;
 	private Object    _object;
@@ -123,7 +129,15 @@ public class SemanticObject implements ISemanticObject {
 	}
 
 	public String toString() {
-		return "[" + getDirectType() + " " + _object + "]";
+		return "[" + getDirectType() + " " + (_object == null ? "<uninstantiated>" : _object) + "]";
+	}
+
+	@Override
+	public IMetadata getMetadata() {
+		return 
+			(_object instanceof IMetadataHolder) ?
+				((IMetadataHolder)_object).getMetadata() :
+				null;
 	}
 	
 }

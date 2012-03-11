@@ -1,23 +1,41 @@
 package org.integratedmodelling.thinklab.kbox.neo4j;
 
+import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.knowledge.SemanticObject;
+import org.integratedmodelling.thinklab.knowledge.Semantics;
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.ReturnableEvaluator;
+import org.neo4j.graphdb.StopEvaluator;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.Traverser;
+import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 public class NeoKBox implements IKbox {
 
+	private static final String TYPE_PROPERTY = "_type";	
+	private static final String HASNODE_PROPERTY = "_hasnode";
+	
 	EmbeddedGraphDatabase _db = null;
 	String _url = null;
 	
@@ -31,22 +49,32 @@ public class NeoKBox implements IKbox {
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
-					_db.shutdown();
+					if (_db != null)
+						_db.shutdown();
 				}
 			});
+						
 		} catch (Exception e) {
 			throw new ThinklabRuntimeException(e);
 		}
 	}
 	
 	@Override
-	public long store(Object o) throws ThinklabException {
+	public synchronized long store(Object o) throws ThinklabException {
 
+		for (Node n : _db.getAllNodes()) {
+			System.out.println("NODE " + n.getId() + ": " + n);
+		}
+		
 		long ret = -1;
 		ISemanticObject instance = Thinklab.get().annotate(o);		
 		Transaction tx = _db.beginTx();
 		try {
 			ret = storeInstanceInternal(instance.getSemantics(), _db.getReferenceNode(), null).getId();
+			tx.success();
+		} catch (Exception e) {
+			tx.failure();
+			throw new ThinklabIOException(e.getMessage());
 		} finally {
 			tx.finish();
 		}
@@ -56,6 +84,7 @@ public class NeoKBox implements IKbox {
 	private Node storeInstanceInternal(ISemantics instance, Node referenceNode, final IProperty property) {
 
 		Node node = _db.createNode();
+		node.setProperty(TYPE_PROPERTY, instance.getConcept().toString());
 		
 		if (property != null) {
 			/*
@@ -65,6 +94,13 @@ public class NeoKBox implements IKbox {
 				@Override
 				public String name() {
 					return property.toString();
+				}
+			});
+		} else {
+			referenceNode.createRelationshipTo(node, new RelationshipType() {
+				@Override
+				public String name() {
+					return HASNODE_PROPERTY;
 				}
 			});
 		}
@@ -83,7 +119,7 @@ public class NeoKBox implements IKbox {
 	private void storeProperty(Node node, ISemantics s) {
 
 		IProperty p = s.getProperty();
-		node.setProperty(p.toString(), translateLiteral(s.getTargetLiteral()));
+		node.setProperty(p.toString(), translateLiteral(s.getTargetSemantics().getLiteral()));
 	}
 
 	private Object translateLiteral(Object literal) {
@@ -102,8 +138,16 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public void clear() throws ThinklabException {
-		// TODO Auto-generated method stub
 
+		try {
+			URL urf = new URL(_url);
+			File dir = new File(urf.getFile());
+			_db.shutdown();
+			FileUtils.deleteDirectory(dir);
+			_db = new EmbeddedGraphDatabase(urf.getFile());
+		} catch (Exception e) {
+			throw new ThinklabIOException(e);
+		}
 	}
 
 	@Override
@@ -112,16 +156,6 @@ public class NeoKBox implements IKbox {
 		return null;
 	}
 	
-	/*
-	 * ----------------------------------------------------------------------------------
-	 * implementation-specific methods
-	 * ----------------------------------------------------------------------------------
-	 */
-
-//	long storeInstanceList(SemanticAnnotation list, Node node) {
-//		
-//		return 0;
-//	}
 
 	@Override
 	public String getUri() {
@@ -130,15 +164,69 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public ISemanticObject retrieve(long id) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		IList semantics = retrieveList(_db.getNodeById(id));
+		return new SemanticObject(new Semantics(semantics, Thinklab.get()), null);
 	}
-
-
+	
 	@Override
 	public void removeAll(IQuery query) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<ISemanticObject> retrieveAll() throws ThinklabException {
+		
+		ArrayList<Long> res = new ArrayList<Long>();
+		Traverser traverser = _db.getReferenceNode().traverse(
+				Order.DEPTH_FIRST, 
+				StopEvaluator.DEPTH_ONE, 
+				ReturnableEvaluator.ALL_BUT_START_NODE, 
+				new RelationshipType() {
+					@Override
+					public String name() {
+						return HASNODE_PROPERTY;
+					}
+				},
+				Direction.OUTGOING);
+				
+		for (Node n : traverser.getAllNodes()) {
+			res.add(n.getId());
+		}
+		
+		return new NeoKBoxResult(this, res);
+	}
+
+	/*
+	 * non-public
+	 */
+	private IList retrieveList(Node node) throws ThinklabException {
+		
+		ArrayList<Object> rl = new ArrayList<Object>();
+		IConcept concept = Thinklab.c(node.getProperty(TYPE_PROPERTY).toString());		
+		rl.add(concept);
+		
+		/*
+		 * literals
+		 */
+		for (String p : node.getPropertyKeys()) {
+			// skip system properties
+			if (p.startsWith("_"))
+				continue;
+			rl.add(PolyList.list(Thinklab.p(p), Thinklab.get().conceptualize(node.getProperty(p))));
+		}
+		
+		/*
+		 * follow outgoing relationships to other objects
+		 */
+		for (Relationship r : node.getRelationships(Direction.OUTGOING)) {
+			rl.add(PolyList.list(Thinklab.p(r.getType().name()), retrieveList(r.getEndNode())));
+		}
+		
+		/*
+		 * create semantics for object
+		 */
+		return PolyList.fromCollection(rl);		
 	}
 
 }

@@ -427,5 +427,9 @@
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/science/ostermillerutils_1_06_00.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/science/ssj.jar"/>
 	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/joda-time-1.4.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/blueprints-core-1.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/blueprints-graph-jung-1.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/blueprints-neo4j-graph-1.2.jar"/>
+	<classpathentry kind="lib" path="plugins/org.integratedmodelling.thinklab.core/lib/neo4j/blueprints-neo4jbatch-graph-1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

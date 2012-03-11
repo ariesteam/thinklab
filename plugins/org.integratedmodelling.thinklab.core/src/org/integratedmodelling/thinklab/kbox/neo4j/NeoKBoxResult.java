@@ -1,9 +1,14 @@
 package org.integratedmodelling.thinklab.kbox.neo4j;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.integratedmodelling.collections.ReadOnlyList;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 
 /**
  * List to return results of a NeoKBox query. Only stores object IDs, creating
@@ -14,6 +19,35 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
  */
 public class NeoKBoxResult extends ReadOnlyList<ISemanticObject> {
 
+	List<Long> _results;
+	IKbox      _kbox;
+
+	class KboxIterator implements Iterator<ISemanticObject> {
+
+		int idx = 0;
+		
+		@Override
+		public boolean hasNext() {
+			return idx < _results.size();
+		}
+
+		@Override
+		public ISemanticObject next() {
+			return get(idx++);
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("cannot modify read-only list");
+		}
+		
+	}
+	
+	public NeoKBoxResult(IKbox kbox, ArrayList<Long> res) {
+		_kbox = kbox;
+		_results = res;
+	}
+
 	@Override
 	public boolean contains(Object arg0) {
 		// TODO Auto-generated method stub
@@ -22,20 +56,21 @@ public class NeoKBoxResult extends ReadOnlyList<ISemanticObject> {
 
 	@Override
 	public ISemanticObject get(int arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return _kbox.retrieve(_results.get(arg0));
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	@Override
 	public Iterator<ISemanticObject> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new KboxIterator();
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _results.size();
 	}
 
 	@Override
