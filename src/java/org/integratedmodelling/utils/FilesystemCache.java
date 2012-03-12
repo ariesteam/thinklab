@@ -24,7 +24,7 @@ import java.sql.Time;
 import java.util.Hashtable;
 
 import org.integratedmodelling.exceptions.ThinklabIOException;
-import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.utils.xml.XMLDocument;
 
 /**
@@ -91,8 +91,8 @@ public abstract class FilesystemCache<T> {
 	 */
 	public FilesystemCache(String workDir) throws ThinklabIOException {
 
-		dir = LocalConfiguration.getDataDirectory(workDir);
-		bak = new File(dir + "/cache.status");
+		dir = Thinklab.get().getScratchArea(workDir);
+		bak = new File(dir + File.separator + "cache.status");
 		
 		loadCache();
 	}

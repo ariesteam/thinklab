@@ -24,8 +24,25 @@ public class Version {
 	/**
 	 * Version constants. Should be updated manually at each release.
 	 */
-	public static final String VERSION = "0.9";
-	public static final String BRANCH = "main";
-	public static final String STATUS = "alpha";
-
+	public static final int VERSION_MAJOR = 1;
+	public static final int VERSION_MINOR = 0;
+	public static final int VERSION_DETAIL = 0;
+	public static final String BRANCH = "rc1";
+	public static final String STATUS = "rc1";
+	public static final String BUILD  = "";
+	
+	public String toString() {
+		return
+				VERSION_MAJOR + 
+				"." +
+				VERSION_MINOR +
+				"." +
+				VERSION_DETAIL +
+				STATUS +
+				" (" +
+				BRANCH + 
+				(BUILD.isEmpty() ? "" : " ") +
+				BUILD + 
+				")";
+	}
 }

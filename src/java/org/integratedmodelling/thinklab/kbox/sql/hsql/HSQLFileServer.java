@@ -57,7 +57,7 @@ public class HSQLFileServer extends SQLServer {
 			
 			String path = 
 				Thinklab.get().getProperties().
-					getProperty("hsql.datadir", Thinklab.get().getScratchPath().toString());
+					getProperty("hsql.datadir", Thinklab.get().getScratchArea("hsql").toString());
 			
 			databaseName = path + "/" + databaseName;
 		}

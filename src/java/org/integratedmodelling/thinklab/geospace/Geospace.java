@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Properties;
 
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
@@ -46,8 +45,6 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGazetteer;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
-import org.java.plugin.PluginLifecycleException;
-import org.java.plugin.registry.Extension;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -435,10 +432,10 @@ public class Geospace  {
 	public Collection<String> listKnownFeatures() {
 
 		ArrayList<String> ret = new ArrayList<String>();
-		
-		for (IGazetteer g : gazetteers.values()) {
-			g.getKnownNames(ret);
-		}
+//		
+//		for (IGazetteer g : gazetteers.values()) {
+//			g.getKnownNames(ret);
+//		}
 
 		return ret;
 	}
@@ -451,7 +448,7 @@ public class Geospace  {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public void createGazetteer(Extension ext, Properties properties) throws ThinklabException {
+//	public void createGazetteer(Extension ext, Properties properties) throws ThinklabException {
 		
 //		String id = getParameter(ext, "id");
 //		
@@ -506,7 +503,7 @@ public class Geospace  {
 //		IGazetteer ret = (IGazetteer) getHandlerInstance(ext, "class");
 //		ret.initialize(p);
 //		gazetteers.put(id, ret);
-	}
+//	}
 	
 	
 	/**

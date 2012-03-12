@@ -31,9 +31,9 @@ import org.integratedmodelling.exceptions.ThinklabAuthenticationException;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IThinklabAuthenticationProvider;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.utils.xml.XML;
@@ -130,7 +130,7 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 		 * there.
 		 */
 		File userfile = new File(
-				LocalConfiguration.getUserConfigDirectory() +
+				Thinklab.get().getWorkspace(IConfiguration.SUBSPACE_CONFIG) +
 				File.separator + 
 				"users.xml");
 		
@@ -247,9 +247,10 @@ public class SimpleAuthenticationProvider implements IThinklabAuthenticationProv
 	
 		// disable temporarily for debugging
 		if (userFile == null) {
-			userFile = 
-				new File(LocalConfiguration.getUserConfigDirectory() + 
-						File.separator + "users.xml");
+			userFile = new File(
+					Thinklab.get().getWorkspace(IConfiguration.SUBSPACE_CONFIG) +
+					File.separator + 
+					"users.xml");
 		}
 		
 		ArrayList<XML.XmlNode> nodes = new ArrayList<XML.XmlNode>();

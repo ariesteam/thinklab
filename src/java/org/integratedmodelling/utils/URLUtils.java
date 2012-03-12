@@ -23,8 +23,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
-
 /**
  * Utilities to go from names to likely resource URLs. Most of these are quite
  * specific.
@@ -51,9 +49,7 @@ public class URLUtils {
 		if (ret.contains(":/"))
 			return ret;
 		
-		String prop = properties.getProperty(
-				KnowledgeManager.RESOURCE_PATH_PROPERTY,
-				".");
+		String prop = ".";
 		
 		for (String path : prop.split(";")) {
 			

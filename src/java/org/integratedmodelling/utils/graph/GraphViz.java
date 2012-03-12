@@ -62,7 +62,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
+import org.integratedmodelling.thinklab.configuration.Configuration;
 import org.integratedmodelling.utils.DisplayImage;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.cformat.PrintfFormat;
@@ -158,7 +158,7 @@ public class GraphViz
 		
 		String ret = "/usr/bin/" + exe;
 		
-		switch (LocalConfiguration.getOS()) {
+		switch (Configuration.getOS()) {
 		
 		case WIN:
 			ret = exe + ".exe";

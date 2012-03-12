@@ -26,8 +26,6 @@ import java.util.HashMap;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.project.IProjectFactory;
-import org.java.plugin.Plugin;
-import org.java.plugin.registry.PluginDescriptor;
 
 public class ProjectFactory implements IProjectFactory {
 
@@ -84,16 +82,16 @@ public class ProjectFactory implements IProjectFactory {
 
 	}
 
-	public boolean isProject(PluginDescriptor plugin) {
-
-		File pf = new File(plugin.getLocation().getFile() + 
-				File.separator + 
-				"META-INF" +
-				File.separator + 
-				"thinklab.properties");
-
-		return pf.exists();
-	}
+//	public boolean isProject(PluginDescriptor plugin) {
+//
+//		File pf = new File(plugin.getLocation().getFile() + 
+//				File.separator + 
+//				"META-INF" +
+//				File.separator + 
+//				"thinklab.properties");
+//
+//		return pf.exists();
+//	}
 
 
 }

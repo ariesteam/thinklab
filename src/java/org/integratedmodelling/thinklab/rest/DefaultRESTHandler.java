@@ -191,7 +191,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	 */
 	protected File getFileForHandle(String handle, boolean mustExist) throws ThinklabException {
 
-		File ret = new File(Thinklab.get().getScratchPath() + File.separator + "rest/tmp" + 
+		File ret = new File(Thinklab.get().getScratchArea() + File.separator + "rest/tmp" + 
 				File.separator + handle);
 
 		if (mustExist && !ret.exists())
@@ -214,7 +214,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 
 		Pair<File,String> ret = null;
 		String workspace = session.getWorkspace();		
-		File sdir = new File(Thinklab.get().getScratchPath() + File.separator + "rest/tmp" + 
+		File sdir = new File(Thinklab.get().getScratchArea() + File.separator + "rest/tmp" + 
 					File.separator + workspace);
 		sdir.mkdirs();
 		

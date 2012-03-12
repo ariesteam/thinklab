@@ -20,14 +20,12 @@
 package org.integratedmodelling.thinklab;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -43,17 +41,20 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
+import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
 import org.integratedmodelling.thinklab.api.factories.IKnowledgeManager;
+import org.integratedmodelling.thinklab.api.factories.IPluginManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
-import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.api.plugin.IPluginLifecycleListener;
+import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
-import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
+import org.integratedmodelling.thinklab.configuration.Configuration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
@@ -61,12 +62,13 @@ import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandl
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
+import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
+import org.integratedmodelling.thinklab.plugin.PluginManager;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.utils.ClassUtils;
 import org.integratedmodelling.utils.ClassUtils.Visitor;
 import org.integratedmodelling.utils.template.MVELTemplate;
-import org.java.plugin.registry.Version;
 import org.restlet.resource.ServerResource;
 import org.restlet.service.MetadataService;
 
@@ -79,7 +81,7 @@ import org.restlet.service.MetadataService;
  * @author Ferdinando Villa
  *
  */
-public class Thinklab implements IKnowledgeManager {
+public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManager {
 
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.core";
 	
@@ -99,18 +101,26 @@ public class Thinklab implements IKnowledgeManager {
 	public static IProperty CLASSIFICATION_PROPERTY;
 	public static IProperty ABSTRACT_PROPERTY;
 	HashMap<String, URL> resources = new HashMap<String, URL>();
-	Properties properties = new Properties();
-	File propertySource = null;
 	
-	protected static KnowledgeManager _km;
+	private MetadataService _metadataService;
+
+	static Thinklab _this = null;
 	
-	private File dataFolder;
-	private File confFolder;
-	private File plugFolder;
-	private File loadFolder;
+	protected KnowledgeManager _km;
+	protected Configuration _configuration;
+	protected PluginManager _pluginManager;
+	protected IKnowledgeRepository _knowledgeRepository;
+		
 	
 	Log logger = LogFactory.getLog(this.getClass());
+
+	public Thinklab() throws ThinklabException {
 		
+		_configuration = new Configuration();
+		_pluginManager = new PluginManager();
+		_km            = new KnowledgeManager();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#getClassLoader()
 	 */
@@ -125,21 +135,12 @@ public class Thinklab implements IKnowledgeManager {
 		return logger;
 	}
 	
-	protected final void doStart() throws Exception {
-	
-		_km = new KnowledgeManager();
+	protected final void startup() throws ThinklabException {
 
-		loadConfiguration();
-
-		loadKnowledge();
-
-		/*
-		 * initialize global config from plugin properties before setConfiguration() is called
-		 */
-		URL config = getResourceURL("core.properties");
+		_knowledgeRepository = new FileKnowledgeRepository();
+		_knowledgeRepository.initialize();
 		
-		if (config != null)
-			LocalConfiguration.loadProperties(config);
+		loadKnowledge();
 
 		INTEGER  = getConcept(NS.INTEGER);
 		FLOAT    = getConcept(NS.FLOAT);
@@ -166,13 +167,27 @@ public class Thinklab implements IKnowledgeManager {
 		 * TODO modeling beans
 		 */
 		
+		/*
+		 * TODO use plugin manager for this
+		 */
 		visitAnnotations();
 		
+		/*
+		 * register all plugins
+		 */
+		_pluginManager.registerPluginPath(getLoadPath(SUBSPACE_PLUGINS));
+		_pluginManager.boot();
+
+
 	}
-	
+
+    public IConcept getRootConcept() {
+        return _knowledgeRepository.getRootConcept();
+    }
+    
 	private void loadKnowledge() throws ThinklabException {
 
-		File pth = new File(getLoadDirectory() + File.separator + "knowledge");
+		File pth = _configuration.getWorkspace(SUBSPACE_KNOWLEDGE);
 		if (pth.exists()) {
 			ModelManager.get().loadSourceDirectory(pth);
 		}
@@ -303,28 +318,6 @@ public class Thinklab implements IKnowledgeManager {
 		_km.registerLiteralAnnotation(clls, a.concept(), a.datatype(), a.javaClass());
 	}
 	
-	private Properties getThinklabPluginProperties() throws ThinklabIOException {
-
-		Properties ret = new Properties();
-		File pfile = 
-			new File(
-				getLoadDirectory() + 
-				File.separator + 
-				"THINKLAB-INF" +
-				File.separator + 
-				"thinklab.properties");
-		
-		if (pfile.exists()) {
-			try {
-				ret.load(new FileInputStream(pfile));
-			} catch (Exception e) {
-				throw new ThinklabIOException(e);
-			}
-		}
-		
-		return ret;
-	}
-	
 	public ClassLoader swapClassloader() {
 		ClassLoader clsl = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(getClassLoader());
@@ -335,98 +328,6 @@ public class Thinklab implements IKnowledgeManager {
 		Thread.currentThread().setContextClassLoader(clsl);
 	}
 
-	public File getLoadDirectory() {
-		
-		if (loadFolder == null) {
-			loadFolder = LocalConfiguration.getInstallationDirectory();
-		}
-
-		return loadFolder;
-	}
-	
-	protected void loadConfiguration() throws ThinklabIOException {
-		
-		loadFolder = getLoadDirectory();
-
-        plugFolder = LocalConfiguration.getDataPath();
-        confFolder = new File(plugFolder + File.separator + "config");
-        dataFolder = new File(plugFolder + File.separator + "data");
-	
-       /*
-        * make sure we have all paths
-        */
-       if (
-    		   (!plugFolder.isDirectory() && !plugFolder.mkdirs()) || 
-    		   (!confFolder.isDirectory() && !confFolder.mkdirs()) || 
-    		   (!dataFolder.isDirectory() && !dataFolder.mkdirs()))
-    	   throw new ThinklabIOException("problem writing to plugin directory: " + plugFolder);
-       
-//		/*
-//		 * check if plugin contains a <pluginid.properties> file
-//		 */
-//       String configFile = "thinklab.properties";
-//       File pfile = new File(confFolder + File.separator + configFile);
-//       
-//       if (!pfile.exists()) {
-//    	   
-//    	   /*
-//    	    * copy stock properties if existing
-//    	    */
-//    	   URL sprop = getResourceURL(configFile);
-//    	   if (sprop != null)
-//    		   CopyURL.copy(sprop, pfile);
-//       } 
-//       
-//       /*
-//        * load all non-customized properties files directly from plugin load dir
-//        */
-//       File cdir = new File(getLoadDirectory() + File.separator + "config");
-//       if (cdir.exists() && cdir.isDirectory())
-//		for (File f : cdir.listFiles()) {
-//			if (f.toString().endsWith(".properties") &&
-//			    !(f.toString().endsWith("thinklab.properties"))) {
-//				try {
-//					logger().info("reading additional properties from " + f);
-//					FileInputStream inp = new FileInputStream(f);
-//					properties.load(inp);
-//					inp.close();
-//				} catch (Exception e) {
-//					throw new ThinklabIOException(e);
-//				}
-//			}
-//		}
-//       
-//       // load custom properties, overriding any in system folder.
-//       if (pfile.exists()) {
-//    	   try {
-//    		propertySource = pfile;
-//    		FileInputStream inp = new FileInputStream(pfile);
-//			properties.load(inp);
-//			inp.close();
-//			logger().info("plugin customized properties loaded from " + pfile);
-//		} catch (Exception e) {
-//			throw new ThinklabIOException(e);
-//		}
-//       }
-	}
-
-	/* (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.plugin.IThinklabPlugin#writeConfiguration()
-	 */
-	public void writeConfiguration() throws ThinklabIOException {
-	
-		if (propertySource != null) {
-			FileOutputStream fout;
-			try {
-				fout = new FileOutputStream(propertySource);
-				properties.store(fout, "written by thinklab " + new Date());
-				fout.close();
-			} catch (Exception e) {
-				throw new ThinklabIOException(e);
-			}
-		}
-	}
-	
 	public URL getResourceURL(String resource) throws ThinklabIOException 	{
 		return getResourceURL(resource, null);
 	}
@@ -457,51 +358,14 @@ public class Thinklab implements IKnowledgeManager {
 		return resources.get(name) != null;
 	} 
 	
-	public Properties getProperties() {
-		return properties;
-	}
-	
-	public File getScratchPath() throws ThinklabException  {
-		return dataFolder;
-	}
-	
 	public Version getVersion() {
-		/*
-		 * TODO link this to something.
-		 */
-		return new Version(1, 0, 0, "rc1");
+		return new Version();
 	}
 
 	public File getConfigPath() {
-		return confFolder;
+		return getWorkspace(SUBSPACE_CONFIG);
 	}
 
-	public void persistProperty(String var, String val) throws ThinklabIOException {
-		
-		String configFile = "thinklab.properties";
-		File pfile = new File(confFolder + File.separator + configFile);
-
-		// load custom properties, overriding any in system folder.
-		Properties props = new Properties();
-		if (pfile.exists()) {
-			try {
-				FileInputStream inp = new FileInputStream(pfile);
-				props.load(inp);
-				inp.close();
-			} catch (Exception e) {
-				throw new ThinklabIOException(e);
-			}
-		}
-		props.setProperty(var, val);
-		try {
-			FileOutputStream out = new FileOutputStream(pfile);
-			props.store(out, null);
-			out.close();
-		} catch (Exception e) {
-			throw new ThinklabIOException(e);
-		}
-
-	}
 	/**
 	 * Return the only instance of Thinklab, your favourite knowledge manager.
 	 * 
@@ -511,23 +375,9 @@ public class Thinklab implements IKnowledgeManager {
 		return _this;
 	}
 	
-	public static void boot() throws Exception {
-		
-		_this = new Thinklab();
-		
-		_this.doStart();
-		
-		/*
-		 * TODO scan annotations 
-		 */
-		
-		/*
-		 * TODO load all extension plugins
-		 */
-		
-		/*
-		 * TODO scan project directory
-		 */
+	public static void boot() throws ThinklabException {
+		_this = new Thinklab();		
+		_this.startup();
 	}
 	
 	/**
@@ -558,56 +408,8 @@ public class Thinklab implements IKnowledgeManager {
 		return ret;
 	}
 
-	
-	
-	private HashMap<String, Class<?>> _projectLoaders = 
-		new HashMap<String, Class<?>>();
-
-	private MetadataService _metadataService;
-
-	static Thinklab _this = null;
-	
-	public Thinklab() {
-	}
-	
-	protected void preStart() throws ThinklabException {
-
-
-	}
-
 	public IKnowledgeRepository getKnowledgeRepository() {
-		return _km.getKnowledgeRepository();
-	}
-
-//	protected void load() throws ThinklabException {
-//		
-//		// initialize the Clojure runtime
-//		try {
-//
-//			ClassLoader cls = Thread.currentThread().getContextClassLoader();
-//			Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader ()); 
-//
-////			logger().info("initializing Clojure runtime");
-////			RT.loadResourceScript("thinklab.clj");			
-////			RT.loadResourceScript("utils.clj");			
-////			RT.loadResourceScript("knowledge.clj");			
-////			logger().info("Clojure initialized successfully");
-//			
-//			Thread.currentThread().setContextClassLoader(cls); 
-//
-//		} catch (Exception e) {
-//			throw new ThinklabIOException(e);
-//		}
-//	}
-	
-
-		
-	public static boolean verbose(ISession session) {
-		return session.getVariable(ISession.INFO) != null;
-	}
-
-	public static boolean debug(ISession session) {
-		return session.getVariable(ISession.DEBUG) != null;
+		return _knowledgeRepository;
 	}
 
 	public MetadataService getMetadataService() throws ThinklabException {
@@ -625,6 +427,8 @@ public class Thinklab implements IKnowledgeManager {
 
 	public void shutdown(String hook, final int seconds, Map<String, String> params) throws ThinklabException {
 
+		
+		// TODO update to new config
 		
 		String inst = System.getenv("THINKLAB_INST");
 		String home = System.getenv("THINKLAB_HOME");
@@ -670,14 +474,6 @@ public class Thinklab implements IKnowledgeManager {
 				
 			}
 		}.start();
-	}
-
-	public void registerProjectLoader(String folder, Class<?> cls) {
-		_projectLoaders.put(folder, cls);
-	}
-	
-	public Class<?> getProjectLoader(String folder) {
-		return _projectLoaders.get(folder);
 	}
 
 	@Override
@@ -757,6 +553,56 @@ public class Thinklab implements IKnowledgeManager {
 	
 	public CommandManager getCommandManager() {
 		return _km.getCommandManager();
+	}
+
+	@Override
+	public void registerPluginPath(File path) {
+		_pluginManager.registerPluginPath(path);
+	}
+
+	@Override
+	public void addPluginLifecycleListener(IPluginLifecycleListener listener) {
+		_pluginManager.addPluginLifecycleListener(listener);
+	}
+
+	@Override
+	public List<IThinklabPlugin> getPlugins() {
+		return _pluginManager.getPlugins();
+	}
+
+	@Override
+	public File getWorkspace() {
+		return _configuration.getWorkspace();
+	}
+
+	@Override
+	public File getWorkspace(String subspace) {
+		return _configuration.getWorkspace(subspace);
+	}
+
+	@Override
+	public File getScratchArea() {
+		return _configuration.getScratchArea();
+	}
+
+	@Override
+	public File getScratchArea(String subArea) {
+		return _configuration.getScratchArea(subArea);
+	}
+
+	@Override
+	public File getTempArea(String subArea) {
+		return _configuration.getTempArea(subArea);
+	}
+
+	@Override
+	public File getLoadPath(String subArea) {
+		return _configuration.getLoadPath(subArea);
+	}
+
+	@Override
+	public Properties getProperties() {
+		return _configuration.getProperties();
 	}
 
 }

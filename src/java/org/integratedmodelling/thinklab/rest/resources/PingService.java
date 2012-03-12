@@ -22,6 +22,7 @@ package org.integratedmodelling.thinklab.rest.resources;
 import java.util.Date;
 
 import org.integratedmodelling.thinklab.KnowledgeManager;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.Version;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.json.JSONException;
@@ -48,7 +49,7 @@ public class PingService extends DefaultRESTHandler {
 		
 		try {
 
-			oret.put("thinklab.version", Version.VERSION);
+			oret.put("thinklab.version", Thinklab.get().getVersion());
 			oret.put("thinklab.branch", Version.BRANCH);
 			oret.put("thinklab.status", Version.STATUS);
 			oret.put("thinklab.inst", System.getenv("THINKLAB_INST"));

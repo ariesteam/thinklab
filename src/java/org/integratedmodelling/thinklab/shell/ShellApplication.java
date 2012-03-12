@@ -8,7 +8,6 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.commandline.GraphicalShell;
 import org.integratedmodelling.thinklab.commandline.Shell;
-import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -28,7 +27,7 @@ public class ShellApplication  {
 	
 	protected void initApplication(String[] args) {
 
-		scriptFiles.addAll(LocalConfiguration.getProfileScripts());
+//		scriptFiles.addAll(LocalConfiguration.getProfileScripts());
 		
 		for (String s : args) {
 			

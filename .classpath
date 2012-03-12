@@ -311,7 +311,7 @@
 	<classpathentry kind="lib" path="lib/xsd-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/xsdlib-20050614.jar"/>
 	<classpathentry kind="lib" path="lib/zookeeper-3.3.2.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/thinklab-0.9beta"/>
 	<classpathentry kind="lib" path="lib/owlapi-bin.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/gson-1.4.jar"/>

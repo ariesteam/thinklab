@@ -22,6 +22,7 @@ package org.integratedmodelling.thinklab.owlapi;
 import java.io.File;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
+import org.integratedmodelling.exceptions.ThinklabConfigurationException;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
@@ -41,10 +43,9 @@ import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
-import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
+import org.integratedmodelling.thinklab.api.plugin.IPluginLifecycleListener;
+import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
-import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.semanticweb.owl.apibinding.OWLManager;
 import org.semanticweb.owl.inference.OWLClassReasoner;
 import org.semanticweb.owl.inference.OWLConsistencyChecker;
@@ -93,15 +94,15 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	class UriPublisher implements IPluginLifecycleListener {
 
 		@Override
-		public void onPluginLoaded(ThinklabPlugin plugin) {
+		public void onPluginLoaded(IThinklabPlugin plugin) {
 		}
 
 		@Override
-		public void onPluginUnloaded(ThinklabPlugin plugin) {
+		public void onPluginUnloaded(IThinklabPlugin plugin) {
 		}
 
 		@Override
-		public void prePluginLoaded(ThinklabPlugin thinklabPlugin) {
+		public void prePluginLoaded(IThinklabPlugin thinklabPlugin) {
 
 			/* add an autourimapper for the ontologies directory if any exists */
 			File ontologiesFolder = 
@@ -118,7 +119,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		}
 
 		@Override
-		public void prePluginUnloaded(ThinklabPlugin thinklabPlugin) {
+		public void prePluginUnloaded(IThinklabPlugin thinklabPlugin) {
 		}
 		
 	}
@@ -133,11 +134,11 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 * @throws ThinklabIOException
 	 */
 	public FileKnowledgeRepository() throws ThinklabIOException {
+		
 		if (KR == null) {
 			KR = this;
-			repositoryDirectory = LocalConfiguration
-					.getDataDirectory("ontology/repository");
-			tempDirectory = LocalConfiguration.getDataDirectory("ontology/tmp");
+			repositoryDirectory = Thinklab.get().getScratchArea("ontology/repository");
+			tempDirectory = Thinklab.get().getScratchArea("ontology/tmp");
 			manager = OWLManager.createOWLOntologyManager();
 			registry = Registry.get();
 			registry.registerURI("owl", URI.create("http://www.w3.org/2002/07/owl"));
@@ -148,7 +149,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 			 * register a plugin listener that will publish the physical location of
 			 * ontologies in plugins, so we don't need to be online to use thinklab.
 			 */
-			KnowledgeManager.registerPluginListener(new UriPublisher());
+			Thinklab.get().addPluginLifecycleListener(new UriPublisher());
 		}
 
 	}
@@ -414,12 +415,14 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		URL reasonerURL = null;
 		String reasonerClass = null /*"org.mindswap.pellet.owlapi.Reasoner"*/;
 		
-		if (LocalConfiguration.hasResource("thinklab.reasoner.url")) {
-			reasonerURL = LocalConfiguration
-					.getResource("thinklab.reasoner.url");
-		} else if (LocalConfiguration.hasResource("thinklab.reasoner.class")) {
-			reasonerClass = LocalConfiguration
-					.getProperties().getProperty("thinklab.reasoner.class");
+		if (Thinklab.get().getProperties().containsKey("thinklab.reasoner.url")) {
+			try {
+				reasonerURL = new URL(Thinklab.get().getProperty("thinklab.reasoner.url").toString());
+			} catch (MalformedURLException e) {
+				throw new ThinklabConfigurationException(e);
+			}
+		} else if (Thinklab.get().getProperties().containsKey("thinklab.reasoner.class")) {
+			reasonerClass = Thinklab.get().getProperty("thinklab.reasoner.class").toString();
 		}
 
 		try {

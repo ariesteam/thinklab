@@ -64,7 +64,7 @@ public class FileSendService extends DefaultRESTHandler {
 					"send: trying to access another session's workspace");
 		
 		File sdir = new File(
-				Thinklab.get().getScratchPath() + File.separator + "rest/tmp" + 
+				Thinklab.get().getScratchArea() + File.separator + "rest/tmp" + 
 				File.separator + string);
 
 		if (!sdir.exists())

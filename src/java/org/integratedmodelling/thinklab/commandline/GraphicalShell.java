@@ -50,7 +50,6 @@ import org.integratedmodelling.thinklab.api.runtime.IUserModel;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
-import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.owlapi.Session;
 
 import bsh.util.JConsole;
@@ -155,7 +154,7 @@ public class GraphicalShell {
 		
 		historyFile = 
 			new File(
-				Thinklab.get().getScratchPath() + 
+				Thinklab.get().getScratchArea() + 
 				File.separator + 
 				".history");
 	}
@@ -163,8 +162,8 @@ public class GraphicalShell {
 	public  void printStatusMessage() {
 		
 		console.println("ThinkLab shell v" + Thinklab.get().getVersion());
-		console.println("System path: " + LocalConfiguration.getSystemPath());
-		console.println("Data path: " + LocalConfiguration.getDataPath());					
+		console.println("System path: " + Thinklab.get().getLoadPath(null));
+		console.println("Workspace: " + Thinklab.get().getWorkspace());					
 		console.println();
 		
 		console.println("Enter \'help\' for a list of commands; \'exit\' quits");

@@ -21,18 +21,14 @@ package org.integratedmodelling.thinklab;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
-import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.thinklab.annotation.AnnotationFactory;
 import org.integratedmodelling.thinklab.api.factories.IKnowledgeManager;
@@ -43,87 +39,27 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.command.CommandManager;
-import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
-import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
-import org.java.plugin.PluginManager;
 
 /**
- * Main knowledge manager functionalities. Should be merged into Thinklab which appropriately
- * implements IKnowledgeManaged. Must clean up first.
+ * Main knowledge manager functionalities. Thinklab holds one of these and proxies all knowledge
+ * operations to it.
  * 
  * @author Ferd
  * 
  */
 public class KnowledgeManager implements IKnowledgeManager {
-   
-	protected IKnowledgeRepository knowledgeRepository;
-//
-//	protected PluginManager pluginManager = null;
+
+	protected CommandManager _commandManager = new CommandManager();
 	
-	protected CommandManager commandManager = new CommandManager();
-	
-	AnnotationFactory _annotationFactory = new AnnotationFactory();
+	protected AnnotationFactory _annotationFactory = new AnnotationFactory();
 	
 	private HashMap<String, IKbox> _kboxes = new HashMap<String, IKbox>();
 
-	/**
-	 * colon-separated path to find resources
-	 * FIXME see if this is still used
-	 */
-	public static final String RESOURCE_PATH_PROPERTY = "thinklab.resource.path";
-	
-	/*
-	 * map URIs to concept space names 
-	 */
-	HashMap<String, String> uri2cs = new HashMap<String, String>();
-	
-	/*
-	 * map concept space names to URIs 
-	 */
-	HashMap<String, String> cs2uri = new HashMap<String, String>();
-	
-	/*
-	 * listeners for plugin load/unload can be added through registerPluginListener
-	 */
-	static ArrayList<IPluginLifecycleListener> pluginListeners =
-		new ArrayList<IPluginLifecycleListener>();
+	protected KnowledgeManager() throws ThinklabException {
 
-    /*
-     * true when thinklab extended types have been initialized.
-     */
-	private boolean typesInitialized = false;
-
-	/**
-	 * This should become the default constructor: the class of knowledge repository and session
-	 * manager is stated in the properties, defaulting to the ones we trust.
-	 * 
-	 * @param fileKnowledgeRepository
-	 * @throws ThinklabIOException
-	 */
-	public KnowledgeManager() throws ThinklabException {
-		
-		String krClass = 
-			Thinklab.get().getProperties().getProperty(
-				"thinklab.repository.class",
-				"org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository");
-		
-		IKnowledgeRepository kr = null;
-		
-		Class<?> cls = null;
-		try {
-			cls = Thinklab.get().getClassLoader().loadClass(krClass);
-			kr =  (IKnowledgeRepository) cls.newInstance();
-
-		} catch (Exception e) {
-			throw new ThinklabValidationException(e);
-		}
-		kr.initialize();
-		
-		knowledgeRepository = kr;
 	}
-
 
 	@Override
 	public ISemanticObject parse(String literal, IConcept concept)
@@ -156,7 +92,7 @@ public class KnowledgeManager implements IKnowledgeManager {
 
 		IKbox ret = null;
 		if (!uri.contains("://")) {
-			File kf = new File(Thinklab.get().getScratchPath() + File.separator + "kbox" + File.separator + uri);
+			File kf = new File(Thinklab.get().getScratchArea("kbox") + File.separator + uri);
 			kf.mkdirs();
 			try {
 				ret = new NeoKBox(kf.toURI().toURL().toString());
@@ -191,45 +127,10 @@ public class KnowledgeManager implements IKnowledgeManager {
 		return retrieveConcept(new SemanticType(conc));
 	}
 	
-	public IKnowledgeRepository getKnowledgeRepository() {
-		return knowledgeRepository;
-	}
-	
-    public IConcept getRootConcept() {
-        return knowledgeRepository.getRootConcept();
-    }
-    
-	public void initialize() throws ThinklabException {
-	
-		/* link and initialize knowledge repository */
-	    knowledgeRepository.initialize();
-	    commandManager = new CommandManager();
- 	}
-
-	
 	public void shutdown() {
 		/* TODO flush knowledge repository */
 		/* TODO any other cleanup actions */
 	}
-
-
-//	/** 
-//	 * This one is used by all classes to access the knowledge manager.
-//	 * @return The one and only knowledge manager for this application.
-//	 * @exception throws an informative exception if KM does not exist or has not been initialized.
-//	 */
-//	public static KnowledgeManager get() {
-//		
-//		if (KM == null) {
-//			try {
-//				KM = new KnowledgeManager();
-//				KM.initialize();
-//			} catch (ThinklabException e) {
-//				throw new ThinklabRuntimeException(e);
-//			}
-//		}
-//		return KM;
-//	}
 
 	public IConcept requireConcept(String id) throws ThinklabException {
     	
@@ -275,22 +176,14 @@ public class KnowledgeManager implements IKnowledgeManager {
         return ret;
     }
     
-	public void clear() {
-		knowledgeRepository.releaseAllOntologies();
-	}
-
-	public void clear(String id) {
-		knowledgeRepository.releaseOntology(id);
-	}
-	
 	public IConcept retrieveConcept(SemanticType t) {
 
 		IConcept ret = null;
 		INamespace ns = ModelManager.get().getNamespace(t.getConceptSpace());
 	    if (ns != null)
 	    	ret = ns.getOntology().getConcept(t.getLocalName());
-	    if (ret == null && t.toString().equals(knowledgeRepository.getRootConcept().toString()))	{
-	    	ret = getRootConcept();
+	    if (ret == null && t.toString().equals(Thinklab.get().getKnowledgeRepository().getRootConcept().toString()))	{
+	    	ret = Thinklab.get().getKnowledgeRepository().getRootConcept();
 	    }
 	    return ret;
 	}
@@ -333,17 +226,8 @@ public class KnowledgeManager implements IKnowledgeManager {
 	}
 	
 	public CommandManager getCommandManager() {
-		return commandManager;
+		return _commandManager;
 	}
-
-	public static void registerPluginListener(IPluginLifecycleListener listener) {
-		pluginListeners.add(listener);
-	}
-
-	public static Collection<IPluginLifecycleListener> getPluginListeners() {
-		return pluginListeners;
-	}
-
 
 	public void registerAnnotation(Class<?> clls, String[] value) throws ThinklabException {
 		for (String s : value) {

@@ -24,7 +24,6 @@ import java.io.IOException;
 import jline.ConsoleReader;
 import jline.Terminal;
 
-import org.apache.commons.logging.Log;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -32,7 +31,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
-import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.MiscUtilities;
 
@@ -55,9 +53,9 @@ public class Shell {
 	
 	public void printStatusMessage() throws IOException {
 		
-		console.printString("ThinkLab shell 0.1alpha\n");
-		console.printString("System path: " + LocalConfiguration.getSystemPath() + "\n");
-		console.printString("Data path: " + LocalConfiguration.getDataPath() + "\n");					
+		console.printString("ThinkLab shell v" + Thinklab.get().getVersion());
+		console.printString("System path: " + Thinklab.get().getLoadPath(null));
+		console.printString("Workspace: " + Thinklab.get().getWorkspace());							
 		console.printString("\n");
 		console.printString("Enter \'help\' for a list of commands; \'exit\' quits\n");
 		console.printString("\n");
