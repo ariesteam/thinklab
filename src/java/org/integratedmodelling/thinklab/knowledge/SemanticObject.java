@@ -27,9 +27,13 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 
 	private ISemantics _semantics;
 	private Object    _object;
-
 	
 	public SemanticObject(ISemantics semantics, Object object) {
+		
+		if (semantics == null && object == null) {
+			throw new ThinklabRuntimeException("invalid null semantic object");
+		}
+
 		this._semantics = semantics;
 		this._object = object;
 	}
@@ -128,6 +132,7 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 		return getSemantics().toString();
 	}
 
+	@Override
 	public String toString() {
 		return "[" + getDirectType() + " " + (_object == null ? "<uninstantiated>" : _object) + "]";
 	}
@@ -139,5 +144,17 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 				((IMetadataHolder)_object).getMetadata() :
 				null;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		return 
+			obj instanceof SemanticObject &&
+			((SemanticObject)obj).getSemantics().equals(getSemantics());
+	}
+
+	@Override
+	public int hashCode() {
+		return getSemantics().hashCode();
+	}
+
 }

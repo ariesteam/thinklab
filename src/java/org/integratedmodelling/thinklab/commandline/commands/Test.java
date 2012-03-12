@@ -30,6 +30,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
+import org.integratedmodelling.thinklab.knowledge.Semantics;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 
 @ThinklabCommand(name="test",argumentNames="arg",argumentTypes="thinklab:Text", argumentDescriptions="test argument")
@@ -51,7 +52,7 @@ public class Test implements ICommandHandler {
 		
 		session.print(PolyList.prettyPrint(semantics.asList()));
 		session.print("\n" + porco);
-
+		
 		IKbox kbox = Thinklab.get().requireKbox("thinklab");
 		if (kbox != null) {
 			kbox.store(o);
@@ -64,4 +65,35 @@ public class Test implements ICommandHandler {
 		return o;
 	}
 
+	
+	public void testKbox() throws ThinklabException {
+		
+		Person john = new Person("john", 34, null, null, null);
+		Person mary = new Person("mary", 29, null, null, john);
+		mary._partner = john;
+		Person dick = new Person("dick", 71, null, new Person[]{mary}, null);
+		Person pipp = new Person("pipp", 12, new Person[]{john, mary}, null, null);
+		mary._parents = new Person[]{dick};
+		pipp._parents = new Person[]{john, mary};
+		
+		Thinklab.get().requireKbox("thinklab").store(dick);
+		
+	}
+	
+	public static class Person {
+		
+		String _name;
+		int    _age;
+		Person[] _children;
+		Person[] _parents;
+		Person   _partner;
+		
+		public Person(String name, int age, Person[] parents, Person[] children, Person partner) {
+			_name = name;
+			_age = age;
+			_partner = partner;
+			_children = children;
+			_parents = parents;
+		}
+	}
 }

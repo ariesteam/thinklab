@@ -157,7 +157,7 @@ public class Concept extends Knowledge implements IConcept {
 	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getAllParents()
 	 */
-	public Collection<IConcept> getAllParents() {
+	public Collection<IConcept> getSemanticClosure() {
 
 		Set<IConcept> concepts = new HashSet<IConcept>();
 		
@@ -182,7 +182,7 @@ public class Concept extends Knowledge implements IConcept {
 			
 			for (IConcept c : getParents()) {				
 				concepts.add(c);
-				concepts.addAll(c.getAllParents());
+				concepts.addAll(c.getSemanticClosure());
  				
 			}
 		}
@@ -226,7 +226,7 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Collection<IProperty> getAllProperties() {
 		Set<IProperty> props = (Set<IProperty>) getProperties();
-		for(IConcept c: getAllParents()){
+		for(IConcept c: getSemanticClosure()){
 			props.addAll(c.getProperties());
 		}
 		return props;
@@ -767,7 +767,7 @@ public class Concept extends Knowledge implements IConcept {
 			// just proceed with the dumb method
 		}
  		
-		Collection<IConcept> collection = getAllParents();
+		Collection<IConcept> collection = getSemanticClosure();
 		collection.add(this);
 		return collection.contains(c);
 	}

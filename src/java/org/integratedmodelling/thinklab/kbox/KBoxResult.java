@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.kbox.neo4j;
+package org.integratedmodelling.thinklab.kbox;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,7 +17,7 @@ import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
  * @author Ferd
  *
  */
-public class NeoKBoxResult extends ReadOnlyList<ISemanticObject> {
+public class KBoxResult extends ReadOnlyList<ISemanticObject> {
 
 	List<Long> _results;
 	IKbox      _kbox;
@@ -43,7 +43,7 @@ public class NeoKBoxResult extends ReadOnlyList<ISemanticObject> {
 		
 	}
 	
-	public NeoKBoxResult(IKbox kbox, ArrayList<Long> res) {
+	public KBoxResult(IKbox kbox, ArrayList<Long> res) {
 		_kbox = kbox;
 		_results = res;
 	}

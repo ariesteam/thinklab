@@ -3,7 +3,10 @@ package org.integratedmodelling.thinklab.kbox.neo4j;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -11,6 +14,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -20,10 +24,13 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
+import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.interfaces.storage.KboxTypeAdapter;
+import org.integratedmodelling.thinklab.kbox.KBoxResult;
 import org.integratedmodelling.thinklab.knowledge.SemanticObject;
 import org.integratedmodelling.thinklab.knowledge.Semantics;
 import org.neo4j.graphdb.Direction;
@@ -100,50 +107,61 @@ public class NeoKBox implements IKbox {
 	public synchronized long store(Object o) throws ThinklabException {
 
 		long ret = -1;
+		HashMap<ISemantics,Node> refs = new HashMap<ISemantics, Node>();
 		ISemanticObject instance = Thinklab.get().annotate(o);		
+
 		Transaction tx = _db.beginTx();
 
 		try {
-			ret = storeInstanceInternal(instance.getSemantics(), _db.getReferenceNode(), null).getId();
-			tx.success();
-		} catch (Exception e) {
-			tx.failure();
-			throw new ThinklabIOException(e.getMessage());
-		} finally {
-			tx.finish();
-		}
-		return ret;
-	}
-
-	private Node storeInstanceInternal(ISemantics instance, Node referenceNode, final IProperty property) throws ThinklabException {
-
-		Node node = _db.createNode();
-		node.setProperty(TYPE_PROPERTY, instance.getConcept().toString());
-		
-		if (property != null) {
-			/*
-			 * create relationship
-			 */
-			referenceNode.createRelationshipTo(node, new RelationshipType() {
-				@Override
-				public String name() {
-					return toId(property);
-				}
-			});
-		} else {
-			referenceNode.createRelationshipTo(node, new RelationshipType() {
+			
+			Node node = storeInstanceInternal(instance.getSemantics(), refs);
+			_db.getReferenceNode().createRelationshipTo(node, new RelationshipType() {
 				@Override
 				public String name() {
 					return HASNODE_PROPERTY;
 				}
 			});
-		}
+
+			ret = node.getId();
+			tx.success();
+			
+		} catch (Exception e) {
+			
+			tx.failure();
+			throw new ThinklabIOException(e.getMessage());
+	
+		} finally {
 		
-		for (ISemantics s : instance.getRelationships()) {
+			tx.finish();
+		}
+		return ret;
+	}
+
+	private Node storeInstanceInternal(ISemantics instance, Map<ISemantics, Node> refs) throws ThinklabException {
+
+		Node node = refs.get(instance);
+		
+		if (node != null)
+			return node;
+		
+		node = _db.createNode();
+		refs.put(instance, node);
+
+		node.setProperty(TYPE_PROPERTY, instance.getConcept().toString());
+		
+		for (final ISemantics s : instance.getRelationships()) {
+			
 			if (s.isLiteral()) {
 				storeProperty(node, s);
 			} else {
-				storeObject(node, s);
+				
+				Node target = storeInstanceInternal(s.getTargetSemantics(), refs);
+				node.createRelationshipTo(target, new RelationshipType() {
+					@Override
+					public String name() {
+						return toId(s.getProperty());
+					}
+				});
 			}
 		}
 		
@@ -162,15 +180,9 @@ public class NeoKBox implements IKbox {
 		adapter.setAndIndexProperty(node.getId(), this, p, s.getTargetSemantics().getLiteral());
 	}
 
-
-	private void storeObject(Node node, ISemantics s) throws ThinklabException {
-		storeInstanceInternal(s.getTargetSemantics(), node, s.getProperty());
-	}
-
 	@Override
 	public void remove(long handle) throws ThinklabException {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -189,7 +201,12 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public List<ISemanticObject> query(IQuery query) throws ThinklabException {
-		Set<Long> matches = queryObjects(query);
+		
+		if (! (query instanceof SemanticQuery)) {
+			throw new ThinklabUnimplementedFeatureException("query type not supported: " + query);
+		}
+		
+		Set<Long> matches = queryObjects((SemanticQuery) query);
 		return applySortingStrategy(matches);
 	}
 	
@@ -209,7 +226,7 @@ public class NeoKBox implements IKbox {
 			 */
 		}
 		
-		return new NeoKBoxResult(this, res);
+		return new KBoxResult(this, res);
 	}
 
 	@Override
@@ -249,7 +266,7 @@ public class NeoKBox implements IKbox {
 			res.add(n.getId());
 		}
 		
-		return new NeoKBoxResult(this, res);
+		return new KBoxResult(this, res);
 	}
 
 	/*
@@ -281,12 +298,47 @@ public class NeoKBox implements IKbox {
 		return PolyList.fromCollection(rl);		
 	}
 
-	private Set<Long> queryObjects(IQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+	private Set<Long> queryObjects(SemanticQuery query) {
+		
+		Set<Long> ret = null;
+		
+		for (SemanticQuery r : query.getRestrictions()) {
+			
+			Set<Long> rr = queryObjects(r);
+			
+			if (ret == null)
+				ret = rr;
+			
+			switch (query.getQuantifier().getType()) {
+			case Quantifier.ALL:
+				break;
+			case Quantifier.ANY:
+				break;
+			case Quantifier.NONE:
+				break;
+			case Quantifier.RANGE:
+				break;
+			case Quantifier.EXACT:
+				break;
+			}
+		}
+		
+		if (query instanceof IOperator && ((IOperator)query).isLiteral()) {
+			
+//			KboxTypeAdapter ta = _typeAdapters.get(lconc);
+			
+		} else if ( query.getSubject() != null) {
+			ret = getSemanticClosure(query.getSubject());			
+		}
+		
+		
+		return ret == null ? new HashSet<Long>() : ret;
 	}
 
-	
+	private Set<Long> getSemanticClosure(IConcept c) {
+		Set<Long> ret = new HashSet<Long>();
+		return ret;
+	}
 	
 	/*
 	 * class to simplify handling of base types. 

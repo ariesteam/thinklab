@@ -34,8 +34,9 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
+import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 
-public class Query implements IQuery, IParseable {
+public class Query implements IQuery, IParseable, SemanticQuery {
 
 	/*
 	 * either a property or a concept, whose nature defines what we match in the
@@ -169,15 +170,30 @@ public class Query implements IQuery, IParseable {
 		return new Query(Quantifier.RANGE(min, max), queries);
 	}
 	
-
 	/*
 	 * -----------------------------------------------------------------------------------
-	 * Non-API public methods meant to facilitate query rewriting in kboxes.
+	 * Non-API introspection methods from SemanticQuery, meant to allow query rewriting in kboxes.
 	 * -----------------------------------------------------------------------------------
 	 */
 	
+	@Override
+	public List<SemanticQuery> getRestrictions() {
+		List<SemanticQuery> ret = new ArrayList<SemanticQuery>();
+		for (IQuery q : _restrictions) {
+			ret.add((SemanticQuery) q);
+		}
+		return ret;
+	}
 	
-
+	@Override
+	public IConcept getSubject() {
+		return (IConcept) _subject;
+	}
+	
+	@Override
+	public Quantifier getQuantifier() {
+		return _quantifier;
+	}
 
 	/*
 	 * -----------------------------------------------------------------------------------

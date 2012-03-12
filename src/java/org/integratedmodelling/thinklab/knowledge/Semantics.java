@@ -35,6 +35,7 @@ package org.integratedmodelling.thinklab.knowledge;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
@@ -58,7 +59,8 @@ import org.integratedmodelling.thinklab.api.lang.IList;
  * and/or it implements IConceptualizable.
  * 
  * Semantics is implemented internally as a compact IList, so it can be printed
- * nicely and converted to XML, JSON or any host language data structures.
+ * nicely and converted to XML, JSON or any host language data structures. Like
+ * all semantic objects in Thinklab, it is immutable.
  * 
  * @author Ferdinando Villa
  */
@@ -98,6 +100,11 @@ public class Semantics implements ISemantics {
 	 * we need this
 	 */
 	IKnowledgeManager _km = null;
+	
+	/*
+	 * and this, unfortunately.
+	 */
+	String _signature = null;
 
 	/**
 	 * This will try to convert the passed targets according to what the
@@ -352,5 +359,49 @@ public class Semantics implements ISemantics {
 		}
 		return ret;
 	}
+	
+	/*
+	 * ensure we can index object with their semantics, although it's quite
+	 * expensive. Kbox storage depends on this.
+	 */
+	private String getSignature() {
+		
+		if (_signature == null) {
+		
+			_signature = predicate.toString();
 
+			if (getTarget() != null)
+				_signature += "|" + ((Semantics)(getTargetSemantics())).getSignature();
+
+			if (literal != null)
+				_signature += "|" + literal.hashCode();
+
+			ArrayList<String> ss = new ArrayList<String>(getRelationshipsCount());
+		
+			for (ISemantics s : getRelationships()) {
+				ss.add(((Semantics)s).getSignature());
+			}
+			
+			Collections.sort(ss);
+			for (String s : ss) {
+				_signature += "|" + s;
+			}
+		}
+		return _signature;
+	}
+
+	@Override
+	public boolean equals(Object arg0) {
+		return 
+			arg0 instanceof Semantics && 
+			((Semantics)arg0).getSignature().equals(this.getSignature());
+	}
+
+	@Override
+	public int hashCode() {
+		return getSignature().hashCode();
+	}
+
+	
+	
 }

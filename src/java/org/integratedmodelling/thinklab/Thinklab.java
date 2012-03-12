@@ -73,10 +73,14 @@ import org.restlet.resource.ServerResource;
 import org.restlet.service.MetadataService;
 
 /**
- * Activating this plugin means loading the knowledge manager, effectively booting the
- * Thinklab system. KnowledgeManager is the actual KM, but it remains hidden in this
- * package, using Thinklab as a proxy for everthing except those activities that need
- * a knowledge manager before Thinklab exists.
+ * Thinklab implements all fundamental interfaces in the Thinklab API, serving as a 
+ * one-stop access point for the system.
+ * 
+ * There is only one instance of Thinklab, always accessible using Thinklab.get(). 
+ * Use Thinklab.boot() to start Thinklab and Thinklab.shutdown() to stop it.
+ * 
+ * Thinklab delegates calls to working and properly initialized instances of IKnowledgeManager, 
+ * IProjectManager, IConfiguration, IPluginManager and IModelManager. 
  * 
  * @author Ferdinando Villa
  *
@@ -378,6 +382,12 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	public static void boot() throws ThinklabException {
 		_this = new Thinklab();		
 		_this.startup();
+	}
+	
+	public static void shutdown() {
+		if (_this != null) {
+			_this._km.shutdown();
+		}
 	}
 	
 	/**
