@@ -1,2 +1,0 @@
-cd %THINKLAB_HOME%
-java %THINKLAB_OPTS%

@@ -4,7 +4,7 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.interfaces.storage.LiteralQuery;
+import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.query.Query;
 
 /**
@@ -13,7 +13,7 @@ import org.integratedmodelling.thinklab.query.Query;
  * @author Ferd
  *
  */
-public class Equals extends Query implements LiteralQuery {
+public class Equals extends Query implements IOperator {
 
 	private Object _operand;
 	
@@ -22,6 +22,12 @@ public class Equals extends Query implements LiteralQuery {
 		return new Pair<IConcept, Object[]>(
 				Thinklab.c(NS.OPERATION_EQUALS), 
 				new Object[]{_operand});
+	}
+
+	@Override
+	public boolean isLiteral() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

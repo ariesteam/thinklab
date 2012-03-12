@@ -20,7 +20,6 @@
 package org.integratedmodelling.thinklab.owlapi;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
@@ -38,6 +37,7 @@ import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
@@ -45,7 +45,6 @@ import org.integratedmodelling.thinklab.configuration.LocalConfiguration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
-import org.integratedmodelling.utils.FileTypeFilter;
 import org.semanticweb.owl.apibinding.OWLManager;
 import org.semanticweb.owl.inference.OWLClassReasoner;
 import org.semanticweb.owl.inference.OWLConsistencyChecker;
@@ -106,7 +105,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 
 			/* add an autourimapper for the ontologies directory if any exists */
 			File ontologiesFolder = 
-				new File(thinklabPlugin.getKnowledgeDirectory());
+				thinklabPlugin.getWorkspace(IConfiguration.SUBSPACE_KNOWLEDGE);
 				
 			if (ontologiesFolder.exists()) {
 				

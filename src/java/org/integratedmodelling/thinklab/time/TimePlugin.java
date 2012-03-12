@@ -32,15 +32,17 @@
  **/
 package org.integratedmodelling.thinklab.time;
 
-import java.util.Properties;
-
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
-public class TimePlugin extends ThinklabPlugin {
+/**
+ * FIXME de-pluginize
+ * @author Ferd
+ *
+ */
+public class TimePlugin  {
 
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.time";
 	
@@ -70,23 +72,26 @@ public class TimePlugin extends ThinklabPlugin {
 
     public void load() throws ThinklabException {
 
+    	/*
+    	 * FIXME all this is silly. Just use a global TIME object with the IDs as constants.
+    	 */
     	DATETIME_TYPE_ID = 
-    		getProperties().getProperty("DateTimeTypeID", "time:DateTimeValue");
+    		Thinklab.get().getProperties().getProperty("DateTimeTypeID", "time:DateTimeValue");
     	TIMERECORD_TYPE_ID = 
-    		getProperties().getProperty("TemporalLocationRecordTypeID", "time:TemporalLocationRecord");
+    			Thinklab.get().getProperties().getProperty("TemporalLocationRecordTypeID", "time:TemporalLocationRecord");
     	TEMPORALGRID_TYPE_ID = 
-    		getProperties().getProperty("TemporalGridTypeID", "time:RegularTemporalGrid");
+    			Thinklab.get().getProperties().getProperty("TemporalGridTypeID", "time:RegularTemporalGrid");
     	PERIOD_TYPE_ID = 
-    		getProperties().getProperty("PeriodTypeID", "time:PeriodValue");
+    			Thinklab.get().getProperties().getProperty("PeriodTypeID", "time:PeriodValue");
     	DURATION_TYPE_ID = 
-    		getProperties().getProperty("DurationTypeID", "time:DurationValue");
+    			Thinklab.get().getProperties().getProperty("DurationTypeID", "time:DurationValue");
 
     	STARTS_AT_PROPERTY_ID = 
-    		getProperties().getProperty("StartsAtPropertyID", "time:startsAt");
+    			Thinklab.get().getProperties().getProperty("StartsAtPropertyID", "time:startsAt");
     	ENDS_AT_PROPERTY_ID = 
-    		getProperties().getProperty("EndsAtPropertyID", "time:endsAt");
+    			Thinklab.get().getProperties().getProperty("EndsAtPropertyID", "time:endsAt");
     	STEP_SIZE_PROPERTY_ID = 
-    		getProperties().getProperty("StepSizePropertyID", "time:inStepsOf");
+    			Thinklab.get().getProperties().getProperty("StepSizePropertyID", "time:inStepsOf");
 
     	timeGridConcept = Thinklab.c(TEMPORALGRID_TYPE_ID);
     	timeRecordConcept = Thinklab.c(TIMERECORD_TYPE_ID);
@@ -132,16 +137,5 @@ public class TimePlugin extends ThinklabPlugin {
 		return timeObservable;
 	}
 
-	@Override
-	protected String getPluginBaseName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Properties getProperties() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

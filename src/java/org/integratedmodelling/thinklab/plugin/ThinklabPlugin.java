@@ -19,9 +19,7 @@
  */
 package org.integratedmodelling.thinklab.plugin;
 
-import java.util.Properties;
-
-import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
 
 
 
@@ -31,24 +29,8 @@ import org.integratedmodelling.exceptions.ThinklabException;
  * @author Ferdinando Villa
  *
  */
-public abstract class ThinklabPlugin 
+public abstract class ThinklabPlugin implements IThinklabPlugin
 {	
-	abstract protected void load() throws ThinklabException;
-	
-	abstract protected void unload() throws ThinklabException;
-	
-	protected abstract String getPluginBaseName();
-	
-	public abstract Properties getProperties();
-	
-	/**
-	 * 
-	 * @return
-	 * @deprecated
-	 */
-	public String getKnowledgeDirectory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 	
 }
