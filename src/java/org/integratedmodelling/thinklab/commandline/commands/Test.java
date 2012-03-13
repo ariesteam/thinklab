@@ -68,32 +68,5 @@ public class Test implements ICommandHandler {
 	
 	public void testKbox() throws ThinklabException {
 		
-		Person john = new Person("john", 34, null, null, null);
-		Person mary = new Person("mary", 29, null, null, john);
-		mary._partner = john;
-		Person dick = new Person("dick", 71, null, new Person[]{mary}, null);
-		Person pipp = new Person("pipp", 12, new Person[]{john, mary}, null, null);
-		mary._parents = new Person[]{dick};
-		pipp._parents = new Person[]{john, mary};
-		
-		Thinklab.get().requireKbox("thinklab").store(dick);
-		
-	}
-	
-	public static class Person {
-		
-		String _name;
-		int    _age;
-		Person[] _children;
-		Person[] _parents;
-		Person   _partner;
-		
-		public Person(String name, int age, Person[] parents, Person[] children, Person partner) {
-			_name = name;
-			_age = age;
-			_partner = partner;
-			_children = children;
-			_parents = parents;
-		}
 	}
 }

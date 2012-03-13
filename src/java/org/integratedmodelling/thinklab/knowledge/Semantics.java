@@ -66,6 +66,7 @@ import org.integratedmodelling.thinklab.api.lang.IList;
  */
 public class Semantics implements ISemantics {
 
+
 	/*
 	 * the semantic predicate is either a concept or a property.
 	 */
@@ -401,7 +402,5 @@ public class Semantics implements ISemantics {
 	public int hashCode() {
 		return getSignature().hashCode();
 	}
-
-	
 	
 }

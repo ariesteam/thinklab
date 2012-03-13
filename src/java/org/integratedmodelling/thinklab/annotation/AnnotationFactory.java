@@ -259,9 +259,17 @@ public class AnnotationFactory {
 		return ret;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Object instantiate(ISemantics annotation) throws ThinklabException {
+		return instantiateInternal(annotation, new HashMap<Long,Object>());
+	}
 	
+	@SuppressWarnings("unchecked")
+	private Object instantiateInternal(ISemantics annotation, Map<Long, Object> refs) throws ThinklabException {
+	
+//		if (((Semantics)annotation).isReference() && refs.containsKey(((Semantics)annotation).getReference())) {
+//			return refs.get(((Semantics)annotation).getReferenceId());
+//		}
+		
 		Object ret = null;
 		
 		/*
@@ -319,7 +327,7 @@ public class AnnotationFactory {
 		 */
 		if (IConceptualizable.class.isAssignableFrom(cls)) {
 			((IConceptualizable)ret).define(annotation); 
-			return ret;
+			return ret; // checkReference(annotation, ret, refs);
 		} 		
 
 		/*
@@ -399,7 +407,6 @@ public class AnnotationFactory {
 			}
 		}
 		
-		
 		/*
 		 * if there is a public initialize() method with no parameters, invoke it.
 		 */
@@ -412,8 +419,16 @@ public class AnnotationFactory {
 			// no method, the stupid thing throws an exception instead of returning null.
 		}
 		
-		return ret;
+		return ret; // checkReference(annotation, ret, refs);
 	}
+
+//	private Object checkReference(ISemantics annotation, Object ret,
+//			Map<Long, Object> refs) {
+//		Semantics ann = (Semantics) annotation;
+//		if (ann.isReference() && !refs.containsKey(ann.getReferenceId()))
+//			refs.put(ann.getReferenceId(), ret);
+//		return ret;
+//	}
 
 	/**
 	 * Create the semantic object from a textual representation and a concept. The concept must have
