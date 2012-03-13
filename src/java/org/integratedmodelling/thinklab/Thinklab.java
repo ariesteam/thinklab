@@ -71,6 +71,10 @@ import org.integratedmodelling.utils.ClassUtils.Visitor;
 import org.integratedmodelling.utils.template.MVELTemplate;
 import org.restlet.resource.ServerResource;
 import org.restlet.service.MetadataService;
+import org.semanticweb.owl.inference.OWLClassReasoner;
+import org.semanticweb.owl.inference.OWLConsistencyChecker;
+import org.semanticweb.owl.inference.OWLIndividualReasoner;
+import org.semanticweb.owl.inference.OWLPropertyReasoner;
 
 /**
  * Thinklab implements all fundamental interfaces in the Thinklab API, serving as a 
@@ -385,9 +389,21 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	}
 	
 	public static void shutdown() {
+		
+		
 		if (_this != null) {
+		
+			_this.logger.info("Thinklab shutting down");
+			
 			_this._km.shutdown();
+
+			_this._configuration = null;
+			_this._km = null;
+			_this._knowledgeRepository = null;
+			_this._pluginManager = null;
+			_this = null;
 		}
+		
 	}
 	
 	/**

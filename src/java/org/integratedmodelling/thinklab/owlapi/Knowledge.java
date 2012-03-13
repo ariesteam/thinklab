@@ -22,11 +22,9 @@ package org.integratedmodelling.thinklab.owlapi;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.lang.SemanticType;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
@@ -61,6 +59,11 @@ public abstract class Knowledge implements IKnowledge, IResource {
 
 	private static String DEF_LANG = "en";
 
+	public static FileKnowledgeRepository KR() {
+		return (FileKnowledgeRepository) Thinklab.get().getKnowledgeRepository();
+	}
+
+	
 	public Knowledge(OWLEntity entity, OWLType type) {
 		this.entity = entity;
 		this.type = type;
@@ -69,12 +72,12 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	}
 
 	public OWLOntology getOWLOntology() {
-		return FileKnowledgeRepository.KR.manager.getOntology(ontoURI);
+		return KR().manager.getOntology(ontoURI);
 	}
 	
 	public IOntology getOntology() {
 		try {
-			return FileKnowledgeRepository.KR.requireOntology(getConceptSpace());
+			return KR().requireOntology(getConceptSpace());
 		} catch (ThinklabResourceNotFoundException e) {
 			// it can only happen in very, very weird situations.
 			throw new ThinklabRuntimeException(e);
@@ -82,7 +85,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	}
 	
 	public Ontology getThinklabOntology() {
-		return (Ontology) FileKnowledgeRepository.KR.retrieveOntology(getConceptSpace());
+		return (Ontology) KR().retrieveOntology(getConceptSpace());
 	}
 	/*
 	 * (non-Javadoc)
@@ -138,7 +141,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 			OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, anno);
 			// Add the axiom to the ontology
 			try {
-				FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
+				KR().manager.applyChange(new AddAxiom(
 					ontology, ax));
 			} catch (OWLOntologyChangeException e) {
 				throw new ThinklabRuntimeException(e);
@@ -162,7 +165,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 			OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, anno);
 			// Add the axiom to the ontology
 			try {
-				FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
+				KR().manager.applyChange(new AddAxiom(
 					ontology, ax));
 			} catch (OWLOntologyChangeException e) {
 				throw new ThinklabRuntimeException(e);
@@ -180,7 +183,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	public void addDescription(String desc, String language) {
 		// Here I do not which ontology to use... the one of the
 		// concept or some "active" one?
-		OWLOntology ontology = FileKnowledgeRepository.KR.manager
+		OWLOntology ontology = KR().manager
 				.getOntology(ontoURI);
 		synchronized (ontology) {
 			OWLDataFactory df = FileKnowledgeRepository.df;
@@ -188,7 +191,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 			OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, commentAnno);
 			// Add the axiom to the ontology
 			try {
-				FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
+				KR().manager.applyChange(new AddAxiom(
 					ontology, ax));
 			} catch (OWLOntologyChangeException e) {
 				throw new ThinklabRuntimeException(e);
@@ -216,7 +219,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	public void addLabel(String desc, String language) {
 		// Here I do not which ontology to use... the one of the
 		// concept or some "active" one?
-		OWLOntology ontology = FileKnowledgeRepository.KR.manager
+		OWLOntology ontology = KR().manager
 				.getOntology(ontoURI);
 		synchronized (ontology) {
 			OWLDataFactory df = FileKnowledgeRepository.df;
@@ -225,7 +228,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 			OWLAxiom ax = df.getOWLEntityAnnotationAxiom(entity, labelAnno);
 			// Add the axiom to the ontology
 			try {
-				FileKnowledgeRepository.KR.manager.applyChange(new AddAxiom(
+				KR().manager.applyChange(new AddAxiom(
 					ontology, ax));
 			} catch (OWLOntologyChangeException e) {
 				throw new ThinklabRuntimeException(e);
@@ -282,7 +285,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	}
 
 	private String getAnnotation(String languageCode, URI property) {
-		OWLOntology ontology = FileKnowledgeRepository.KR.manager
+		OWLOntology ontology = KR().manager
 				.getOntology(ontoURI);
 		if (ontology != null) {
 			synchronized (ontology) {
@@ -401,7 +404,7 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	 */
 	public boolean is(URI uri) {
 		
-		IKnowledge k = FileKnowledgeRepository.KR.resolveURI(uri);
+		IKnowledge k = KR().resolveURI(uri);
 		return is(k);
 	}
 

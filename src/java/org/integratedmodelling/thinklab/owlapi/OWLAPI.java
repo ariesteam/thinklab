@@ -186,7 +186,7 @@ public class OWLAPI {
     	
     	Set<OWLOntology> target = 
     		checkModel ? 
-    				FileKnowledgeRepository.get().manager.getOntologies() :
+    				Knowledge.KR().manager.getOntologies() :
     				Collections.singleton(clazz.getOWLOntology());
     	
     	 RestrictionVisitor restrictionVisitor = new RestrictionVisitor(target);
@@ -293,7 +293,7 @@ public class OWLAPI {
 		
         AddAxiom addAxiomChange = new AddAxiom(ont, assertion);
         try {
-			FileKnowledgeRepository.get().manager.applyChange(addAxiomChange);
+        	Knowledge.KR().manager.applyChange(addAxiomChange);
 		} catch (OWLOntologyChangeException e) {
 			throw new ThinklabRuntimeException(e);
 		}
@@ -308,7 +308,7 @@ public class OWLAPI {
 
 		AddAxiom addAxiomChange = new AddAxiom(ont, assertion);
         try {
-			FileKnowledgeRepository.get().manager.applyChange(addAxiomChange);
+        	Knowledge.KR().manager.applyChange(addAxiomChange);
 		} catch (OWLOntologyChangeException e) {
 			throw new ThinklabRuntimeException(e);
 		}

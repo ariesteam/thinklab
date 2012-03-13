@@ -181,7 +181,7 @@ public class Instance extends Knowledge  {
 		
 		Set<Instance> ret = new HashSet<Instance>();
 		
-		for (OWLOntology o : FileKnowledgeRepository.get().manager.getOntologies()) {
+		for (OWLOntology o : KR().manager.getOntologies()) {
 			for (OWLIndividual ind : this.entity.asOWLIndividual().getSameIndividuals(o)) {
 				ret.add(new Instance(ind));
 			}

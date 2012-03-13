@@ -128,8 +128,12 @@ public class KnowledgeManager implements IKnowledgeManager {
 	}
 	
 	public void shutdown() {
-		/* TODO flush knowledge repository */
+		
 		/* TODO any other cleanup actions */
+		
+		_annotationFactory = null;
+		_commandManager = null;
+		_kboxes.clear();
 	}
 
 	public IConcept requireConcept(String id) throws ThinklabException {

@@ -37,7 +37,6 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
@@ -52,6 +51,7 @@ import org.semanticweb.owl.inference.OWLConsistencyChecker;
 import org.semanticweb.owl.inference.OWLIndividualReasoner;
 import org.semanticweb.owl.inference.OWLPropertyReasoner;
 import org.semanticweb.owl.inference.OWLReasoner;
+import org.semanticweb.owl.inference.OWLReasonerBase;
 import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLException;
 import org.semanticweb.owl.model.OWLOntology;
@@ -80,17 +80,30 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	
 	protected Registry registry;
 	
-	protected OWLClassReasoner classReasoner;
-	protected OWLIndividualReasoner instanceReasoner;
-	protected OWLPropertyReasoner propertyReasoner;
-	protected OWLConsistencyChecker consistencyReasoner;
+	private OWLClassReasoner classReasoner;
+	private OWLIndividualReasoner instanceReasoner;
+	private OWLPropertyReasoner propertyReasoner;
+	private OWLConsistencyChecker consistencyReasoner;
 	
 	private IConcept rootConcept;
 	private IConcept noConcept;
 	
 	protected static OWLDataFactory df;
-	protected static FileKnowledgeRepository KR =null;
 
+	
+	public OWLClassReasoner getClassReasoner() {
+		return classReasoner;
+	}
+	public OWLPropertyReasoner getPropertyReasoner() {
+		return propertyReasoner;
+	}
+	public OWLConsistencyChecker getConsistencyReasoner() {
+		return consistencyReasoner;
+	}
+	public OWLIndividualReasoner getInstanceReasoner() {
+		return instanceReasoner;
+	}
+	
 	class UriPublisher implements IPluginLifecycleListener {
 
 		@Override
@@ -124,10 +137,6 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		
 	}
 	
-	public static FileKnowledgeRepository get() {
-		return KR;
-	}
-	
 	/**
 	 * Default constructor. To be followed by initialize().
 	 * 
@@ -135,23 +144,19 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 	 */
 	public FileKnowledgeRepository() throws ThinklabIOException {
 		
-		if (KR == null) {
-			KR = this;
-			repositoryDirectory = Thinklab.get().getScratchArea("ontology/repository");
-			tempDirectory = Thinklab.get().getScratchArea("ontology/tmp");
-			manager = OWLManager.createOWLOntologyManager();
-			registry = Registry.get();
-			registry.registerURI("owl", URI.create("http://www.w3.org/2002/07/owl"));
-			df = manager.getOWLDataFactory();
-			rootConcept = getRootConcept();
-			
-			/*
-			 * register a plugin listener that will publish the physical location of
-			 * ontologies in plugins, so we don't need to be online to use thinklab.
-			 */
-			Thinklab.get().addPluginLifecycleListener(new UriPublisher());
-		}
-
+		repositoryDirectory = Thinklab.get().getScratchArea("ontology/repository");
+		tempDirectory = Thinklab.get().getScratchArea("ontology/tmp");
+		manager = OWLManager.createOWLOntologyManager();
+		registry = Registry.get();
+		registry.registerURI("owl", URI.create("http://www.w3.org/2002/07/owl"));
+		df = manager.getOWLDataFactory();
+		rootConcept = getRootConcept();
+		
+		/*
+		 * register a plugin listener that will publish the physical location of
+		 * ontologies in plugins, so we don't need to be online to use thinklab.
+		 */
+		Thinklab.get().addPluginLifecycleListener(new UriPublisher());
 	}
 
 	/*

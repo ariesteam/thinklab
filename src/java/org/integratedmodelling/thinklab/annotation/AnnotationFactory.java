@@ -9,10 +9,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
@@ -26,6 +29,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.knowledge.SemanticObject;
@@ -171,11 +175,64 @@ public class AnnotationFactory {
 	 * the actually useful methods
 	 * -----------------------------------------------------------------------------
 	 */
-	
 	public ISemantics conceptualize(Object o) throws ThinklabException {
+		
+		Map<Object, Triple<Long, Long, IList>> hash = 
+				Collections.synchronizedMap(new WeakHashMap<Object, Triple<Long,Long,IList>>());
+		IList list = conceptualizeInternal(o, hash);
+		return new Semantics(resolveReferences(list, hash), Thinklab.get());
+	}
+	
+	private IList resolveReferences(IList list,
+			Map<Object, Triple<Long, Long, IList>> hash) throws ThinklabException {
+
+		/*
+		 * 1st pass: translate all lists with refcount > 1 to reference lists and 
+		 * index by ID.
+		 */
+		HashMap<Long,IList> refs = new HashMap<Long,IList>();
+		for (Triple<Long, Long, IList> t : hash.values()) {
+			IList rl = t.getThird();
+			if (t.getSecond() > 1)
+				rl = PolyList.referencedList(t.getFirst(), rl.toArray());
+			refs.put(t.getFirst(), rl);
+		}
+		
+		/*
+		 * 2nd pass - actually substitute those refs recursively
+		 */
+		return substituteRefs(list, refs, new HashSet<Long>());
+	}
+		
+	private IList substituteRefs(IList list, Map<Long, IList> refs, HashSet<Long> seen) {
+		
+		if (list == null)
+			return null;
+		
+		if (!list.isEmpty() && "#".equals(list.first())) {
+			return substituteRefs(refs.get(list.nth(1)), refs, seen);
+		}
+		ArrayList<Object> ret = new ArrayList<Object>();
+		for (Object o : list) {
+			ret.add(o instanceof IList ? substituteRefs((IList) o, refs, seen) : o);
+		}
+		
+		return PolyList.fromCollection(ret);
+	}
+
+	/*
+	 * Final list contains unresolved references. The value in the hash contains for
+	 * each object:
+	 * 1. an incremental, unique ID
+	 * 2. the number of times the object was seen
+	 * 3. the IList that describes it, containing unresolved refs in the form ("#", id) 
+	 * 	  for all linked objects, to be resolved later.
+	 */
+	private IList conceptualizeInternal(Object o, Map<Object, Triple<Long, Long, IList>> hash) 
+			throws ThinklabException {
 
 		if (o instanceof IConceptualizable) {
-			return ((IConceptualizable) o).conceptualize();
+			return ((IConceptualizable) o).conceptualize().asList();
 		}
 
 		/*
@@ -185,20 +242,17 @@ public class AnnotationFactory {
 		 */
 		if (o instanceof Map.Entry<?,?>) {
 			
-			return new Semantics(
-					PolyList.list(
-						Thinklab.c(NS.KEY_VALUE_PAIR),
-						PolyList.list(Thinklab.p(NS.HAS_FIRST_FIELD), conceptualize(((Map.Entry<?,?>)o).getKey()).asList()),
-						PolyList.list(Thinklab.p(NS.HAS_SECOND_FIELD), conceptualize(((Map.Entry<?,?>)o).getValue()).asList())),
-					Thinklab.get());
+			return 
+				PolyList.list(
+					Thinklab.c(NS.KEY_VALUE_PAIR),
+					PolyList.list(Thinklab.p(NS.HAS_FIRST_FIELD), conceptualizeInternal(((Map.Entry<?,?>)o).getKey(), hash)),
+					PolyList.list(Thinklab.p(NS.HAS_SECOND_FIELD), conceptualizeInternal(((Map.Entry<?,?>)o).getValue(), hash)));
 		} 
 			
 		Class<?> cls = o.getClass();
 		IConcept literalType = _class2literal.get(cls);
 		if (literalType != null) {
-			return new Semantics(
-					PolyList.list(literalType, o),
-					Thinklab.get());
+			return PolyList.list(literalType, o);
 		} 	
 
 		
@@ -209,6 +263,22 @@ public class AnnotationFactory {
 		if (mainc == null)
 			return null;
 
+
+		/*
+		 * if object was already seen, increment ref count. 
+		 */
+		long objId;
+		if (hash.containsKey(o)) {
+			Triple<Long,Long,IList> oo = hash.get(o);
+			objId = oo.getFirst();
+			hash.put(o, new Triple<Long,Long,IList> (objId, oo.getSecond()+1, oo.getThird()));
+			return PolyList.list("#", objId);
+		} else {
+			objId = hash.size() + 1;
+			hash.put(o, new Triple<Long,Long,IList>(objId,1l, null));
+		}
+		
+		
 		ArrayList<Object> sa = new ArrayList<Object>();
 		sa.add(mainc);
 
@@ -226,20 +296,31 @@ public class AnnotationFactory {
 				} catch (Exception e) {
 					throw new ThinklabInternalErrorException(e);
 				}
-				for (Object v : getAllInstances(value)) {
+				if (value != null) {
+					for (Object v : getAllInstances(value)) {
 					
-					ISemantics semantics = conceptualize(v);
-					if (semantics == null) {
-						throw new ThinklabValidationException("cannot conceptualize field " + f.getName() + " of object " + o);
+						IList semantics = conceptualizeInternal(v, hash);
+						if (semantics == null) {
+							throw new ThinklabValidationException("cannot conceptualize field " + f.getName() + " of object " + o);
+						}
+						sa.add(PolyList.list(p, semantics));
 					}
-					sa.add(PolyList.list(p, semantics.asList()));
-				} 
+				}
 			}
 		}
 
-
-		return sa.size() == 0 ? null : new Semantics(
-				PolyList.fromCollection(sa), Thinklab.get());
+		/*
+		 * store unresolved object semantics for later resolution
+		 */
+		Triple<Long,Long,IList> oo = hash.get(o);
+		objId = oo.getFirst();
+		hash.put(o, new Triple<Long,Long,IList> (objId, oo.getSecond()+1, 
+				sa.size() == 0 ? null : PolyList.fromCollection(sa)));
+		
+		/*
+		 * return unresolved reference
+		 */
+		return PolyList.list("#", objId);
 	}
 	
 	private Collection<Object> getAllInstances(Object value) {

@@ -131,7 +131,7 @@ public class Semantics implements ISemantics {
 	private void parse(IList iList) {
 		
 		relationships = new ArrayList<ISemantics>();
-		Object[] oo = iList.array();
+		Object[] oo = iList.toArray();
 		
 		for (int i = 1; i < oo.length; i++) {
 

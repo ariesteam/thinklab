@@ -302,7 +302,7 @@ public class ThinklabOWLManager {
 				ImplUtils.getAnnotations(
 						resource,
 						annotation.getURI(),
-						FileKnowledgeRepository.KR.manager.getOntologies());
+						Knowledge.KR().manager.getOntologies());
 			
 			/*
 			 * just take the first annotation with the given value.
@@ -334,7 +334,7 @@ public class ThinklabOWLManager {
 				ImplUtils.getAnnotations(
 						resource,
 						annotation.getURI(),
-						FileKnowledgeRepository.KR.manager.getOntologies());
+						Knowledge.KR().manager.getOntologies());
 			
 			/*
 			 * just take the first annotation with the given value.

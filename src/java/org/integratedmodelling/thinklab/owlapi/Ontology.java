@@ -245,7 +245,7 @@ public class Ontology implements IOntology {
 		AddAxiom add = new AddAxiom(ont,ax);
 		
 		try {
-			FileKnowledgeRepository.get().manager.applyChange(add);
+			Knowledge.KR().manager.applyChange(add);
 		} catch (OWLOntologyChangeException e) {
 			throw new ThinklabRuntimeException(e);
 		}
@@ -400,7 +400,7 @@ public class Ontology implements IOntology {
 				String fn = kr.ontologyfn.get(getConceptSpace());
 				if (fn != null) {
 					File ff = new File(fn);
-					FileKnowledgeRepository.get().manager.saveOntology(ont, ff.toURI());
+					Knowledge.KR().manager.saveOntology(ont, ff.toURI());
 				}
 				} catch (Exception e) {
 				ret = false;
@@ -409,7 +409,7 @@ public class Ontology implements IOntology {
 		}
 		
 		try {
-			FileKnowledgeRepository.get().manager.
+			Knowledge.KR().manager.
 				saveOntology(ont, new OWLXMLOntologyFormat(), physicalURI);
 		} catch (Exception e) {
 			throw new ThinklabIOException(e);
@@ -506,7 +506,7 @@ public class Ontology implements IOntology {
 		
 		OWLIndividual ret = null;
 		
-		for (Object o : list.array()) {
+		for (Object o : list.toArray()) {
 			
 			/**
 			 * FIXME ensure it's not a semanticobject with an instance in it
@@ -577,10 +577,10 @@ public class Ontology implements IOntology {
 		Concept ret = null;
 		String id = null;
 		
-		OWLOntologyManager manager = FileKnowledgeRepository.get().manager;
-		OWLDataFactory factory = FileKnowledgeRepository.get().manager.getOWLDataFactory();
+		OWLOntologyManager manager = Knowledge.KR().manager;
+		OWLDataFactory factory = Knowledge.KR().manager.getOWLDataFactory();
 		
-		for (Object o : list.array()) {
+		for (Object o : list.toArray()) {
 			
 			if (o instanceof IList) {
 			} else {
@@ -772,8 +772,8 @@ public class Ontology implements IOntology {
 	@Override
 	public IConcept createConcept(String localName, IConcept[] parents) throws ThinklabException {
 
-		OWLOntologyManager manager = FileKnowledgeRepository.get().manager;
-		OWLDataFactory factory = FileKnowledgeRepository.get().manager.getOWLDataFactory();		
+		OWLOntologyManager manager = Knowledge.KR().manager;
+		OWLDataFactory factory = Knowledge.KR().manager.getOWLDataFactory();		
 		IConcept ret = getConcept(localName);
 		
 		if (ret == null) {

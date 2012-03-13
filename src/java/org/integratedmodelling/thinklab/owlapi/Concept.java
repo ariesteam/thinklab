@@ -57,6 +57,7 @@ import org.semanticweb.owl.model.OWLRestriction;
  */
 public class Concept extends Knowledge implements IConcept {
 
+	
 	/**
 	 * @param cl
 	 * @throws ThinklabResourceNotFoundException
@@ -135,8 +136,7 @@ public class Concept extends Knowledge implements IConcept {
 		Set<IConcept> concepts = new HashSet<IConcept>();
 		synchronized (this.entity) {
 			Set<OWLDescription> set = ((OWLClass) this.entity)
-				.getSuperClasses(FileKnowledgeRepository.KR.manager
-						.getOntologies());
+				.getSuperClasses(KR().manager.getOntologies());
 		
 			for (OWLDescription s : set) {
 				if (!(s.isAnonymous() || s.isOWLNothing()))
@@ -146,8 +146,8 @@ public class Concept extends Knowledge implements IConcept {
 
 		// OWLAPI doesn't do this - only add owl:Thing if this is its direct subclass, i.e. has no 
 		// parents in OWLAPI.
-		if (concepts.isEmpty() && !FileKnowledgeRepository.KR.getRootConcept().equals(this))
-			concepts.add(FileKnowledgeRepository.KR.getRootConcept());
+		if (concepts.isEmpty() && !KR().getRootConcept().equals(this))
+			concepts.add(KR().getRootConcept());
 		
 		return concepts;
 	}
@@ -157,14 +157,15 @@ public class Concept extends Knowledge implements IConcept {
 	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getAllParents()
 	 */
-	public Collection<IConcept> getSemanticClosure() {
+	public Collection<IConcept> getAllParents() {
 
 		Set<IConcept> concepts = new HashSet<IConcept>();
 		
-		if (FileKnowledgeRepository.KR.classReasoner != null) {
+		if (KR().getClassReasoner() != null) {
 			
 			try {
-				Set<Set<OWLClass>> parents = FileKnowledgeRepository.KR.classReasoner
+				Set<Set<OWLClass>> parents = 
+					KR().getClassReasoner()
 						.getAncestorClasses((OWLClass) entity);
 				Set<OWLClass> subClses = OWLReasonerAdapter
 						.flattenSetOfSets(parents);
@@ -182,13 +183,13 @@ public class Concept extends Knowledge implements IConcept {
 			
 			for (IConcept c : getParents()) {				
 				concepts.add(c);
-				concepts.addAll(c.getSemanticClosure());
+				concepts.addAll(c.getAllParents());
  				
 			}
 		}
 
 		// OWLAPI doesn't do this
-		concepts.add(FileKnowledgeRepository.KR.getRootConcept());
+		concepts.add(KR().getRootConcept());
 
 		return concepts;
 
@@ -203,14 +204,13 @@ public class Concept extends Knowledge implements IConcept {
 		Set<IConcept> concepts = new HashSet<IConcept>();
 		synchronized (this.entity) {
 			Set<OWLDescription> set = ((OWLClass) this.entity)
-				.getSubClasses(FileKnowledgeRepository.KR.manager
-						.getOntologies());
+				.getSubClasses(KR().manager.getOntologies());
 			for (OWLDescription s : set) {
 				if (!(s.isAnonymous() || s.isOWLNothing() || s.isOWLThing()))
 					concepts.add(new Concept(s.asOWLClass()));
 			}
 			if (set.isEmpty() && ((OWLClass) entity).isOWLThing()) {
-				for (IOntology onto : FileKnowledgeRepository.KR.ontologies
+				for (IOntology onto : KR().ontologies
 					.values()) {
 					concepts.addAll(onto.getConcepts());
 				}
@@ -226,7 +226,7 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Collection<IProperty> getAllProperties() {
 		Set<IProperty> props = (Set<IProperty>) getProperties();
-		for(IConcept c: getSemanticClosure()){
+		for(IConcept c: getAllParents()){
 			props.addAll(c.getProperties());
 		}
 		return props;
@@ -239,8 +239,7 @@ public class Concept extends Knowledge implements IConcept {
 	 */
 	public Collection<IProperty> getAnnotationProperties() {
 		// where are we searching? In all ontologies...
-		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager
-				.getOntologies();
+		Set<OWLOntology> ontologies = KR().manager.getOntologies();
 		Set<IProperty> properties = new HashSet<IProperty>();
 		for (OWLOntology ontology : ontologies) {
 			synchronized (ontology) {
@@ -288,7 +287,7 @@ public class Concept extends Knowledge implements IConcept {
 	public Collection<IProperty> getDirectProperties() {
 		
 		// where are we searching? In all ontologies...
-		Set<OWLOntology> ontologies = FileKnowledgeRepository.KR.manager.getOntologies();
+		Set<OWLOntology> ontologies = KR().manager.getOntologies();
 		
 		Set<IProperty> properties = new HashSet<IProperty>();
 		for (OWLOntology ontology : ontologies) {
@@ -759,15 +758,16 @@ public class Concept extends Knowledge implements IConcept {
 			return true;
 		
 		try {
-			if (FileKnowledgeRepository.get().classReasoner != null) {
-				return FileKnowledgeRepository.get().classReasoner.
-					isSubClassOf(this.entity.asOWLClass(), cc.entity.asOWLClass());
+			if (KR().getClassReasoner() != null) {
+				return 
+					KR().getClassReasoner().
+						isSubClassOf(this.entity.asOWLClass(), cc.entity.asOWLClass());
 			}
 		} catch (OWLReasonerException e) {
 			// just proceed with the dumb method
 		}
  		
-		Collection<IConcept> collection = getSemanticClosure();
+		Collection<IConcept> collection = getAllParents();
 		collection.add(this);
 		return collection.contains(c);
 	}

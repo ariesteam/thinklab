@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
@@ -90,11 +89,12 @@ public class Property extends Knowledge implements IProperty {
 		Set<IProperty> ret = new HashSet<IProperty>();
 
 		synchronized (entity) {
-			if (FileKnowledgeRepository.KR.propertyReasoner != null) {
+			if (KR().getPropertyReasoner() != null) {
 
 				try {
 					if (entity.isOWLObjectProperty()) {
-						Set<Set<OWLObjectProperty>> parents = FileKnowledgeRepository.KR.propertyReasoner
+						Set<Set<OWLObjectProperty>> parents = 
+							KR().getPropertyReasoner()
 								.getAncestorProperties(entity
 										.asOWLObjectProperty());
 						Set<OWLObjectProperty> subClses = OWLReasonerAdapter
@@ -103,7 +103,8 @@ public class Property extends Knowledge implements IProperty {
 							ret.add(new Property(cls));
 						}
 					} else if (entity.isOWLDataProperty()) {
-						Set<Set<OWLDataProperty>> parents = FileKnowledgeRepository.KR.propertyReasoner
+						Set<Set<OWLDataProperty>> parents = 
+							KR().getPropertyReasoner()
 								.getAncestorProperties(entity
 										.asOWLDataProperty());
 						Set<OWLDataProperty> subClses = OWLReasonerAdapter
@@ -136,7 +137,7 @@ public class Property extends Knowledge implements IProperty {
 		Set<IProperty> ret = new HashSet<IProperty>();
 		
 		Set<OWLOntology> onts = 
-			FileKnowledgeRepository.get().manager.getOntologies();
+			KR().manager.getOntologies();
 		
 		if (entity.isOWLDataProperty()) {
 			for (OWLOntology o : onts)  {
@@ -170,12 +171,12 @@ public class Property extends Knowledge implements IProperty {
 		synchronized (this.entity) {
 			if (entity.isOWLDataProperty()) {
 				for (OWLDescription c : entity.asOWLDataProperty().getDomains(
-						FileKnowledgeRepository.get().manager.getOntologies())) {
+						KR().manager.getOntologies())) {
 					ret.add(new Concept(c.asOWLClass()));
 				}
 			} else if (entity.isOWLObjectProperty()) {
 				for (OWLDescription c : entity.asOWLObjectProperty().getDomains(
-						FileKnowledgeRepository.get().manager.getOntologies())) {
+						KR().manager.getOntologies())) {
 					ret.add(new Concept(c.asOWLClass()));
 				}
 			}
@@ -231,7 +232,7 @@ public class Property extends Knowledge implements IProperty {
 		
 		Set<IProperty> ret = new HashSet<IProperty>();
 		Set<OWLOntology> onts = 
-			FileKnowledgeRepository.get().manager.getOntologies();
+			KR().manager.getOntologies();
 
 		/*
 		 * TODO use reasoner as appropriate
@@ -267,7 +268,7 @@ public class Property extends Knowledge implements IProperty {
 			if (entity.isOWLDataProperty()) {
 
 				for (OWLDataRange c : entity.asOWLDataProperty().getRanges(
-						FileKnowledgeRepository.get().manager.getOntologies())) {
+						KR().manager.getOntologies())) {
 
 					if (c.isDataType()) {
 						OWLDataType dtype = (OWLDataType) c;
@@ -284,7 +285,7 @@ public class Property extends Knowledge implements IProperty {
 				}
 			} else if (entity.isOWLObjectProperty()) {
 				for (OWLDescription c : entity.asOWLObjectProperty().getRanges(
-						FileKnowledgeRepository.get().manager.getOntologies())) {
+						KR().manager.getOntologies())) {
 					if (!c.isAnonymous())
 						ret.add(new Concept(c.asOWLClass()));
 				}

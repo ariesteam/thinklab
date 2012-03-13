@@ -60,7 +60,7 @@ public class Clojure {
 
 		Object[] arr = new Object[list.length()];
 		
-		Object[] al = list.array();
+		Object[] al = list.toArray();
 		
 		for (int i = 0; i < al.length; i++) {
 			if (al[i] instanceof IList)

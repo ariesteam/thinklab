@@ -11,6 +11,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
+import org.integratedmodelling.utils.FileSync;
 
 /**
  * Global Thinklab configuration. Thinklab proxies to one instance
@@ -59,31 +60,17 @@ public class Configuration implements IConfiguration {
 		 * install configuration and knowledge directories from installation
 		 * directories
 		 */
-		File config = new File(_workspacePath + File.separator + SUBSPACE_CONFIG);
-		if (!config.exists()) {
-			File confPath = getLoadPath(SUBSPACE_CONFIG);
-			if (confPath.exists()) {
-				try {
-					config.mkdirs();
-					FileUtils.copyDirectory(confPath, config);
-				} catch (IOException e) {
-					throw new ThinklabIOException(e);
-				}
-			}
+		File config = getWorkspace(SUBSPACE_CONFIG);
+		File confPath = getLoadPath(SUBSPACE_CONFIG);
+		if (confPath.exists()) {
+			FileSync.synchronize(confPath, config, false);
 		}
 		
-		File knowledge = new File(_workspacePath + File.separator + SUBSPACE_KNOWLEDGE);
-		if (!knowledge.exists()) {
-			File confPath = getLoadPath(SUBSPACE_KNOWLEDGE);
+		File knowledge = getWorkspace(SUBSPACE_KNOWLEDGE);
+		confPath = getLoadPath(SUBSPACE_KNOWLEDGE);
 			if (confPath.exists()) {
-				try {
-					knowledge.mkdirs();
-					FileUtils.copyDirectory(confPath, knowledge);
-				} catch (IOException e) {
-					throw new ThinklabIOException(e);
-				}
-			}
-		}
+				FileSync.synchronize(confPath, knowledge, false);
+			}	
 	}
 	
 	/*

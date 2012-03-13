@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
@@ -24,6 +25,7 @@ import org.integratedmodelling.thinklab.metadata.Metadata;
  */
 public class ThinklabTest extends TestCase {
 
+	@Concept("thinklab.test:Person")
 	public static class Person {
 		
 		String _name;
@@ -91,8 +93,8 @@ public class ThinklabTest extends TestCase {
 		ISemanticObject quaranta = Thinklab.get().annotate(40);
 		ISemanticObject stocazzo = Thinklab.get().annotate("stocazzo");
 		
-		Object oquarant = Thinklab.get().conceptualize(quaranta.getSemantics());
-		Object ostocazz = Thinklab.get().conceptualize(stocazzo.getSemantics());
+		Object oquarant = Thinklab.get().instantiate(quaranta.getSemantics());
+		Object ostocazz = Thinklab.get().instantiate(stocazzo.getSemantics());
 		
 		assertTrue (oquarant.equals(40) && ostocazz.equals("stocazzo"));
 	}
@@ -101,7 +103,7 @@ public class ThinklabTest extends TestCase {
 	 * Run the storeLinear test
 	 * @throws Exception 
 	 */
-	public void testStoreLinear() throws Exception {
+	public void testStoreAcyclic() throws Exception {
 
 		Metadata metadata = new Metadata();
 		metadata.put(Metadata.DC_COVERAGE_SPATIAL, new Pair<String,String>("cazzo","bestia"));
@@ -127,8 +129,7 @@ public class ThinklabTest extends TestCase {
 	 * Run the storeAcyclic test
 	 * @throws Exception 
 	 */
-	public void testStoreAcyclic() throws Exception {
-		fail("Newly generated method - fix or disable");
+	public void testStoreCyclic() throws Exception {
 		
 		Person john = new Person("john", 34, null, null, null);
 		Person mary = new Person("mary", 29, null, null, john);
@@ -138,9 +139,12 @@ public class ThinklabTest extends TestCase {
 		mary._parents = new Person[]{dick};
 		pipp._parents = new Person[]{john, mary};
 		
-		Thinklab.get().requireKbox("thinklab").store(dick);
+		ISemantics zio = Thinklab.get().conceptualize(dick);
+		
+		System.out.println(zio.asList());
+//		Thinklab.get().requireKbox("thinklab").store(dick);
 		// add test code here
-		assertTrue(false);
+//		assertTrue(false);
 	}
 }
 

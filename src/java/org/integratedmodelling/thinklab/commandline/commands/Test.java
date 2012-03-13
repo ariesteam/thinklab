@@ -30,7 +30,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.knowledge.Semantics;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 
 @ThinklabCommand(name="test",argumentNames="arg",argumentTypes="thinklab:Text", argumentDescriptions="test argument")
