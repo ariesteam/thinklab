@@ -51,6 +51,7 @@ public class MemObjectContextualizedDatasource extends DefaultAbstractState
 	private Object prototype = null;
 	
 	public MemObjectContextualizedDatasource(IConcept type, int size, IContext context) {
+		
 		_type = type;
 		data = new Object[size];
 		this.context = context;

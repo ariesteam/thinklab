@@ -193,5 +193,9 @@ public abstract class DefaultAbstractState implements IState {
 	public Metadata getMetadata() {
 		return this.metadata ;
 	}
+	
+	public boolean isProbabilistic() {
+		return false;
+	}
 
 }
