@@ -10,6 +10,7 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.metadata.Metadata;
+import org.integratedmodelling.utils.StringUtils;
 
 /**
  * The class <code>ThinklabTest</code> contains tests for the class {@link
@@ -25,6 +26,10 @@ import org.integratedmodelling.thinklab.metadata.Metadata;
  */
 public class ThinklabTest extends TestCase {
 
+	/*
+	 * We build complicated graphs of these and try to process and store their
+	 * semantics, to stress-test the handling of circular references.
+	 */
 	@Concept("thinklab.test:Person")
 	public static class Person {
 		
@@ -34,12 +39,49 @@ public class ThinklabTest extends TestCase {
 		Person[] _parents;
 		Person   _partner;
 		
+		// needed by the instantiator. FIXME At the moment it cannot
+		// be made private but I shoud fix that.
+		public Person() {}
+		
 		public Person(String name, int age, Person[] parents, Person[] children, Person partner) {
 			_name = name;
 			_age = age;
 			_partner = partner;
 			_children = children;
 			_parents = parents;
+		}
+		
+		// god this is boring
+		private String printIndented(Person p, int indent) {
+
+			String spc = StringUtils.repeat(" ", indent);
+			String ret =
+					"PERSON: " + _name + " (" + _age + " yo)";
+				
+			if (_children != null) {
+				ret += "Children:";
+				for (int i = 0; i < _children.length; i++) {
+					ret += "\n" + spc +_children[i]._name;
+				}
+			}				
+			if (_parents != null) {
+				ret += "Children:";
+				for (int i = 0; i < _parents.length; i++) {
+					ret += "\n" + spc +_parents[i]._name;
+				}
+			}				
+			if (_partner != null) {
+				ret += "Partner:";
+				ret += "\n" + spc +_partner._name;
+			}		
+			
+			return ret;
+			
+		}
+		
+		@Override
+		public String toString() {
+			return printIndented(this, 0);
 		}
 	}
 		
@@ -138,10 +180,14 @@ public class ThinklabTest extends TestCase {
 		Person pipp = new Person("pipp", 12, new Person[]{john, mary}, null, null);
 		mary._parents = new Person[]{dick};
 		pipp._parents = new Person[]{john, mary};
+
+		System.out.println(dick);
 		
-		ISemantics zio = Thinklab.get().conceptualize(dick);
+		ISemantics semantics = Thinklab.get().conceptualize(dick);
+		System.out.println(semantics);
+//		Object porco = Thinklab.get().instantiate(semantics);
+//		System.out.println(porco);
 		
-		System.out.println(zio.asList());
 //		Thinklab.get().requireKbox("thinklab").store(dick);
 		// add test code here
 //		assertTrue(false);

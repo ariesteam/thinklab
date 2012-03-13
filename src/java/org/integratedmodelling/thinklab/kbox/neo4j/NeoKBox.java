@@ -151,7 +151,7 @@ public class NeoKBox implements IKbox {
 		
 		for (final ISemantics s : instance.getRelationships()) {
 			
-			if (s.isLiteral()) {
+			if (s.isLiteralRelationship()) {
 				storeProperty(node, s);
 			} else {
 				

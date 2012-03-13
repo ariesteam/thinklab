@@ -273,7 +273,7 @@ public class Semantics implements ISemantics {
 	 * @see org.integratedmodelling.lang.ISemantics#isLiteral()
 	 */
 	@Override
-	public boolean isLiteral() {
+	public boolean isLiteralRelationship() {
 		getRelationships();
 		return 
 			targetSemantics != null && 
@@ -401,6 +401,26 @@ public class Semantics implements ISemantics {
 	@Override
 	public int hashCode() {
 		return getSignature().hashCode();
+	}
+
+	@Override
+	public boolean isObject() {
+		return predicate instanceof IConcept;
+	}
+
+	@Override
+	public boolean isRelationship() {
+		return predicate instanceof IProperty;
+	}
+
+	@Override
+	public boolean isReference() {
+		return list != null && list.isReference();
+	}
+
+	@Override
+	public long getReferenceId() {
+		return list.getReferenceId();
 	}
 	
 }

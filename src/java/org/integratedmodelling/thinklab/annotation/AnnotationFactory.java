@@ -188,7 +188,8 @@ public class AnnotationFactory {
 
 		/*
 		 * 1st pass: translate all lists with refcount > 1 to reference lists and 
-		 * index by ID.
+		 * index by ID. Keep the non-multiply-referenced objects as they are, still
+		 * indexed.
 		 */
 		HashMap<Long,IList> refs = new HashMap<Long,IList>();
 		for (Triple<Long, Long, IList> t : hash.values()) {
@@ -204,14 +205,18 @@ public class AnnotationFactory {
 		return substituteRefs(list, refs, new HashSet<Long>());
 	}
 		
+	
 	private IList substituteRefs(IList list, Map<Long, IList> refs, HashSet<Long> seen) {
 		
 		if (list == null)
 			return null;
 		
-		if (!list.isEmpty() && "#".equals(list.first())) {
-			return substituteRefs(refs.get(list.nth(1)), refs, seen);
+		if (list.isReference()) {
+			if (seen.contains(list.getReferenceId()))
+				return list;
+			seen.add(list.getReferenceId());
 		}
+		
 		ArrayList<Object> ret = new ArrayList<Object>();
 		for (Object o : list) {
 			ret.add(o instanceof IList ? substituteRefs((IList) o, refs, seen) : o);
@@ -234,11 +239,11 @@ public class AnnotationFactory {
 		if (o instanceof IConceptualizable) {
 			return ((IConceptualizable) o).conceptualize().asList();
 		}
-
+		
 		/*
-		 * first check if it can be stored as a literal
-		 * FIXME it would be nice to not do this treatment to save some of the thinklab-api
-		 * types, but at the moment I don't know how to.
+		 * special treatment for map entries. TODO see if we can associate the actual
+		 * Entry with a concept, although the handling of Map needs to remain special
+		 * because they're not Collections of Entry.
 		 */
 		if (o instanceof Map.Entry<?,?>) {
 			
@@ -347,11 +352,10 @@ public class AnnotationFactory {
 	@SuppressWarnings("unchecked")
 	private Object instantiateInternal(ISemantics annotation, Map<Long, Object> refs) throws ThinklabException {
 	
-//		if (((Semantics)annotation).isReference() && refs.containsKey(((Semantics)annotation).getReference())) {
-//			return refs.get(((Semantics)annotation).getReferenceId());
-//		}
+		Object ret = annotation.isReference() ? refs.get(annotation.getReferenceId()) : null;
 		
-		Object ret = null;
+		if (ret != null)
+			return ret;
 		
 		/*
 		 * check first if it's just a literal we're instantiating. If so, we
@@ -399,16 +403,29 @@ public class AnnotationFactory {
 			}
 		}
 		
-		if (ret == null)
-			return null;
+		if (ret == null) {
 
+			Thinklab.get().logger().warn(
+					"instantiate: couldn't find a suitable constructor for class " + cls.getCanonicalName() +
+					" associated to concept " + annotation.getConcept());
+			
+			return null;
+		}
+
+		/*
+		 * Put it there before it's fully defined so we don't get in trouble
+		 * with circular refs.
+		 */
+		if (annotation.isReference())
+			refs.put(annotation.getReferenceId(), ret);
+		
 		/*
 		 * if it's conceptualizable, just call its define() method
 		 * and leave everything else to the user.
 		 */
 		if (IConceptualizable.class.isAssignableFrom(cls)) {
 			((IConceptualizable)ret).define(annotation); 
-			return ret; // checkReference(annotation, ret, refs);
+			return ret; 
 		} 		
 
 		/*
@@ -500,16 +517,8 @@ public class AnnotationFactory {
 			// no method, the stupid thing throws an exception instead of returning null.
 		}
 		
-		return ret; // checkReference(annotation, ret, refs);
+		return ret;
 	}
-
-//	private Object checkReference(ISemantics annotation, Object ret,
-//			Map<Long, Object> refs) {
-//		Semantics ann = (Semantics) annotation;
-//		if (ann.isReference() && !refs.containsKey(ann.getReferenceId()))
-//			refs.put(ann.getReferenceId(), ret);
-//		return ret;
-//	}
 
 	/**
 	 * Create the semantic object from a textual representation and a concept. The concept must have
