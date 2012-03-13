@@ -58,6 +58,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.IConcept;
 import org.integratedmodelling.thinklab.interfaces.knowledge.IInstance;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.NameGenerator;
+import org.integratedmodelling.utils.Pair;
 import org.integratedmodelling.utils.Polylist;
 
 /**
@@ -1057,6 +1058,27 @@ public class ObservationContext implements IObservationContext, IContext {
 	 */
 	public void collectStates() {
 		collectStatesInternal(states);
+		
+		/*
+		 * if scenario-modified concepts have no unmodified state,
+		 * use the modified one to create it so we will find the original concept.
+		 */
+		ArrayList<Pair<IConcept, IConcept>> toFix = 
+				new ArrayList<Pair<IConcept, IConcept>>();
+		for (IConcept s : states.keySet()) {
+			String label = s.toString();
+			if (label.contains("___")) {
+				int lc = label.indexOf("___");
+				label = label.substring(0, lc);
+				toFix.add(new Pair<IConcept, IConcept>(s, KnowledgeManager.getConcept(label)));
+			}
+		}
+		for (Pair<IConcept, IConcept> s : toFix) {
+			if (states.get(s.getSecond()) == null) {
+				states.put(s.getSecond(), states.get(s.getFirst()));
+			}
+		}
+
 	}
 	
 	public void collectStatesInternal(HashMap<IConcept, IState> s) {
