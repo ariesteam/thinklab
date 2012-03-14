@@ -1,9 +1,7 @@
 package org.integratedmodelling.thinklab.annotation;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,9 +15,7 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.list.ReferenceList;
-import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.utils.SKeyValue;
 import org.integratedmodelling.thinklab.api.annotations.Property;
@@ -30,7 +26,6 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
-import org.integratedmodelling.thinklab.api.lang.IReferenceList.Reference;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.StringUtils;
@@ -176,64 +171,12 @@ public class AnnotationFactory {
 	 */
 	public IList conceptualize(Object o) throws ThinklabException {
 		
-		ReferenceList list = new ReferenceList();
-		
-		Map<Object, Reference> hash = 
-				Collections.synchronizedMap(new WeakHashMap<Object, Reference>());
-		return conceptualizeInternal(o, hash, list);
+		Map<Object, IReferenceList> hash = 
+				Collections.synchronizedMap(new WeakHashMap<Object, IReferenceList>());
+		return conceptualizeInternal(o, hash, new ReferenceList());
 	}
-//	
-//	private IList resolveReferences(IList list,
-//			Map<Object, Triple<Long, Long, IList>> hash) throws ThinklabException {
-//
-//		/*
-//		 * 1st pass: translate all lists with refcount > 1 to reference lists and 
-//		 * index by ID. Keep the non-multiply-referenced objects as they are, still
-//		 * indexed.
-//		 */
-//		HashMap<Long,IList> refs = new HashMap<Long,IList>();
-//		for (Triple<Long, Long, IList> t : hash.values()) {
-//			IList rl = t.getThird();
-//			if (t.getSecond() > 1)
-//				rl = PolyList.referencedList(t.getFirst(), rl.toArray());
-//			refs.put(t.getFirst(), rl);
-//		}
-//		
-//		/*
-//		 * 2nd pass - actually substitute those refs recursively
-//		 */
-//		return substituteRefs(list, refs, new HashSet<Long>());
-//	}
-//		
-//	
-//	private IList substituteRefs(IList list, Map<Long, IList> refs, HashSet<Long> seen) {
-//		
-//		if (list == null)
-//			return null;
-//		
-//		if (list.isReference()) {
-//			if (seen.contains(list.getReferenceId()))
-//				return list;
-//			seen.add(list.getReferenceId());
-//		}
-//		
-//		ArrayList<Object> ret = new ArrayList<Object>();
-//		for (Object o : list) {
-//			ret.add(o instanceof IList ? substituteRefs((IList) o, refs, seen) : o);
-//		}
-//		
-//		return PolyList.fromCollection(ret);
-//	}
 
-	/*
-	 * Final list contains unresolved references. The value in the hash contains for
-	 * each object:
-	 * 1. an incremental, unique ID
-	 * 2. the number of times the object was seen
-	 * 3. the IList that describes it, containing unresolved refs in the form ("#", id) 
-	 * 	  for all linked objects, to be resolved later.
-	 */
-	private IList conceptualizeInternal(Object o, Map<Object, Reference> objectHash, IReferenceList list) 
+	private IList conceptualizeInternal(Object o, Map<Object, IReferenceList> objectHash, IReferenceList list) 
 			throws ThinklabException {
 
 		/*
@@ -242,18 +185,35 @@ public class AnnotationFactory {
 		Class<?> cls = o.getClass();
 		IConcept literalType = _class2literal.get(cls);
 		if (literalType != null) {
-			return PolyList.list(literalType, o);
+			return list.list(literalType, o);
 		} 	
 		
+
+		/*
+		 * special treatment for map entries. TODO see if we can associate the actual
+		 * Entry with a concept, although the handling of Map needs to remain special
+		 * because they're not Collections of Entry.
+		 */
+		if (o instanceof Map.Entry<?,?>) {
+
+			return 
+					conceptualizeInternal(
+							new SKeyValue(
+									((Map.Entry<?,?>)o).getKey(),
+									((Map.Entry<?,?>)o).getValue()),
+							objectHash,
+							list);
+		}
+
 		/*
 		 * not literal. If we've seen this, just add the reference to it. Otherwise 
 		 * get a new reference, add it and work on that.
 		 */
-		Reference ref = null;
+		IReferenceList ref = null;
 		if (objectHash.containsKey(o)) {
-			return list.append(objectHash.get(o));
+			return objectHash.get(o);
 		} else {
-			list = (IReferenceList) list.append(ref = list.getForwardReference());
+			ref = list.getForwardReference();
 			objectHash.put(o, ref);
 		}
 		
@@ -262,31 +222,14 @@ public class AnnotationFactory {
 		 * add references to objects upstream.
 		 */
 		if (o instanceof IConceptualizable) {
-			return list.resolveReference(ref,((IConceptualizable) o).conceptualize());
+			return ref.resolve(((IConceptualizable) o).conceptualize());
 		}
 		
-		/*
-		 * special treatment for map entries. TODO see if we can associate the actual
-		 * Entry with a concept, although the handling of Map needs to remain special
-		 * because they're not Collections of Entry.
-		 */
-		if (o instanceof Map.Entry<?,?>) {
-
-			return list.resolveReference(ref, 
-					conceptualizeInternal(
-							new SKeyValue(
-									((Map.Entry<?,?>)o).getKey(),
-									((Map.Entry<?,?>)o).getValue()),
-							objectHash,
-							list.list()));
-		}
-			
 		/*
 		 * if we get here, we need a @Concept annotation to proceed.
 		 */
 		IConcept mainc = _class2concept.get(cls);
 		if (mainc == null) {
-			
 			/*
 			 * list will have unresolved reference
 			 */
@@ -313,17 +256,17 @@ public class AnnotationFactory {
 				if (value != null) {
 					for (Object v : getAllInstances(value)) {
 					
-						IList semantics = conceptualizeInternal(v, objectHash, list.list());
+						IList semantics = conceptualizeInternal(v, objectHash, list);
 						if (semantics == null) {
 							throw new ThinklabValidationException("cannot conceptualize field " + f.getName() + " of object " + o);
 						}
-						sa.add(PolyList.list(p, semantics));
+						sa.add(list.list(p, semantics));
 					}
 				}
 			}
 		}
 		
-		return list.resolveReference(ref, PolyList.fromCollection(sa));
+		return ref.resolve(list.list(sa.toArray()));
 	}
 	
 	private Collection<Object> getAllInstances(Object value) {
@@ -345,16 +288,11 @@ public class AnnotationFactory {
 
 	public ISemanticObject instantiate(IList annotation) throws ThinklabException {
 		
-		if ( !(annotation instanceof IReferenceList))
-			annotation = new ReferenceList(annotation.toArray());
-		
-		return instantiateInternal((IReferenceList) annotation, 
-				new HashMap<Reference,ISemanticObject>());
+		return instantiateInternal( annotation, new HashMap<IReferenceList,ISemanticObject>());
 	}
 	
 	@SuppressWarnings("unchecked")
-	private ISemanticObject instantiateInternal(IReferenceList annotation, 
-								HashMap<Reference,ISemanticObject> refs) 
+	private ISemanticObject instantiateInternal(IList annotation, HashMap<IReferenceList,ISemanticObject> refs) 
 				throws ThinklabException {
 	
 		ISemanticObject ret = null;

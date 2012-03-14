@@ -28,7 +28,7 @@ import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.api.lang.IReferenceList.Reference;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.interfaces.storage.KboxTypeAdapter;
@@ -107,7 +107,7 @@ public class NeoKBox implements IKbox {
 	public synchronized long store(Object o) throws ThinklabException {
 
 		long ret = -1;
-		HashMap<Reference,Node> refs = new HashMap<Reference, Node>();
+		HashMap<IReferenceList,Node> refs = new HashMap<IReferenceList, Node>();
 		ISemanticObject instance = Thinklab.get().annotate(o);		
 
 		Transaction tx = _db.beginTx();
@@ -137,7 +137,7 @@ public class NeoKBox implements IKbox {
 		return ret;
 	}
 
-	private Node storeInstanceInternal(ISemanticObject instance, Map<Reference, Node> refs) throws ThinklabException {
+	private Node storeInstanceInternal(ISemanticObject instance, Map<IReferenceList, Node> refs) throws ThinklabException {
 
 		Node node = refs.get(instance);
 		
