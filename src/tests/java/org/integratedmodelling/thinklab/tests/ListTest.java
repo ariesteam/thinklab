@@ -34,13 +34,13 @@ public class ListTest {
 	@Test
 	public void testParse() throws Exception {
 		
-		IList l1 = PolyList.referencedList(1l, "first", "2", PolyList.list(20, 30));
-		IList l2 = PolyList.referencedList(2l, "dio", 12, l1, PolyList.list(23, 33), l1);
-		
-		l1 = l1.append(l2);
-		
-		System.out.println(l1.prettyPrint());
-		System.out.println(l2.prettyPrint());
+//		IList l1 = PolyList.referencedList(1l, "first", "2", PolyList.list(20, 30));
+//		IList l2 = PolyList.referencedList(2l, "dio", 12, l1, PolyList.list(23, 33), l1);
+//		
+//		l1 = l1.append(l2);
+//		
+//		System.out.println(l1.prettyPrint());
+//		System.out.println(l2.prettyPrint());
 	}
 
 	public void testReferences() {

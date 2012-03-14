@@ -7,8 +7,8 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
-import org.integratedmodelling.thinklab.api.knowledge.ISemantics;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 import org.integratedmodelling.utils.StringUtils;
 
@@ -154,7 +154,7 @@ public class ThinklabTest extends TestCase {
 		
 		ISemanticObject o = Thinklab.get().annotate(metadata);
 		
-		ISemantics semantics = o.getSemantics();		
+		IList semantics = o.getSemantics();		
 		Object porco = Thinklab.get().instantiate(semantics);
 		
 		IKbox kbox = Thinklab.get().requireKbox("thinklab");
@@ -183,7 +183,7 @@ public class ThinklabTest extends TestCase {
 
 		System.out.println(dick);
 		
-		ISemantics semantics = Thinklab.get().conceptualize(dick);
+		IList semantics = Thinklab.get().conceptualize(dick);
 		System.out.println(semantics);
 //		Object porco = Thinklab.get().instantiate(semantics);
 //		System.out.println(porco);
