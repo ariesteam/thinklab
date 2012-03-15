@@ -83,7 +83,7 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public ISemanticObject instantiate(IList a) throws ThinklabException {
+	public Object instantiate(IList a) throws ThinklabException {
 		return Thinklab.get().instantiate(a);
 	}
 

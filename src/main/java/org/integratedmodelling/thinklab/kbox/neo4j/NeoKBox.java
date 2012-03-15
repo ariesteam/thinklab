@@ -17,6 +17,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
@@ -27,7 +28,6 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
@@ -107,14 +107,13 @@ public class NeoKBox implements IKbox {
 	public synchronized long store(Object o) throws ThinklabException {
 
 		long ret = -1;
-		HashMap<IReferenceList,Node> refs = new HashMap<IReferenceList, Node>();
 		ISemanticObject instance = Thinklab.get().annotate(o);		
 
 		Transaction tx = _db.beginTx();
 
 		try {
 			
-			Node node = storeInstanceInternal(instance, refs);
+			Node node = storeInstanceInternal(instance, new HashMap<ISemanticObject, Node>());
 			_db.getReferenceNode().createRelationshipTo(node, new RelationshipType() {
 				@Override
 				public String name() {
@@ -137,7 +136,7 @@ public class NeoKBox implements IKbox {
 		return ret;
 	}
 
-	private Node storeInstanceInternal(ISemanticObject instance, Map<IReferenceList, Node> refs) throws ThinklabException {
+	private Node storeInstanceInternal(ISemanticObject instance, Map<ISemanticObject, Node> refs) throws ThinklabException {
 
 		Node node = refs.get(instance);
 		
@@ -145,7 +144,7 @@ public class NeoKBox implements IKbox {
 			return node;
 		
 		node = _db.createNode();
-//		refs.put(instance, node);
+		refs.put(instance, node);
 
 		node.setProperty(TYPE_PROPERTY, instance.getDirectType().toString());
 		
@@ -235,7 +234,9 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public ISemanticObject retrieve(long id) throws ThinklabException {
-		return new SemanticObject(retrieveList(_db.getNodeById(id)), null);
+		return new SemanticObject(
+				retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), new ReferenceList()), 
+				null);
 	}
 	
 	@Override
@@ -270,7 +271,12 @@ public class NeoKBox implements IKbox {
 	/*
 	 * non-public
 	 */
-	private IList retrieveList(Node node) throws ThinklabException {
+	private IReferenceList retrieveList(Node node, HashMap<Node, IReferenceList> refs, ReferenceList root) throws ThinklabException {
+		
+		if (refs.containsKey(node))
+			return refs.get(node).getReference();
+		
+		ReferenceList ret = root.newList();
 		
 		ArrayList<Object> rl = new ArrayList<Object>();
 		IConcept concept = Thinklab.c(node.getProperty(TYPE_PROPERTY).toString());
@@ -280,7 +286,7 @@ public class NeoKBox implements IKbox {
 		 * follow outgoing relationships to other objects
 		 */
 		for (Relationship r : node.getRelationships(Direction.OUTGOING)) {
-			rl.add(PolyList.list(Thinklab.p(fromId(r.getType().name())), retrieveList(r.getEndNode())));
+			rl.add(PolyList.list(Thinklab.p(fromId(r.getType().name())), retrieveList(r.getEndNode(), refs, ret)));
 		}
 
 		/*
@@ -293,7 +299,7 @@ public class NeoKBox implements IKbox {
 			rl.add(PolyList.list(Thinklab.p(fromId(p)), Thinklab.get().conceptualize(node.getProperty(p))));
 		}
 		
-		return PolyList.fromCollection(rl);		
+		return ret.append(rl.toArray());		
 	}
 
 	private Set<Long> queryObjects(SemanticQuery query) {

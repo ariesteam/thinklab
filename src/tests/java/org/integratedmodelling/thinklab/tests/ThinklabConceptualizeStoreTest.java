@@ -9,9 +9,7 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.commandline.commands.Test.Person;
 import org.integratedmodelling.thinklab.metadata.Metadata;
-import org.integratedmodelling.utils.StringUtils;
 
 /**
  * The class <code>ThinklabTest</code> contains tests for the class {@link
@@ -27,23 +25,31 @@ import org.integratedmodelling.utils.StringUtils;
  */
 public class ThinklabConceptualizeStoreTest extends TestCase {
 
+	/**
+	 * we cannot keep creating this across boots.
+	 */
+	IKbox thinklabKbox = null;
+	
 	/*
 	 * We build complicated graphs of these and try to process and store their
 	 * semantics, to stress-test the handling of circular references. Ontology
 	 * "thinklab.test" contains the concept and all the properties that will allow
 	 * automatic annotation of this class.
+	 * 
+	 * Fields that have corresponding properties in the same namespace as the
+	 * concept will be automatically conceptualized. Alternatively, specific 
+	 * fields can be annotated with @Property to select the ones that define
+	 * the object's semantics.
 	 */
 	@Concept("thinklab.test:Person")
 	public static class Person {
 		
-		String _name;
-		int    _age;
-		Person[] _children;
-		Person[] _parents;
-		Person   _partner;
+		public String _name;
+		public int    _age;
+		public Person[] _children;
+		public Person[] _parents;
+		public Person   _partner;
 		
-		// needed by the instantiator. FIXME At the moment it cannot
-		// be made private but I shoud fix that.
 		public Person() {}
 		
 		public Person(String name, int age, Person[] parents, Person[] children, Person partner) {
@@ -54,23 +60,12 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 			_parents = parents;
 		}
 	}
-		
-	/**
-	 * Construct new test instance
-	 *
-	 * @param name the test name
-	 */
+
 	public ThinklabConceptualizeStoreTest(String name) {
 		super(name);
 	}
 
-	/**
-	 * Launch the test.
-	 *
-	 * @param args String[]
-	 */
 	public static void main(String[] args) {
-		// add code to run tests here
 	}
 
 	/**
@@ -83,6 +78,7 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Thinklab.boot();
+		thinklabKbox = Thinklab.get().requireKbox("thinklab");
 	}
 
 	@Override
@@ -91,53 +87,72 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 		super.tearDown();
 	}
 
-	/**
-	 * Run the conceptualize test
-	 */
-	public void testConceptualize() {
-
-		// add test code here
-		assertTrue(true);
-	}
-
 	public void testSimpleLiterals() throws ThinklabException {
 		
 		ISemanticObject quaranta = Thinklab.get().annotate(40);
 		ISemanticObject stocazzo = Thinklab.get().annotate("stocazzo");
 		
-//		Object oquarant = Thinklab.get().instantiate(quaranta.getSemantics());
-//		Object ostocazz = Thinklab.get().instantiate(stocazzo.getSemantics());
-//		
-//		assertTrue (oquarant.equals(40) && ostocazz.equals("stocazzo"));
+		Object oquarant = Thinklab.get().instantiate(quaranta.getSemantics());
+		Object ostocazz = Thinklab.get().instantiate(stocazzo.getSemantics());
+		
+		assertTrue(oquarant != null && ostocazz != null);
+		
+		assertTrue (
+				oquarant.equals(40) && 
+				ostocazz.equals("stocazzo"));
 	}
 	
-	/**
-	 * Run the storeLinear test
-	 * @throws Exception 
+	/*
+	 * Create a simple object with a hashmap member and no self-references.
 	 */
 	public void testStoreAcyclic() throws Exception {
 
 		Metadata metadata = new Metadata();
-		metadata.put(Metadata.DC_COVERAGE_SPATIAL,"bestia");
+		metadata.put(Metadata.DC_COVERAGE_SPATIAL, new Pair<String,String>("country","france"));
 		metadata.put(Metadata.DC_COMMENT, "Stocazzo");
 		metadata.put(Metadata.DC_CONTRIBUTOR, "Piccione");
 		
-		ISemanticObject o = Thinklab.get().annotate(metadata);
-		
+		/*
+		 * conceptualize the object to a list, then instantiate the list into a "semantic clone" of it, i.e.
+		 * an object whose semantics is the same (but whether or not it's a Java-side clone depends on whether 
+		 * all fields are semantically relevant in both the object and any dependent ones).
+		 *  
+		 * Both results are semantic objects, which can return both the semantics and the object conceptualized, in
+		 * a lazy fashion.
+		 */
+		ISemanticObject o = Thinklab.get().annotate(metadata);		
 		IList semantics = o.getSemantics();		
+
+		/*
+		 * instantiate a new semantic clone and check if it matches.
+		 */
+		Metadata clone1 = (Metadata) Thinklab.get().instantiate(semantics);
+		assertTrue(
+				clone1 instanceof Metadata && 
+				clone1.get(Metadata.DC_COVERAGE_SPATIAL) instanceof Pair<?,?> &&
+				clone1.get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
 		
-		System.out.println(semantics);
+
+		/*
+		 * store the object, just like that.
+		 */
+		long id = thinklabKbox.store(o);
 		
-//		Object porco = Thinklab.get().instantiate(semantics);
-//		
-//		IKbox kbox = Thinklab.get().requireKbox("thinklab");
-//		if (kbox != null) {
-//			kbox.store(o);
-//		}
-//		
-//		assertTrue(
-//				porco instanceof Metadata && 
-//				((Metadata)porco).get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
+		/*
+		 * retrieve it back into yet another clone and see if it matches.
+		 */
+		ISemanticObject clone2 = thinklabKbox.retrieve(id);
+
+		assertTrue(
+				clone2.getObject() instanceof Metadata && 
+				((Metadata)(clone2.getObject())).get(Metadata.DC_COVERAGE_SPATIAL) instanceof Pair<?,?> &&
+				((Metadata)(clone2.getObject())).get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
+
+		/*
+		 * have a look at the extracted semantics
+		 */
+		System.out.println(semantics.prettyPrint());
+		
 	}
 
 	/**
@@ -148,6 +163,10 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 	 */
 	public void testStoreCyclic() throws Exception {
 		
+		/*
+		 * create a complicated family tree with old Dick as the
+		 * patriarch.
+		 */
 		Person john = new Person("john", 34, null, null, null);
 		Person mary = new Person("mary", 29, null, null, john);
 		john._partner = mary;
@@ -157,15 +176,49 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 		pipp._parents = new Person[]{john, mary};
 		john._children = new Person[]{pipp};
 		mary._children = new Person[]{pipp};
+		mary._partner = john;
 				
+		/*
+		 * just getting out of these two alive is quite the test.
+		 */
 		IList semantics = Thinklab.get().conceptualize(dick);
-		System.out.println(semantics);
-//		Object porco = Thinklab.get().instantiate(semantics);
-//		System.out.println(porco);
+		Person clone = (Person) Thinklab.get().instantiate(semantics);
 		
-//		Thinklab.get().requireKbox("thinklab").store(dick);
-		// add test code here
-//		assertTrue(false);
+		/*
+		 * the new object in porco is a clone of dick, made by copying 
+		 * his family tree.
+		 */
+		assertTrue(clone instanceof Person);
+		
+		
+		// there's quite a bit to check. Just run a few tests.
+		assertTrue(clone._name.equals("dick") && clone._age == 71);
+		assertTrue(clone._parents == null);
+		assertTrue(clone._children != null && clone._children[0]._name.equals("mary"));
+		
+		Person mr = clone._children[0];
+		assertTrue(mr._parents != null && mr._parents[0]._name.equals("dick"));
+		assertTrue(mr._children != null && mr._children[0]._name.equals("pipp"));
+		assertTrue(mr._partner != null && mr._partner._name.equals("john"));
+		
+		/*
+		 * store old dick and his clone in the "thinklab" kbox, created as necessary. Looking at
+		 * the resulting database with neoclipse can be fun.
+		 */
+		thinklabKbox.store(dick);
+		/*
+		 * we should never do that - the object should be immutable, but we know it.
+		 */
+		clone._name = "dick's clone";
+//		thinklabKbox.store(clone);
+
+		
+		/*
+		 * have a look at the referenced list
+		 */
+		System.out.println(semantics.prettyPrint());
+		
+
 	}
 }
 

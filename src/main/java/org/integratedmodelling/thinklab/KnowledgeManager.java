@@ -30,6 +30,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.lang.SemanticType;
+import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.annotation.AnnotationFactory;
 import org.integratedmodelling.thinklab.api.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
@@ -37,6 +38,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
@@ -73,11 +75,15 @@ public class KnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public ISemanticObject instantiate(IList semantics) throws ThinklabException {
-		return _annotationFactory.instantiate(semantics);
+	public Object instantiate(IList semantics) throws ThinklabException {
+		
+		if ( !(semantics instanceof IReferenceList)) {
+			semantics = ReferenceList.list(semantics.toArray());
+		}
+		return _annotationFactory.instantiate((IReferenceList) semantics);
 	}
 
-	public IList conceptualize(Object object) throws ThinklabException {
+	public IReferenceList conceptualize(Object object) throws ThinklabException {
 		return _annotationFactory.conceptualize(object);
 	}
 
@@ -248,6 +254,14 @@ public class KnowledgeManager implements IKnowledgeManager {
 	@Override
 	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
 		_annotationFactory.registerAnnotationConcept(concept, cls);
+	}
+
+	public boolean isJavaLiteralClass(Class<?> cls) {
+		return _annotationFactory.isJavaLiteralClass(cls);
+	}
+
+	public boolean isLiteralConcept(IConcept concept) {
+		return _annotationFactory.isLiteralConcept(concept);
 	}
 
 }

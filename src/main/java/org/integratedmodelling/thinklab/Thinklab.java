@@ -49,6 +49,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
@@ -555,15 +556,19 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 
 	@Override
 	public ISemanticObject annotate(Object object) throws ThinklabException {
+
+		if (object instanceof ISemanticObject)
+			return (ISemanticObject)object;
+
 		return _km.annotate(object);
 	}
 
 	@Override
-	public ISemanticObject instantiate(IList semantics) throws ThinklabException {
+	public Object instantiate(IList semantics) throws ThinklabException {
 		return _km.instantiate(semantics);
 	}
 
-	public IList conceptualize(Object object) throws ThinklabException {
+	public IReferenceList conceptualize(Object object) throws ThinklabException {
 		return ((KnowledgeManager)_km).conceptualize(object);
 	}
 
@@ -625,5 +630,11 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	public Properties getProperties() {
 		return _configuration.getProperties();
 	}
-
+	
+	public boolean isJavaLiteralClass(Class<?> cls) {
+		return _km.isJavaLiteralClass(cls);
+	}
+	public boolean isLiteralConcept(IConcept concept) {
+		return _km.isLiteralConcept(concept);
+	}
 }
