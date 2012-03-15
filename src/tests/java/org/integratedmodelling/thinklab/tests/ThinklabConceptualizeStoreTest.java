@@ -9,6 +9,7 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.commandline.commands.Test.Person;
 import org.integratedmodelling.thinklab.metadata.Metadata;
 import org.integratedmodelling.utils.StringUtils;
 
@@ -24,11 +25,13 @@ import org.integratedmodelling.utils.StringUtils;
  *
  * @version $Revision$
  */
-public class ThinklabTest extends TestCase {
+public class ThinklabConceptualizeStoreTest extends TestCase {
 
 	/*
 	 * We build complicated graphs of these and try to process and store their
-	 * semantics, to stress-test the handling of circular references.
+	 * semantics, to stress-test the handling of circular references. Ontology
+	 * "thinklab.test" contains the concept and all the properties that will allow
+	 * automatic annotation of this class.
 	 */
 	@Concept("thinklab.test:Person")
 	public static class Person {
@@ -50,39 +53,6 @@ public class ThinklabTest extends TestCase {
 			_children = children;
 			_parents = parents;
 		}
-		
-		// god this is boring
-		private String printIndented(Person p, int indent) {
-
-			String spc = StringUtils.repeat(" ", indent);
-			String ret =
-					"PERSON: " + _name + " (" + _age + " yo)";
-				
-			if (_children != null) {
-				ret += "Children:";
-				for (int i = 0; i < _children.length; i++) {
-					ret += "\n" + spc +_children[i]._name;
-				}
-			}				
-			if (_parents != null) {
-				ret += "Children:";
-				for (int i = 0; i < _parents.length; i++) {
-					ret += "\n" + spc +_parents[i]._name;
-				}
-			}				
-			if (_partner != null) {
-				ret += "Partner:";
-				ret += "\n" + spc +_partner._name;
-			}		
-			
-			return ret;
-			
-		}
-		
-		@Override
-		public String toString() {
-			return printIndented(this, 0);
-		}
 	}
 		
 	/**
@@ -90,7 +60,7 @@ public class ThinklabTest extends TestCase {
 	 *
 	 * @param name the test name
 	 */
-	public ThinklabTest(String name) {
+	public ThinklabConceptualizeStoreTest(String name) {
 		super(name);
 	}
 
@@ -171,7 +141,9 @@ public class ThinklabTest extends TestCase {
 	}
 
 	/**
-	 * Run the storeAcyclic test
+	 * Create, conceptualize, store and retrieve an object structure 
+	 * with complex self-references.
+	 * 
 	 * @throws Exception 
 	 */
 	public void testStoreCyclic() throws Exception {
@@ -179,14 +151,14 @@ public class ThinklabTest extends TestCase {
 		Person john = new Person("john", 34, null, null, null);
 		Person mary = new Person("mary", 29, null, null, john);
 		john._partner = mary;
-//		Person dick = new Person("dick", 71, null, new Person[]{mary}, null);
-//		Person pipp = new Person("pipp", 12, new Person[]{john, mary}, null, null);
-//		mary._parents = new Person[]{dick};
-//		pipp._parents = new Person[]{john, mary};
-
-		System.out.println(john);
-		
-		IList semantics = Thinklab.get().conceptualize(john);
+		Person dick = new Person("dick", 71, null, new Person[]{mary}, null);
+		Person pipp = new Person("pipp", 12, new Person[]{john, mary}, null, null);
+		mary._parents = new Person[]{dick};
+		pipp._parents = new Person[]{john, mary};
+		john._children = new Person[]{pipp};
+		mary._children = new Person[]{pipp};
+				
+		IList semantics = Thinklab.get().conceptualize(dick);
 		System.out.println(semantics);
 //		Object porco = Thinklab.get().instantiate(semantics);
 //		System.out.println(porco);

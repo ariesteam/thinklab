@@ -3,10 +3,12 @@
  */
 package org.integratedmodelling.thinklab.tests;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
-import org.integratedmodelling.list.PolyList;
-import org.integratedmodelling.thinklab.api.lang.IList;
+import java.util.HashSet;
+
+import org.integratedmodelling.list.ReferenceList;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,20 +34,25 @@ public class ListTest {
 	}
 	
 	@Test
-	public void testParse() throws Exception {
+	public void testReferenceList() throws Exception {
 		
-//		IList l1 = PolyList.referencedList(1l, "first", "2", PolyList.list(20, 30));
-//		IList l2 = PolyList.referencedList(2l, "dio", 12, l1, PolyList.list(23, 33), l1);
-//		
-//		l1 = l1.append(l2);
-//		
-//		System.out.println(l1.prettyPrint());
-//		System.out.println(l2.prettyPrint());
+		HashSet<IReferenceList> set = new HashSet<IReferenceList>();
+		
+		IReferenceList zioPio = ReferenceList.list("zio", "pio");
+		IReferenceList dioCan = zioPio.getForwardReference();
+		
+		set.add(dioCan);
+		
+		zioPio = (IReferenceList) zioPio.append(dioCan);
+		IReferenceList dioCul = ReferenceList.list("dio", "cul", zioPio);
+		dioCan.resolve(dioCul);
+		
+		assertTrue(set.contains(dioCul));
+	
+		
+		System.out.println(zioPio);
 	}
 
-	public void testReferences() {
-		
-	}
 	
 	@Test
 	public void test() {

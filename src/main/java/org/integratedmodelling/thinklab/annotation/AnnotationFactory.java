@@ -170,25 +170,26 @@ public class AnnotationFactory {
 	 * -----------------------------------------------------------------------------
 	 */
 	public IList conceptualize(Object o) throws ThinklabException {
-		
-		Map<Object, IReferenceList> hash = 
-				Collections.synchronizedMap(new WeakHashMap<Object, IReferenceList>());
-		return conceptualizeInternal(o, hash, new ReferenceList());
+		return conceptualizeInternal(o,
+				Collections.synchronizedMap(new WeakHashMap<Object, IReferenceList>()), 
+				null);
 	}
 
 	private IList conceptualizeInternal(Object o, Map<Object, IReferenceList> objectHash, IReferenceList list) 
 			throws ThinklabException {
 
+		if (list == null)
+			list = new ReferenceList();
+		
 		/*
 		 * If literal, we always create a full list.
 		 */
 		Class<?> cls = o.getClass();
 		IConcept literalType = _class2literal.get(cls);
 		if (literalType != null) {
-			return list.list(literalType, o);
+			return list.newList(literalType, o);
 		} 	
 		
-
 		/*
 		 * special treatment for map entries. TODO see if we can associate the actual
 		 * Entry with a concept, although the handling of Map needs to remain special
@@ -260,13 +261,13 @@ public class AnnotationFactory {
 						if (semantics == null) {
 							throw new ThinklabValidationException("cannot conceptualize field " + f.getName() + " of object " + o);
 						}
-						sa.add(list.list(p, semantics));
+						sa.add(list.newList(p, semantics));
 					}
 				}
 			}
 		}
 		
-		return ref.resolve(list.list(sa.toArray()));
+		return ref.resolve(list.newList(sa.toArray()));
 	}
 	
 	private Collection<Object> getAllInstances(Object value) {
