@@ -47,6 +47,8 @@ public class ListTest {
 		IReferenceList dioCul = ReferenceList.list("dio", "cul", zioPio);
 		dioCan.resolve(dioCul);
 		
+		assertTrue(zioPio.nth(2).equals(dioCul));
+		assertTrue(zioPio.nth(2).equals(dioCan));
 		assertTrue(set.contains(dioCul));
 	
 		
