@@ -37,7 +37,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
-import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -476,7 +476,7 @@ public class VectorCoverage implements ICoverage {
 	public void write(File f) throws ThinklabException {
 		
 		if ( ! (f.toString().endsWith(".shp"))) {
-			throw new ThinklabUnimplementedFeatureException(
+			throw new ThinklabUnsupportedOperationException(
 					"vector coverage: writing: only shapefile format is supported for now");
 		}
 		

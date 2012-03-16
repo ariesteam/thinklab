@@ -18,7 +18,6 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
-import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -27,14 +26,17 @@ import agg.xt_basis.Version;
 
 public class ThinklabProject implements IProject {
 
-	
 	File   _dir;
 	String _id;
 	Properties _properties;
 	ArrayList<INamespace> _namespaces = new ArrayList<INamespace>();
 	ArrayList<String> _requisites = new ArrayList<String>();
+	boolean _loaded = false;
 	
-	public ThinklabProject(File resource) {
+	/*
+	 * package private - projects are created only by the project manager.
+	 */
+	ThinklabProject(File resource) {
 
 		if (!resource.isDirectory()) {
 			
@@ -54,54 +56,66 @@ public class ThinklabProject implements IProject {
 		_id  = MiscUtilities.getFileBaseName(_dir.toString());
 		
 		loadProperties();
-		
 	}
 	
-
-
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
 		return _id;
 	}
 
 	@Override
-	public List<IThinklabPlugin> getPrerequisites() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<IProject> getPrerequisites() {
+	
+		ArrayList<IProject> ret = new ArrayList<IProject>();
+		for (String s : _requisites) {
+			ret.add(Thinklab.get().getProject(s));
+		}
+		return ret;
 	}
 
 	@Override
 	public void load() throws ThinklabException {
-
+		
 		/*
 		 * unload everything
 		 */
-		for (INamespace n : _namespaces) {
-			ModelManager.get().releaseNamespace(n.getNamespace());
+		if (!_loaded) {
+		
+			/*
+			 * ensure all prerequisites are loaded
+			 */
+			for (IProject p : getPrerequisites())
+				p.load();
+				
+			/*
+			 * load everything
+			 */
+			for (INamespace ns : ModelManager.get().loadSourceDirectory(getSourceDirectory())) {
+				_namespaces.add(ns);
+			}
+			
+			_loaded = true;
 		}
-		_namespaces.clear();
-		
-		/*
-		 * refresh any prerequisites are loaded
-		 */
-
-		
-		/*
-		 * load everything
-		 */
-		ModelManager.get().loadSourceDirectory(getSourceDirectory());
 	}
 
 	@Override
 	public void unload() throws ThinklabException {
-		// TODO Auto-generated method stub
 
+		if (_loaded) {
+			for (INamespace n : _namespaces) {
+				ModelManager.get().releaseNamespace(n.getNamespace());
+			}
+			_namespaces.clear();
+		}
 	}
 
 	@Override
 	public File findResource(String resource) {
-		// TODO Auto-generated method stub
+
+		File ff = new File(getSourceDirectory() + File.separator + resource);
+		if (ff.exists()) {
+			return ff;
+		}
 		return null;
 	}
 
@@ -154,7 +168,6 @@ public class ThinklabProject implements IProject {
 
 	@Override
 	public String getOntologyNamespacePrefix() {
-		// TODO Auto-generated method stub
 		return _properties.getProperty(ONTOLOGY_NAMESPACE_PREFIX_PROPERTY, 
 				NS.DEFAULT_THINKLAB_ONTOLOGY_PREFIX);
 	}

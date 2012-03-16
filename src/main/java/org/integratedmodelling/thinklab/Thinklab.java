@@ -24,6 +24,7 @@ import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
 import org.integratedmodelling.thinklab.api.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.factories.IPluginManager;
+import org.integratedmodelling.thinklab.api.factories.IProjectManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -61,6 +63,7 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
+import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.Configuration;
@@ -74,6 +77,7 @@ import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.PluginManager;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
+import org.integratedmodelling.thinklab.project.ProjectManager;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.utils.ClassUtils;
 import org.integratedmodelling.utils.ClassUtils.Visitor;
@@ -94,7 +98,7 @@ import org.restlet.service.MetadataService;
  * @author Ferdinando Villa
  *
  */
-public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManager {
+public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManager, IProjectManager {
 
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.core";
 	
@@ -123,15 +127,16 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	protected Configuration _configuration;
 	protected PluginManager _pluginManager;
 	protected IKnowledgeRepository _knowledgeRepository;
-		
+	protected ProjectManager _projectManager;	
 	
 	Log logger = LogFactory.getLog(this.getClass());
 
 	public Thinklab() throws ThinklabException {
 		
-		_configuration = new Configuration();
-		_pluginManager = new PluginManager();
-		_km            = new KnowledgeManager();
+		_configuration  = new Configuration();
+		_km             = new KnowledgeManager();
+		_pluginManager  = new PluginManager();
+		_projectManager = new ProjectManager();
 	}
 	
 	/* (non-Javadoc)
@@ -177,7 +182,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL));
 		
 		/*
-		 * TODO remaining modeling beans
+		 * remaining modeling beans
 		 */
 		registerAnnotatedClass(LanguageElement.class, getConcept(NS.LANGUAGE_ELEMENT));
 		registerAnnotatedClass(Namespace.class, getConcept(NS.NAMESPACE));
@@ -199,6 +204,11 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		_pluginManager.registerPluginPath(getLoadPath(SUBSPACE_PLUGINS));
 		_pluginManager.boot();
 
+		/*
+		 * and finally the projects
+		 */
+		_projectManager.addProjectDirectory(getWorkspace(SUBSPACE_PROJECTS));
+		_projectManager.boot();
 
 	}
 
@@ -657,5 +667,30 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 
 	public File getProjectPath() {
 		return getWorkspace("projects");
+	}
+
+	@Override
+	public IProject getProject(String projectId) {
+		return _projectManager.getProject(projectId);
+	}
+
+	@Override
+	public Collection<IProject> getProjects() {
+		return _projectManager.getProjects();
+	}
+
+	@Override
+	public IProject deployProject(String resourceId) throws ThinklabException {
+		return _projectManager.deployProject(resourceId);
+	}
+
+	@Override
+	public void undeployProject(String projectId) throws ThinklabException {
+		_projectManager.undeployProject(projectId);
+	}
+
+	@Override
+	public void addProjectDirectory(File projectDirectory) {
+		_projectManager.addProjectDirectory(projectDirectory);		
 	}
 }

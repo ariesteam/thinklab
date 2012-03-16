@@ -35,7 +35,7 @@ import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
-import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
@@ -288,7 +288,7 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	public void write(File f) throws ThinklabException {
 
 		if ( ! (f.toString().endsWith(".tif") || f.toString().endsWith(".tiff"))) {
-			throw new ThinklabUnimplementedFeatureException(
+			throw new ThinklabUnsupportedOperationException(
 					"raster coverage: only GeoTIFF format is supported for now");
 		}
 		

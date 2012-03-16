@@ -28,7 +28,6 @@ import org.integratedmodelling.thinklab.Version;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
-import org.integratedmodelling.thinklab.project.ProjectFactory;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,7 +100,7 @@ public class CapabilitiesService extends DefaultRESTHandler {
 //				oret.append("plugins", map);
 //			}
 
-			for (IProject p : ProjectFactory.get().getProjects()) {
+			for (IProject p : Thinklab.get().getProjects()) {
 				
 				HashMap<String, String> map = new HashMap<String, String>();
 				
@@ -136,7 +135,7 @@ public class CapabilitiesService extends DefaultRESTHandler {
 //				oret.append("projects", p.getId());
 //			}
 
-			for (IProject p : ProjectFactory.get().getProjects()) {
+			for (IProject p : Thinklab.get().getProjects()) {
 				
 				for (INamespace n : p.getNamespaces()) {
 					HashMap<String, String> map = new HashMap<String, String>();

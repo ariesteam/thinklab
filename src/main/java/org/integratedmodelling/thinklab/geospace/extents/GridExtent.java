@@ -27,7 +27,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -587,7 +587,7 @@ public class GridExtent extends ArealExtent {
 		 * if we get here, we must be merging two rasters
 		 */
 		if ( !(orextent instanceof GridExtent && otextent instanceof GridExtent)) {
-			throw new ThinklabUnimplementedFeatureException("RasterModel: cannot yet merge extents of different types");
+			throw new ThinklabUnsupportedOperationException("RasterModel: cannot yet merge extents of different types");
 		}
 
 		GridExtent orext = (GridExtent)orextent;
@@ -707,7 +707,7 @@ public class GridExtent extends ArealExtent {
 		 * if we get here, we must be merging two rasters
 		 */
 		if ( !(orextent instanceof GridExtent && otextent instanceof GridExtent)) {
-			throw new ThinklabUnimplementedFeatureException("RasterModel: cannot yet merge extents of different types");
+			throw new ThinklabUnsupportedOperationException("RasterModel: cannot yet merge extents of different types");
 		}
 
 		GridExtent otext = (GridExtent)otextent;

@@ -33,7 +33,7 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.Operations;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
@@ -254,7 +254,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		// System.out.println("Coverage " + getLayerName() + " requested to match " + extent);
 		
 		if (! (extent instanceof GridExtent)) {
-			throw new ThinklabUnimplementedFeatureException("cannot yet match a raster coverage to a non-raster extent");
+			throw new ThinklabUnsupportedOperationException("cannot yet match a raster coverage to a non-raster extent");
 		}
 		
 		GridExtent cext = (GridExtent) extent;

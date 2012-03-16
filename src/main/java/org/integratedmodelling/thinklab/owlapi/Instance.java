@@ -32,7 +32,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.KnowledgeManager;
@@ -424,7 +424,7 @@ public class Instance extends Knowledge  {
 	public void addObjectRelationship(IProperty p, URI externalObject)
 			throws ThinklabException {
 		// TODO Auto-generated method stub
-		throw new ThinklabUnimplementedFeatureException("UNIMPLEMENTED: storing objects as URIs");
+		throw new ThinklabUnsupportedOperationException("UNIMPLEMENTED: storing objects as URIs");
 	}
 
 	@Override

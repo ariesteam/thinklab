@@ -14,7 +14,7 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
+import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.NS;
@@ -155,7 +155,7 @@ public class NeoKBox implements IKbox {
 		KboxTypeAdapter adapter = _typeAdapters.get(s.getDirectType());
 		
 		if (adapter == null)
-			throw new ThinklabUnimplementedFeatureException("kbox: cannot store literal of type " +
+			throw new ThinklabUnsupportedOperationException("kbox: cannot store literal of type " +
 					s.getDirectType());
 		
 		adapter.setAndIndexProperty(node.getId(), this, p, s.getObject());
@@ -184,7 +184,7 @@ public class NeoKBox implements IKbox {
 	public List<ISemanticObject> query(IQuery query) throws ThinklabException {
 		
 		if (! (query instanceof SemanticQuery)) {
-			throw new ThinklabUnimplementedFeatureException("query type not supported: " + query);
+			throw new ThinklabUnsupportedOperationException("query type not supported: " + query);
 		}
 		
 		Set<Long> matches = queryObjects((SemanticQuery) query);

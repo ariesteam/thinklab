@@ -23,8 +23,8 @@ import java.io.File;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.project.IProject;
-import org.integratedmodelling.thinklab.project.ProjectFactory;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
@@ -63,7 +63,7 @@ public class ProjectService extends DefaultRESTHandler {
 				/*
 				 * make an archive from the project and return the handle
 				 */
-				IProject tp = ProjectFactory.get().getProject(pluginId, false);
+				IProject tp = Thinklab.get().getProject(pluginId);
 				if (tp == null)
 					throw new ThinklabResourceNotFoundException("project " + pluginId + " does not exist");
 

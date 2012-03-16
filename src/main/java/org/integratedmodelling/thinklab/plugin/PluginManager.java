@@ -8,6 +8,7 @@ import net.xeoh.plugins.base.PluginInformation;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;
 import net.xeoh.plugins.base.options.AddPluginsFromOption;
 import net.xeoh.plugins.base.options.GetPluginOption;
+import net.xeoh.plugins.base.util.PluginManagerUtil;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
@@ -31,16 +32,18 @@ public class PluginManager implements IPluginManager {
 			new ArrayList<IPluginLifecycleListener>();
 	
 	private net.xeoh.plugins.base.PluginManager _manager;
-	private PluginInformation _info;
+	private PluginManagerUtil _info;
 	
 	public void boot() {
 
 		this._manager = PluginManagerFactory.createPluginManager();
 		this._manager.addPluginsFrom(
-				Thinklab.get().getLoadPath(Thinklab.SUBSPACE_PLUGINS).toURI(), 
-				(AddPluginsFromOption[])null);
-			
-		this._info = this._manager.getPlugin(PluginInformation.class, (GetPluginOption[])null);
+				Thinklab.get().getLoadPath(Thinklab.SUBSPACE_PLUGINS).toURI());
+
+		/*
+		 * poh.
+		 */
+		this._info = new PluginManagerUtil(_manager);
 	}
 	
 	@Override
@@ -51,8 +54,7 @@ public class PluginManager implements IPluginManager {
 
 	@Override
 	public void addPluginLifecycleListener(IPluginLifecycleListener listener) {
-		// TODO Auto-generated method stub
-
+		_listeners.add(listener);
 	}
 
 	@Override
