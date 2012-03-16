@@ -117,9 +117,15 @@ public class KnowledgeManager implements IKnowledgeManager {
 
 	@Override
 	public IKbox requireKbox(String uri) throws ThinklabException {
+		
+		IKbox ret = null;
 		if (_kboxes.containsKey(uri))
-			return _kboxes.get(uri);
-		return createKbox(uri);
+			ret = _kboxes.get(uri);
+		else
+			ret = createKbox(uri);
+		
+		ret.open();
+		return ret;
 	}
 
 	@Override

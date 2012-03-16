@@ -137,13 +137,15 @@ public class Test implements ICommandHandler {
 		 * we should never do that - the object should be immutable, but we know it.
 		 */
 		clone._name = "dick's clone";
-		kbox.store(clone);
+		id = kbox.store(clone);
 
+		ISemanticObject dickoid = kbox.retrieve(id);
 		
 		/*
-		 * have a look at the referenced list
+		 * have a look at the referenced lists for old Dick and his clone
 		 */
 		System.out.println(semantics.prettyPrint());
+		System.out.println(dickoid.getSemantics().prettyPrint());
 		
 		return null;
 	}

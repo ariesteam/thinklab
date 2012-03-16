@@ -45,6 +45,8 @@ import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
+import com.tinkerpop.pipes.util.PipeHelper;
+
 public class NeoKBox implements IKbox {
 
 	private static final String TYPE_PROPERTY = "_type";	
@@ -69,23 +71,7 @@ public class NeoKBox implements IKbox {
 		if (_typeAdapters == null) {
 			initializeTypeAdapters();
 		}
-		
-		URL urf = null;
 		this._url = url;
-
-		try {
-			urf = new URL(url);
-			_db = new EmbeddedGraphDatabase(urf.getFile());
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				@Override
-				public void run() {
-					if (_db != null)
-						_db.shutdown();
-				}
-			});
-		} catch (Exception e) {
-			throw new ThinklabRuntimeException(e);
-		}
 	}
 	
 	/**
@@ -273,21 +259,17 @@ public class NeoKBox implements IKbox {
 	 */
 	private IReferenceList retrieveList(Node node, HashMap<Node, IReferenceList> refs, ReferenceList root) throws ThinklabException {
 		
-		if (refs.containsKey(node))
-			return refs.get(node).getReference();
-		
-		ReferenceList ret = root.newList();
+		IReferenceList ref = null;
+		if (refs.containsKey(node)) {
+			return refs.get(node);
+		} else {
+			ref = root.getForwardReference();
+			refs.put(node, ref);
+		}
 		
 		ArrayList<Object> rl = new ArrayList<Object>();
 		IConcept concept = Thinklab.c(node.getProperty(TYPE_PROPERTY).toString());
 		rl.add(concept);
-		
-		/*
-		 * follow outgoing relationships to other objects
-		 */
-		for (Relationship r : node.getRelationships(Direction.OUTGOING)) {
-			rl.add(PolyList.list(Thinklab.p(fromId(r.getType().name())), retrieveList(r.getEndNode(), refs, ret)));
-		}
 
 		/*
 		 * literals
@@ -296,16 +278,23 @@ public class NeoKBox implements IKbox {
 			// skip system properties
 			if (p.startsWith("_"))
 				continue;
-			rl.add(PolyList.list(Thinklab.p(fromId(p)), Thinklab.get().conceptualize(node.getProperty(p))));
+			rl.add(root.newList(Thinklab.p(fromId(p)), Thinklab.get().conceptualize(node.getProperty(p))));
+		}
+
+		/*
+		 * follow outgoing relationships to other objects
+		 */
+		for (Relationship r : node.getRelationships(Direction.OUTGOING)) {
+			rl.add(root.newList(Thinklab.p(fromId(r.getType().name())), retrieveList(r.getEndNode(), refs, root)));
 		}
 		
-		return ret.append(rl.toArray());		
+		return  (IReferenceList) ref.resolve(root.newList(rl.toArray()));		
 	}
 
 	private Set<Long> queryObjects(SemanticQuery query) {
 		
 		Set<Long> ret = null;
-		
+				
 		for (SemanticQuery r : query.getRestrictions()) {
 			
 			Set<Long> rr = queryObjects(r);
@@ -388,7 +377,104 @@ public class NeoKBox implements IKbox {
 						return null;
 					}
 				});
+		
+		registerTypeAdapter(Thinklab.c(NS.INTEGER),
+				new TypeAdapter() {
+					
+					@Override
+					protected void setAndIndex(Node node, IProperty property, Object value) {
+						node.setProperty(toId(property), value);
+						Index<Node> index = _db.index().forNodes(toId(property));
+						index.add(node, toId(property), value);
+					}
 
+					@Override
+					public Set<Long> submitLiteralQuery(IProperty property,
+							IKbox kbox, IConcept queryType, Object... arguments) {
+						// TODO Auto-generated method stub
+						return null;
+					}
+				});
+		
+		registerTypeAdapter(Thinklab.c(NS.DOUBLE),
+				new TypeAdapter() {
+					
+					@Override
+					protected void setAndIndex(Node node, IProperty property, Object value) {
+						node.setProperty(toId(property), value);
+						Index<Node> index = _db.index().forNodes(toId(property));
+						index.add(node, toId(property), value);
+					}
+
+					@Override
+					public Set<Long> submitLiteralQuery(IProperty property,
+							IKbox kbox, IConcept queryType, Object... arguments) {
+						// TODO Auto-generated method stub
+						return null;
+					}
+				});
+		registerTypeAdapter(Thinklab.c(NS.FLOAT),
+				new TypeAdapter() {
+					
+					@Override
+					protected void setAndIndex(Node node, IProperty property, Object value) {
+						node.setProperty(toId(property), value);
+						Index<Node> index = _db.index().forNodes(toId(property));
+						index.add(node, toId(property), value);
+					}
+
+					@Override
+					public Set<Long> submitLiteralQuery(IProperty property,
+							IKbox kbox, IConcept queryType, Object... arguments) {
+						// TODO Auto-generated method stub
+						return null;
+					}
+				});
+		registerTypeAdapter(Thinklab.c(NS.LONG),
+				new TypeAdapter() {
+					
+					@Override
+					protected void setAndIndex(Node node, IProperty property, Object value) {
+						node.setProperty(toId(property), value);
+						Index<Node> index = _db.index().forNodes(toId(property));
+						index.add(node, toId(property), value);
+					}
+
+					@Override
+					public Set<Long> submitLiteralQuery(IProperty property,
+							IKbox kbox, IConcept queryType, Object... arguments) {
+						// TODO Auto-generated method stub
+						return null;
+					}
+				});
+
+	}
+
+	@Override
+	public void open() {
+		try {
+			if (_db == null) {
+				URL urf = new URL(_url);
+				_db = new EmbeddedGraphDatabase(urf.getFile());
+				Runtime.getRuntime().addShutdownHook(new Thread() {
+					@Override
+					public void run() {
+						if (_db != null)
+							_db.shutdown();
+					}
+				});
+			}
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
+
+	@Override
+	public void close() {
+		if (_db != null) {
+			_db.shutdown();
+			_db = null;
+		} 
 	}
 
 

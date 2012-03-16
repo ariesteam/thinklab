@@ -43,6 +43,7 @@ public class SemanticGraph extends
 		}
 
 		addVertex(root);
+		refs.put(semantics, root);
 		
 		for (Object o : semantics) {
 			
@@ -59,9 +60,7 @@ public class SemanticGraph extends
 				}
 			}
 		}
-		
-		refs.put(semantics, root);
-		
+				
 		return root;
 	}
 

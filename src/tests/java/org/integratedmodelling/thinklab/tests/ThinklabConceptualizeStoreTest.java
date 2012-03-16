@@ -24,11 +24,6 @@ import org.integratedmodelling.thinklab.metadata.Metadata;
  * @version $Revision$
  */
 public class ThinklabConceptualizeStoreTest extends TestCase {
-
-	/**
-	 * we cannot keep creating this across boots.
-	 */
-	IKbox thinklabKbox = null;
 	
 	/*
 	 * We build complicated graphs of these and try to process and store their
@@ -78,7 +73,6 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Thinklab.boot();
-		thinklabKbox = Thinklab.get().requireKbox("thinklab");
 	}
 
 	@Override
@@ -132,6 +126,7 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 				clone1.get(Metadata.DC_COVERAGE_SPATIAL) instanceof Pair<?,?> &&
 				clone1.get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
 		
+		IKbox thinklabKbox = Thinklab.get().requireKbox("thinklab");
 
 		/*
 		 * store the object, just like that.
@@ -201,6 +196,9 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 		assertTrue(mr._children != null && mr._children[0]._name.equals("pipp"));
 		assertTrue(mr._partner != null && mr._partner._name.equals("john"));
 		
+		
+		IKbox thinklabKbox = Thinklab.get().requireKbox("thinklab");
+		
 		/*
 		 * store old dick and his clone in the "thinklab" kbox, created as necessary. Looking at
 		 * the resulting database with neoclipse can be fun.
@@ -210,15 +208,15 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 		 * we should never do that - the object should be immutable, but we know it.
 		 */
 		clone._name = "dick's clone";
-//		thinklabKbox.store(clone);
+		long id = thinklabKbox.store(clone);
 
+		ISemanticObject dickoid = thinklabKbox.retrieve(id);
 		
 		/*
-		 * have a look at the referenced list
+		 * have a look at the referenced lists for old Dick and his clone
 		 */
 		System.out.println(semantics.prettyPrint());
-		
-
+		System.out.println(dickoid.getSemantics().prettyPrint());
 	}
 }
 
