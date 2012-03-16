@@ -16,7 +16,6 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnimplementedFeatureException;
 import org.integratedmodelling.lang.Quantifier;
-import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -45,12 +44,10 @@ import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
-import com.tinkerpop.pipes.util.PipeHelper;
-
 public class NeoKBox implements IKbox {
 
-	private static final String TYPE_PROPERTY = "_type";	
-	private static final String HASNODE_PROPERTY = "_hasnode";
+	static final String TYPE_PROPERTY = "_type";	
+	static final String HASNODE_PROPERTY = "_hasnode";
 	
 	private static IntelligentMap<KboxTypeAdapter> _typeAdapters = null;
 	
@@ -356,7 +353,7 @@ public class NeoKBox implements IKbox {
 	 */
 	
 	/*
-	 * insert default type adapters
+	 * insert default type adapters. More can be added for specific types.
 	 */
 	private void initializeTypeAdapters() {
 
@@ -447,7 +444,6 @@ public class NeoKBox implements IKbox {
 						return null;
 					}
 				});
-
 	}
 
 	@Override

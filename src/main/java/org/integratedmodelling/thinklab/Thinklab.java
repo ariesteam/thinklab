@@ -39,6 +39,14 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.model.Context;
+import org.integratedmodelling.lang.model.LanguageElement;
+import org.integratedmodelling.lang.model.Model;
+import org.integratedmodelling.lang.model.ModelObject;
+import org.integratedmodelling.lang.model.Namespace;
+import org.integratedmodelling.lang.model.Observer;
+import org.integratedmodelling.lang.model.Scenario;
+import org.integratedmodelling.lang.model.Storyline;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
@@ -169,8 +177,16 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL));
 		
 		/*
-		 * TODO modeling beans
+		 * TODO remaining modeling beans
 		 */
+		registerAnnotatedClass(LanguageElement.class, getConcept(NS.LANGUAGE_ELEMENT));
+		registerAnnotatedClass(Namespace.class, getConcept(NS.NAMESPACE));
+		registerAnnotatedClass(ModelObject.class, getConcept(NS.MODEL_OBJECT));
+		registerAnnotatedClass(Context.class, getConcept(NS.CONTEXT));
+		registerAnnotatedClass(Observer.class, getConcept(NS.OBSERVER));
+		registerAnnotatedClass(Model.class, getConcept(NS.MODEL));
+		registerAnnotatedClass(Scenario.class, getConcept(NS.SCENARIO));
+		registerAnnotatedClass(Storyline.class, getConcept(NS.STORYLINE));
 		
 		/*
 		 * TODO use plugin manager for this
@@ -392,6 +408,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		
 			_this.logger.info("Thinklab shutting down");
 			
+			_this._pluginManager.shutdown();
 			_this._km.shutdown();
 
 			_this._configuration = null;
@@ -636,5 +653,9 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	}
 	public boolean isLiteralConcept(IConcept concept) {
 		return _km.isLiteralConcept(concept);
+	}
+
+	public File getProjectPath() {
+		return getWorkspace("projects");
 	}
 }

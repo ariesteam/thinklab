@@ -42,8 +42,6 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
  */
 public class ContourPlot extends BufferedImage {
 
-	private static final long serialVersionUID = -4321635336670844054L;
-
 	boolean SHOW_NUMBERS = false;
 	static int N_CONTOURS	= 10, // TODO must be local, except it's needed in the silly constructor
 		PLOT_MARGIN	= 0,

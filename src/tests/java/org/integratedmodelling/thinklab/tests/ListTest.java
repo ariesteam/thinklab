@@ -9,8 +9,6 @@ import java.util.HashSet;
 
 import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -19,20 +17,6 @@ import org.junit.Test;
  */
 public class ListTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-	
 	@Test
 	public void testReferenceList() throws Exception {
 		
@@ -53,12 +37,6 @@ public class ListTest {
 	
 		
 		System.out.println(zioPio);
-	}
-
-	
-	@Test
-	public void test() {
-//		fail("Not yet implemented");
 	}
 
 }

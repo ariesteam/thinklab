@@ -119,7 +119,7 @@ public class WFSToOPAL extends InteractiveSubcommandHandler {
 		
 		if (cmd.equals("list")) {
 			for (int i = 0; i < coverages.size(); i++) {
-				say(i+1 + ". " + coverages.get(i));
+				say((i+1) + ". " + coverages.get(i));
 			}
 		} else if (cmd.equals("info")) {
 			info(Integer.parseInt(arguments[1])-1);
@@ -267,7 +267,6 @@ public class WFSToOPAL extends InteractiveSubcommandHandler {
 			say("CRS: " + Geospace.getCRSIdentifier(source.getInfo().getCRS(), false));
 			say("Description: " + source.getInfo().getDescription());
 			say("Keywords: " + source.getInfo().getKeywords());
-			;
 			say("Attributes:");
 			int i = 1;
 			for (AttributeDescriptor ad : source.getSchema().getAttributeDescriptors()) {

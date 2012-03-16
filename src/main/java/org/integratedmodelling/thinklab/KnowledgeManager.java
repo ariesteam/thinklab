@@ -101,6 +101,7 @@ public class KnowledgeManager implements IKnowledgeManager {
 			kf.mkdirs();
 			try {
 				ret = new NeoKBox(kf.toURI().toURL().toString());
+				ret.open();
 				_kboxes.put(uri, ret);
 			} catch (MalformedURLException e) {
 				throw new ThinklabInternalErrorException(e);
@@ -123,8 +124,6 @@ public class KnowledgeManager implements IKnowledgeManager {
 			ret = _kboxes.get(uri);
 		else
 			ret = createKbox(uri);
-		
-		ret.open();
 		return ret;
 	}
 
@@ -139,6 +138,15 @@ public class KnowledgeManager implements IKnowledgeManager {
 	}
 	
 	public void shutdown() {
+		
+		for (IKbox kbox : _kboxes.values()) {
+			
+			/*
+			 * TODO if kbox properties contains a temporary tag, clear it before closing.
+			 */
+			
+			kbox.close();
+		}
 		
 		/* TODO any other cleanup actions */
 		

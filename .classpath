@@ -187,19 +187,6 @@
 	<classpathentry kind="lib" path="lib/miglayout-3.7-swing.jar"/>
 	<classpathentry kind="lib" path="lib/mvel2-2.0.7.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.5.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-backup-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-com-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-cypher-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-enterprise-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-graph-algo-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-graph-matching-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-ha-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-jmx-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-kernel-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-lucene-index-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-management-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-shell-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-udc-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/net.opengis.ows-2.6.5.jar"/>
 	<classpathentry kind="lib" path="lib/net.opengis.wcs-2.6.5.jar"/>
 	<classpathentry kind="lib" path="lib/net.opengis.wfs-2.6.5.jar"/>
@@ -312,7 +299,7 @@
 	<classpathentry kind="lib" path="lib/xsd-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/xsdlib-20050614.jar"/>
 	<classpathentry kind="lib" path="lib/zookeeper-3.3.2.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/thinklab-0.9beta"/>
 	<classpathentry kind="lib" path="lib/owlapi-bin.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/gson-1.4.jar"/>
@@ -339,7 +326,27 @@
 	<classpathentry kind="lib" path="lib/reflections-0.9.5.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-simple-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis-1.0.b2.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-spatial-0.7.jar"/>
 	<classpathentry kind="lib" path="lib/pipes-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-community-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-cypher-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-algo-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-matching-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-jmx-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-kernel-1.6.1-tests.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-kernel-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-lucene-index-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-shell-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-udc-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/jpf-tools.jar"/>
+	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/JPF 1.5"/>
+	<classpathentry kind="lib" path="lib/jspf.core-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.discovery-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.ermi-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.javascript-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.json-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.lipermi-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.xmlrpc-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

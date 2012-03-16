@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
@@ -776,5 +777,39 @@ public class Concept extends Knowledge implements IConcept {
 	public IQuery getDefinition() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Set<IConcept> getSemanticClosure() {
+
+		if (KR().getClassReasoner() != null) {
+			
+			HashSet<IConcept> ret = new HashSet<IConcept>();
+			Set<Set<OWLClass>> cset = null;
+			try {
+				cset = KR().getClassReasoner().getDescendantClasses(entity.asOWLClass());
+			} catch (OWLReasonerException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+			for (Set<OWLClass> set : cset) {
+				for (OWLClass cl : set) {
+					ret.add(new Concept(cl.asOWLClass()));
+				}
+			}
+			return ret;
+		}
+		
+		return collectChildren(new HashSet<IConcept>());
+	}
+	
+
+	private Set<IConcept> collectChildren(Set<IConcept> hashSet) {
+
+		for (IConcept c : getChildren()) {
+			if (!hashSet.contains(c));
+				((Concept)c).collectChildren(hashSet);
+			hashSet.add(c);
+		}			
+		return hashSet;
 	}
 }

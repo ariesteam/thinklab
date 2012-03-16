@@ -564,14 +564,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 		ArrayList<INamespace> ret = new ArrayList<INamespace>();
 		HashSet<File> read = new HashSet<File>();
 		
-		for (File dir : project.getSourceFolders()) {
-		
-			if (!dir.isDirectory() || !dir.canRead()) {
-				throw new ThinklabIOException("source directory " + dir + " is unreadable");
-			}	 
-		
-			loadInternal(dir, read, ret, "", project);
-		}
+		loadInternal(project.getSourceDirectory(), read, ret, "", project);
 		
 		return ret;
 	}

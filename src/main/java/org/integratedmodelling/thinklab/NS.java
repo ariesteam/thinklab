@@ -1,6 +1,5 @@
 package org.integratedmodelling.thinklab;
 
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 
 /**
  * One and only holder of semantic concept IDs. These will all be expected to exist.
@@ -12,10 +11,17 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
  */
 public class NS {
 	
+	/**
+	 * Ontologies created by loading knowledge from thinklab modeling
+	 * language files get URLs with this prefix unless a different one
+	 * is specified in project properties.
+	 */
+	public static final String DEFAULT_THINKLAB_ONTOLOGY_PREFIX = 
+			"http://www.integratedmodelling.org/ks";
+	
 	// the semantic basics
 	public static final String THING   = "owl:Thing";
 	public static final String NOTHING = "owl:Nothing";
-	
 
 	// core objects that everyone will need
 	public static final String INTEGER = "thinklab:ShortInteger";
@@ -28,7 +34,6 @@ public class NS {
 
 	// standard operations
 	public static final String OPERATION_EQUALS = "thinklab:Equal";
-
 	
 	// observable types
 	public static final String BOOLEAN_RANKING = "thinklab:BooleanRanking";
@@ -67,5 +72,14 @@ public class NS {
 	public static final String GEOSPACE_HAS_VALUE_EXPRESSION = "geospace:hasValueExpression";
 	public static final String GEOSPACE_HAS_VALUE_DEFAULT = "geospace:hasValueDefault";
 	
-	
+	// model beans
+	public static final String LANGUAGE_ELEMENT = "modelling.thinklab:LanguageElement";
+	public static final String NAMESPACE = "modelling.thinklab:Namespace";
+	public static final String MODEL_OBJECT = "modelling.thinklab:ModelObject";
+	public static final String CONTEXT = "modelling.thinklab:Context";
+	public static final String OBSERVER = "modelling.thinklab:Observer";
+	public static final String MODEL = "modelling.thinklab:Model";
+	public static final String SCENARIO = "modelling.thinklab:Scenario";
+	public static final String STORYLINE = "modelling.thinklab:Storyline";
+
 }

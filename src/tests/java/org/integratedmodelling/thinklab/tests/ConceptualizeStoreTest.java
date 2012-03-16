@@ -1,6 +1,6 @@
 package org.integratedmodelling.thinklab.tests;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
@@ -10,20 +10,12 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.metadata.Metadata;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-/**
- * The class <code>ThinklabTest</code> contains tests for the class {@link
- * <code>Thinklab</code>}
- *
- * @pattern JUnit Test Case
- *
- * @generatedBy CodePro at 3/12/12 8:06 PM
- *
- * @author Ferd
- *
- * @version $Revision$
- */
-public class ThinklabConceptualizeStoreTest extends TestCase {
+
+public class ConceptualizeStoreTest  {
 	
 	/*
 	 * We build complicated graphs of these and try to process and store their
@@ -55,32 +47,18 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 			_parents = parents;
 		}
 	}
-
-	public ThinklabConceptualizeStoreTest(String name) {
-		super(name);
-	}
-
-	public static void main(String[] args) {
-	}
-
-	/**
-	 * Perform pre-test initialization
-	 *
-	 * @throws Exception
-	 *
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
 		Thinklab.boot();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
 		Thinklab.shutdown();
-		super.tearDown();
 	}
 
+	@Test
 	public void testSimpleLiterals() throws ThinklabException {
 		
 		ISemanticObject quaranta = Thinklab.get().annotate(40);
@@ -89,9 +67,9 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 		Object oquarant = Thinklab.get().instantiate(quaranta.getSemantics());
 		Object ostocazz = Thinklab.get().instantiate(stocazzo.getSemantics());
 		
-		assertTrue(oquarant != null && ostocazz != null);
+		Assert.assertTrue(oquarant != null && ostocazz != null);
 		
-		assertTrue (
+		Assert.assertTrue (
 				oquarant.equals(40) && 
 				ostocazz.equals("stocazzo"));
 	}
@@ -99,6 +77,7 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 	/*
 	 * Create a simple object with a hashmap member and no self-references.
 	 */
+	@Test
 	public void testStoreAcyclic() throws Exception {
 
 		Metadata metadata = new Metadata();
@@ -121,7 +100,7 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 		 * instantiate a new semantic clone and check if it matches.
 		 */
 		Metadata clone1 = (Metadata) Thinklab.get().instantiate(semantics);
-		assertTrue(
+		Assert.assertTrue(
 				clone1 instanceof Metadata && 
 				clone1.get(Metadata.DC_COVERAGE_SPATIAL) instanceof Pair<?,?> &&
 				clone1.get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
@@ -138,7 +117,7 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 		 */
 		ISemanticObject clone2 = thinklabKbox.retrieve(id);
 
-		assertTrue(
+		Assert.assertTrue(
 				clone2.getObject() instanceof Metadata && 
 				((Metadata)(clone2.getObject())).get(Metadata.DC_COVERAGE_SPATIAL) instanceof Pair<?,?> &&
 				((Metadata)(clone2.getObject())).get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
@@ -156,6 +135,7 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 	 * 
 	 * @throws Exception 
 	 */
+	@Test
 	public void testStoreCyclic() throws Exception {
 		
 		/*
@@ -183,18 +163,18 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 		 * the new object in porco is a clone of dick, made by copying 
 		 * his family tree.
 		 */
-		assertTrue(clone instanceof Person);
+		Assert.assertTrue(clone instanceof Person);
 		
 		
 		// there's quite a bit to check. Just run a few tests.
-		assertTrue(clone._name.equals("dick") && clone._age == 71);
-		assertTrue(clone._parents == null);
-		assertTrue(clone._children != null && clone._children[0]._name.equals("mary"));
+		Assert.assertTrue(clone._name.equals("dick") && clone._age == 71);
+		Assert.assertTrue(clone._parents == null);
+		Assert.assertTrue(clone._children != null && clone._children[0]._name.equals("mary"));
 		
 		Person mr = clone._children[0];
-		assertTrue(mr._parents != null && mr._parents[0]._name.equals("dick"));
-		assertTrue(mr._children != null && mr._children[0]._name.equals("pipp"));
-		assertTrue(mr._partner != null && mr._partner._name.equals("john"));
+		Assert.assertTrue(mr._parents != null && mr._parents[0]._name.equals("dick"));
+		Assert.assertTrue(mr._children != null && mr._children[0]._name.equals("pipp"));
+		Assert.assertTrue(mr._partner != null && mr._partner._name.equals("john"));
 		
 		
 		IKbox thinklabKbox = Thinklab.get().requireKbox("thinklab");
@@ -219,22 +199,3 @@ public class ThinklabConceptualizeStoreTest extends TestCase {
 		System.out.println(dickoid.getSemantics().prettyPrint());
 	}
 }
-
-/*$CPS$ This comment was generated by CodePro. Do not edit it.
- * patternId = com.instantiations.assist.eclipse.pattern.testCasePattern
- * strategyId = com.instantiations.assist.eclipse.pattern.testCasePattern.junitTestCase
- * additionalTestNames = conceptualize, storeLinear, storeAcyclic
- * assertTrue = false
- * callTestMethod = true
- * createMain = true
- * createSetUp = true
- * createTearDown = false
- * createTestFixture = false
- * createTestStubs = false
- * methods = 
- * package = org.integratedmodelling.thinklab.tests
- * package.sourceFolder = thinklab/src/tests/java
- * superclassType = junit.framework.TestCase
- * testCase = ThinklabTest
- * testClassType = org.integratedmodelling.thinklab.Thinklab
- */

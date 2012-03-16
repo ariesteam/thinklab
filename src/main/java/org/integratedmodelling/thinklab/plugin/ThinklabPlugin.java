@@ -21,8 +21,6 @@ package org.integratedmodelling.thinklab.plugin;
 
 import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
 
-
-
 /**
  * A specialized JPF plugin to support extension of the knowledge manager.
  * 

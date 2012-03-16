@@ -123,8 +123,10 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 
 	@Override
 	public boolean asBoolean() {
-		// TODO Auto-generated method stub
-		return false;
+
+		return _object instanceof Boolean ?
+				((Boolean)_object) :
+				false;
 	}
 
 	@Override
@@ -214,8 +216,9 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 
 	@Override
 	public boolean isCyclic() {
-		// TODO Auto-generated method stub
-		return false;
+		if (_graph == null)
+			_graph = new SemanticGraph(_semantics, this);
+		return _graph.hasCycles();
 	}
 
 	@Override
@@ -227,8 +230,9 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 	@Override
 	public List<ISemanticObject> getSortedRelationships(IProperty property)
 			throws ThinklabCircularDependencyException {
-		// TODO Auto-generated method stub
-		return null;
+		if (_graph == null)
+			_graph = new SemanticGraph(_semantics, this);
+		return _graph.getTopologicalSorting();
 	}
 
 	@Override
@@ -283,16 +287,6 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 	 * package.
 	 * ------------------------------------------------------------------------------------------
 	 */
-	
-	SemanticObject setSemantics(IReferenceList semantics) {
-		_semantics = semantics;
-		return this;
-	}
-
-	SemanticObject setObject(Object o) {
-		_object = o;
-		return this;
-	}
 
 
 	void setLiteralRelationship(IProperty p, ISemanticObject tg) {

@@ -34,7 +34,6 @@ import java.util.LinkedList;
  */
 public class StackMap<K,T> {
 
-	private static final long serialVersionUID = 1988080719023977747L;
 	private HashMap<K,T> _map = new HashMap<K,T>();
 	private LinkedList<K> _stk = new LinkedList<K>();
 	

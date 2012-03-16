@@ -1,15 +1,21 @@
 package org.integratedmodelling.thinklab.annotation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import org.integratedmodelling.exceptions.ThinklabCircularDependencyException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticGraph.PropertyEdge;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
+import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
 public class SemanticGraph extends
 		DefaultDirectedGraph<SemanticObject, PropertyEdge> {
@@ -82,6 +88,28 @@ public class SemanticGraph extends
 		}
 	}
 	
+	public boolean hasCycles() {
+		
+		CycleDetector<SemanticObject, PropertyEdge> cycleDetector = 
+				new CycleDetector<SemanticObject, PropertyEdge>(this);
+		return cycleDetector.detectCycles();
+	}
 	
+	public List<ISemanticObject> getTopologicalSorting() throws ThinklabCircularDependencyException {
+		
+		if (hasCycles())
+			throw new ThinklabCircularDependencyException(
+					"object semantics for " + _root + " has mutual dependencies: cannot sort");
+		
+		TopologicalOrderIterator<SemanticObject, PropertyEdge> iterator =
+				new TopologicalOrderIterator<SemanticObject, SemanticGraph.PropertyEdge>(this);
+		
+		ArrayList<ISemanticObject> ret = new ArrayList<ISemanticObject>();
+		
+		while (iterator.hasNext())
+			ret.add(iterator.next());
+		
+		return ret;
+	}
 	
 }
