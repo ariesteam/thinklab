@@ -253,15 +253,6 @@ public class ModelManager implements IModelManager, IModelFactory {
 		public void onNamespaceDefined(
 				org.integratedmodelling.lang.model.Namespace namespace) throws ThinklabException {
 
-			if (!namespacesById.containsKey(namespace.getId())) {
-				INamespace ret;
-				try {
-					ret = new ModelAdapter().createNamespace(namespace);
-					namespacesById.put(namespace.getId(), ret);
-				} catch (ThinklabException e) {
-					onException(e, 0);
-				}		
-			}
 			
 			/*
 			 * TODO pop resolver context
@@ -490,10 +481,13 @@ public class ModelManager implements IModelManager, IModelFactory {
 			Injector injector = Guice.createInjector(new ModellingModule());
 			ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
 			Namespace nbean = thinkqlParser.parse(resourceId, getResolver(project, resourceId));
-			/*
-			 * namespace has been put here by the resolver's callback.
-			 */
-			return namespacesById.get(nbean.getId());			
+			
+			if (!namespacesById.containsKey(nbean.getId())) {
+				ret = new ModelAdapter().createNamespace(nbean);
+				namespacesById.put(nbean.getId(), ret);
+			} else {
+				throw new ThinklabValidationException("cannot redefine namespace: " + nbean.getId());
+			}
 			
 		} else if (resourceId.endsWith(".clj")) {
 			
@@ -595,7 +589,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 			
 		} else if (f.toString().endsWith(".owl")) {
 			ns = loadFile(f.toString(), pth, project);
-		} else if (f.toString().endsWith(".tcl") || f.toString().endsWith(".clj")) {			
+		} else if (f.toString().endsWith(".tql") || f.toString().endsWith(".clj")) {			
 			ns = loadFile(f.toString(), pth, project);
 		}
 

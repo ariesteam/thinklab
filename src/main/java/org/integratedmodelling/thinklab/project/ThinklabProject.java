@@ -28,7 +28,7 @@ public class ThinklabProject implements IProject {
 
 	File   _dir;
 	String _id;
-	Properties _properties;
+	Properties _properties = new Properties();
 	ArrayList<INamespace> _namespaces = new ArrayList<INamespace>();
 	ArrayList<String> _requisites = new ArrayList<String>();
 	boolean _loaded = false;
@@ -53,7 +53,7 @@ public class ThinklabProject implements IProject {
 			_dir = resource;
 		}
 		
-		_id  = MiscUtilities.getFileBaseName(_dir.toString());
+		_id  = MiscUtilities.getFileName(_dir.toString());
 		
 		loadProperties();
 	}
@@ -79,15 +79,20 @@ public class ThinklabProject implements IProject {
 		if (!_loaded) {
 
 			try {	
-				for (IProject p : getPrerequisites())
+				for (IProject p : getPrerequisites()) {
 					p.load();
-					for (INamespace ns : ModelManager.get().loadSourceDirectory(getSourceDirectory())) {
-						_namespaces.add(ns);
-					}
-					_loaded = true;
+				}
+				for (INamespace ns : ModelManager.get().loadSourceDirectory(getSourceDirectory())) {
+					_namespaces.add(ns);
+				}
+				_loaded = true;
 			} finally {
 				((ProjectManager)(Thinklab.get().getProjectManager())).notifyProjectLoaded(this);
 			}
+		}
+		
+		for (INamespace ns : _namespaces) {
+			Thinklab.get().logger().info(ns.getNamespace() + " namespace contains " + ns.getModelObjects().size() + " objects");
 		}
 	}
 

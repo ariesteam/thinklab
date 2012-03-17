@@ -91,14 +91,19 @@ public class ProjectManager implements IProjectManager {
 						@Override
 						public boolean accept(File pathname) {
 							return pathname.isDirectory() &&
-									new File(pathname + File.separator + IProject.THINKLAB_META_INF).isDirectory();
+									new File(pathname + File.separator + 
+											IProject.THINKLAB_META_INF + File.separator + 
+											IProject.THINKLAB_PROPERTIES_FILE).
+										exists();
 						}
 					})) {
 			
 				/*
 				 * read project IDs and dependencies; create dependency graph.
 				 */
-				File pfile = new File(dir + File.separator + IProject.THINKLAB_META_INF + File.separator + IProject.THINKLAB_PROPERTIES_FILE);
+				File pfile = new File(dir + 
+						File.separator + IProject.THINKLAB_META_INF + 
+						File.separator + IProject.THINKLAB_PROPERTIES_FILE);
 				if (pfile.exists()) {
 					
 					ProjectDescriptor pd = new ProjectDescriptor();
@@ -113,9 +118,10 @@ public class ProjectManager implements IProjectManager {
 						throw new ThinklabRuntimeException(e);
 					}
 
-					pd.id = MiscUtilities.getFileBaseName(dir.toString());
+					pd.id = MiscUtilities.getFileName(dir.toString());
 					pd.prerequisites = StringUtils.split(p.getProperty(IProject.PREREQUISITES_PROPERTY, ""), ',');
 					pd.project = new ThinklabProject(dir);
+					pd.file = dir;
 					
 					if (_projectIndex.containsKey(pd.id)) 
 						throw new ThinklabProjectException("duplicate projects named " + pd.id + " on the project path");

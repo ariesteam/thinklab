@@ -54,7 +54,8 @@ public class ProjectService extends DefaultRESTHandler {
 
 				File archive = this.getFileForHandle(getArgument("handle"), true);
 				IProject p = Thinklab.get().deployProject(pluginId, archive.toURI().toURL().toString());
-				p.load();
+				if (p != null)
+					p.load();
 				
 			} else if (cmd.equals("undeploy")) {
 				

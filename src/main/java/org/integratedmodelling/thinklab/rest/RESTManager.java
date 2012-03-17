@@ -201,6 +201,6 @@ public class RESTManager {
 	}
 
 	public boolean allowPrivilegedLocalConnections() {
-		return false;
+		return true;
 	}
 }
