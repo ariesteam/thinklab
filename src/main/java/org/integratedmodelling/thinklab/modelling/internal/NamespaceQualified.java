@@ -19,9 +19,15 @@
  */
 package org.integratedmodelling.thinklab.modelling.internal;
 
+import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.lang.INamespaceQualified;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 
-public class NamespaceQualified implements INamespaceQualified {
+public abstract class NamespaceQualified extends SemanticObject implements INamespaceQualified {
+
+	protected NamespaceQualified(IReferenceList semantics, Object object) {
+		super(semantics, object);
+	}
 
 	protected String _namespace;
 	protected String _id;

@@ -13,13 +13,10 @@ import org.integratedmodelling.thinklab.annotation.SemanticGraph.PropertyEdge;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
-import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
-import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 
 /**
  * Base class for a general non-literal semantic object.
- * Proxies the object's metadata if it has any.
  * 
  * TODO make it proxy other things such as IComparable and hash/equals.
  * TODO check what should be done (if anything) for cloning.
@@ -27,7 +24,7 @@ import org.integratedmodelling.thinklab.api.metadata.IMetadata;
  * @author Ferd
  *
  */
-public class SemanticObject implements ISemanticObject, IMetadataHolder {
+public class SemanticObject implements ISemanticObject {
 
 	IReferenceList _semantics;
 	Object _object;
@@ -37,7 +34,7 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 	
 	SemanticGraph _graph = null;
 
-	public SemanticObject(IReferenceList semantics, Object object) {
+	protected SemanticObject(IReferenceList semantics, Object object) {
 		
 		if (semantics == null && object == null) {
 			throw new ThinklabRuntimeException("invalid null semantic object");
@@ -45,11 +42,15 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 
 		this._semantics = semantics;
 		this._object = object;
-		this._id = semantics.getId();
+		this._id = _semantics == null ? 
+				0 :
+				semantics.getId();
 
 		this._isLiteral = 
 				object != null && 
-				Thinklab.get().isLiteralConcept(getDirectType());
+				(semantics == null ? 
+						Thinklab.get().getLiteralConceptForJavaClass(object.getClass()) != null :
+						Thinklab.get().isLiteralConcept(getDirectType()));
 	}
 
 	@Override
@@ -162,13 +163,13 @@ public class SemanticObject implements ISemanticObject, IMetadataHolder {
 		return "[" + getDirectType() + " " + (_object == null ? "<uninstantiated>" : _object) + "]";
 	}
 
-	@Override
-	public IMetadata getMetadata() {
-		return 
-			(_object instanceof IMetadataHolder) ?
-				((IMetadataHolder)_object).getMetadata() :
-				null;
-	}
+//	@Override
+//	public IMetadata getMetadata() {
+//		return 
+//			(_object instanceof IMetadataHolder) ?
+//				((IMetadataHolder)_object).getMetadata() :
+//				null;
+//	}
 
 	@Override
 	public List<Pair<IProperty, ISemanticObject>> getRelationships() {

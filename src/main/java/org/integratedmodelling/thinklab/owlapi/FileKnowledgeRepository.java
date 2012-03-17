@@ -51,7 +51,6 @@ import org.semanticweb.owl.inference.OWLConsistencyChecker;
 import org.semanticweb.owl.inference.OWLIndividualReasoner;
 import org.semanticweb.owl.inference.OWLPropertyReasoner;
 import org.semanticweb.owl.inference.OWLReasoner;
-import org.semanticweb.owl.inference.OWLReasonerBase;
 import org.semanticweb.owl.model.OWLDataFactory;
 import org.semanticweb.owl.model.OWLException;
 import org.semanticweb.owl.model.OWLOntology;

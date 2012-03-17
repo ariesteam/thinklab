@@ -26,10 +26,8 @@ import java.net.URL;
 
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;

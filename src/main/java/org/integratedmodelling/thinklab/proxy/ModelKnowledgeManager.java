@@ -88,7 +88,7 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
+	public void registerAnnotatedClass(Class<?> cls, IConcept concept, Class<? extends ISemanticObject> soCls) {
 		// TODO Auto-generated method stub
 		
 	}

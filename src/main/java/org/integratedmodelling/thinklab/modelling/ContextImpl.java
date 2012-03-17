@@ -29,6 +29,7 @@ import org.integratedmodelling.lang.model.Context;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
@@ -42,6 +43,15 @@ import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class ContextImpl extends NamespaceQualified implements IContext {
 
+	protected ContextImpl(IReferenceList semantics, Object object) {
+		super(semantics, object);
+	}
+
+	public ContextImpl(Context o) {
+		super(null, o);
+		_bean = o;
+	}
+
 	/*
 	 * this one will be null unless the context comes from a language 
 	 * statement.
@@ -52,21 +62,21 @@ public class ContextImpl extends NamespaceQualified implements IContext {
 	private Metadata _metadata = new Metadata();	
 	private HashMap<ISemanticObject, IState> _states = new HashMap<ISemanticObject, IState>();
 	
-	public ContextImpl(IContext context) {
-		// TODO copy every state and extent from the passed one, then initialize
-	}
-
-	public ContextImpl() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public ContextImpl(Context bean) {
-		this._bean = bean;
-		/*
-		 * TODO define from bean content, which may be not entirely validated.
-		 */
-	}
-	
+//	public ContextImpl(IContext context) {
+//		// TODO copy every state and extent from the passed one, then initialize
+//	}
+//
+//	public ContextImpl() {
+//		// TODO Auto-generated constructor stub
+//	}
+//
+//	public ContextImpl(Context bean) {
+//		this._bean = bean;
+//		/*
+//		 * TODO define from bean content, which may be not entirely validated.
+//		 */
+//	}
+//	
 	@Override
 	public Set<ISemanticObject> getObservables() {
 		return _states.keySet();

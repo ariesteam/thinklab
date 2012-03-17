@@ -24,14 +24,20 @@ import java.util.Set;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.Scenario;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class ScenarioImpl extends NamespaceQualified implements IScenario {
 
-	public ScenarioImpl(Scenario o) {
+	protected ScenarioImpl(IReferenceList semantics, Object object) {
+		super(semantics, object);
 		// TODO Auto-generated constructor stub
+	}
+
+	public ScenarioImpl(Scenario o) {
+		super(null, o);
 	}
 
 	@Override

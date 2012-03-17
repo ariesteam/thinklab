@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,12 @@ import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
+import org.integratedmodelling.thinklab.modelling.ContextImpl;
+import org.integratedmodelling.thinklab.modelling.ModelImpl;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
+import org.integratedmodelling.thinklab.modelling.NamespaceImpl;
+import org.integratedmodelling.thinklab.modelling.ScenarioImpl;
+import org.integratedmodelling.thinklab.modelling.StorylineImpl;
 import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.PluginManager;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
@@ -130,6 +136,8 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	protected ProjectManager _projectManager;	
 	
 	Log logger = LogFactory.getLog(this.getClass());
+	
+	protected long _bootTime;
 
 	public Thinklab() throws ThinklabException {
 		
@@ -155,6 +163,8 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	
 	protected final void startup() throws ThinklabException {
 
+		_bootTime = new Date().getTime();
+		
 		_knowledgeRepository = new FileKnowledgeRepository();
 		_knowledgeRepository.initialize();
 		
@@ -177,21 +187,21 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		/*
 		 * install known, useful API classes into annotation factory.
 		 */
-		registerAnnotatedClass(Pair.class, getConcept(NS.PAIR));
-		registerAnnotatedClass(Triple.class, getConcept(NS.TRIPLE));
-		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL));
+		registerAnnotatedClass(Pair.class, getConcept(NS.PAIR), null);
+		registerAnnotatedClass(Triple.class, getConcept(NS.TRIPLE), null);
+		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL), null);
 		
 		/*
 		 * remaining modeling beans
 		 */
-		registerAnnotatedClass(LanguageElement.class, getConcept(NS.LANGUAGE_ELEMENT));
-		registerAnnotatedClass(Namespace.class, getConcept(NS.NAMESPACE));
-		registerAnnotatedClass(ModelObject.class, getConcept(NS.MODEL_OBJECT));
-		registerAnnotatedClass(Context.class, getConcept(NS.CONTEXT));
-		registerAnnotatedClass(Observer.class, getConcept(NS.OBSERVER));
-		registerAnnotatedClass(Model.class, getConcept(NS.MODEL));
-		registerAnnotatedClass(Scenario.class, getConcept(NS.SCENARIO));
-		registerAnnotatedClass(Storyline.class, getConcept(NS.STORYLINE));
+		registerAnnotatedClass(LanguageElement.class, getConcept(NS.LANGUAGE_ELEMENT), null);
+		registerAnnotatedClass(Namespace.class, getConcept(NS.NAMESPACE), NamespaceImpl.class);
+		registerAnnotatedClass(ModelObject.class, getConcept(NS.MODEL_OBJECT), null);
+		registerAnnotatedClass(Context.class, getConcept(NS.CONTEXT), ContextImpl.class);
+		registerAnnotatedClass(Observer.class, getConcept(NS.OBSERVER), null);
+		registerAnnotatedClass(Model.class, getConcept(NS.MODEL), ModelImpl.class);
+		registerAnnotatedClass(Scenario.class, getConcept(NS.SCENARIO), ScenarioImpl.class);
+		registerAnnotatedClass(Storyline.class, getConcept(NS.STORYLINE), StorylineImpl.class);
 		
 		/*
 		 * TODO use plugin manager for this
@@ -208,6 +218,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		 * and finally the projects
 		 */
 		_projectManager.addProjectDirectory(getWorkspace(SUBSPACE_PROJECTS));
+		_projectManager.setDeployDir(getWorkspace("deploy"));
 		_projectManager.boot();
 
 	}
@@ -342,7 +353,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	}
 
 	private void registerAnnotation(Class<?> clls, Concept a) throws ThinklabException {
-		_km.registerAnnotation(clls, a.value());
+		_km.registerAnnotation(clls, a.value(), a.semanticObjectClass());
 	}
 
 	private void registerLiteral(Class<?> clls, Literal a) throws ThinklabException {
@@ -460,6 +471,14 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 
 	public IKnowledgeRepository getKnowledgeRepository() {
 		return _knowledgeRepository;
+	}
+
+	public IProjectManager getProjectManager() {
+		return _projectManager;
+	}
+
+	public IPluginManager getPluginManager() {
+		return _pluginManager;
 	}
 
 	public MetadataService getMetadataService() throws ThinklabException {
@@ -600,8 +619,9 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	}
 
 	@Override
-	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
-		_km.registerAnnotatedClass(cls, concept);
+	public void registerAnnotatedClass(Class<?> cls, IConcept concept, 
+			Class<? extends ISemanticObject> semanticObjectClass) {
+		_km.registerAnnotatedClass(cls, concept, semanticObjectClass);
 	}
 	
 	public CommandManager getCommandManager() {
@@ -649,6 +669,11 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	}
 
 	@Override
+	public File getLoadPath() {
+		return _configuration.getLoadPath();
+	}
+	
+	@Override
 	public File getLoadPath(String subArea) {
 		return _configuration.getLoadPath(subArea);
 	}
@@ -680,8 +705,8 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	}
 
 	@Override
-	public IProject deployProject(String resourceId) throws ThinklabException {
-		return _projectManager.deployProject(resourceId);
+	public IProject deployProject(String pluginId, String resourceId) throws ThinklabException {
+		return _projectManager.deployProject(pluginId, resourceId);
 	}
 
 	@Override
@@ -692,5 +717,17 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	@Override
 	public void addProjectDirectory(File projectDirectory) {
 		_projectManager.addProjectDirectory(projectDirectory);		
+	}
+
+	public ISemanticObject getSemanticObject(IReferenceList list, Object object) {
+		return _km.getSemanticObject(list, object);
+	}
+
+	public long getBootTime() {
+		return _bootTime;
+	}
+
+	public IConcept getLiteralConceptForJavaClass(Class<? extends Object> class1) {
+		return _km.getLiteralConceptForJavaClass(class1);
 	}
 }

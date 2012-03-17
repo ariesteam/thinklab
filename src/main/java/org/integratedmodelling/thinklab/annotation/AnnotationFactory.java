@@ -16,6 +16,7 @@ import java.util.WeakHashMap;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -42,6 +43,8 @@ import org.integratedmodelling.utils.StringUtils;
 public class AnnotationFactory {
 
 	IntelligentMap<Class<?>> _concept2class    = new IntelligentMap<Class<?>>();
+	IntelligentMap<Class<?>> _concept2semanticObjectClass    = 
+			new IntelligentMap<Class<?>>();
 	HashMap<Class<?>, IConcept> _class2literal    = new HashMap<Class<?>, IConcept>();
 	HashMap<Class<?>, String>_class2datatype   = new HashMap<Class<?>, String>();
 	HashMap<Class<?>, IConcept> _class2concept = new HashMap<Class<?>, IConcept>();
@@ -546,7 +549,7 @@ public class AnnotationFactory {
 		return 
 			list == null ?
 					null :
-					new SemanticObject(list, null);
+					getSemanticObject(list, null);
 	}
 	
 	private Object newInstance(Class<?> cls) throws ThinklabException {
@@ -563,9 +566,12 @@ public class AnnotationFactory {
 	 * -----------------------------------------------------------------------------
 	 */
 	
-	public void registerAnnotationConcept(IConcept concept, Class<?> clls) {
+	public void registerAnnotationConcept(IConcept concept, Class<?> clls, 
+			Class<? extends ISemanticObject> semanticObjectClass) {
 		_class2concept.put(clls, concept);
 		_concept2class.put(concept, clls);
+		if (semanticObjectClass != null)
+			_concept2semanticObjectClass.put(concept, semanticObjectClass);
 	}
 
 	public void registerLiteralAnnotation(Class<?> clls, IConcept concept,
@@ -577,14 +583,43 @@ public class AnnotationFactory {
 		_annotatedLiteralDatatype.put(datatype, clls);
 	}
 
-
 	public boolean isJavaLiteralClass(Class<?> cls) {
 		return _class2literal.containsKey(cls);
 	}
 
-
 	public boolean isLiteralConcept(IConcept concept) {
 		return _javaLiteralClass.containsKey(concept);
+	}
+
+	/*
+	 * create the specific SemanticObject registered with this semantics, or a default SemanticObject
+	 * if none has been registered.
+	 */
+	public ISemanticObject getSemanticObject(IReferenceList list, Object object) {
+		
+		if (list == null || list.length() < 1)
+			return null;
+		
+		ISemanticObject ret = null;
+		Class<?> cls = _concept2semanticObjectClass.get(Thinklab.c(list.first().toString()));
+		if (cls != null) {
+			try {
+				Constructor<?> constructor = cls.getConstructor(IReferenceList.class, Object.class);
+				ret = (ISemanticObject) constructor.newInstance(list, object);
+			} catch (Exception e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		
+		if (ret == null) {
+			ret = new SemanticObject(list, object);
+		}
+		return ret;
+	}
+
+
+	public IConcept getLiteralConceptForJavaClass(Class<? extends Object> class1) {
+		return _class2literal.get(class1);
 	}
 
 }

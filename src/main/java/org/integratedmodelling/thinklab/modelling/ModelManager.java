@@ -42,7 +42,6 @@ import org.integratedmodelling.lang.model.ConceptObject;
 import org.integratedmodelling.lang.model.ModelObject;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.PropertyObject;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.factories.IModelManager;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
@@ -609,7 +608,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 
 	@Override
 	public INamespace processNamespace(Namespace namespace) throws ThinklabException {
-		return new ModelAdapter().createNamespace(namespace);
+		return null; // new ModelAdapter().createNamespace(namespace);
 	}
 
 	public void registerFunction(String id, String[] parameterNames,

@@ -2,7 +2,6 @@ package org.integratedmodelling.thinklab.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -63,13 +62,13 @@ public class Configuration implements IConfiguration {
 		File config = getWorkspace(SUBSPACE_CONFIG);
 		File confPath = getLoadPath(SUBSPACE_CONFIG);
 		if (confPath.exists()) {
-			FileSync.synchronize(confPath, config, false);
+			FileSync.synchronize(confPath, config);
 		}
 		
 		File knowledge = getWorkspace(SUBSPACE_KNOWLEDGE);
 		confPath = getLoadPath(SUBSPACE_KNOWLEDGE);
 			if (confPath.exists()) {
-				FileSync.synchronize(confPath, knowledge, false);
+				FileSync.synchronize(confPath, knowledge);
 			}	
 	}
 	
@@ -160,11 +159,14 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
+	public File getLoadPath() {
+		return _installPath;
+	}
+	
+	@Override
 	public File getLoadPath(String subArea) {
 
-		return subArea == null ?
-			_installPath :
-			new File(_installPath + File.separator + subArea);
+		return new File(_installPath + File.separator + subArea);
 	}
 	
 	/**

@@ -5,13 +5,19 @@ import java.util.Set;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.Storyline;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
+import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
-public class StorylineImpl implements IModelObject  {
+public class StorylineImpl extends NamespaceQualified implements IModelObject  {
+
+	public  StorylineImpl(IReferenceList semantics, Object object) {
+		super(semantics, object);
+	}
 
 	public StorylineImpl(Storyline o) {
-		// TODO Auto-generated constructor stub
+		super(null, o);
 	}
 
 	@Override

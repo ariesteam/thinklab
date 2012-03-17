@@ -19,18 +19,6 @@
  */
 package org.integratedmodelling.thinklab.thinkql;
 
-/**
- *   Copyright (c) Rich Hickey. All rights reserved.
- *   The use and distribution terms for this software are covered by the
- *   Common Public License 1.0 (http://opensource.org/licenses/cpl.php)
- *   which can be found in the file CPL.TXT at the root of this distribution.
- *   By using this software in any fashion, you are agreeing to be bound by
- * 	 the terms of this license.
- *   You must not remove this notice, or any other, from this software.
- **/
-
-/* rich Oct 18, 2007 */
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,15 +33,11 @@ import org.integratedmodelling.lang.model.ConceptObject;
 import org.integratedmodelling.lang.model.ModelObject;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.PropertyObject;
-import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
-import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
-import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.modelling.ContextImpl;
 import org.integratedmodelling.thinklab.modelling.ModelAdapter;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 
@@ -67,7 +51,7 @@ public class REPL {
 	private OutputStream output = System.out;
 	private ISession session = null;
 
-	private IContext context = new ContextImpl();
+//	private IContext context = new ContextImpl();
 	
 	class Resolver implements IResolver {
 

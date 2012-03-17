@@ -72,11 +72,11 @@ public static boolean areInSync(File source, File destination) throws IOExceptio
   }
 }
 
-public static void synchronize(File source, File destination, boolean smart) throws ThinklabException {
-  synchronize( source, destination, smart, DEFAULT_COPY_BUFFER_SIZE );
+public static void synchronize(File source, File destination) throws ThinklabException {
+  synchronize( source, destination, DEFAULT_COPY_BUFFER_SIZE );
 }
 
-public static void synchronize(File source, File destination, boolean smart, long chunkSize) throws ThinklabException {
+public static void synchronize(File source, File destination, long chunkSize) throws ThinklabException {
   if ( chunkSize <= 0 ) {
     System.out.println("Chunk size must be positive: using default value." );
     chunkSize = DEFAULT_COPY_BUFFER_SIZE;
@@ -107,7 +107,7 @@ public static void synchronize(File source, File destination, boolean smart, lon
     for ( String fileName : sources ) {
       File srcFile = new File( source, fileName );
       File destFile = new File( destination, fileName );
-      synchronize( srcFile, destFile, smart, chunkSize );
+      synchronize( srcFile, destFile, chunkSize );
     }
   }
   else {
@@ -115,10 +115,10 @@ public static void synchronize(File source, File destination, boolean smart, lon
       delete( destination );
     }
     if ( destination.exists() ) {
-      long sts = source.lastModified() / FAT_PRECISION;
-      long dts = destination.lastModified() / FAT_PRECISION;
+      long sts = source.lastModified();
+      long dts = destination.lastModified();
       //do not copy if smart and same timestamp and same length
-      if ( !smart || sts == 0 || sts != dts || source.length() != destination.length() ) {
+      if (dts < sts) {
         copyFile( source, destination, chunkSize );
       }
     }

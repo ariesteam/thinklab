@@ -4,10 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.xeoh.plugins.base.PluginInformation;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;
-import net.xeoh.plugins.base.options.AddPluginsFromOption;
-import net.xeoh.plugins.base.options.GetPluginOption;
 import net.xeoh.plugins.base.util.PluginManagerUtil;
 
 import org.integratedmodelling.exceptions.ThinklabException;

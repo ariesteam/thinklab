@@ -252,10 +252,9 @@ public class KnowledgeManager implements IKnowledgeManager {
 		return _commandManager;
 	}
 
-	public void registerAnnotation(Class<?> clls, String[] value) throws ThinklabException {
-		for (String s : value) {
-			_annotationFactory.registerAnnotationConcept(requireConcept(s), clls);
-		}
+	public void registerAnnotation(Class<?> clls, String value, Class<? extends ISemanticObject> semanticObjectClass) throws ThinklabException {
+		_annotationFactory.registerAnnotationConcept(requireConcept(value), clls,
+				semanticObjectClass.equals(ISemanticObject.class) ? null : semanticObjectClass);
 	}
 
 
@@ -266,8 +265,9 @@ public class KnowledgeManager implements IKnowledgeManager {
 
 
 	@Override
-	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
-		_annotationFactory.registerAnnotationConcept(concept, cls);
+	public void registerAnnotatedClass(Class<?> cls, IConcept concept, 
+			Class<? extends ISemanticObject> semanticObjectClass) {
+		_annotationFactory.registerAnnotationConcept(concept, cls, semanticObjectClass);
 	}
 
 	public boolean isJavaLiteralClass(Class<?> cls) {
@@ -276,6 +276,15 @@ public class KnowledgeManager implements IKnowledgeManager {
 
 	public boolean isLiteralConcept(IConcept concept) {
 		return _annotationFactory.isLiteralConcept(concept);
+	}
+
+	public ISemanticObject getSemanticObject(IReferenceList list, Object object) {
+		return _annotationFactory.getSemanticObject(list, object);
+	}
+
+	public IConcept getLiteralConceptForJavaClass(Class<? extends Object> class1) {
+		// TODO Auto-generated method stub
+		return _annotationFactory.getLiteralConceptForJavaClass(class1);
 	}
 
 }

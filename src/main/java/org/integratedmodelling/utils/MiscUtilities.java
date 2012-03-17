@@ -85,7 +85,6 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 
 /**
  * Path name manipulation, string manipulation, and more.<p>

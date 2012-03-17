@@ -30,7 +30,6 @@ import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.Observer;
 import org.integratedmodelling.lang.model.Scenario;
 import org.integratedmodelling.lang.model.Storyline;
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;

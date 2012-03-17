@@ -4,10 +4,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.integratedmodelling.collections.Pair;
@@ -15,11 +13,9 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
-import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
@@ -42,7 +38,10 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.Traverser;
 import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.graphdb.index.Index;
+import org.neo4j.graphdb.traversal.Evaluators;
+import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.kernel.Traversal;
 
 public class NeoKBox implements IKbox {
 
@@ -183,32 +182,31 @@ public class NeoKBox implements IKbox {
 	@Override
 	public List<ISemanticObject> query(IQuery query) throws ThinklabException {
 		
-		if (! (query instanceof SemanticQuery)) {
+		if (query != null && !(query instanceof SemanticQuery)) {
 			throw new ThinklabUnsupportedOperationException("query type not supported: " + query);
 		}
 		
-		Set<Long> matches = queryObjects((SemanticQuery) query);
-		return applySortingStrategy(matches);
+		return new KBoxResult(this, queryObjects((SemanticQuery) query));
 	}
 	
-	private List<ISemanticObject> applySortingStrategy(Set<Long> matches) {
-		
-		ArrayList<Long> res = new ArrayList<Long>(matches);
-		
-		/*
-		 * if we have a list of properties for the top node to sort against,
-		 * create the appropriate Comparator and sort the nodes based on their
-		 * properties.
-		 */
-		if (_sortProperties != null) {
-			
-			/*
-			 * TODO
-			 */
-		}
-		
-		return new KBoxResult(this, res);
-	}
+//	private List<ISemanticObject> applySortingStrategy(Set<Long> matches) {
+//		
+//		ArrayList<Long> res = new ArrayList<Long>(matches);
+//		
+//		/*
+//		 * if we have a list of properties for the top node to sort against,
+//		 * create the appropriate Comparator and sort the nodes based on their
+//		 * properties.
+//		 */
+//		if (_sortProperties != null) {
+//			
+//			/*
+//			 * TODO
+//			 */
+//		}
+//		
+//		return new KBoxResult(this, res);
+//	}
 
 	@Override
 	public String getUri() {
@@ -217,15 +215,20 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public ISemanticObject retrieve(long id) throws ThinklabException {
-		return new SemanticObject(
+		return Thinklab.get().getSemanticObject(
 				retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), new ReferenceList()), 
 				null);
 	}
 	
 	@Override
 	public void removeAll(IQuery query) {
-		// TODO Auto-generated method stub
-		
+		for (long l : queryObjects((SemanticQuery) query)) {
+			try {
+				remove(l);
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
 	}
 
 	@Override
@@ -288,48 +291,63 @@ public class NeoKBox implements IKbox {
 		return  (IReferenceList) ref.resolve(root.newList(rl.toArray()));		
 	}
 
-	private Set<Long> queryObjects(SemanticQuery query) {
+	private List<Long> queryObjects(SemanticQuery query) {
 		
-		Set<Long> ret = null;
-				
-		for (SemanticQuery r : query.getRestrictions()) {
-			
-			Set<Long> rr = queryObjects(r);
-			
-			if (ret == null)
-				ret = rr;
-			
-			switch (query.getQuantifier().getType()) {
-			case Quantifier.ALL:
-				break;
-			case Quantifier.ANY:
-				break;
-			case Quantifier.NONE:
-				break;
-			case Quantifier.RANGE:
-				break;
-			case Quantifier.EXACT:
-				break;
+		List<Long> ret = new ArrayList<Long>();
+		
+		TraversalDescription td = rewrite(query);
+		
+		if (td != null) {
+			for (Node n : td.traverse(_db.getReferenceNode()).nodes()) {
+				ret.add(n.getId());
 			}
 		}
 		
-		if (query instanceof IOperator && ((IOperator)query).isLiteral()) {
-			
-//			KboxTypeAdapter ta = _typeAdapters.get(lconc);
-			
-		} else if ( query.getSubject() != null) {
-			ret = getSemanticClosure(query.getSubject());			
-		}
-		
-		
-		return ret == null ? new HashSet<Long>() : ret;
-	}
-
-	private Set<Long> getSemanticClosure(IConcept c) {
-		Set<Long> ret = new HashSet<Long>();
 		return ret;
 	}
 	
+	private TraversalDescription rewrite(SemanticQuery query) {
+		
+		/*
+		 * create the "total" traverser and pass it downstream to restrict according
+		 * to the query. We only look for object we stored explicitly, i.e. those
+		 * that connect directly to the root node.
+		 */
+		return rewriteInternal(query, 
+				Traversal.description().
+					breadthFirst().
+					relationships(new RelationshipType() {
+						@Override
+						public String name() {
+							return HASNODE_PROPERTY;
+						}
+					}).evaluator(Evaluators.excludeStartPosition()));
+	}
+
+	private TraversalDescription rewriteInternal(SemanticQuery query,
+			TraversalDescription td) {
+		
+		if (query != null) {
+			/*
+			 * chain any further evaluators.
+			 */
+			if (query instanceof IOperator) {
+				
+				/*
+				 * must have registered its query adapter.
+				 */
+				
+			} else {
+				
+				/*
+				 * default behavior for SemanticQuery: handle 
+				 * semantic closures and downstream nodes.
+				 */
+			}
+		}
+		return td;
+	}
+
 	/*
 	 * class to simplify handling of base types. 
 	 */
@@ -366,13 +384,6 @@ public class NeoKBox implements IKbox {
 						Index<Node> index = _db.index().forNodes(toId(property));
 						index.add(node, toId(property), value);
 					}
-
-					@Override
-					public Set<Long> submitLiteralQuery(IProperty property,
-							IKbox kbox, IConcept queryType, Object... arguments) {
-						// TODO Auto-generated method stub
-						return null;
-					}
 				});
 		
 		registerTypeAdapter(Thinklab.c(NS.INTEGER),
@@ -383,13 +394,6 @@ public class NeoKBox implements IKbox {
 						node.setProperty(toId(property), value);
 						Index<Node> index = _db.index().forNodes(toId(property));
 						index.add(node, toId(property), value);
-					}
-
-					@Override
-					public Set<Long> submitLiteralQuery(IProperty property,
-							IKbox kbox, IConcept queryType, Object... arguments) {
-						// TODO Auto-generated method stub
-						return null;
 					}
 				});
 		
@@ -402,13 +406,6 @@ public class NeoKBox implements IKbox {
 						Index<Node> index = _db.index().forNodes(toId(property));
 						index.add(node, toId(property), value);
 					}
-
-					@Override
-					public Set<Long> submitLiteralQuery(IProperty property,
-							IKbox kbox, IConcept queryType, Object... arguments) {
-						// TODO Auto-generated method stub
-						return null;
-					}
 				});
 		registerTypeAdapter(Thinklab.c(NS.FLOAT),
 				new TypeAdapter() {
@@ -420,12 +417,6 @@ public class NeoKBox implements IKbox {
 						index.add(node, toId(property), value);
 					}
 
-					@Override
-					public Set<Long> submitLiteralQuery(IProperty property,
-							IKbox kbox, IConcept queryType, Object... arguments) {
-						// TODO Auto-generated method stub
-						return null;
-					}
 				});
 		registerTypeAdapter(Thinklab.c(NS.LONG),
 				new TypeAdapter() {
@@ -437,12 +428,6 @@ public class NeoKBox implements IKbox {
 						index.add(node, toId(property), value);
 					}
 
-					@Override
-					public Set<Long> submitLiteralQuery(IProperty property,
-							IKbox kbox, IConcept queryType, Object... arguments) {
-						// TODO Auto-generated method stub
-						return null;
-					}
 				});
 	}
 

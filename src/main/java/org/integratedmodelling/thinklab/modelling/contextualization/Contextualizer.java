@@ -1,7 +1,5 @@
 package org.integratedmodelling.thinklab.modelling.contextualization;
 
-import java.util.ArrayList;
-
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.thinklab.api.listeners.IListener;

@@ -61,6 +61,7 @@ public class CapabilitiesService extends DefaultRESTHandler {
 			 * same stuff as Ping
 			 */
 			oret.put("thinklab.version", Thinklab.get().getVersion());
+			oret.put("boot.time", Thinklab.get().getBootTime());
 			oret.put("thinklab.branch", Version.BRANCH);
 			oret.put("thinklab.status", Version.STATUS);
 			oret.put("thinklab.inst", System.getenv("THINKLAB_INST"));

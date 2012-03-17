@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.shell;
+package org.integratedmodelling.thinklab.main;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
@@ -16,7 +16,7 @@ import org.integratedmodelling.utils.MiscUtilities;
  * A simple command-line driven knowledge manager. Just run and type 'help'.
  * @author Ferdinando Villa
  */
-public class ShellApplication  {
+public class CommandLineShell  {
 
 	private static final String GRAPHICAL_SHELL_PROPERTY = "commandline.graphical.shell";
 	
@@ -80,8 +80,17 @@ public class ShellApplication  {
 	public static void main(String[] args) throws Exception {
 
 		Thinklab.boot();
-		ShellApplication shell = new ShellApplication();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				Thinklab.shutdown();
+			}
+		});
+		
+
+		CommandLineShell shell = new CommandLineShell();
 		shell.initApplication(args);
 		shell.startApplication();
+		Thinklab.shutdown();
 	}
 }

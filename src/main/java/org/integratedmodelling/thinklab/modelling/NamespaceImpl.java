@@ -5,25 +5,32 @@ import java.util.Collection;
 
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.Namespace;
+import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 
-public class NamespaceImpl implements INamespace {
+public class NamespaceImpl extends SemanticObject implements INamespace {
 
 	Namespace _bean;
 	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
 	IOntology _ontology;
 	
-	public NamespaceImpl() {}
+	public NamespaceImpl(IReferenceList list, Object object) {
+		super(list, object);
+	}
 	
+//	public NamespaceImpl() {}
+//	
 	public NamespaceImpl(Namespace bean) {
+		super(null, bean);
 		initialize(bean);
 	}
-	
-	public NamespaceImpl(IOntology ontology) {
-		this._ontology = ontology;
-	}
+//	
+//	public NamespaceImpl(IOntology ontology) {
+//		this._ontology = ontology;
+//	}
 	
 	private void initialize(Namespace bean) {
 		_bean = bean;

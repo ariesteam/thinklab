@@ -25,7 +25,9 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.project.IProject;
+import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
+import org.integratedmodelling.utils.FolderZiper;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
@@ -41,8 +43,7 @@ public class ProjectService extends DefaultRESTHandler {
 	@Get
 	public Representation service() {
 
-		try {
-			
+		try {			
 			if (!checkPrivileges("user:Administrator"))
 				return wrap();
 			
@@ -52,11 +53,12 @@ public class ProjectService extends DefaultRESTHandler {
 			if (cmd.equals("deploy")) {
 
 				File archive = this.getFileForHandle(getArgument("handle"), true);
-//				ThinklabProject.deploy(archive, pluginId, true);
+				IProject p = Thinklab.get().deployProject(pluginId, archive.toURI().toURL().toString());
+				p.load();
 				
 			} else if (cmd.equals("undeploy")) {
-
-//				ThinklabProject.undeploy(pluginId);
+				
+				Thinklab.get().undeployProject(pluginId);
 
 			} else if (cmd.equals("pack")) {
 				
@@ -68,7 +70,7 @@ public class ProjectService extends DefaultRESTHandler {
 					throw new ThinklabResourceNotFoundException("project " + pluginId + " does not exist");
 
 				Pair<File, String> fname = this.getFileName("project.zip", getSession());
-//				FolderZiper.zipFolder(((ThinklabProject)tp).getPath().toString(), fname.getFirst().toString());
+				FolderZiper.zipFolder(((ThinklabProject)tp).getLoadPath().toString(), fname.getFirst().toString());
 				put("handle", fname.getSecond());
 			}
 			

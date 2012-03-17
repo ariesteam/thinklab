@@ -21,7 +21,6 @@ package org.integratedmodelling.thinklab.rest.resources;
 
 import java.util.Date;
 
-import org.integratedmodelling.thinklab.KnowledgeManager;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.Version;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;

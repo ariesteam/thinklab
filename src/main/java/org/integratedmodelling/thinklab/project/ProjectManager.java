@@ -3,17 +3,22 @@ package org.integratedmodelling.thinklab.project;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabProjectException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.factories.IProjectManager;
 import org.integratedmodelling.thinklab.api.project.IProject;
+import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.StringUtils;
 import org.jgrapht.alg.CycleDetector;
@@ -49,6 +54,24 @@ public class ProjectManager implements IProjectManager {
 	ArrayList<File> _projectDirectories = new ArrayList<File>();
 	ArrayList<ProjectDescriptor> _projects = new ArrayList<ProjectDescriptor>();
 	HashMap<String, ProjectDescriptor> _projectIndex = new HashMap<String, ProjectDescriptor>();
+	
+	/*
+	 * this can be set separately; if so, it must also be in the project
+	 * directories. If not set, the first of the project directories is
+	 * used.
+	 */
+	File _deployDir = null;
+	
+	/**
+	 * Set a specific directory for hot-deployment of project. If this is not called the
+	 * first project directory indicated will be used. Call before boot().
+	 * 
+	 * @param deployDir
+	 */
+	public void setDeployDir(File deployDir) {
+		_deployDir = deployDir;
+		_projectDirectories.add(deployDir);
+	}
 	
 	public void boot() throws ThinklabException {
 		
@@ -101,7 +124,6 @@ public class ProjectManager implements IProjectManager {
 					pnames.add(pd.id);
 					
 				}
-				
 			}
 		}
 		
@@ -140,6 +162,13 @@ public class ProjectManager implements IProjectManager {
 		while (tord.hasNext()) {
 			_projects.add(tord.next());
 		}
+
+		
+		Thinklab.get().logger().info("project manager initialized successfully: " + _projectIndex.size() + " projects found");
+		for (File f : _projectDirectories)
+			Thinklab.get().logger().info("using " + f + 
+					(_deployDir != null && (f.equals(_deployDir)) ? " as hot-swap deploy directory" : " as project workspace"));
+	
 	}
 	
 	@Override
@@ -161,15 +190,49 @@ public class ProjectManager implements IProjectManager {
 	}
 
 	@Override
-	public IProject deployProject(String resourceId) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+	public IProject deployProject(String pluginId, String resource) throws ThinklabException {
+
+		File archive = MiscUtilities.resolveUrlToFile(resource);
+		File deployDir = getPluginDeployDir();
+
+		ProjectDescriptor pd = _projectIndex.get(pluginId);
+		if (pd != null) {
+
+			Thinklab.get().logger().info("undeploying " + pd.id + " from " + pd.file);
+			pd.project.unload();
+			
+			try {
+				FileUtils.deleteDirectory(pd.file);
+			} catch (IOException e) {
+				throw new ThinklabIOException(e);
+			}
+		}
+		
+		Thinklab.get().logger().info("deploying " + pluginId + " in " + deployDir);
+		FolderZiper.unzip(archive, deployDir);
+		boot();
+		
+		return getProject(pluginId);
 	}
 
 	@Override
 	public void undeployProject(String projectId) throws ThinklabException {
-		// TODO Auto-generated method stub
-		
+
+		if (getProject(projectId) == null)
+			return;
+
+		ProjectDescriptor pd = _projectIndex.get(projectId);	
+
+		pd.project.unload();
+		Thinklab.get().logger().info("undeploying " + pd.id + " from " + pd.file);
+			
+		try {
+			FileUtils.deleteDirectory(pd.file);
+		} catch (IOException e) {
+			throw new ThinklabIOException(e);
+		}
+
+		boot();
 	}
 
 	/**
@@ -178,6 +241,26 @@ public class ProjectManager implements IProjectManager {
 	@Override
 	public void addProjectDirectory(File projectDirectory) {
 		_projectDirectories.add(projectDirectory);
+	}
+	
+	/*
+	 * ---------------------------------------------------------------------------------------------------------
+	 * non-API
+	 * ---------------------------------------------------------------------------------------------------------
+	 */
+
+	public File getPluginDeployDir() {
+		return _deployDir == null ? _projectDirectories.get(0) : _deployDir;
+	}
+	
+	void notifyProjectLoaded(IProject p) {
+		ProjectDescriptor pd = _projectIndex.get(p.getId());
+		pd.loaded = true;
+	}
+	
+	void notifyProjectUnloaded(IProject p) {
+		ProjectDescriptor pd = _projectIndex.get(p.getId());
+		pd.loaded = false;
 	}
 
 }

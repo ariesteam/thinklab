@@ -1,6 +1,5 @@
 package org.integratedmodelling.thinklab.kbox;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,10 +39,9 @@ public class KBoxResult extends ReadOnlyList<ISemanticObject> {
 		public void remove() {
 			throw new UnsupportedOperationException("cannot modify read-only list");
 		}
-		
 	}
 	
-	public KBoxResult(IKbox kbox, ArrayList<Long> res) {
+	public KBoxResult(IKbox kbox, List<Long> res) {
 		_kbox = kbox;
 		_results = res;
 	}

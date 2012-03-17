@@ -75,26 +75,19 @@ public class ThinklabProject implements IProject {
 
 	@Override
 	public void load() throws ThinklabException {
-		
-		/*
-		 * unload everything
-		 */
+
 		if (!_loaded) {
-		
-			/*
-			 * ensure all prerequisites are loaded
-			 */
-			for (IProject p : getPrerequisites())
-				p.load();
-				
-			/*
-			 * load everything
-			 */
-			for (INamespace ns : ModelManager.get().loadSourceDirectory(getSourceDirectory())) {
-				_namespaces.add(ns);
+
+			try {	
+				for (IProject p : getPrerequisites())
+					p.load();
+					for (INamespace ns : ModelManager.get().loadSourceDirectory(getSourceDirectory())) {
+						_namespaces.add(ns);
+					}
+					_loaded = true;
+			} finally {
+				((ProjectManager)(Thinklab.get().getProjectManager())).notifyProjectLoaded(this);
 			}
-			
-			_loaded = true;
 		}
 	}
 
@@ -102,11 +95,17 @@ public class ThinklabProject implements IProject {
 	public void unload() throws ThinklabException {
 
 		if (_loaded) {
-			for (INamespace n : _namespaces) {
-				ModelManager.get().releaseNamespace(n.getNamespace());
+			try {
+				for (INamespace n : _namespaces) {
+					ModelManager.get().releaseNamespace(n.getNamespace());
+				}
+				_namespaces.clear();
+			} finally {
+				((ProjectManager) (Thinklab.get().getProjectManager()))
+						.notifyProjectUnloaded(this);
 			}
-			_namespaces.clear();
 		}
+		
 	}
 
 	@Override
@@ -148,12 +147,15 @@ public class ThinklabProject implements IProject {
 	public File getTempArea(String subArea) {
 		return Thinklab.get().getTempArea(_id + File.separator + subArea);
 	}
+	
+	@Override
+	public File getLoadPath() {
+		return _dir;
+	}
 
 	@Override
 	public File getLoadPath(String subArea) {
-		File ret = new File(_dir + File.separator + subArea);
-		ret.mkdirs();
-		return ret;
+		return new File(_dir + File.separator + subArea);
 	}
 
 	@Override
@@ -240,4 +242,5 @@ public class ThinklabProject implements IProject {
 			throw new ThinklabRuntimeException(e);
 		}
 	}
+
 }

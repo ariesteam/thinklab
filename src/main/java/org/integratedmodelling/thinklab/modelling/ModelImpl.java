@@ -7,23 +7,33 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.Model;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
+import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
-public class ModelImpl implements IModel {
+public class ModelImpl extends NamespaceQualified implements IModel {
+
+	public ModelImpl(IReferenceList semantics, Object object) {
+		super(semantics, object);
+		// TODO Auto-generated constructor stub
+	}
+
+	public ModelImpl(Model o) {
+		super(null, o);
+		_bean = o;
+	}
 
 	Model _bean;
 	ISemanticObject _observable;
 	IMetadata _metadata;
 	IObserver _observer;
 
-	public ModelImpl(Model o) {
-		_bean = o;
-	}
 
+	
 	@Override
 	public ISemanticObject getObservable() {
 		return null; //_observable;
