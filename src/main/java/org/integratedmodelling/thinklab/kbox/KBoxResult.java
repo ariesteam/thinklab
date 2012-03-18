@@ -3,7 +3,7 @@ package org.integratedmodelling.thinklab.kbox;
 import java.util.Iterator;
 import java.util.List;
 
-import org.integratedmodelling.collections.ReadOnlyList;
+import org.integratedmodelling.collections.ImmutableList;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -16,7 +16,7 @@ import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
  * @author Ferd
  *
  */
-public class KBoxResult extends ReadOnlyList<ISemanticObject> {
+public class KBoxResult extends ImmutableList<ISemanticObject> {
 
 	List<Long> _results;
 	IKbox      _kbox;

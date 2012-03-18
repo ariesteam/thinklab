@@ -483,8 +483,14 @@ public class ModelManager implements IModelManager, IModelFactory {
 			Namespace nbean = thinkqlParser.parse(resourceId, getResolver(project, resourceId));
 			
 			if (!namespacesById.containsKey(nbean.getId())) {
-				ret = new ModelAdapter().createNamespace(nbean);
+
+				/*
+				 * annotating a Namespace will produce a NamespaceImpl. How cool
+				 * is that.
+				 */
+				ret = (INamespace) Thinklab.get().annotate(nbean);
 				namespacesById.put(nbean.getId(), ret);
+				
 			} else {
 				throw new ThinklabValidationException("cannot redefine namespace: " + nbean.getId());
 			}

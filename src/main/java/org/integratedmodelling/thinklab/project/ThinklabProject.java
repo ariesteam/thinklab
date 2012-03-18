@@ -89,10 +89,10 @@ public class ThinklabProject implements IProject {
 			} finally {
 				((ProjectManager)(Thinklab.get().getProjectManager())).notifyProjectLoaded(this);
 			}
-		}
-		
-		for (INamespace ns : _namespaces) {
-			Thinklab.get().logger().info(ns.getNamespace() + " namespace contains " + ns.getModelObjects().size() + " objects");
+
+			for (INamespace ns : _namespaces) {
+				Thinklab.get().logger().info(ns.getNamespace() + " namespace contains " + ns.getModelObjects().size() + " objects");
+			}
 		}
 	}
 
@@ -108,6 +108,7 @@ public class ThinklabProject implements IProject {
 			} finally {
 				((ProjectManager) (Thinklab.get().getProjectManager()))
 						.notifyProjectUnloaded(this);
+				_loaded = false;
 			}
 		}
 		

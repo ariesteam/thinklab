@@ -38,7 +38,6 @@ import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.modelling.ModelAdapter;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 
 import com.google.inject.Guice;
@@ -169,7 +168,7 @@ public class REPL {
 					// TODO remove
 					bean.dump(System.out);
 
-					IModelObject obj = new ModelAdapter().createModelObject(bean);
+					IModelObject obj = null; // new ModelAdapter().createModelObject(bean);
 
 					if (obj instanceof IModel) {
 						

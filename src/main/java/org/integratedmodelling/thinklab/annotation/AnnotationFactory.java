@@ -606,6 +606,14 @@ public class AnnotationFactory {
 			try {
 				Constructor<?> constructor = cls.getConstructor(IReferenceList.class, Object.class);
 				ret = (ISemanticObject) constructor.newInstance(list, object);
+				
+				/*
+				 * do the initialize() thing on the semantic object, too.
+				 */
+				Method init = cls.getMethod("initialize", (Class<?>[])null);
+				if (init != null)
+					init.invoke(ret, (Object[])null);
+				
 			} catch (Exception e) {
 				throw new ThinklabRuntimeException(e);
 			}

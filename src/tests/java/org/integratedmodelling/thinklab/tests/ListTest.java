@@ -35,8 +35,7 @@ public class ListTest {
 		assertTrue(zioPio.nth(2).equals(dioCan));
 		assertTrue(set.contains(dioCul));
 	
-		
-		System.out.println(zioPio);
+		System.out.println(zioPio.prettyPrint());
 	}
 
 }

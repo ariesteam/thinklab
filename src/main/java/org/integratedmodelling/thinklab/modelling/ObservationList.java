@@ -21,7 +21,7 @@ package org.integratedmodelling.thinklab.modelling;
 
 import java.util.Iterator;
 
-import org.integratedmodelling.collections.ReadOnlyList;
+import org.integratedmodelling.collections.ImmutableList;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
@@ -32,7 +32,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.contextualization.Contextualizer;
 
 
-public class ObservationList extends ReadOnlyList<IObservation> {
+public class ObservationList extends ImmutableList<IObservation> {
 
 	IContext context;
 	IModel   model;

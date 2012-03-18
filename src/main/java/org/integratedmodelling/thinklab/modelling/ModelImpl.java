@@ -19,12 +19,6 @@ public class ModelImpl extends NamespaceQualified implements IModel {
 
 	public ModelImpl(IReferenceList semantics, Object object) {
 		super(semantics, object);
-		// TODO Auto-generated constructor stub
-	}
-
-	public ModelImpl(Model o) {
-		super(null, o);
-		_bean = o;
 	}
 
 	Model _bean;

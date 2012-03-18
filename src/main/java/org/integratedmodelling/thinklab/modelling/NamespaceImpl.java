@@ -13,7 +13,6 @@ import org.integratedmodelling.thinklab.api.modelling.INamespace;
 
 public class NamespaceImpl extends SemanticObject implements INamespace {
 
-	Namespace _bean;
 	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
 	IOntology _ontology;
 	
@@ -21,29 +20,35 @@ public class NamespaceImpl extends SemanticObject implements INamespace {
 		super(list, object);
 	}
 	
-//	public NamespaceImpl() {}
-//	
-	public NamespaceImpl(Namespace bean) {
-		super(null, bean);
-		initialize(bean);
+	NamespaceImpl(Namespace obj) {
+		super(null, obj);
 	}
-//	
-//	public NamespaceImpl(IOntology ontology) {
-//		this._ontology = ontology;
-//	}
 	
-	private void initialize(Namespace bean) {
-		_bean = bean;
+	Namespace _bean() {
+		return (Namespace)getObject();
+	}
+
+	public void initialize() {
+		
+		System.out.println("namespace::initialize called");
+
+		/*
+		 * TODO scan model objects and fill list
+		 */
+
+		/*
+		 * TODO create ontology from axioms
+		 */
 	}
 
 	@Override
 	public LanguageElement getLanguageElement() {
-		return _bean;
+		return _bean();
 	}
 
 	@Override
 	public String getNamespace() {
-		return _bean.getId();
+		return _bean().getId();
 	}
 
 	@Override
@@ -58,7 +63,7 @@ public class NamespaceImpl extends SemanticObject implements INamespace {
 
 	@Override
 	public long getLastModification() {
-		return _bean.getTimeStamp();
+		return _bean().getTimeStamp();
 	}
 
 	public void setOntology(IOntology ontology) {
