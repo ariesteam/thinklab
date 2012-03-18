@@ -595,16 +595,16 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	}
 
 	@Override
-	public ISemanticObject parse(String literal, IConcept concept)
+	public ISemanticObject<?> parse(String literal, IConcept concept)
 			throws ThinklabException {
 		return _km.parse(literal, concept);
 	}
 
 	@Override
-	public ISemanticObject annotate(Object object) throws ThinklabException {
+	public ISemanticObject<?> annotate(Object object) throws ThinklabException {
 
 		if (object instanceof ISemanticObject)
-			return (ISemanticObject)object;
+			return (ISemanticObject<?>)object;
 
 		return _km.annotate(object);
 	}
@@ -620,7 +620,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 
 	@Override
 	public void registerAnnotatedClass(Class<?> cls, IConcept concept, 
-			Class<? extends ISemanticObject> semanticObjectClass) {
+			Class<? extends ISemanticObject<?>> semanticObjectClass) {
 		_km.registerAnnotatedClass(cls, concept, semanticObjectClass);
 	}
 	

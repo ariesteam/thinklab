@@ -64,13 +64,13 @@ public class KnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public ISemanticObject parse(String literal, IConcept concept)
+	public ISemanticObject<?> parse(String literal, IConcept concept)
 			throws ThinklabException {
 		return _annotationFactory.parse(literal, concept);
 	}
 
 	@Override
-	public ISemanticObject annotate(Object object) throws ThinklabException {
+	public ISemanticObject<?> annotate(Object object) throws ThinklabException {
 		return _annotationFactory.annotate(object);
 	}
 
@@ -252,7 +252,7 @@ public class KnowledgeManager implements IKnowledgeManager {
 		return _commandManager;
 	}
 
-	public void registerAnnotation(Class<?> clls, String value, Class<? extends ISemanticObject> semanticObjectClass) throws ThinklabException {
+	public void registerAnnotation(Class<?> clls, String value, Class<? extends ISemanticObject<?>> semanticObjectClass) throws ThinklabException {
 		_annotationFactory.registerAnnotationConcept(requireConcept(value), clls,
 				semanticObjectClass.equals(ISemanticObject.class) ? null : semanticObjectClass);
 	}
@@ -266,7 +266,7 @@ public class KnowledgeManager implements IKnowledgeManager {
 
 	@Override
 	public void registerAnnotatedClass(Class<?> cls, IConcept concept, 
-			Class<? extends ISemanticObject> semanticObjectClass) {
+			Class<? extends ISemanticObject<?>> semanticObjectClass) {
 		_annotationFactory.registerAnnotationConcept(concept, cls, semanticObjectClass);
 	}
 

@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabCircularDependencyException;
-import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
@@ -37,7 +37,7 @@ import org.integratedmodelling.thinklab.api.lang.IList;
  * @author Ferd
  *
  */
-public abstract class SemanticLiteral implements ISemanticObject {
+public abstract class SemanticLiteral<T> implements ISemanticObject<T> {
 	
 	public IConcept concept;
 	
@@ -66,7 +66,7 @@ public abstract class SemanticLiteral implements ISemanticObject {
     
 	@Override
 	public IList getSemantics() {
-		return PolyList.list(concept, getObject());
+		return ReferenceList.list(concept, getObject());
 	}
     
 	@Override

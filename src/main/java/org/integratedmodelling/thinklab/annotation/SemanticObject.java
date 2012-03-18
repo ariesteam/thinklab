@@ -24,17 +24,17 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
  * @author Ferd
  *
  */
-public class SemanticObject implements ISemanticObject {
+public class SemanticObject<T> implements ISemanticObject<T> {
 
 	IReferenceList _semantics;
-	Object _object;
-	private HashMap<IProperty, List<ISemanticObject>> _literals;
+	T _object;
+	private HashMap<IProperty, List<ISemanticObject<?>>> _literals;
 	private boolean _isLiteral = false;
 	private long _id;
 	
 	SemanticGraph _graph = null;
 
-	protected SemanticObject(IReferenceList semantics, Object object) {
+	protected SemanticObject(IReferenceList semantics, T object) {
 		
 		if (semantics == null && object == null) {
 			throw new ThinklabRuntimeException("invalid null semantic object");
@@ -65,11 +65,11 @@ public class SemanticObject implements ISemanticObject {
 		return _semantics;
 	}
 
-	@Override
-	public Object getObject() {
+//	@Override
+	public T getObject() {
 		if (_object == null) {
 			try {
-				_object = Thinklab.get().instantiate(_semantics);
+				_object = (T) Thinklab.get().instantiate(_semantics);
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);				
 			}
@@ -90,7 +90,7 @@ public class SemanticObject implements ISemanticObject {
 	}
 
 	@Override
-	public ISemanticObject get(IProperty property) {
+	public ISemanticObject<?> get(IProperty property) {
 
 		if (_graph == null)
 			_graph = new SemanticGraph(_semantics, this);
@@ -172,36 +172,36 @@ public class SemanticObject implements ISemanticObject {
 //	}
 
 	@Override
-	public List<Pair<IProperty, ISemanticObject>> getRelationships() {
+	public List<Pair<IProperty, ISemanticObject<?>>> getRelationships() {
 		
 		if (_graph == null)
 			_graph = new SemanticGraph(_semantics, this);
 
-		List<Pair<IProperty, ISemanticObject>> ret = new ArrayList<Pair<IProperty, ISemanticObject>>();
+		List<Pair<IProperty, ISemanticObject<?>>> ret = new ArrayList<Pair<IProperty, ISemanticObject<?>>>();
 		if (_literals != null) {
 			for (IProperty p : _literals.keySet()) {
-				for (ISemanticObject obj : _literals.get(p))
-					ret.add(new Pair<IProperty, ISemanticObject>(p,obj));
+				for (ISemanticObject<?> obj : _literals.get(p))
+					ret.add(new Pair<IProperty, ISemanticObject<?>>(p,obj));
 			}
 		}
 		for (PropertyEdge p : _graph.outgoingEdgesOf(this)) {
-			ret.add(new Pair<IProperty, ISemanticObject>(p.property, p.getTo()));
+			ret.add(new Pair<IProperty, ISemanticObject<?>>(p.property, p.getTo()));
 		}
 
 		return ret;
 	}
 
 	@Override
-	public List<ISemanticObject> getRelationships(IProperty property) {
+	public List<ISemanticObject<?>> getRelationships(IProperty property) {
 		
 		if (_graph == null)
 			_graph = new SemanticGraph(_semantics, this);
 
-		List<ISemanticObject> ret = new ArrayList<ISemanticObject>();
+		List<ISemanticObject<?>> ret = new ArrayList<ISemanticObject<?>>();
 		if (_literals != null) {
 			for (IProperty p : _literals.keySet()) {
 				if (p.is(property)) {
-					for (ISemanticObject obj : _literals.get(p))
+					for (ISemanticObject<?> obj : _literals.get(p))
 						ret.add(obj);
 				}
 			}
@@ -229,7 +229,7 @@ public class SemanticObject implements ISemanticObject {
 	}
 
 	@Override
-	public List<ISemanticObject> getSortedRelationships(IProperty property)
+	public List<ISemanticObject<?>> getSortedRelationships(IProperty property)
 			throws ThinklabCircularDependencyException {
 		if (_graph == null)
 			_graph = new SemanticGraph(_semantics, this);
@@ -274,7 +274,7 @@ public class SemanticObject implements ISemanticObject {
 	
 	@Override
 	public boolean equals(Object arg0) {
-		return arg0 instanceof SemanticObject && ((SemanticObject)arg0)._id == _id;
+		return arg0 instanceof SemanticObject && ((SemanticObject<?>)arg0)._id == _id;
 	}
 	
 	@Override
@@ -290,11 +290,11 @@ public class SemanticObject implements ISemanticObject {
 	 */
 
 
-	void setLiteralRelationship(IProperty p, ISemanticObject tg) {
+	void setLiteralRelationship(IProperty p, ISemanticObject<?> tg) {
 		if (_literals == null)
-			_literals = new HashMap<IProperty, List<ISemanticObject>>();
+			_literals = new HashMap<IProperty, List<ISemanticObject<?>>>();
 		if (!_literals.containsKey(p))
-			_literals.put(p, new ArrayList<ISemanticObject>());
+			_literals.put(p, new ArrayList<ISemanticObject<?>>());
 		_literals.get(p).add(tg);
 	}
 

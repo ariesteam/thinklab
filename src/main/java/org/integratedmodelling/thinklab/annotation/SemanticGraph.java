@@ -18,22 +18,22 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
 public class SemanticGraph extends
-		DefaultDirectedGraph<SemanticObject, PropertyEdge> {
+		DefaultDirectedGraph<ISemanticObject<?>, PropertyEdge> {
 
 	private static final long serialVersionUID = -3767397482776773404L;
-	SemanticObject _root;
+	ISemanticObject<?> _root;
 	
-	public SemanticGraph(IReferenceList semantics, SemanticObject semanticObject) {
+	public SemanticGraph(IReferenceList semantics, ISemanticObject<?> semanticObject) {
 		super(PropertyEdge.class);
 		_root = build(semanticObject, semantics, null);
 	}
 
-	private SemanticObject build(
-			SemanticObject root, IReferenceList semantics, 
-			HashMap<IReferenceList, SemanticObject> refs) {
+	private ISemanticObject<?> build(
+			ISemanticObject<?> root, IReferenceList semantics, 
+			HashMap<IReferenceList, ISemanticObject<?>> refs) {
 
 		if (refs == null) {
-			refs = new HashMap<IReferenceList, SemanticObject>();
+			refs = new HashMap<IReferenceList, ISemanticObject<?>>();
 		}
 		
 		if (root == null) {
@@ -41,7 +41,7 @@ public class SemanticGraph extends
 			Object o = null;
 			if (Thinklab.get().isLiteralConcept(concept))
 				o = semantics.nth(1);
-			root = (SemanticObject) Thinklab.get().getSemanticObject(semantics, o);
+			root = (ISemanticObject<?>) Thinklab.get().getSemanticObject(semantics, o);
 		}
 		
 		if (refs.containsKey(semantics)) {
@@ -55,7 +55,7 @@ public class SemanticGraph extends
 			
 			if (o instanceof IList) {
 				IProperty p = Thinklab.p(((IList) o).first().toString());
-				SemanticObject oo = null;
+				ISemanticObject<?> oo = null;
 				if (((IList) o).nth(1) instanceof IList) {
 					oo = build(null, (IReferenceList) ((IList) o).nth(1), refs);
 				}
@@ -79,32 +79,32 @@ public class SemanticGraph extends
 			property = p;
 		}
 
-		public SemanticObject getFrom() {
-			return (SemanticObject)getSource();
+		public ISemanticObject<?> getFrom() {
+			return (ISemanticObject<?>)getSource();
 		}	
 
-		public SemanticObject getTo() {
-			return (SemanticObject)getTarget();
+		public ISemanticObject<?> getTo() {
+			return (ISemanticObject<?>)getTarget();
 		}
 	}
 	
 	public boolean hasCycles() {
 		
-		CycleDetector<SemanticObject, PropertyEdge> cycleDetector = 
-				new CycleDetector<SemanticObject, PropertyEdge>(this);
+		CycleDetector<ISemanticObject<?>, PropertyEdge> cycleDetector = 
+				new CycleDetector<ISemanticObject<?>, PropertyEdge>(this);
 		return cycleDetector.detectCycles();
 	}
 	
-	public List<ISemanticObject> getTopologicalSorting() throws ThinklabCircularDependencyException {
+	public List<ISemanticObject<?>> getTopologicalSorting() throws ThinklabCircularDependencyException {
 		
 		if (hasCycles())
 			throw new ThinklabCircularDependencyException(
 					"object semantics for " + _root + " has mutual dependencies: cannot sort");
 		
-		TopologicalOrderIterator<SemanticObject, PropertyEdge> iterator =
-				new TopologicalOrderIterator<SemanticObject, SemanticGraph.PropertyEdge>(this);
+		TopologicalOrderIterator<ISemanticObject<?>, PropertyEdge> iterator =
+				new TopologicalOrderIterator<ISemanticObject<?>, SemanticGraph.PropertyEdge>(this);
 		
-		ArrayList<ISemanticObject> ret = new ArrayList<ISemanticObject>();
+		ArrayList<ISemanticObject<?>> ret = new ArrayList<ISemanticObject<?>>();
 		
 		while (iterator.hasNext())
 			ret.add(iterator.next());
