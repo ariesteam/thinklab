@@ -61,8 +61,8 @@ public class ConceptualizeStoreTest  {
 	@Test
 	public void testSimpleLiterals() throws ThinklabException {
 		
-		ISemanticObject quaranta = Thinklab.get().annotate(40);
-		ISemanticObject stocazzo = Thinklab.get().annotate("stocazzo");
+		ISemanticObject<?> quaranta = Thinklab.get().annotate(40);
+		ISemanticObject<?> stocazzo = Thinklab.get().annotate("stocazzo");
 		
 		Object oquarant = Thinklab.get().instantiate(quaranta.getSemantics());
 		Object ostocazz = Thinklab.get().instantiate(stocazzo.getSemantics());
@@ -93,7 +93,7 @@ public class ConceptualizeStoreTest  {
 		 * Both results are semantic objects, which can return both the semantics and the object conceptualized, in
 		 * a lazy fashion.
 		 */
-		ISemanticObject o = Thinklab.get().annotate(metadata);		
+		ISemanticObject<?> o = Thinklab.get().annotate(metadata);		
 		IList semantics = o.getSemantics();		
 
 		/*
@@ -115,12 +115,12 @@ public class ConceptualizeStoreTest  {
 		/*
 		 * retrieve it back into yet another clone and see if it matches.
 		 */
-		ISemanticObject clone2 = thinklabKbox.retrieve(id);
+		ISemanticObject<?> clone2 = thinklabKbox.retrieve(id);
 
 		Assert.assertTrue(
-				clone2.getObject() instanceof Metadata && 
-				((Metadata)(clone2.getObject())).get(Metadata.DC_COVERAGE_SPATIAL) instanceof Pair<?,?> &&
-				((Metadata)(clone2.getObject())).get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
+				clone2.demote() instanceof Metadata && 
+				((Metadata)(clone2.demote())).get(Metadata.DC_COVERAGE_SPATIAL) instanceof Pair<?,?> &&
+				((Metadata)(clone2.demote())).get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
 
 		/*
 		 * have a look at the extracted semantics

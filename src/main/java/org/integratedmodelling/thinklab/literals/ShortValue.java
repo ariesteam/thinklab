@@ -31,10 +31,8 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
  * @author Ferdinando Villa
  */
 @Literal(datatype="xsd:int", javaClass=Integer.class, concept=NS.INTEGER)
-public class ShortValue extends SemanticLiteral implements IParseable {	
+public class ShortValue extends SemanticLiteral<Integer> implements IParseable {	
 	
-   public int value;
-    
    public ShortValue() {
       super(Thinklab.INTEGER);
       value = 0;
@@ -87,11 +85,6 @@ public class ShortValue extends SemanticLiteral implements IParseable {
         return ""+value;
     }
 
-	@Override
-	public Object getObject() {
-		// TODO Auto-generated method stub
-		return value;
-	}
 
 	@Override
 	public boolean is(Object object) {

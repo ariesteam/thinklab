@@ -89,13 +89,13 @@ public class NeoKBox implements IKbox {
 	public synchronized long store(Object o) throws ThinklabException {
 
 		long ret = -1;
-		ISemanticObject instance = Thinklab.get().annotate(o);		
+		ISemanticObject<?> instance = Thinklab.get().annotate(o);		
 
 		Transaction tx = _db.beginTx();
 
 		try {
 			
-			Node node = storeInstanceInternal(instance, new HashMap<ISemanticObject, Node>());
+			Node node = storeInstanceInternal(instance, new HashMap<ISemanticObject<?>, Node>());
 			_db.getReferenceNode().createRelationshipTo(node, new RelationshipType() {
 				@Override
 				public String name() {
@@ -118,7 +118,7 @@ public class NeoKBox implements IKbox {
 		return ret;
 	}
 
-	private Node storeInstanceInternal(ISemanticObject instance, Map<ISemanticObject, Node> refs) throws ThinklabException {
+	private Node storeInstanceInternal(ISemanticObject<?> instance, Map<ISemanticObject<?>, Node> refs) throws ThinklabException {
 
 		Node node = refs.get(instance);
 		
@@ -130,7 +130,7 @@ public class NeoKBox implements IKbox {
 
 		node.setProperty(TYPE_PROPERTY, instance.getDirectType().toString());
 		
-		for (final Pair<IProperty, ISemanticObject> s : instance.getRelationships()) {
+		for (final Pair<IProperty, ISemanticObject<?>> s : instance.getRelationships()) {
 			
 			if (s.getSecond().isLiteral()) {
 				storeProperty(node, s.getFirst(), s.getSecond());
@@ -149,7 +149,7 @@ public class NeoKBox implements IKbox {
 		return node;
 	}
 
-	private void storeProperty(Node node, IProperty p, ISemanticObject s) throws ThinklabException {
+	private void storeProperty(Node node, IProperty p, ISemanticObject<?> s) throws ThinklabException {
 
 		KboxTypeAdapter adapter = _typeAdapters.get(s.getDirectType());
 		
@@ -157,7 +157,7 @@ public class NeoKBox implements IKbox {
 			throw new ThinklabUnsupportedOperationException("kbox: cannot store literal of type " +
 					s.getDirectType());
 		
-		adapter.setAndIndexProperty(node.getId(), this, p, s.getObject());
+		adapter.setAndIndexProperty(node.getId(), this, p, s.demote());
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class NeoKBox implements IKbox {
 	}
 
 	@Override
-	public List<ISemanticObject> query(IQuery query) throws ThinklabException {
+	public List<ISemanticObject<?>> query(IQuery query) throws ThinklabException {
 		
 		if (query != null && !(query instanceof SemanticQuery)) {
 			throw new ThinklabUnsupportedOperationException("query type not supported: " + query);
@@ -214,7 +214,7 @@ public class NeoKBox implements IKbox {
 	}
 
 	@Override
-	public ISemanticObject retrieve(long id) throws ThinklabException {
+	public ISemanticObject<?> retrieve(long id) throws ThinklabException {
 		return Thinklab.get().getSemanticObject(
 				retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), new ReferenceList()), 
 				null);
@@ -232,7 +232,7 @@ public class NeoKBox implements IKbox {
 	}
 
 	@Override
-	public List<ISemanticObject> retrieveAll() throws ThinklabException {
+	public List<ISemanticObject<?>> retrieveAll() throws ThinklabException {
 		
 		ArrayList<Long> res = new ArrayList<Long>();
 		Traverser traverser = _db.getReferenceNode().traverse(

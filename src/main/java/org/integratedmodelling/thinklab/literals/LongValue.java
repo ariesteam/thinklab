@@ -31,10 +31,8 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
  * @author Ferdinando Villa
  */
 @Literal(datatype="xsd:long", javaClass=Long.class, concept=NS.LONG)
-public class LongValue extends SemanticLiteral implements IParseable {	
+public class LongValue extends SemanticLiteral<Long> implements IParseable {	
 	
-   public long value;
-    
    public LongValue() {
       super(Thinklab.LONG);
       value = 0l;
@@ -42,7 +40,7 @@ public class LongValue extends SemanticLiteral implements IParseable {
     
    public LongValue(int i) {        
        super(Thinklab.LONG);
-       value = i;
+       value = (long)i;
    }
    
    public LongValue(double d) {
@@ -86,12 +84,6 @@ public class LongValue extends SemanticLiteral implements IParseable {
     public String toString() {
         return ""+value;
     }
-
-	@Override
-	public Object getObject() {
-		// TODO Auto-generated method stub
-		return value;
-	}
 
 	@Override
 	public boolean is(Object object) {

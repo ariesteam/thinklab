@@ -187,21 +187,21 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		/*
 		 * install known, useful API classes into annotation factory.
 		 */
-		registerAnnotatedClass(Pair.class, getConcept(NS.PAIR), null);
-		registerAnnotatedClass(Triple.class, getConcept(NS.TRIPLE), null);
-		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL), null);
+		registerAnnotatedClass(Pair.class, getConcept(NS.PAIR));
+		registerAnnotatedClass(Triple.class, getConcept(NS.TRIPLE));
+		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL));
 		
 		/*
 		 * remaining modeling beans
 		 */
-		registerAnnotatedClass(LanguageElement.class, getConcept(NS.LANGUAGE_ELEMENT), null);
-		registerAnnotatedClass(Namespace.class, getConcept(NS.NAMESPACE), NamespaceImpl.class);
-		registerAnnotatedClass(ModelObject.class, getConcept(NS.MODEL_OBJECT), null);
-		registerAnnotatedClass(Context.class, getConcept(NS.CONTEXT), ContextImpl.class);
-		registerAnnotatedClass(Observer.class, getConcept(NS.OBSERVER), null);
-		registerAnnotatedClass(Model.class, getConcept(NS.MODEL), ModelImpl.class);
-		registerAnnotatedClass(Scenario.class, getConcept(NS.SCENARIO), ScenarioImpl.class);
-		registerAnnotatedClass(Storyline.class, getConcept(NS.STORYLINE), StorylineImpl.class);
+		registerAnnotatedClass(LanguageElement.class, getConcept(NS.LANGUAGE_ELEMENT));
+		registerAnnotatedClass(Namespace.class, getConcept(NS.NAMESPACE));
+		registerAnnotatedClass(ModelObject.class, getConcept(NS.MODEL_OBJECT));
+		registerAnnotatedClass(Context.class, getConcept(NS.CONTEXT));
+		registerAnnotatedClass(Observer.class, getConcept(NS.OBSERVER));
+		registerAnnotatedClass(Model.class, getConcept(NS.MODEL));
+		registerAnnotatedClass(Scenario.class, getConcept(NS.SCENARIO));
+		registerAnnotatedClass(Storyline.class, getConcept(NS.STORYLINE));
 		
 		/*
 		 * TODO use plugin manager for this
@@ -353,7 +353,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	}
 
 	private void registerAnnotation(Class<?> clls, Concept a) throws ThinklabException {
-		_km.registerAnnotation(clls, a.value(), a.semanticObjectClass());
+		_km.registerAnnotation(clls, a.value());
 	}
 
 	private void registerLiteral(Class<?> clls, Literal a) throws ThinklabException {
@@ -619,9 +619,8 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	}
 
 	@Override
-	public void registerAnnotatedClass(Class<?> cls, IConcept concept, 
-			Class<? extends ISemanticObject<?>> semanticObjectClass) {
-		_km.registerAnnotatedClass(cls, concept, semanticObjectClass);
+	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
+		_km.registerAnnotatedClass(cls, concept);
 	}
 	
 	public CommandManager getCommandManager() {

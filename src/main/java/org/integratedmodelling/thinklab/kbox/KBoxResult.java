@@ -16,12 +16,12 @@ import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
  * @author Ferd
  *
  */
-public class KBoxResult extends ImmutableList<ISemanticObject> {
+public class KBoxResult extends ImmutableList<ISemanticObject<?>> {
 
 	List<Long> _results;
 	IKbox      _kbox;
 
-	class KboxIterator implements Iterator<ISemanticObject> {
+	class KboxIterator implements Iterator<ISemanticObject<?>> {
 
 		int idx = 0;
 		
@@ -31,7 +31,7 @@ public class KBoxResult extends ImmutableList<ISemanticObject> {
 		}
 
 		@Override
-		public ISemanticObject next() {
+		public ISemanticObject<?> next() {
 			return get(idx++);
 		}
 
@@ -53,7 +53,7 @@ public class KBoxResult extends ImmutableList<ISemanticObject> {
 	}
 
 	@Override
-	public ISemanticObject get(int arg0) {
+	public ISemanticObject<?> get(int arg0) {
 		try {
 			return _kbox.retrieve(_results.get(arg0));
 		} catch (ThinklabException e) {
@@ -62,7 +62,7 @@ public class KBoxResult extends ImmutableList<ISemanticObject> {
 	}
 
 	@Override
-	public Iterator<ISemanticObject> iterator() {
+	public Iterator<ISemanticObject<?>> iterator() {
 		return new KboxIterator();
 	}
 

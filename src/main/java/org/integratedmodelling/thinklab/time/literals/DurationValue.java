@@ -60,9 +60,8 @@ import org.jscience.physics.amount.Amount;
  * FIXME make it wrap something real
  */
 @Literal(concept="time:DurationValue", javaClass=DurationValue.class, datatype="")
-public class DurationValue extends SemanticLiteral implements IParseable {
+public class DurationValue extends SemanticLiteral<Long> implements IParseable {
 
-    long value = 0l;
     String literal = null;
     int precision = TemporalPrecision.MILLISECOND;
     int origQuantity = 1;
@@ -289,12 +288,6 @@ public class DurationValue extends SemanticLiteral implements IParseable {
 		return origUnit;
 	}
 	
-	@Override
-	public Object getObject() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public boolean is(Object object) {
 		// TODO Auto-generated method stub

@@ -519,9 +519,9 @@ public class AnnotationFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public ISemanticObject parse(String literal, IConcept concept) throws ThinklabException {
+	public ISemanticObject<?> parse(String literal, IConcept concept) throws ThinklabException {
 
-		ISemanticObject ret = null;
+		ISemanticObject<?> ret = null;
 		Class<?> cls = _annotatedLiteralClass.get(concept);
 		if (cls != null && ISemanticObject.class.isAssignableFrom(cls)) {
 			
@@ -529,12 +529,12 @@ public class AnnotationFactory {
 			 * it must be a IParseable or have a constructor that accepts a string
 			 */
 			if (IParseable.class.isAssignableFrom(cls)) {
-				ret = (ISemanticObject) newInstance(cls);
+				ret = (ISemanticObject<?>) newInstance(cls);
 				((IParseable)ret).parse(literal);
 			} else {
 				try {
 					Constructor<?> cs = cls.getConstructor(String.class);
-					ret = (ISemanticObject) cs.newInstance(literal);
+					ret = (ISemanticObject<?>) cs.newInstance(literal);
 				} catch (Exception e) {
 					return null;
 				}
@@ -543,7 +543,7 @@ public class AnnotationFactory {
 		return ret;
 	}
 	
-	public ISemanticObject annotate(Object object) throws ThinklabException {
+	public ISemanticObject<?> annotate(Object object) throws ThinklabException {
 
 		IReferenceList list = conceptualize(object);
 		return 
@@ -566,12 +566,9 @@ public class AnnotationFactory {
 	 * -----------------------------------------------------------------------------
 	 */
 	
-	public void registerAnnotationConcept(IConcept concept, Class<?> clls, 
-			Class<? extends ISemanticObject> semanticObjectClass) {
+	public void registerAnnotationConcept(IConcept concept, Class<?> clls) {
 		_class2concept.put(clls, concept);
 		_concept2class.put(concept, clls);
-		if (semanticObjectClass != null)
-			_concept2semanticObjectClass.put(concept, semanticObjectClass);
 	}
 
 	public void registerLiteralAnnotation(Class<?> clls, IConcept concept,
@@ -595,17 +592,17 @@ public class AnnotationFactory {
 	 * create the specific SemanticObject registered with this semantics, or a default SemanticObject
 	 * if none has been registered.
 	 */
-	public ISemanticObject getSemanticObject(IReferenceList list, Object object) {
+	public ISemanticObject<?> getSemanticObject(IReferenceList list, Object object) {
 		
 		if (list == null || list.length() < 1)
 			return null;
 		
-		ISemanticObject ret = null;
+		ISemanticObject<?> ret = null;
 		Class<?> cls = _concept2semanticObjectClass.get(Thinklab.c(list.first().toString()));
 		if (cls != null) {
 			try {
 				Constructor<?> constructor = cls.getConstructor(IReferenceList.class, Object.class);
-				ret = (ISemanticObject) constructor.newInstance(list, object);
+				ret = (ISemanticObject<?>) constructor.newInstance(list, object);
 				
 				/*
 				 * do the initialize() thing on the semantic object, too.
@@ -620,7 +617,7 @@ public class AnnotationFactory {
 		}
 		
 		if (ret == null) {
-			ret = new SemanticObject(list, object);
+			ret = new DefaultSemanticObject(list, object);
 		}
 		return ret;
 	}

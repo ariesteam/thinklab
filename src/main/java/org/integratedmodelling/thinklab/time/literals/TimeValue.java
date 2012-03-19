@@ -59,9 +59,7 @@ import org.joda.time.format.DateTimeFormatter;
  * 
  */
 @LiteralImplementation(concept="time:DateTimeValue")
-public class TimeValue extends SemanticLiteral implements IParseable {
-
-	DateTime value;
+public class TimeValue extends SemanticLiteral<DateTime> implements IParseable {
 
 	int precision = TemporalPrecision.MILLISECOND;
 
@@ -267,13 +265,6 @@ public class TimeValue extends SemanticLiteral implements IParseable {
 		return end;
 
 		
-	}
-
-
-	@Override
-	public Object getObject() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

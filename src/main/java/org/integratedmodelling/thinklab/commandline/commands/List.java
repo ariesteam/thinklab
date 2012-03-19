@@ -122,7 +122,7 @@ public class List implements ICommandHandler {
 
 		outputWriter.getOutputStream().println("Listing contents of kBox " + kbname);
 		
-		java.util.List<ISemanticObject> result = kbox.query(null);
+		java.util.List<ISemanticObject<?>> result = kbox.query(null);
 
 		if (result.size() > 0) {
 
@@ -138,7 +138,7 @@ public class List implements ICommandHandler {
 		outputWriter.getOutputStream().println("total: " + result.size());
 	}
 
-	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject<?> execute(Command command, ISession session) throws ThinklabException {
 
 		String subject = command.getArgumentAsString("subject");
 		String item = null;

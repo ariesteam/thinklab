@@ -29,12 +29,10 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
 @Literal(datatype="xsd:boolean", javaClass=java.lang.Boolean.class, concept=NS.BOOLEAN)
-public class BooleanValue extends SemanticLiteral implements IParseable {
-
-    public Boolean value;
+public class BooleanValue extends SemanticLiteral<Boolean> implements IParseable {
     
-    public static ISemanticObject TRUE = new BooleanValue(true);
-    public static ISemanticObject FALSE = new BooleanValue(false);
+    public static ISemanticObject<Boolean> TRUE = new BooleanValue(true);
+    public static ISemanticObject<Boolean> FALSE = new BooleanValue(false);
     
     private BooleanValue(IConcept c)  {
     	super(c);
@@ -93,13 +91,6 @@ public class BooleanValue extends SemanticLiteral implements IParseable {
 
     
     public Object truthValue() {
-		return value;
-	}
-
-
-	@Override
-	public Object getObject() {
-		// TODO Auto-generated method stub
 		return value;
 	}
 

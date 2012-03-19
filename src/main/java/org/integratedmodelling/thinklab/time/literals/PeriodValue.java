@@ -43,12 +43,10 @@ import org.integratedmodelling.thinklab.time.TimePlugin;
 import org.joda.time.Interval;
 
 @Literal(concept="time:PeriodValue", javaClass=Interval.class, datatype="")
-public class PeriodValue extends SemanticLiteral implements IParseable {
+public class PeriodValue extends SemanticLiteral<Interval> implements IParseable {
 
-    Interval interval;
-    
     public void wrap(Object o) {
-    	interval = (Interval)o;
+    	value = (Interval)o;
     }
     
     private static IConcept getBaseTimeConcept() throws ThinklabException {
@@ -67,12 +65,12 @@ public class PeriodValue extends SemanticLiteral implements IParseable {
 
     public PeriodValue(IConcept c, Interval interval) throws ThinklabException {
         super(c);
-        this.interval = interval;
+        this.value = interval;
     }
 
     public PeriodValue(Interval interval) throws ThinklabException {
         super(getBaseTimeConcept());
-        this.interval = interval;
+        this.value = interval;
     }
 
     public PeriodValue(String s) throws ThinklabException {
@@ -81,40 +79,34 @@ public class PeriodValue extends SemanticLiteral implements IParseable {
     
     public PeriodValue(long x, long x2) throws ThinklabException {
         super(getBaseTimeConcept());
-        interval = new Interval(x, x2);
+        value = new Interval(x, x2);
     }
 
     public String toString() {
-        return interval.toString();
+        return value.toString();
     }
     
     public Object clone() {
         PeriodValue ret = null;
         try {
-            ret = new PeriodValue(concept, interval);
+            ret = new PeriodValue(concept, value);
         } catch (ThinklabException e) {
         }
         return ret;
     }
     
     public Interval getInterval() {
-    	return interval;
+    	return value;
     }
     
     public long getStart() {
-    	return interval.getStartMillis();
+    	return value.getStartMillis();
     }
     
     public long getEnd() {
-    	return interval.getEndMillis();
+    	return value.getEndMillis();
     }
 
-
-	@Override
-	public Object getObject() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public boolean is(Object object) {

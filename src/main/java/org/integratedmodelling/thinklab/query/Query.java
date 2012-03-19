@@ -233,7 +233,7 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 	@Override
 	public boolean match(Object i) throws ThinklabException {
 
-		ISemanticObject semantics = Thinklab.get().annotate(i);
+		ISemanticObject<?> semantics = Thinklab.get().annotate(i);
 		if (semantics == null) {
 			throw new ThinklabValidationException("query: object " + i + " cannot be conceptualized");
 		}
@@ -254,7 +254,7 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 			if (_restrictions == null) {
 				match = semantics.getRelationshipsCount((IProperty)_subject) > 0;
 			} else {
-				for (ISemanticObject target : semantics.getRelationships((IProperty)_subject)) {
+				for (ISemanticObject<?> target : semantics.getRelationships((IProperty)_subject)) {
 					for (IQuery q : _restrictions) {
 						if (! (match = q.match(target))) {
 							match = false;

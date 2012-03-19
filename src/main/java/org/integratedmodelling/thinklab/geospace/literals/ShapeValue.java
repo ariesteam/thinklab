@@ -499,7 +499,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 	}
 
 	@Override
-	public Object getObject() {
+	public Object demote() {
 		// TODO Auto-generated method stub
 		return null;
 	}

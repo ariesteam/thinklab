@@ -31,18 +31,16 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
  * @author Ferdinando Villa
  */
 @Literal(datatype="xsd:double", javaClass=Double.class, concept=NS.DOUBLE)
-public class DoubleValue extends SemanticLiteral implements IParseable {	
+public class DoubleValue extends SemanticLiteral<Double> implements IParseable {	
 	
-   public double value;
-    
    public DoubleValue() {
       super(Thinklab.DOUBLE);
-      value = 0;
+      value = 0.0;
    }
     
    public DoubleValue(int i) {        
        super(Thinklab.DOUBLE);
-       value = i;
+       value = (double)i;
    }
    
    public DoubleValue(double d) {
@@ -52,7 +50,7 @@ public class DoubleValue extends SemanticLiteral implements IParseable {
 
     public DoubleValue(float f) {
         super(Thinklab.DOUBLE);
-        value = f;
+        value = (double)f;
     }
             
     /**
@@ -67,7 +65,7 @@ public class DoubleValue extends SemanticLiteral implements IParseable {
     
     public DoubleValue (long l) {
         super(Thinklab.DOUBLE);
-        value = l;
+        value = (double)l;
     }
     
     @Override
@@ -86,11 +84,6 @@ public class DoubleValue extends SemanticLiteral implements IParseable {
     public String toString() {
         return ""+value;
     }
-
-	@Override
-	public Object getObject() {
-		return value;
-	}
 
 	@Override
 	public boolean is(Object object) {

@@ -40,6 +40,7 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 public abstract class SemanticLiteral<T> implements ISemanticObject<T> {
 	
 	public IConcept concept;
+	public T value = null;
 	
     public SemanticLiteral()  {
         concept = Thinklab.THING;
@@ -49,6 +50,11 @@ public abstract class SemanticLiteral<T> implements ISemanticObject<T> {
         concept = c;
     }
 
+    @Override
+    public T demote() {
+    	return value;
+    }
+    
     /* (non-Javadoc)
      * @see org.integratedmodelling.ima.core.value.IValue#toString()
      */
@@ -66,7 +72,7 @@ public abstract class SemanticLiteral<T> implements ISemanticObject<T> {
     
 	@Override
 	public IList getSemantics() {
-		return ReferenceList.list(concept, getObject());
+		return ReferenceList.list(concept, demote());
 	}
     
 	@Override
@@ -80,13 +86,13 @@ public abstract class SemanticLiteral<T> implements ISemanticObject<T> {
 		if (c instanceof IConcept)
 			return this.concept.is((IConcept)c);
 		else if (c instanceof ISemanticObject)
-			return this.concept.is(((ISemanticObject)c).getDirectType());
+			return this.concept.is(((ISemanticObject<?>)c).getDirectType());
 		
 		return false;
 	}
 
 	@Override
-	public ISemanticObject get(IProperty property) {
+	public ISemanticObject<?> get(IProperty property) {
 		return null;
 	}
 
@@ -132,13 +138,13 @@ public abstract class SemanticLiteral<T> implements ISemanticObject<T> {
 	}
 
 	@Override
-	public List<Pair<IProperty, ISemanticObject>> getRelationships() {
-		return new ArrayList<Pair<IProperty, ISemanticObject>>();
+	public List<Pair<IProperty, ISemanticObject<?>>> getRelationships() {
+		return new ArrayList<Pair<IProperty, ISemanticObject<?>>>();
 	}
 
 	@Override
-	public List<ISemanticObject> getRelationships(IProperty property) {
-		return new ArrayList<ISemanticObject>();
+	public List<ISemanticObject<?>> getRelationships(IProperty property) {
+		return new ArrayList<ISemanticObject<?>>();
 	}
 
 	@Override
@@ -152,9 +158,9 @@ public abstract class SemanticLiteral<T> implements ISemanticObject<T> {
 	}
 
 	@Override
-	public List<ISemanticObject> getSortedRelationships(IProperty property)
+	public List<ISemanticObject<?>> getSortedRelationships(IProperty property)
 			throws ThinklabCircularDependencyException {
-		return new ArrayList<ISemanticObject>();
+		return new ArrayList<ISemanticObject<?>>();
 	}
 
 	@Override

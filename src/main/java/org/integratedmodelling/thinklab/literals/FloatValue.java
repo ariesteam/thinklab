@@ -31,18 +31,17 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
  * @author Ferdinando Villa
  */
 @Literal(datatype="xsd:float", javaClass=Float.class, concept=NS.FLOAT)
-public class FloatValue extends SemanticLiteral implements IParseable {	
-	
-   public float value;
+public class FloatValue extends SemanticLiteral<Float> implements IParseable {	
+
     
    public FloatValue() {
       super(Thinklab.FLOAT);
-      value = 0;
+      value = (float)0;
    }
     
    public FloatValue(int i) {        
        super(Thinklab.FLOAT);
-       value = i;
+       value = (float)i;
    }
    
    public FloatValue(double d) {
@@ -67,7 +66,7 @@ public class FloatValue extends SemanticLiteral implements IParseable {
     
     public FloatValue (long l) {
         super(Thinklab.FLOAT);
-        value = l;
+        value = (float)l;
     }
     
     @Override
@@ -86,12 +85,7 @@ public class FloatValue extends SemanticLiteral implements IParseable {
     public String toString() {
         return ""+value;
     }
-
-	@Override
-	public Object getObject() {
-		return value;
-	}
-
+    
 	@Override
 	public boolean is(Object object) {
 		return (object instanceof Number) && new Float(((Number)object).floatValue()).equals(value);

@@ -252,9 +252,8 @@ public class KnowledgeManager implements IKnowledgeManager {
 		return _commandManager;
 	}
 
-	public void registerAnnotation(Class<?> clls, String value, Class<? extends ISemanticObject<?>> semanticObjectClass) throws ThinklabException {
-		_annotationFactory.registerAnnotationConcept(requireConcept(value), clls,
-				semanticObjectClass.equals(ISemanticObject.class) ? null : semanticObjectClass);
+	public void registerAnnotation(Class<?> clls, String value) throws ThinklabException {
+		_annotationFactory.registerAnnotationConcept(requireConcept(value), clls);
 	}
 
 
@@ -265,9 +264,8 @@ public class KnowledgeManager implements IKnowledgeManager {
 
 
 	@Override
-	public void registerAnnotatedClass(Class<?> cls, IConcept concept, 
-			Class<? extends ISemanticObject<?>> semanticObjectClass) {
-		_annotationFactory.registerAnnotationConcept(concept, cls, semanticObjectClass);
+	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
+		_annotationFactory.registerAnnotationConcept(concept, cls);
 	}
 
 	public boolean isJavaLiteralClass(Class<?> cls) {

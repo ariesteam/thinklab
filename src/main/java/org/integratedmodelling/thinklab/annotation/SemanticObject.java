@@ -18,6 +18,9 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 /**
  * Base class for a general non-literal semantic object.
  * 
+ * TODO this one should NOT be a wrapper, but just assume that _object is the semantic
+ * object itself. Wrapping behavior should be implemented in DefaultSemanticObject and SemanticLiteral.
+ * 
  * TODO make it proxy other things such as IComparable and hash/equals.
  * TODO check what should be done (if anything) for cloning.
  * 
@@ -65,11 +68,12 @@ public class SemanticObject<T> implements ISemanticObject<T> {
 		return _semantics;
 	}
 
-//	@Override
-	public T getObject() {
+	@Override
+	public T demote() {
 		if (_object == null) {
 			try {
-				_object = (T) Thinklab.get().instantiate(_semantics);
+				Object o = Thinklab.get().instantiate(_semantics);
+				_object = (T) o;
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);				
 			}
@@ -288,8 +292,6 @@ public class SemanticObject<T> implements ISemanticObject<T> {
 	 * package.
 	 * ------------------------------------------------------------------------------------------
 	 */
-
-
 	void setLiteralRelationship(IProperty p, ISemanticObject<?> tg) {
 		if (_literals == null)
 			_literals = new HashMap<IProperty, List<ISemanticObject<?>>>();

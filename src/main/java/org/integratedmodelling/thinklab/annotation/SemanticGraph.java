@@ -60,7 +60,7 @@ public class SemanticGraph extends
 					oo = build(null, (IReferenceList) ((IList) o).nth(1), refs);
 				}
 				if (oo.isLiteral()) {
-					root.setLiteralRelationship(p, oo);
+					((SemanticObject<?>)root).setLiteralRelationship(p, oo);
 				} else {
 					addEdge(root, oo, new PropertyEdge(p));
 				}

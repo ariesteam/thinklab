@@ -27,9 +27,7 @@ import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
 @Literal(concept=NS.TEXT, datatype="xsd:string", javaClass=String.class)
-public class TextValue extends SemanticLiteral implements IParseable {
-    
-    String value;
+public class TextValue extends SemanticLiteral<String> implements IParseable {
     
     public TextValue() {
         super(Thinklab.TEXT);
@@ -40,11 +38,6 @@ public class TextValue extends SemanticLiteral implements IParseable {
         super(Thinklab.TEXT);
         value = s;
     }
-    
-	@Override
-	public Object getObject() {
-		return value;
-	}
 
 	@Override
 	public boolean is(Object object) {

@@ -72,13 +72,13 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public ISemanticObject parse(String literal, IConcept c)
+	public ISemanticObject<?> parse(String literal, IConcept c)
 			throws ThinklabException {
 		return Thinklab.get().parse(literal, c);
 	}
 
 	@Override
-	public ISemanticObject annotate(Object object) throws ThinklabException {
+	public ISemanticObject<?> annotate(Object object) throws ThinklabException {
 		return Thinklab.get().annotate(object);
 	}
 
@@ -88,7 +88,7 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 	}
 
 	@Override
-	public void registerAnnotatedClass(Class<?> cls, IConcept concept, Class<? extends ISemanticObject> soCls) {
+	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
 		// TODO Auto-generated method stub
 		
 	}
