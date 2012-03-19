@@ -74,12 +74,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.modelling.ContextImpl;
-import org.integratedmodelling.thinklab.modelling.ModelImpl;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
-import org.integratedmodelling.thinklab.modelling.NamespaceImpl;
-import org.integratedmodelling.thinklab.modelling.ScenarioImpl;
-import org.integratedmodelling.thinklab.modelling.StorylineImpl;
 import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.PluginManager;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
@@ -190,18 +185,6 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		registerAnnotatedClass(Pair.class, getConcept(NS.PAIR));
 		registerAnnotatedClass(Triple.class, getConcept(NS.TRIPLE));
 		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL));
-		
-		/*
-		 * remaining modeling beans
-		 */
-		registerAnnotatedClass(LanguageElement.class, getConcept(NS.LANGUAGE_ELEMENT));
-		registerAnnotatedClass(Namespace.class, getConcept(NS.NAMESPACE));
-		registerAnnotatedClass(ModelObject.class, getConcept(NS.MODEL_OBJECT));
-		registerAnnotatedClass(Context.class, getConcept(NS.CONTEXT));
-		registerAnnotatedClass(Observer.class, getConcept(NS.OBSERVER));
-		registerAnnotatedClass(Model.class, getConcept(NS.MODEL));
-		registerAnnotatedClass(Scenario.class, getConcept(NS.SCENARIO));
-		registerAnnotatedClass(Storyline.class, getConcept(NS.STORYLINE));
 		
 		/*
 		 * TODO use plugin manager for this

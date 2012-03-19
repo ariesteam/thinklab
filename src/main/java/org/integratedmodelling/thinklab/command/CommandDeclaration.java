@@ -32,6 +32,7 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 
 /**
  * Defines the interface for a command. A CommandDeclaration passed to the KnowledgeManager declares a command that
@@ -136,7 +137,7 @@ public class CommandDeclaration {
 			try {
 				command.setArgumentValue(
 						e.getKey(), 
-						Thinklab.get().parse(e.getValue(), ad.type));
+						(ISemanticLiteral<?>) Thinklab.get().parse(e.getValue(), ad.type));
 				
 			} catch (ThinklabValidationException e1) {
 				throw new ThinklabValidationException(
@@ -161,7 +162,7 @@ public class CommandDeclaration {
 			try {
 				command.setArgumentValue(
 						e.getKey(), 
-						Thinklab.get().parse(e.getValue(), ad.type));
+						(ISemanticLiteral<?>) Thinklab.get().parse(e.getValue(), ad.type));
 			} catch (ThinklabValidationException e1) {
 				throw new ThinklabValidationException(
 						"cannot validate input '" + 

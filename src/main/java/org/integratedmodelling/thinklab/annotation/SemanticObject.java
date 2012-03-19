@@ -27,59 +27,41 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
  * @author Ferd
  *
  */
-public class SemanticObject<T> implements ISemanticObject<T> {
+public abstract class SemanticObject<T> implements ISemanticObject<T> {
 
 	IReferenceList _semantics;
-	T _object;
 	private HashMap<IProperty, List<ISemanticObject<?>>> _literals;
 	private boolean _isLiteral = false;
 	private long _id;
 	
 	SemanticGraph _graph = null;
 
-	protected SemanticObject(IReferenceList semantics, T object) {
-		
-		if (semantics == null && object == null) {
-			throw new ThinklabRuntimeException("invalid null semantic object");
-		}
+	protected SemanticObject() {
+	}
+	
+	protected SemanticObject(IReferenceList semantics) {
 
 		this._semantics = semantics;
-		this._object = object;
 		this._id = _semantics == null ? 
 				0 :
 				semantics.getId();
-
-		this._isLiteral = 
-				object != null && 
-				(semantics == null ? 
-						Thinklab.get().getLiteralConceptForJavaClass(object.getClass()) != null :
-						Thinklab.get().isLiteralConcept(getDirectType()));
 	}
 
 	@Override
 	public IReferenceList getSemantics() {
-		if (_semantics == null) {
+		if (_semantics == null)
 			try {
-				_semantics = Thinklab.get().conceptualize(_object);
+				_semantics = Thinklab.get().conceptualize(this);
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}
-		}
 		return _semantics;
 	}
 
-	@Override
-	public T demote() {
-		if (_object == null) {
-			try {
-				Object o = Thinklab.get().instantiate(_semantics);
-				_object = (T) o;
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);				
-			}
-		}
-		return _object;
-	}
+//	@Override
+//	public T demote() {
+//		return this;
+//	}
 
 	@Override
 	public IConcept getDirectType() {
@@ -125,55 +107,6 @@ public class SemanticObject<T> implements ISemanticObject<T> {
 	public boolean isObject() {
 		return !isLiteral();
 	}
-
-	@Override
-	public boolean asBoolean() {
-
-		return _object instanceof Boolean ?
-				((Boolean)_object) :
-				false;
-	}
-
-	@Override
-	public int asInteger() {
-		return _object instanceof Number ?
-				((Number)_object).intValue() :
-				0;
-	}
-
-	@Override
-	public double asDouble() {
-		return _object instanceof Number ?
-				((Number)_object).doubleValue() :
-				Double.NaN;	
-	}
-
-	@Override
-	public float asFloat() {
-		return _object instanceof Number ?
-				((Number)_object).floatValue() :
-				Float.NaN;	
-	}
-
-	@Override
-	public String asString() {
-		return _object instanceof String ?
-				((String)_object) :
-				toString();	
-	}
-
-	@Override
-	public String toString() {
-		return "[" + getDirectType() + " " + (_object == null ? "<uninstantiated>" : _object) + "]";
-	}
-
-//	@Override
-//	public IMetadata getMetadata() {
-//		return 
-//			(_object instanceof IMetadataHolder) ?
-//				((IMetadataHolder)_object).getMetadata() :
-//				null;
-//	}
 
 	@Override
 	public List<Pair<IProperty, ISemanticObject<?>>> getRelationships() {

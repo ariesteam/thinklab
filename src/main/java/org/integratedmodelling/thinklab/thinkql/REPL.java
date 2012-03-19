@@ -34,7 +34,9 @@ import org.integratedmodelling.lang.model.ModelObject;
 import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.lang.ILanguageObject;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
+import org.integratedmodelling.thinklab.api.lang.parsing.ILanguageDefinition;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
@@ -125,6 +127,13 @@ public class REPL {
 		public void onModelObjectDefined(Namespace namespace, ModelObject ret) {
 			// TODO Auto-generated method stub
 			
+		}
+
+		@Override
+		public ILanguageDefinition newLanguageObject(
+				Class<? extends ILanguageObject> cls) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 	}

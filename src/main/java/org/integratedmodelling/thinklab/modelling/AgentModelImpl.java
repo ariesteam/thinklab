@@ -45,7 +45,7 @@ public class AgentModelImpl implements IModelObject  {
 	}
 
 	@Override
-	public Set<ISemanticObject> getObservables() {
+	public Set<ISemanticObject<?>> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
 	}

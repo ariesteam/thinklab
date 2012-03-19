@@ -16,20 +16,20 @@ import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class ModelImpl extends NamespaceQualified implements IModel {
-
-	public ModelImpl(IReferenceList semantics, Object object) {
-		super(semantics, object);
-	}
+//
+//	public ModelImpl(IReferenceList semantics, Object object) {
+//		super(semantics, object);
+//	}
 
 	Model _bean;
-	ISemanticObject _observable;
+	ISemanticObject<?> _observable;
 	IMetadata _metadata;
 	IObserver _observer;
 
 
 	
 	@Override
-	public ISemanticObject getObservable() {
+	public ISemanticObject<?> getObservable() {
 		return null; //_observable;
 	}
 
@@ -46,7 +46,7 @@ public class ModelImpl extends NamespaceQualified implements IModel {
 	}
 
 	@Override
-	public Set<ISemanticObject> getObservables() {
+	public Set<ISemanticObject<?>> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
 	}

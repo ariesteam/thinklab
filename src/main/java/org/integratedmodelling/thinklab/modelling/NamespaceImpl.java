@@ -5,27 +5,33 @@ import java.util.Collection;
 
 import org.integratedmodelling.lang.model.LanguageElement;
 import org.integratedmodelling.lang.model.Namespace;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 
-public class NamespaceImpl extends SemanticObject implements INamespace {
+@Concept(NS.NAMESPACE)
+public class NamespaceImpl extends SemanticObject<INamespace> implements INamespace {
 
 	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
 	IOntology _ontology;
+	String _id;
 	
-	public NamespaceImpl(IReferenceList list, Object object) {
-		super(list, object);
+	public NamespaceImpl(IReferenceList list) {
+		super(list);
 	}
 	
-	NamespaceImpl(Namespace obj) {
-		super(null, obj);
-	}
 	
+	public NamespaceImpl(String namespaceId) {
+		_id = namespaceId;
+	}
+
+
 	Namespace _bean() {
-		return (Namespace)getObject();
+		return (Namespace)demote();
 	}
 
 	public void initialize() {
@@ -68,5 +74,15 @@ public class NamespaceImpl extends SemanticObject implements INamespace {
 
 	public void setOntology(IOntology ontology) {
 		this._ontology = ontology;
+	}
+
+	@Override
+	public String getId() {
+		return _id;
+	}
+
+	@Override
+	public INamespace demote() {
+		return this;
 	}
 }

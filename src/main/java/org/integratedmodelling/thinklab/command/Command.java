@@ -25,7 +25,7 @@ import java.util.Map;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 
 /**
  * Commands are passed back and forth between the Knowledge Interface and the Knowledge Manager. 
@@ -38,8 +38,8 @@ public class Command {
 	CommandDeclaration declaration;
     HashMap<String, String> opts;
     HashMap<String, String> args;
-    HashMap<String, ISemanticObject> optValues;
-    HashMap<String, ISemanticObject> argValues;
+    HashMap<String, ISemanticLiteral<?>> optValues;
+    HashMap<String, ISemanticLiteral<?>> argValues;
     String stringValue = null;
 	private boolean verbose;
 	private boolean debug;
@@ -56,18 +56,18 @@ public class Command {
     	return args;
     }
     
-    public void setOptionValue(String s, ISemanticObject v) {
+    public void setOptionValue(String s, ISemanticLiteral<?> v) {
     	
     	if (optValues == null)
-    		optValues = new HashMap<String, ISemanticObject>();
+    		optValues = new HashMap<String, ISemanticLiteral<?>>();
     	
     	optValues.put(s, v);
     }
 
-    public void setArgumentValue(String s, ISemanticObject v) {
+    public void setArgumentValue(String s, ISemanticLiteral<?> v) {
     	
     	if (argValues == null)
-    		argValues = new HashMap<String, ISemanticObject>();
+    		argValues = new HashMap<String, ISemanticLiteral<?>>();
     	
     	argValues.put(s, v);
     }
@@ -111,7 +111,7 @@ public class Command {
      * @param PLUGIN_ID
      * @throws ThinklabException
      */
-    public Command(CommandDeclaration declaration, HashMap<String, ISemanticObject> args, HashMap<String, ISemanticObject> opts) throws ThinklabException {
+    public Command(CommandDeclaration declaration, HashMap<String, ISemanticLiteral<?>> args, HashMap<String, ISemanticLiteral<?>> opts) throws ThinklabException {
         this.declaration = declaration;   
         this.argValues = args;
         this.optValues = opts;        
@@ -136,11 +136,11 @@ public class Command {
         
         	Object o = allargs.get(arg);
         	
-        	ISemanticObject val = null;
+        	ISemanticLiteral<?> val = null;
         	
         	if (o == null)
         		throw new ThinklabValidationException("command " + commandName + " requires argument " + arg);
-        	val = Thinklab.get().annotate(o);
+        	val = (ISemanticLiteral<?>) Thinklab.get().annotate(o);
 
         	args.put(arg, val.toString().trim());
         	setArgumentValue(arg, val);
@@ -149,10 +149,10 @@ public class Command {
         for (String arg : declaration.getOptionalArgumentNames()) {
         	
         	Object o = allargs.get(arg);
-        	ISemanticObject val = null;
+        	ISemanticLiteral<?> val = null;
         	
         	if (o != null) {
-	        	val = Thinklab.get().annotate(o);
+	        	val = (ISemanticLiteral<?>) Thinklab.get().annotate(o);
 	        	args.put(arg, val.toString().trim());
 				setArgumentValue(arg, val);
         	}
@@ -160,10 +160,10 @@ public class Command {
         for (String arg : declaration.getOptionNames()) {
         	
         	Object o = allargs.get(arg);
-        	ISemanticObject val = null;
+        	ISemanticLiteral<?> val = null;
         	
         	if (o != null) {
-	        		val = Thinklab.get().annotate(o);
+	        		val = (ISemanticLiteral<?>) Thinklab.get().annotate(o);
 	        	opts.put(arg, val.toString().trim());
 				setOptionValue(arg, val);
         	}
@@ -172,11 +172,11 @@ public class Command {
         validate();
     }
 
-    public ISemanticObject getOption(String option) {
+    public ISemanticLiteral<?> getOption(String option) {
     	return opts == null ? null : optValues.get(option);
     }
     
-    public ISemanticObject getArgument(String argument) {
+    public ISemanticLiteral<?> getArgument(String argument) {
     	return args == null ? null : argValues.get(argument);
     }
     

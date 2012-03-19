@@ -40,7 +40,7 @@ import org.integratedmodelling.utils.MiscUtilities;
  */
 public class Rasterize implements ICommandHandler {
 
-	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject<?> execute(Command command, ISession session) throws ThinklabException {
 
 		String toload = command.getArgumentAsString("resource");
 		// String output = command.getArgumentAsString("output");

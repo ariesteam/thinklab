@@ -52,13 +52,7 @@ public class ShortValue extends SemanticLiteral<Integer> implements IParseable {
         super(Thinklab.INTEGER);
         value = (int)f;
     }
-            
-    /**
-     * The Number concept manager will validate units and numbers when numbers are read from a string.
-     * @param s
-     * @throws ThinklabValidationException
-     * @throws ThinklabNoKMException
-     */
+
     public ShortValue(String s) throws ThinklabException {
         parse(s);
     }

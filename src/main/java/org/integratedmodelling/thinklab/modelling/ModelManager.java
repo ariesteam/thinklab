@@ -46,7 +46,9 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.factories.IModelManager;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.lang.ILanguageObject;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
+import org.integratedmodelling.thinklab.api.lang.parsing.ILanguageDefinition;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
@@ -335,6 +337,13 @@ public class ModelManager implements IModelManager, IModelFactory {
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public ILanguageDefinition newLanguageObject(
+				Class<? extends ILanguageObject> cls) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 		
 	}
 
@@ -513,11 +522,10 @@ public class ModelManager implements IModelManager, IModelFactory {
 			}
 			
 			IOntology ontology = Thinklab.get().getKnowledgeRepository().requireOntology(namespaceId);
-			Namespace ns = new Namespace();
-			ns.setId(namespaceId);
-			ns.setSourceFile(ofile);
-			ns.setTimeStamp(ofile.lastModified());
-			ret = new NamespaceImpl(ns);
+			ret = new NamespaceImpl(namespaceId);
+//			ret.setId(namespaceId);
+//			ret.setSourceFile(ofile);
+//			ret.setTimeStamp(ofile.lastModified());
 			((NamespaceImpl)ret).setOntology(ontology);
 			namespacesById.put(namespaceId, ret);
 		}

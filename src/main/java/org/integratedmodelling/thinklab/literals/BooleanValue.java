@@ -102,8 +102,8 @@ public class BooleanValue extends SemanticLiteral<Boolean> implements IParseable
 
 	@Override
 	public String asText() {
-		// TODO Auto-generated method stub
-		return null;
+		return toString();
 	}
+
 
 }

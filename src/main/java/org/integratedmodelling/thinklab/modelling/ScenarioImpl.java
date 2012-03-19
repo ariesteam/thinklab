@@ -31,17 +31,17 @@ import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class ScenarioImpl extends NamespaceQualified implements IScenario {
 
-	protected ScenarioImpl(IReferenceList semantics, Object object) {
-		super(semantics, object);
-		// TODO Auto-generated constructor stub
-	}
-
-	public ScenarioImpl(Scenario o) {
-		super(null, o);
-	}
+//	protected ScenarioImpl(IReferenceList semantics, Object object) {
+//		super(semantics, object);
+//		// TODO Auto-generated constructor stub
+//	}
+//
+//	public ScenarioImpl(Scenario o) {
+//		super(null, o);
+//	}
 
 	@Override
-	public Set<ISemanticObject> getObservables() {
+	public Set<ISemanticObject<?>> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -60,6 +60,12 @@ public class ScenarioImpl extends NamespaceQualified implements IScenario {
 
 	@Override
 	public LanguageElement getLanguageElement() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getId() {
 		// TODO Auto-generated method stub
 		return null;
 	}

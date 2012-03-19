@@ -77,7 +77,7 @@ public abstract class ObserverImpl implements IObserver {
 	}
 
 	@Override
-	public Set<ISemanticObject> getObservables() {
+	public Set<ISemanticObject<?>> getObservables() {
 		// TODO Auto-generated method stub
 		return null;
 	}

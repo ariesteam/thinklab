@@ -52,13 +52,7 @@ public class LongValue extends SemanticLiteral<Long> implements IParseable {
         super(Thinklab.LONG);
         value = (long)f;
     }
-            
-    /**
-     * The Number concept manager will validate units and numbers when numbers are read from a string.
-     * @param s
-     * @throws ThinklabValidationException
-     * @throws ThinklabNoKMException
-     */
+
     public LongValue(String s) throws ThinklabException {
         parse(s);
     }

@@ -57,9 +57,8 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
  *
  */
 @Literal(concept="geospace:SpatialRecord", datatype="", javaClass=Geometry.class)
-public class ShapeValue extends SemanticLiteral implements IParseable, ITopologicallyComparable<ShapeValue> {
+public class ShapeValue extends SemanticLiteral<Geometry> implements IParseable, ITopologicallyComparable<ShapeValue> {
 
-	Geometry shape = null;
 	PrecisionModel precisionModel = null;
 	CoordinateReferenceSystem crs = null;
 	
@@ -78,17 +77,17 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
     }
 
     protected ShapeValue(Geometry shape, IConcept c)  {
-    	this.shape = shape;
+    	this.value = shape;
     	setConceptWithoutValidation(c);
     }
     
     public ShapeValue(Geometry geometry) {
-    	this.shape = geometry;
+    	this.value = geometry;
     	setConceptWithoutValidation(null);
 	}
     
     public ShapeValue(Geometry geometry, CoordinateReferenceSystem crs) {
-    	this.shape = geometry;
+    	this.value = geometry;
     	this.crs = crs;
     	setConceptWithoutValidation(null);
 	}
@@ -101,7 +100,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
      * @param y2
      */
     public ShapeValue(double x1, double y1, double x2, double y2) {
-    	this.shape = makeCell(x1,y1,x2,y2);
+    	this.value = makeCell(x1,y1,x2,y2);
     	setConceptWithoutValidation(null);
     }
     
@@ -123,7 +122,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 				new Coordinate(e.getMinX(),e.getMinY())
 				};
 		
-		shape = gFactory.createPolygon(gFactory.createLinearRing(pts), null);
+		value = gFactory.createPolygon(gFactory.createLinearRing(pts), null);
 		crs = e.getCoordinateReferenceSystem();
 	}
 
@@ -163,9 +162,9 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		
     	try {
     		if (s.contains("(")) {
-    			shape = new WKTReader().read(s);
+    			value = new WKTReader().read(s);
     		} else {
-    			shape = new WKBReader().read(WKBReader.hexToBytes(s));
+    			value = new WKBReader().read(WKBReader.hexToBytes(s));
     		}
 		} catch (ParseException e) {
 			throw new ThinklabValidationException(e);
@@ -174,12 +173,12 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 
 	@Override
 	public String asText() {
-		return new WKTWriter().write(shape);
+		return new WKTWriter().write(value);
 	}
 
 	@Override
 	public String toString() {
-		return new WKTWriter().write(shape);
+		return new WKTWriter().write(value);
 	}
 
 //	public ISemanticLiteral op(String op, ISemanticLiteral other) throws ThinklabInappropriateOperationException, ThinklabValueConversionException {
@@ -257,17 +256,17 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		}
 		
 		// check that passed shape is consistent with passed concept
-		if (shape instanceof Point)
+		if (value instanceof Point)
 			ok = concept.is(Geospace.get().Point());
-		else if (shape instanceof LineString)
+		else if (value instanceof LineString)
 			ok = concept.is(Geospace.get().LineString());
-		else if (shape instanceof Polygon)
+		else if (value instanceof Polygon)
 			ok = concept.is(Geospace.get().Polygon());
-		else if (shape instanceof MultiPoint)
+		else if (value instanceof MultiPoint)
 			ok = concept.is(Geospace.get().MultiPoint());
-		else if (shape instanceof MultiLineString)
+		else if (value instanceof MultiLineString)
 			ok = concept.is(Geospace.get().MultiLineString());
-		else if (shape instanceof MultiPolygon)
+		else if (value instanceof MultiPolygon)
 			ok = concept.is(Geospace.get().MultiPolygon());
 		
 		if (!ok)
@@ -275,7 +274,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 					"shapevalue: shape is not consistent with concept: " +
 					concept + 
 					" != " + 
-					shape);
+					value);
 		
 		setConceptWithoutValidation(concept);
 	}
@@ -287,17 +286,17 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		
 		if (c == null) {
 			
-			if (shape instanceof Point)
+			if (value instanceof Point)
 				c = Geospace.get().Point();
-			else if (shape instanceof LineString)
+			else if (value instanceof LineString)
 				c = Geospace.get().LineString();
-			else if (shape instanceof Polygon)
+			else if (value instanceof Polygon)
 				c = Geospace.get().Polygon();
-			else if (shape instanceof MultiPoint)
+			else if (value instanceof MultiPoint)
 				c = Geospace.get().MultiPoint();
-			else if (shape instanceof MultiLineString)
+			else if (value instanceof MultiLineString)
 				c = Geospace.get().MultiLineString();
-			else if (shape instanceof MultiPolygon)
+			else if (value instanceof MultiPolygon)
 				c = Geospace.get().MultiPolygon();
 		}
 		
@@ -315,27 +314,27 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 	 */
 	@Override
 	public Object clone() {
-		return new ShapeValue((Geometry)(shape.clone()), concept);
+		return new ShapeValue((Geometry)(value.clone()), concept);
 	}
 	
 	public ShapeValue getBoundingBox() {
-		return new ShapeValue(shape.getEnvelope(), crs);
+		return new ShapeValue(value.getEnvelope(), crs);
 	}
 
 	public ShapeValue getCentroid() {
-		return new ShapeValue(shape.getCentroid(), crs);
+		return new ShapeValue(value.getCentroid(), crs);
 	}
 
 	public Geometry getGeometry() {
-		return shape;
+		return value;
 	}
 	
 	public void simplify(double tolerance) {
-		shape = TopologyPreservingSimplifier.simplify(shape, tolerance);
+		value = TopologyPreservingSimplifier.simplify(value, tolerance);
 	}
 	
 	public int getSRID(int def) {
-		int ret = shape.getSRID();
+		int ret = value.getSRID();
 		if (ret <= 0)
 			ret = def;
 		return ret;
@@ -347,7 +346,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 	 * @return
 	 */
 	public ReferencedEnvelope getEnvelope() {
-		return new ReferencedEnvelope(shape.getEnvelopeInternal(), crs);
+		return new ReferencedEnvelope(value.getEnvelopeInternal(), crs);
 	}
 
 	
@@ -356,7 +355,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 	 * @return
 	 */
 	public ReferencedEnvelope getDefaultEnvelope() {
-		ReferencedEnvelope ret = new ReferencedEnvelope(shape.getEnvelopeInternal(), crs);
+		ReferencedEnvelope ret = new ReferencedEnvelope(value.getEnvelopeInternal(), crs);
 		if (crs.getCoordinateSystem().getAxis(0).getDirection().equals(AxisDirection.NORTH)) {
 			ret = new ReferencedEnvelope(ret.getMinY(),ret.getMaxY(), ret.getMinX(), ret.getMaxX(), getCRS());
 		}
@@ -372,7 +371,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		if ((crs != null || region.crs != null) && !crs.equals(region.crs))
 			region = region.transform(crs);
 
-		ShapeValue ret = new ShapeValue(shape.union(region.shape));
+		ShapeValue ret = new ShapeValue(value.union(region.value));
 		ret.crs = crs;
 		return ret;
 	}
@@ -382,7 +381,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		if ((crs != null || region.crs != null) && !crs.equals(region.crs))
 			region = region.transform(crs);
 
-		ShapeValue ret = new ShapeValue(shape.intersection(region.shape));
+		ShapeValue ret = new ShapeValue(value.intersection(region.value));
 		ret.crs = crs;
 		return ret;
 	}
@@ -392,17 +391,17 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		if ((crs != null || region.crs != null) && !crs.equals(region.crs))
 			region = region.transform(crs);
 
-		ShapeValue ret = new ShapeValue(shape.difference(region.shape));
+		ShapeValue ret = new ShapeValue(value.difference(region.value));
 		ret.crs = crs;
 		return ret;
 	}
 
 	public String getWKT() {
-		return new WKTWriter().write(shape);
+		return new WKTWriter().write(value);
 	}
 
 	public boolean isValid() {
-		return shape == null ? true : shape.isValid();
+		return value == null ? true : value.isValid();
 	}
 
 	/**
@@ -423,7 +422,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		try {
 			ret = 
 				JTS.transform(
-						shape, 
+						value, 
 						CRS.findMathTransform(crs, Geospace.get().getMetersCRS())).
 						getArea();
 		} catch (Exception e) {
@@ -451,7 +450,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		Geometry g = null;
 		
 		try {
-			 g = JTS.transform(shape, CRS.findMathTransform(crs, ocrs));
+			 g = JTS.transform(value, CRS.findMathTransform(crs, ocrs));
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}
@@ -460,7 +459,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 	}
 
 	public String getWKB() {
-		return new String(WKBWriter.bytesToHex(new WKBWriter().write(shape)));
+		return new String(WKBWriter.bytesToHex(new WKBWriter().write(value)));
 	}
 
 	public ShapeValue convertToMeters() throws ThinklabException {
@@ -473,7 +472,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 			throw new ThinklabValidationException(
 					"shapes can only be topologically compared with other shapes");
 		
-		return shape.contains(((ShapeValue)o).transform(crs).shape);
+		return value.contains(((ShapeValue)o).transform(crs).value);
 	}
 
 	@Override
@@ -482,7 +481,7 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 			throw new ThinklabValidationException(
 					"shapes can only be topologically compared with other shapes");
 
-		return shape.overlaps(((ShapeValue)o).transform(crs).shape);
+		return value.overlaps(((ShapeValue)o).transform(crs).value);
 	}
 
 	@Override
@@ -490,18 +489,12 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		if (! (o instanceof ShapeValue))
 			throw new ThinklabValidationException(
 					"shapes can only be topologically compared with other shapes");
-		return shape.intersects(((ShapeValue)o).transform(crs).shape);
+		return value.intersects(((ShapeValue)o).transform(crs).value);
 	}
 
 	public void wrap(Object o) {
-		shape = (Geometry)o;
+		value = (Geometry)o;
 		setConceptWithoutValidation(null);
-	}
-
-	@Override
-	public Object demote() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -509,4 +502,5 @@ public class ShapeValue extends SemanticLiteral implements IParseable, ITopologi
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 }

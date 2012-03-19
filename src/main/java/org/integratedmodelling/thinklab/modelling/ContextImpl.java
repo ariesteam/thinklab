@@ -33,24 +33,24 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
-import org.integratedmodelling.thinklab.api.modelling.IContextMapper;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.metadata.Metadata;
+import org.integratedmodelling.thinklab.modelling.internal.IContextMapper;
 import org.integratedmodelling.thinklab.modelling.internal.ListenerSet;
 import org.integratedmodelling.thinklab.modelling.internal.NamespaceQualified;
 
 public class ContextImpl extends NamespaceQualified implements IContext {
-
-	protected ContextImpl(IReferenceList semantics, Object object) {
-		super(semantics, object);
-	}
-
-	public ContextImpl(Context o) {
-		super(null, o);
-		_bean = o;
-	}
+//
+//	protected ContextImpl(IReferenceList semantics, Object object) {
+//		super(semantics, object);
+//	}
+//
+//	public ContextImpl(Context o) {
+//		super(null, o);
+//		_bean = o;
+//	}
 
 	/*
 	 * this one will be null unless the context comes from a language 
@@ -60,7 +60,7 @@ public class ContextImpl extends NamespaceQualified implements IContext {
 	
 	private ArrayList<IListener> _listeners = new ArrayList<IListener>();
 	private Metadata _metadata = new Metadata();	
-	private HashMap<ISemanticObject, IState> _states = new HashMap<ISemanticObject, IState>();
+	private HashMap<ISemanticObject<?>, IState> _states = new HashMap<ISemanticObject<?>, IState>();
 	
 //	public ContextImpl(IContext context) {
 //		// TODO copy every state and extent from the passed one, then initialize
@@ -78,7 +78,7 @@ public class ContextImpl extends NamespaceQualified implements IContext {
 //	}
 //	
 	@Override
-	public Set<ISemanticObject> getObservables() {
+	public Set<ISemanticObject<?>> getObservables() {
 		return _states.keySet();
 	}
 
@@ -154,7 +154,6 @@ public class ContextImpl extends NamespaceQualified implements IContext {
 		return null;
 	}
 
-	@Override
 	public IContextMapper mapContext(IObservation observation) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
@@ -236,6 +235,12 @@ public class ContextImpl extends NamespaceQualified implements IContext {
 
 	@Override
 	public LanguageElement getLanguageElement() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getId() {
 		// TODO Auto-generated method stub
 		return null;
 	}

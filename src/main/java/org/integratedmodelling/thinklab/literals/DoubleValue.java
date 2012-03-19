@@ -53,12 +53,6 @@ public class DoubleValue extends SemanticLiteral<Double> implements IParseable {
         value = (double)f;
     }
             
-    /**
-     * The Number concept manager will validate units and numbers when numbers are read from a string.
-     * @param s
-     * @throws ThinklabValidationException
-     * @throws ThinklabNoKMException
-     */
     public DoubleValue(String s) throws ThinklabException {
         parse(s);
     }

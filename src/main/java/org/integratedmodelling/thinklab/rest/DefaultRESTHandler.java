@@ -124,7 +124,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 			return false;
 		}
 		
-		ISemanticObject user = getSession().getUserModel().getUser();
+		ISemanticObject<?> user = getSession().getUserModel().getUser();
 		if (user == null || !user.is(Thinklab.c(concept))) {
 			fail("not enough user privileges for command");
 			return false;
@@ -401,11 +401,13 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	
 	protected void fail() {
 		resultStatus = FAIL;
+		Thinklab.get().logger().error(this);
 	}
 
 	protected void fail(String message) {
 		resultStatus = FAIL;
 		error = message;
+		Thinklab.get().logger().error(message);
 	}
 
 	protected void fail(Throwable e) {
@@ -413,14 +415,17 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		error = e.getMessage();
 		rh.put("exception-class", e.getClass().getCanonicalName());
 		rh.put("stack-trace", MiscUtilities.getStackTrace(e));
+		Thinklab.get().logger().error(this, e);
 	}
 	
 	protected void warn(String s) {
 		warn = s;
+		Thinklab.get().logger().warn(s);
 	}
 
 	protected void info(String s) {
 		info = s;
+		Thinklab.get().logger().info(s);
 	}
 
 	/**

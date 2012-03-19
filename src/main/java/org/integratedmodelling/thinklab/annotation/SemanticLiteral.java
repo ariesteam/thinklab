@@ -28,6 +28,7 @@ import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 
@@ -37,7 +38,7 @@ import org.integratedmodelling.thinklab.api.lang.IList;
  * @author Ferd
  *
  */
-public abstract class SemanticLiteral<T> implements ISemanticObject<T> {
+public abstract class SemanticLiteral<T> implements ISemanticLiteral<T> {
 	
 	public IConcept concept;
 	public T value = null;
@@ -111,30 +112,47 @@ public abstract class SemanticLiteral<T> implements ISemanticObject<T> {
 		return false;
 	}
 
-
 	@Override
 	public boolean asBoolean() {
-		return false;
+
+		return value instanceof Boolean ?
+				((Boolean)value) :
+				false;
 	}
 
 	@Override
 	public int asInteger() {
-		return 0;
+		return value instanceof Number ?
+				((Number)value).intValue() :
+				0;
+	}
+	
+	@Override
+	public long asLong() {
+		return value instanceof Number ?
+				((Number)value).longValue() :
+				0l;
 	}
 
 	@Override
 	public double asDouble() {
-		return Double.NaN;
+		return value instanceof Number ?
+				((Number)value).doubleValue() :
+				Double.NaN;	
 	}
 
 	@Override
 	public float asFloat() {
-		return Float.NaN;
+		return value instanceof Number ?
+				((Number)value).floatValue() :
+				Float.NaN;	
 	}
 
 	@Override
 	public String asString() {
-		return null;
+		return value instanceof String ?
+				((String)value) :
+				toString();	
 	}
 
 	@Override

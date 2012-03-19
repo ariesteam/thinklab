@@ -54,12 +54,6 @@ public class FloatValue extends SemanticLiteral<Float> implements IParseable {
         value = f;
     }
             
-    /**
-     * The Number concept manager will validate units and numbers when numbers are read from a string.
-     * @param s
-     * @throws ThinklabValidationException
-     * @throws ThinklabNoKMException
-     */
     public FloatValue(String s) throws ThinklabException {
         parse(s);
     }

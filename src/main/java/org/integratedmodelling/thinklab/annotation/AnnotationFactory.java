@@ -43,8 +43,8 @@ import org.integratedmodelling.utils.StringUtils;
 public class AnnotationFactory {
 
 	IntelligentMap<Class<?>> _concept2class    = new IntelligentMap<Class<?>>();
-	IntelligentMap<Class<?>> _concept2semanticObjectClass    = 
-			new IntelligentMap<Class<?>>();
+//	IntelligentMap<Class<?>> _concept2semanticObjectClass    = 
+//			new IntelligentMap<Class<?>>();
 	HashMap<Class<?>, IConcept> _class2literal    = new HashMap<Class<?>, IConcept>();
 	HashMap<Class<?>, String>_class2datatype   = new HashMap<Class<?>, String>();
 	HashMap<Class<?>, IConcept> _class2concept = new HashMap<Class<?>, IConcept>();
@@ -546,10 +546,7 @@ public class AnnotationFactory {
 	public ISemanticObject<?> annotate(Object object) throws ThinklabException {
 
 		IReferenceList list = conceptualize(object);
-		return 
-			list == null ?
-					null :
-					getSemanticObject(list, null);
+		return getSemanticObject(list, object);
 	}
 	
 	private Object newInstance(Class<?> cls) throws ThinklabException {
@@ -589,37 +586,25 @@ public class AnnotationFactory {
 	}
 
 	/*
-	 * create the specific SemanticObject registered with this semantics, or a default SemanticObject
-	 * if none has been registered.
+	 * create the specific SemanticObject registered with this semantics if necessary;
+     * create a DefaultSemanticObject if none has been registered.
 	 */
 	public ISemanticObject<?> getSemanticObject(IReferenceList list, Object object) {
 		
+		/*
+		 * the best-case scenario: object doesn't need any wrapping
+		 */
+		if (object instanceof ISemanticObject<?>) {
+			return (ISemanticObject<?>) object;
+		}
+
 		if (list == null || list.length() < 1)
 			return null;
 		
-		ISemanticObject<?> ret = null;
-		Class<?> cls = _concept2semanticObjectClass.get(Thinklab.c(list.first().toString()));
-		if (cls != null) {
-			try {
-				Constructor<?> constructor = cls.getConstructor(IReferenceList.class, Object.class);
-				ret = (ISemanticObject<?>) constructor.newInstance(list, object);
-				
-				/*
-				 * do the initialize() thing on the semantic object, too.
-				 */
-				Method init = cls.getMethod("initialize", (Class<?>[])null);
-				if (init != null)
-					init.invoke(ret, (Object[])null);
-				
-			} catch (Exception e) {
-				throw new ThinklabRuntimeException(e);
-			}
-		}
-		
-		if (ret == null) {
-			ret = new DefaultSemanticObject(list, object);
-		}
-		return ret;
+		/*
+		 * worst-case scenario, wrap it in a generic semantic object.
+		 */
+		return new DefaultSemanticObject(list, object);
 	}
 
 
