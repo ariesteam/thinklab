@@ -99,12 +99,15 @@ public class ConceptualizeStoreTest  {
 		/*
 		 * instantiate a new semantic clone and check if it matches.
 		 */
-		Metadata clone1 = (Metadata) Thinklab.get().instantiate(semantics);
+		Object clone1 = Thinklab.get().instantiate(semantics);
 		Assert.assertTrue(
 				clone1 instanceof Metadata && 
-				clone1.get(Metadata.DC_COVERAGE_SPATIAL) instanceof Pair<?,?> &&
-				clone1.get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
+				((Metadata)clone1).get(Metadata.DC_COVERAGE_SPATIAL) instanceof Pair<?,?> &&
+				((Metadata)clone1).get(Metadata.DC_COMMENT).toString().equals("Stocazzo"));
 		
+		/*
+		 * get a kbox, creating if necessary
+		 */
 		IKbox thinklabKbox = Thinklab.get().requireKbox("thinklab");
 
 		/*

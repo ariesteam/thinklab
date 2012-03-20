@@ -27,14 +27,14 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.modelling.ObservationImpl;
+import org.integratedmodelling.thinklab.modelling.Observation;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 
-public abstract class ArealExtent extends ObservationImpl implements IExtent {
+public abstract class ArealExtent extends Observation implements IExtent {
 
 	public abstract ShapeValue getShape();
 	

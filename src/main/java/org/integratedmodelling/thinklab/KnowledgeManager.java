@@ -204,7 +204,7 @@ public class KnowledgeManager implements IKnowledgeManager {
 		IConcept ret = null;
 		INamespace ns = ModelManager.get().getNamespace(t.getConceptSpace());
 	    if (ns != null)
-	    	ret = ns.getOntology().getConcept(t.getLocalName());
+	    	ret = ns.getConcept(t.getLocalName());
 	    if (ret == null && t.toString().equals(Thinklab.get().getKnowledgeRepository().getRootConcept().toString()))	{
 	    	ret = Thinklab.get().getKnowledgeRepository().getRootConcept();
 	    }
@@ -216,7 +216,7 @@ public class KnowledgeManager implements IKnowledgeManager {
 		IProperty ret = null;
 		INamespace ns = ModelManager.get().getNamespace(t.getConceptSpace());
 	    if (ns != null)
-	    	ret = ns.getOntology().getProperty(t.getLocalName());
+	    	ret = ns.getProperty(t.getLocalName());
 	    return ret;
 	}
 

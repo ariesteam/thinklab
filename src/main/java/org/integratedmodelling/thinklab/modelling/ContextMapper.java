@@ -69,7 +69,7 @@ public class ContextMapper implements IContextMapper {
 	public static MultidimensionalCursor getCursor(IContext ctx) {
 		MultidimensionalCursor ret = 
 			new MultidimensionalCursor(StorageOrdering.ROW_FIRST);
-		ret.defineDimensions(((ContextImpl)ctx).getDimensionSizes());
+		ret.defineDimensions(((Context)ctx).getDimensionSizes());
 		return ret;
 	}
 	
@@ -78,12 +78,12 @@ public class ContextMapper implements IContextMapper {
 		this._from = from;
 		this._to = to;
 		int td = 0;
-		int[] indexesFrom = ((ContextImpl)from).getDimensionSizes();
+		int[] indexesFrom = ((Context)from).getDimensionSizes();
 		this.cdims = new int[indexesFrom.length];
 		int[] indexesTo = new int[indexesFrom.length];
 		int i = 0;
-		for (IConcept c : ((ContextImpl)from).getDimensions()) {
-			IConcept theDim = ((ContextImpl)to).getDimension(c);
+		for (IConcept c : ((Context)from).getDimensions()) {
+			IConcept theDim = ((Context)to).getDimension(c);
 			int dim = theDim == null ? 1 : to.getMultiplicity(theDim);
 			if (!(dim == 1 || dim == indexesFrom[i]))
 				throw new ThinklabValidationException(
@@ -137,7 +137,7 @@ public class ContextMapper implements IContextMapper {
 			ticker.increment();
 			for (int i = 0; i < toCursor.getDimensionsCount(); i++) {
 				if (ticker.hasChanged(i)) {
-					ret.add(((ContextImpl)_to).getDimension(i));
+					ret.add(((Context)_to).getDimension(i));
 				}
 			}
 		}

@@ -40,7 +40,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.modelling.ObservationImpl;
+import org.integratedmodelling.thinklab.modelling.Observation;
 import org.joda.time.DateTime;
 
 /**
@@ -54,7 +54,7 @@ import org.joda.time.DateTime;
  * @author Ferdinando Villa
  *
  */
-public class RegularTemporalGrid extends ObservationImpl implements IExtent {
+public class RegularTemporalGrid extends Observation implements IExtent {
 
 	public RegularTemporalGrid(DateTime timeData, DateTime timeData2,
 			long milliseconds) {

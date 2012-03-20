@@ -40,7 +40,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.modelling.ObservationImpl;
+import org.integratedmodelling.thinklab.modelling.Observation;
 import org.integratedmodelling.thinklab.time.literals.TimeValue;
 
 /**
@@ -53,7 +53,7 @@ import org.integratedmodelling.thinklab.time.literals.TimeValue;
  * @author Ferdinando Villa
  *
  */
-public class TemporalLocation extends ObservationImpl implements IExtent {
+public class TemporalLocation extends Observation implements IExtent {
 
 	public TemporalLocation(TimeValue start) {
 		// TODO Auto-generated constructor stub

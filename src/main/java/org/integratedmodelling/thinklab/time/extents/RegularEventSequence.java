@@ -40,13 +40,13 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.modelling.ObservationImpl;
+import org.integratedmodelling.thinklab.modelling.Observation;
 
 /**
  * @author Ferdinando Villa
  *
  */
-public class RegularEventSequence extends ObservationImpl implements IExtent {
+public class RegularEventSequence extends Observation implements IExtent {
 
 	@Override
 	public Object getValue(int offset) {

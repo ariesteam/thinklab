@@ -1,7 +1,6 @@
 package org.integratedmodelling.thinklab.modelling;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 
 /**
@@ -24,6 +23,6 @@ public interface IModelFactory {
 	 * @param namespace
 	 * @return
 	 */
-	public abstract INamespace processNamespace(Namespace namespace) throws ThinklabException;
+	public abstract INamespace processNamespace(INamespace namespace) throws ThinklabException;
 	
 }

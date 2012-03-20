@@ -21,7 +21,6 @@ package org.integratedmodelling.thinklab.proxy;
 
 import org.integratedmodelling.thinklab.api.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.project.IProject;
-import org.integratedmodelling.thinklab.modelling.IModelFactory;
 
 import com.google.inject.AbstractModule;
 
@@ -43,7 +42,6 @@ public class ModellingModule extends AbstractModule {
 	
 	@Override
 	protected void configure() {
-		bind(IModelFactory.class).to(ProxyModelFactory.class);
 		bind(IKnowledgeManager.class).to(ModelKnowledgeManager.class);
 	}
 	

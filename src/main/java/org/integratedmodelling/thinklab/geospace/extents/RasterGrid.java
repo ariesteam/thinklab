@@ -41,7 +41,7 @@ import org.integratedmodelling.thinklab.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGridMask;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.modelling.ObservationImpl;
+import org.integratedmodelling.thinklab.modelling.Observation;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
@@ -53,7 +53,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @author Ferdinando Villa
  */
 @InstanceImplementation(concept="geospace:RasterGrid")
-public class RasterGrid extends ObservationImpl implements IExtent {
+public class RasterGrid extends Observation implements IExtent {
 
 	int xRO, xRM, yRO, yRM;
 	double latLB, lonLB, latUB, lonUB;

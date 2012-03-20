@@ -367,7 +367,7 @@ public class ModelMap {
 			if (ontology == null) {
 				try {
 					if (ontologyDescriptor != null) {
-						ontology = ontologyDescriptor.getOntology();
+						ontology = ((Namespace)ontologyDescriptor).getOntology();
 					} else {
 						ontology = 
 								Thinklab.get().getKnowledgeRepository().

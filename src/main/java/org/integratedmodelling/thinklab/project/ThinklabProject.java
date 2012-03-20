@@ -91,7 +91,7 @@ public class ThinklabProject implements IProject {
 			}
 
 			for (INamespace ns : _namespaces) {
-				Thinklab.get().logger().info(ns.getNamespace() + " namespace contains " + ns.getModelObjects().size() + " objects");
+				Thinklab.get().logger().info(ns.getId() + " namespace contains " + ns.getModelObjects().size() + " objects");
 			}
 		}
 	}
@@ -102,7 +102,7 @@ public class ThinklabProject implements IProject {
 		if (_loaded) {
 			try {
 				for (INamespace n : _namespaces) {
-					ModelManager.get().releaseNamespace(n.getNamespace());
+					ModelManager.get().releaseNamespace(n.getId());
 				}
 				_namespaces.clear();
 			} finally {

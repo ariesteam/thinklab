@@ -29,7 +29,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.modelling.ObservationImpl;
+import org.integratedmodelling.thinklab.modelling.Observation;
 
 /**
  * This one is technically unnecessary, as ArealFeatureSet subsumes it, but we keep it 
@@ -38,7 +38,7 @@ import org.integratedmodelling.thinklab.modelling.ObservationImpl;
  *
  */
 @Concept("geospace:ArealLocation")
-public class ArealLocation extends ObservationImpl implements IExtent {
+public class ArealLocation extends Observation implements IExtent {
 
 	ShapeValue boundingBox = null;
 	ShapeValue shape = null;

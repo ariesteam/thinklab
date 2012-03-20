@@ -29,7 +29,7 @@ public class QueryTest {
 		 * query everything
 		 */	
 		int i = 0;
-		for (ISemanticObject o : kbox.query(null)) {
+		for (ISemanticObject<?> o : kbox.query(null)) {
 			System.out.println((i++) + ": " + o);
 		}
 	}

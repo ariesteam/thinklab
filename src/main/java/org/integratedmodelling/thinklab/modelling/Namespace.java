@@ -1,23 +1,24 @@
 package org.integratedmodelling.thinklab.modelling;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
-import org.integratedmodelling.lang.model.LanguageElement;
-import org.integratedmodelling.lang.model.Namespace;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IAxiom;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.lang.parsing.IModelObjectDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.INamespaceDefinition;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.project.IProject;
 
 @Concept(NS.NAMESPACE)
-public class NamespaceImpl extends SemanticObject<INamespace> implements INamespace, INamespaceDefinition {
+public class Namespace extends SemanticObject<INamespace> implements INamespaceDefinition {
 
 	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
 	IOntology _ontology;
@@ -26,17 +27,15 @@ public class NamespaceImpl extends SemanticObject<INamespace> implements INamesp
 	String _resourceUrl;
 	long _timeStamp;
 	ArrayList<INamespace> _importedNamespaces = new ArrayList<INamespace>();
+	IProject _project;
 	
-	public NamespaceImpl(IReferenceList list) {
+	public Namespace(IReferenceList list) {
 		super(list);
 	}
 	
-	public NamespaceImpl() {
+	public Namespace() {
 	}
 
-	Namespace _bean() {
-		return (Namespace)demote();
-	}
 
 	public void initialize() {
 		
@@ -52,34 +51,23 @@ public class NamespaceImpl extends SemanticObject<INamespace> implements INamesp
 	}
 
 	@Override
-	public LanguageElement getLanguageElement() {
-		return _bean();
-	}
-
-	@Override
-	public String getNamespace() {
-		return _id;
-	}
-
-	@Override
-	public IOntology getOntology() {
-		return _ontology;
-	}
-
-	@Override
-	public Collection<IModelObject> getModelObjects() {
+	public List<IModelObject> getModelObjects() {
 		return _modelObjects;
 	}
 
 	@Override
-	public long getLastModification() {
-		return _bean().getTimeStamp();
+	public long getTimeStamp() {
+		return _timeStamp;
 	}
 
 	public void setOntology(IOntology ontology) {
 		this._ontology = ontology;
 	}
 
+	public IOntology getOntology() {
+		return _ontology;
+	}
+	
 	@Override
 	public String getId() {
 		return _id;
@@ -90,19 +78,15 @@ public class NamespaceImpl extends SemanticObject<INamespace> implements INamesp
 		return this;
 	}
 
-
 	@Override
 	public void setId(String id) {
 		_id = id;
 	}
 
-
 	@Override
 	public void addAxiom(IAxiom axiom) {
-		// TODO Auto-generated method stub
 		_axioms.add(axiom);
 	}
-
 
 	@Override
 	public void setResourceUrl(String resourceUrl) {
@@ -122,5 +106,31 @@ public class NamespaceImpl extends SemanticObject<INamespace> implements INamesp
 	@Override
 	public void addModelObject(IModelObjectDefinition modelObject) {
 		_modelObjects.add((IModelObject)modelObject);
+	}
+
+	@Override
+	public void setProject(IProject project) {
+		_project = project;
+	}
+
+	@Override
+	public IConcept getConcept(String s) {
+		return _ontology.getConcept(s);
+	}
+
+	@Override
+	public IProperty getProperty(String s) {
+		return _ontology.getProperty(s);
+	}
+
+	@Override
+	public IProject getProject() {
+		return _project;
+	}
+	
+	@Override
+	public IModelObject getModelObject(String mod) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

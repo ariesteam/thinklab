@@ -32,7 +32,7 @@ import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.modelling.ObservationImpl;
+import org.integratedmodelling.thinklab.modelling.Observation;
 import org.integratedmodelling.thinklab.modelling.units.Unit;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -42,7 +42,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @author Ferdinando Villa
  */
 @InstanceImplementation(concept="geospace:ArealFeatureSet")
-public class SpatialCoverage extends ObservationImpl implements IExtent {
+public class SpatialCoverage extends Observation implements IExtent {
 
 	double latLB, lonLB, latUB, lonUB;
 	CoordinateReferenceSystem crs;

@@ -144,8 +144,8 @@ public class CapabilitiesService extends DefaultRESTHandler {
 					/*
 					 * TODO put in number of errors, project
 					 */
-					map.put("id", n.getNamespace());
-					map.put("last-modified", Long.toString(n.getLastModification()));
+					map.put("id", n.getId());
+					map.put("last-modified", Long.toString(n.getTimeStamp()));
 				
 
 					oret.append("namespaces", p.getId());
