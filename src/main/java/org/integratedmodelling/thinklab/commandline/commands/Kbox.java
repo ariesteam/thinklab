@@ -54,7 +54,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 public class Kbox implements ICommandHandler {
 	
 	@Override
-	public ISemanticObject execute(Command command, ISession session)
+	public ISemanticObject<?> execute(Command command, ISession session)
 			throws ThinklabException {
 		
 		IKbox kbox = Thinklab.get().requireKbox(command.getArgumentAsString("kbox"));
@@ -68,7 +68,7 @@ public class Kbox implements ICommandHandler {
 		if (cmd.equals("list")) {
 			
 			int i = 0;
-			for (ISemanticObject obj : kbox.retrieveAll()) {
+			for (ISemanticObject<?> obj : kbox.retrieveAll()) {
 				session.print(i++ + ": " + obj);
 			}
 			

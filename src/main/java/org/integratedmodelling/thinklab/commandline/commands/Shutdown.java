@@ -36,9 +36,9 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 @ThinklabCommand(name="shutdown", description="shutdown thinklab")
 public class Shutdown implements ICommandHandler {
 
-	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject<?> execute(Command command, ISession session) throws ThinklabException {
 		
-		Thinklab.get().shutdown(null, 5, null);
+		Thinklab.get().shutdown(null, 0, null);
 		return null;
 	}
 }

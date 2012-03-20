@@ -47,7 +47,7 @@ import org.integratedmodelling.thinklab.rest.RESTManager;
 public class Rest implements ICommandHandler {
 	
 	@Override
-	public ISemanticObject execute(Command command, ISession session)
+	public ISemanticObject<?> execute(Command command, ISession session)
 			throws ThinklabException {
 
 		String cmd = command.getArgumentAsString("cmd");

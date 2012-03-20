@@ -483,7 +483,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 	@Override
 	public synchronized INamespace loadFile(String resourceId, String namespaceId, IProject project) throws ThinklabException {
 
-		INamespace ret = null;
+		NamespaceImpl ret = null;
 		
 		if (resourceId.endsWith(".tql")) {
 				
@@ -497,7 +497,7 @@ public class ModelManager implements IModelManager, IModelFactory {
 				 * annotating a Namespace will produce a NamespaceImpl. How cool
 				 * is that.
 				 */
-				ret = (INamespace) Thinklab.get().annotate(nbean);
+				ret = (NamespaceImpl) Thinklab.get().annotate(nbean);
 				namespacesById.put(nbean.getId(), ret);
 				
 			} else {
@@ -522,11 +522,11 @@ public class ModelManager implements IModelManager, IModelFactory {
 			}
 			
 			IOntology ontology = Thinklab.get().getKnowledgeRepository().requireOntology(namespaceId);
-			ret = new NamespaceImpl(namespaceId);
-//			ret.setId(namespaceId);
-//			ret.setSourceFile(ofile);
-//			ret.setTimeStamp(ofile.lastModified());
-			((NamespaceImpl)ret).setOntology(ontology);
+			ret = new NamespaceImpl();
+			ret.setId(namespaceId);
+			ret.setResourceUrl(resourceId);
+			ret.setTimeStamp(ofile.lastModified());
+			ret.setOntology(ontology);
 			namespacesById.put(namespaceId, ret);
 		}
 		

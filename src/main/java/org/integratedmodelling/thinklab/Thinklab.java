@@ -701,7 +701,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		_projectManager.addProjectDirectory(projectDirectory);		
 	}
 
-	public ISemanticObject getSemanticObject(IReferenceList list, Object object) {
+	public ISemanticObject<?> getSemanticObject(IReferenceList list, Object object) {
 		return _km.getSemanticObject(list, object);
 	}
 
@@ -711,5 +711,9 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 
 	public IConcept getLiteralConceptForJavaClass(Class<? extends Object> class1) {
 		return _km.getLiteralConceptForJavaClass(class1);
+	}
+
+	public ISemanticObject<?> getSemanticLiteral(IReferenceList semantics) {
+		return _km.getSemanticLiteral(semantics);
 	}
 }

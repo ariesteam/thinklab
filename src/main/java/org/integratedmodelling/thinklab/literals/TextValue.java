@@ -24,19 +24,22 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
 @Literal(concept=NS.TEXT, datatype="xsd:string", javaClass=String.class)
 public class TextValue extends SemanticLiteral<String> implements IParseable {
     
     public TextValue() {
-        super(Thinklab.TEXT);
-        value = "";
+        super(Thinklab.TEXT, "");
     }
     
     public TextValue(String s)  {
-        super(Thinklab.TEXT);
-        value = s;
+        super(Thinklab.TEXT, s);
+    }
+    
+    public TextValue(IConcept c, String s) {
+    	super(c, s);
     }
 
 	@Override

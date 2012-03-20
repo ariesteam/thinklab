@@ -44,10 +44,6 @@ import org.joda.time.Interval;
 
 @Literal(concept="time:PeriodValue", javaClass=Interval.class, datatype="")
 public class PeriodValue extends SemanticLiteral<Interval> implements IParseable {
-
-    public void wrap(Object o) {
-    	value = (Interval)o;
-    }
     
     private static IConcept getBaseTimeConcept() throws ThinklabException {
         return Thinklab.c(TimePlugin.PERIOD_TYPE_ID);
@@ -64,13 +60,11 @@ public class PeriodValue extends SemanticLiteral<Interval> implements IParseable
     }
 
     public PeriodValue(IConcept c, Interval interval) throws ThinklabException {
-        super(c);
-        this.value = interval;
+        super(c, interval);
     }
 
     public PeriodValue(Interval interval) throws ThinklabException {
-        super(getBaseTimeConcept());
-        this.value = interval;
+        super(getBaseTimeConcept(), interval);
     }
 
     public PeriodValue(String s) throws ThinklabException {
@@ -78,8 +72,7 @@ public class PeriodValue extends SemanticLiteral<Interval> implements IParseable
     }
     
     public PeriodValue(long x, long x2) throws ThinklabException {
-        super(getBaseTimeConcept());
-        value = new Interval(x, x2);
+        super(getBaseTimeConcept(), new Interval(x, x2));
     }
 
     public String toString() {

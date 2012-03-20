@@ -25,11 +25,10 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.literals.BooleanValue;
 
 public class Is implements ICommandHandler {
 
-	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject<?> execute(Command command, ISession session) throws ThinklabException {
 
 		// TODO this should figure out what the semantic type is for, cross
 		// check properly, and
@@ -39,7 +38,7 @@ public class Is implements ICommandHandler {
 
 		boolean res = Thinklab.c(s1).is(Thinklab.c(s2));
 
-		return BooleanValue.wrap(res);
+		return Thinklab.get().annotate(res);
 	}
 
 }

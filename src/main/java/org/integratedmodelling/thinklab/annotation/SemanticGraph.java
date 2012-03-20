@@ -39,9 +39,11 @@ public class SemanticGraph extends
 		if (root == null) {
 			IConcept concept = Thinklab.c(semantics.first().toString());
 			Object o = null;
-			if (Thinklab.get().isLiteralConcept(concept))
-				o = semantics.nth(1);
-			root = (ISemanticObject<?>) Thinklab.get().getSemanticObject(semantics, o);
+			if (Thinklab.get().isLiteralConcept(concept)) {
+				root = Thinklab.get().getSemanticLiteral(semantics);
+			} else {
+				root = (ISemanticObject<?>) Thinklab.get().getSemanticObject(semantics, o);
+			}
 		}
 		
 		if (refs.containsKey(semantics)) {

@@ -31,7 +31,6 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 
 	IReferenceList _semantics;
 	private HashMap<IProperty, List<ISemanticObject<?>>> _literals;
-	private boolean _isLiteral = false;
 	private long _id;
 	
 	SemanticGraph _graph = null;
@@ -58,11 +57,11 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 		return _semantics;
 	}
 
-//	@Override
-//	public T demote() {
-//		return this;
-//	}
-
+	public void setSemantics(IReferenceList semantics) {
+		_semantics = semantics;
+		_graph = null;
+	}
+	
 	@Override
 	public IConcept getDirectType() {
 		return Thinklab.c(getSemantics().first().toString());
@@ -95,7 +94,7 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 
 	@Override
 	public boolean isLiteral() {
-		return _isLiteral;
+		return false;
 	}
 
 	@Override

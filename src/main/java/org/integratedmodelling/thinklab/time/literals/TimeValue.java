@@ -69,24 +69,18 @@ public class TimeValue extends SemanticLiteral<DateTime> implements IParseable {
 
 	public static String matchDayMonthYear = "[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]";
 
+	/* set to "now" */
 	public TimeValue() throws ThinklabException {
-		super();
-		// "now" value
-		value = new DateTime();
-		concept = TimePlugin.DateTime();
+		super(TimePlugin.DateTime(), new DateTime());
 	}
 
 	public TimeValue(DateTime date) {
-		super();
-		value = date;
-		concept = TimePlugin.DateTime();
+		super(TimePlugin.DateTime(), date);
 	}
 	
-    public void wrap(Object o) {
-		concept = TimePlugin.DateTime();
-    	value = (DateTime)o;    	
-    }
-
+	public TimeValue(IConcept c, DateTime date) {
+		super(c, date);
+	}
 	
 	@Override
 	public void parse(String s) throws ThinklabValidationException {
@@ -114,8 +108,7 @@ public class TimeValue extends SemanticLiteral<DateTime> implements IParseable {
 	}
 
 	public TimeValue(IConcept c) throws ThinklabException {
-		super(c);
-		value = new DateTime();
+		super(c, new DateTime());
 	}
 
 	public TimeValue(String s) throws ThinklabValidationException {

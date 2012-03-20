@@ -28,7 +28,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 /** the help command for the command-line interface */
 public class Hierarchy implements ICommandHandler {
 
-	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject<?> execute(Command command, ISession session) throws ThinklabException {
 
 //		String c = command.getArgumentAsString("concept");
 //		if (c.equals("__none"))

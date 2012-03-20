@@ -27,7 +27,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.thinkql.REPL;
 
 /**
@@ -39,11 +38,10 @@ import org.integratedmodelling.thinklab.thinkql.REPL;
 @ThinklabCommand(name="tql", description="start a Thinklab query language REPL")
 public class ThinkQL implements ICommandHandler {
 
-	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject<?> execute(Command command, ISession session) throws ThinklabException {
 
-		ISemanticObject ret = null;
+		ISemanticObject<?> ret = null;
 		String arg = null;
-		ThinklabPlugin plugin = null;
 
 		if (!command.hasArgument("resource")) {
 			

@@ -25,6 +25,7 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
 /**
@@ -34,32 +35,27 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
 public class LongValue extends SemanticLiteral<Long> implements IParseable {	
 	
    public LongValue() {
-      super(Thinklab.LONG);
-      value = 0l;
+      super(Thinklab.LONG, 0l);
    }
     
-   public LongValue(int i) {        
-       super(Thinklab.LONG);
-       value = (long)i;
+   public LongValue(IConcept c, Integer i) {        
+       super(c, i.longValue());
    }
    
-   public LongValue(double d) {
-       super(Thinklab.LONG);
-       value = (long)d;
+   public LongValue(IConcept c, Double d) {
+       super(c, d.longValue());
    }
 
-    public LongValue(float f) {
-        super(Thinklab.LONG);
-        value = (long)f;
+    public LongValue(IConcept c, Float f) {
+        super(c, f.longValue());
     }
 
     public LongValue(String s) throws ThinklabException {
         parse(s);
     }
     
-    public LongValue (long l) {
-        super(Thinklab.LONG);
-        value = l;
+    public LongValue (IConcept c, Long l) {
+        super(c, l);
     }
     
     @Override

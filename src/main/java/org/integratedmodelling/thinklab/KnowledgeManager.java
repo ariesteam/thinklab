@@ -276,13 +276,16 @@ public class KnowledgeManager implements IKnowledgeManager {
 		return _annotationFactory.isLiteralConcept(concept);
 	}
 
-	public ISemanticObject getSemanticObject(IReferenceList list, Object object) {
+	public ISemanticObject<?> getSemanticObject(IReferenceList list, Object object) {
 		return _annotationFactory.getSemanticObject(list, object);
 	}
 
 	public IConcept getLiteralConceptForJavaClass(Class<? extends Object> class1) {
-		// TODO Auto-generated method stub
 		return _annotationFactory.getLiteralConceptForJavaClass(class1);
+	}
+
+	public ISemanticObject<?> getSemanticLiteral(IReferenceList semantics) {
+		return _annotationFactory.getSemanticLiteral(semantics);
 	}
 
 }

@@ -38,7 +38,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 	optionArgumentLabels="command")
 public class Help implements ICommandHandler {
 
-	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject<?> execute(Command command, ISession session) throws ThinklabException {
 
 		String topic = command.getArgumentAsString("topic");
 

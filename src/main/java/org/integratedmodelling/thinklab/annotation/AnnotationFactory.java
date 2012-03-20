@@ -3,6 +3,7 @@ package org.integratedmodelling.thinklab.annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -592,10 +593,23 @@ public class AnnotationFactory {
 	public ISemanticObject<?> getSemanticObject(IReferenceList list, Object object) {
 		
 		/*
-		 * the best-case scenario: object doesn't need any wrapping
+		 * the best-case scenario: object doesn't need any wrapping, just set
+		 * or update the semantics. For that, the object will need to implement
+		 * setSemantics(IList).
 		 */
 		if (object instanceof ISemanticObject<?>) {
-			return (ISemanticObject<?>) object;
+
+			/*
+			 * attach the new semantics to it.
+			 */
+			ISemanticObject<?> so = (ISemanticObject<?>) object;
+			try {
+				Method setter = object.getClass().getMethod("setSemantics", IReferenceList.class);
+				setter.invoke(so, list);
+			} catch (Exception e) {
+				// just don't
+			}
+			return so;
 		}
 
 		if (list == null || list.length() < 1)
@@ -610,6 +624,35 @@ public class AnnotationFactory {
 
 	public IConcept getLiteralConceptForJavaClass(Class<? extends Object> class1) {
 		return _class2literal.get(class1);
+	}
+
+
+	public ISemanticObject<?> getSemanticLiteral(IReferenceList semantics) {
+
+		IConcept c = Thinklab.c(semantics.first().toString());
+		/*
+		 * find the class with that concept and invoke its
+		 * IConcept, Object constructor.
+		 */
+		Class<?> cc = _annotatedLiteralClass.get(c);
+		Constructor<?> constructor = null;
+		try {
+			constructor = cc.getConstructor(IConcept.class, semantics.nth(1).getClass());
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(
+					"internal: cannot find a suitable constructor for literal " + 
+					cc.getCanonicalName() + " corresponding to " + c);
+		}
+		
+		ISemanticObject<?> ret = null;
+		
+		try {
+			ret = (ISemanticObject<?>) constructor.newInstance(c, semantics.nth(1));
+		} catch (Exception e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		
+		return ret;
 	}
 
 }

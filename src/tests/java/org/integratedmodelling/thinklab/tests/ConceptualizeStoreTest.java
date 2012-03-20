@@ -190,7 +190,7 @@ public class ConceptualizeStoreTest  {
 		clone._name = "dick's clone";
 		long id = thinklabKbox.store(clone);
 
-		ISemanticObject dickoid = thinklabKbox.retrieve(id);
+		ISemanticObject<?> dickoid = thinklabKbox.retrieve(id);
 		
 		/*
 		 * have a look at the referenced lists for old Dick and his clone

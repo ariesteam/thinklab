@@ -72,6 +72,10 @@ public class DurationValue extends SemanticLiteral<Long> implements IParseable {
         concept = TimePlugin.Duration();
     }
 
+    public DurationValue(IConcept c, Long l) {
+    	super(c, l);
+    }
+    
     @Override
     public void parse(String s) throws ThinklabValidationException {
     	
@@ -114,8 +118,7 @@ public class DurationValue extends SemanticLiteral<Long> implements IParseable {
     }
 
     public DurationValue(IConcept c) throws ThinklabException {
-        super(c);
-        value = 0l;
+        super(c, 0l);
     }
     
     public void wrap(Object o) {

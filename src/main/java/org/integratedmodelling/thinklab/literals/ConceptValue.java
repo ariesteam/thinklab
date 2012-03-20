@@ -36,13 +36,17 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
 public class ConceptValue extends SemanticLiteral<Object> implements IParseable {
     
     public ConceptValue() {
-        super(Thinklab.NOTHING);
+        super(Thinklab.NOTHING, null);
     }
     
     public ConceptValue(IConcept c)  {
-        super(c);
+        super(c, null);
     }
-    
+
+    public ConceptValue(IConcept c, Object o)  {
+        super(c, o);
+    }
+
 	@Override
 	public Object demote() {
 		return getDirectType();

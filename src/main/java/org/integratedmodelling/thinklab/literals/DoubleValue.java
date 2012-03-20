@@ -25,6 +25,7 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
 /**
@@ -34,32 +35,27 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
 public class DoubleValue extends SemanticLiteral<Double> implements IParseable {	
 	
    public DoubleValue() {
-      super(Thinklab.DOUBLE);
-      value = 0.0;
+      super(Thinklab.DOUBLE, Double.NaN);
    }
     
-   public DoubleValue(int i) {        
-       super(Thinklab.DOUBLE);
-       value = (double)i;
+   public DoubleValue(IConcept c, Double d) {
+	   super(c, d);
    }
    
-   public DoubleValue(double d) {
-       super(Thinklab.DOUBLE);
-       value = d;
+   public DoubleValue(IConcept c, Integer i) {        
+       super(c, i.doubleValue());
    }
-
-    public DoubleValue(float f) {
-        super(Thinklab.DOUBLE);
-        value = (double)f;
-    }
+   
+   public DoubleValue(IConcept c, Float f) {
+	   super(c, f.doubleValue());
+   }
             
     public DoubleValue(String s) throws ThinklabException {
-        parse(s);
+    	parse(s);
     }
     
-    public DoubleValue (long l) {
-        super(Thinklab.DOUBLE);
-        value = (double)l;
+    public DoubleValue (IConcept c, Long l) {
+        super(c, l.doubleValue());
     }
     
     @Override

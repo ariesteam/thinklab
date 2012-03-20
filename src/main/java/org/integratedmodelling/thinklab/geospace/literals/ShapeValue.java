@@ -62,6 +62,10 @@ public class ShapeValue extends SemanticLiteral<Geometry> implements IParseable,
 	PrecisionModel precisionModel = null;
 	CoordinateReferenceSystem crs = null;
 	
+	public ShapeValue(IConcept c, Geometry value) {
+		super(c, value);
+	}
+	
 	public ShapeValue() {
     	setConceptWithoutValidation(Geospace.get().Shape());
 	}

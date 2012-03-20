@@ -37,7 +37,7 @@ public class Test implements ICommandHandler {
 
 	
 	@Override
-	public ISemanticObject execute(Command command, ISession session)
+	public ISemanticObject<?> execute(Command command, ISession session)
 			throws ThinklabException {
 				
 		Metadata metadata = new Metadata();
@@ -53,7 +53,7 @@ public class Test implements ICommandHandler {
 		 * Both results are semantic objects, which can return both the semantics and the object conceptualized, in
 		 * a lazy fashion.
 		 */
-		ISemanticObject o = Thinklab.get().annotate(metadata);		
+		ISemanticObject<?> o = Thinklab.get().annotate(metadata);		
 		IList semantics = o.getSemantics();		
 
 		/*
@@ -78,7 +78,7 @@ public class Test implements ICommandHandler {
 		/*
 		 * retrieve it back into yet another clone and see if it matches.
 		 */
-		ISemanticObject clone2 = kbox.retrieve(id);
+		ISemanticObject<?> clone2 = kbox.retrieve(id);
 
 //		assertTrue(
 //				clone2.getObject() instanceof Metadata && 
@@ -139,7 +139,7 @@ public class Test implements ICommandHandler {
 		clone._name = "dick's clone";
 		id = kbox.store(clone);
 
-		ISemanticObject dickoid = kbox.retrieve(id);
+		ISemanticObject<?> dickoid = kbox.retrieve(id);
 		
 		/*
 		 * have a look at the referenced lists for old Dick and his clone

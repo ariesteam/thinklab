@@ -44,7 +44,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 public class PLoad implements ICommandHandler {
 	
 	@Override
-	public ISemanticObject execute(Command command, ISession session)
+	public ISemanticObject<?> execute(Command command, ISession session)
 			throws ThinklabException {
 		
 		String project = command.getArgumentAsString("project");

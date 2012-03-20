@@ -47,8 +47,9 @@ public abstract class SemanticLiteral<T> implements ISemanticLiteral<T> {
         concept = Thinklab.THING;
     }
 
-    public SemanticLiteral(IConcept c) {
+    public SemanticLiteral(IConcept c, T val) {
         concept = c;
+        value = val;
     }
 
     @Override

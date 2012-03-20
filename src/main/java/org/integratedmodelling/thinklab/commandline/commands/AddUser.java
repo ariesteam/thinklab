@@ -37,7 +37,7 @@ import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
 		argumentTypes="thinklab:Text,thinklab:Text")
 public class AddUser implements ICommandHandler {
 
-	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject<?> execute(Command command, ISession session) throws ThinklabException {
 
 		String username = command.getArgumentAsString("user");
 		String password = command.getArgumentAsString("password");

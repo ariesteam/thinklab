@@ -25,6 +25,7 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
 /**
@@ -34,32 +35,27 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
 public class ShortValue extends SemanticLiteral<Integer> implements IParseable {	
 	
    public ShortValue() {
-      super(Thinklab.INTEGER);
-      value = 0;
+      super(Thinklab.INTEGER, 0);
    }
     
-   public ShortValue(int i) {        
-       super(Thinklab.INTEGER);
-       value = i;
+   public ShortValue(IConcept c, Integer i) {        
+       super(c, i);
    }
    
-   public ShortValue(double d) {
-       super(Thinklab.INTEGER);
-       value = (int)d;
+   public ShortValue(IConcept c, Double d) {
+       super(c, d.intValue());
    }
 
-    public ShortValue(float f) {
-        super(Thinklab.INTEGER);
-        value = (int)f;
+    public ShortValue(IConcept c, Float f) {
+        super(c, f.intValue());
     }
 
     public ShortValue(String s) throws ThinklabException {
         parse(s);
     }
     
-    public ShortValue (long l) {
-        super(Thinklab.INTEGER);
-        value = (int)l;
+    public ShortValue (IConcept c, Long l) {
+        super(c, l.intValue());
     }
     
     @Override

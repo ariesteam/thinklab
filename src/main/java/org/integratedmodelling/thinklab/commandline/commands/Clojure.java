@@ -42,9 +42,9 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 @ThinklabCommand(name="clj", description="start a Clojure REPL")
 public class Clojure implements ICommandHandler {
 
-	public ISemanticObject execute(Command command, ISession session) throws ThinklabException {
+	public ISemanticObject<?> execute(Command command, ISession session) throws ThinklabException {
 
-		ISemanticObject ret = null;
+		ISemanticObject<?> ret = null;
 		String arg = null;
 		ThinklabPlugin plugin = null;
 

@@ -25,6 +25,7 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
 /**
@@ -35,32 +36,27 @@ public class FloatValue extends SemanticLiteral<Float> implements IParseable {
 
     
    public FloatValue() {
-      super(Thinklab.FLOAT);
-      value = (float)0;
+      super(Thinklab.FLOAT, Float.NaN);
    }
     
-   public FloatValue(int i) {        
-       super(Thinklab.FLOAT);
-       value = (float)i;
+   public FloatValue(IConcept c, Float f) {
+	   super(c, f);
    }
    
-   public FloatValue(double d) {
-       super(Thinklab.FLOAT);
-       value = (float)d;
+   public FloatValue(IConcept c, Integer i) {        
+       super(c, i.floatValue());
    }
-
-    public FloatValue(float f) {
-        super(Thinklab.FLOAT);
-        value = f;
-    }
+   
+   public FloatValue(IConcept c, Double d) {
+       super(c, d.floatValue());
+   }
             
-    public FloatValue(String s) throws ThinklabException {
+   public FloatValue(String s) throws ThinklabException {
         parse(s);
-    }
+   }
     
-    public FloatValue (long l) {
-        super(Thinklab.FLOAT);
-        value = (float)l;
+    public FloatValue (IConcept c, Long l) {
+        super(Thinklab.FLOAT, l.floatValue());
     }
     
     @Override

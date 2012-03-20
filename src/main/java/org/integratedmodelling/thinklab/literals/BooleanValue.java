@@ -34,32 +34,27 @@ public class BooleanValue extends SemanticLiteral<Boolean> implements IParseable
     public static ISemanticObject<Boolean> TRUE = new BooleanValue(true);
     public static ISemanticObject<Boolean> FALSE = new BooleanValue(false);
     
-    private BooleanValue(IConcept c)  {
-    	super(c);
+    public BooleanValue(IConcept c, Boolean v)  {
+    	super(c, v);
     }
     
     public BooleanValue() {
-        super(Thinklab.BOOLEAN);
-        value = false;
+        super(Thinklab.BOOLEAN, Boolean.FALSE);
     }
 
     public BooleanValue(boolean c)  {
-        super(Thinklab.BOOLEAN);
-        value = c;
+        super(Thinklab.BOOLEAN, c);
     }
 
     public BooleanValue(String s) throws ThinklabException {
         parse(s);
     }
-
-    public static BooleanValue wrap(boolean o) {
-    	return new BooleanValue(o);
-    }
     
     @Override
     public Object clone() {
-    	BooleanValue ret = new BooleanValue(concept);
+    	BooleanValue ret = new BooleanValue();
     	ret.value = value;
+    	ret.concept = concept;
     	return ret;
     }
     
