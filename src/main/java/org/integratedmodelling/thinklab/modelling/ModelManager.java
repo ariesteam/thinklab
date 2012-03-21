@@ -29,6 +29,7 @@ import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.lang.parsing.IConceptDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.ILanguageDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.IPropertyDefinition;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.ICategorizingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IClassifyingObserver;
@@ -42,6 +43,7 @@ import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IRankingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.IStoryline;
+import org.integratedmodelling.thinklab.api.modelling.IUnit;
 import org.integratedmodelling.thinklab.api.modelling.IValuingObserver;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
@@ -363,7 +365,11 @@ public class ModelManager implements IModelManager {
 				return new PropertyObject();
 			} else if (cls.equals(IObservation.class)) {
 				return new Observation();
-			} 
+			} else if (cls.equals(IUnit.class)) {
+				return new UnitDefinition();
+			} else if (cls.equals(IMetadata.class)) {
+				return new Metadata();
+			}
 			
 			return null;
 		}

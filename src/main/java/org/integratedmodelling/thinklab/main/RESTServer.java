@@ -75,6 +75,10 @@ public class RESTServer  {
 		if (ept == null)
 			ept = "8182";
 		
+		/*
+		 * TODO process command line options
+		 */
+		
 		final int port = Integer.parseInt(ept);
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
