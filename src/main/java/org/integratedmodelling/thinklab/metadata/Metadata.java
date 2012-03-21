@@ -19,6 +19,7 @@
  */
 package org.integratedmodelling.thinklab.metadata;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.NS;
@@ -46,5 +47,10 @@ public class Metadata implements IMetadata {
 
 	public void put(String key, Object value) {
 		_md.put(key, value);
+	}
+
+	@Override
+	public Collection<String> getKeys() {
+		return _md.keySet();
 	}
 }

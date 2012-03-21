@@ -21,18 +21,28 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.factories.IModelManager;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.lang.parsing.IConceptDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.ILanguageDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.IPropertyDefinition;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
+import org.integratedmodelling.thinklab.api.modelling.ICategorizingObserver;
+import org.integratedmodelling.thinklab.api.modelling.IClassifyingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IDataSource;
+import org.integratedmodelling.thinklab.api.modelling.IMeasuringObserver;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
+import org.integratedmodelling.thinklab.api.modelling.IRankingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
+import org.integratedmodelling.thinklab.api.modelling.IStoryline;
+import org.integratedmodelling.thinklab.api.modelling.IValuingObserver;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
@@ -322,7 +332,39 @@ public class ModelManager implements IModelManager {
 
 		@Override
 		public ILanguageDefinition newLanguageObject(Class<?> cls) {
-			// TODO Auto-generated method stub
+			
+			if (cls.equals(INamespace.class)) {
+				return new Namespace();
+			} else if (cls.equals(ICategorizingObserver.class)) {
+				return new Categorization();
+			} else if (cls.equals(IClassifyingObserver.class)) {
+				return new Classification();
+			} else if (cls.equals(IMeasuringObserver.class)) {
+				return new Measurement();
+			} else if (cls.equals(IRankingObserver.class)) {
+				return new Ranking();
+			} else if (cls.equals(IValuingObserver.class)) {
+				return new Value();
+			} else if (cls.equals(IModel.class)) {
+				return new Model();
+			} else if (cls.equals(IContext.class)) {
+				return new Context();
+			} else if (cls.equals(IDataSource.class)) {
+				return new DataSourceDefinition();
+			} else if (cls.equals(IStoryline.class)) {
+				return new Storyline();
+			} else if (cls.equals(IScenario.class)) {
+				return new Scenario();
+			} else if (cls.equals(IAgentModel.class)) {
+				return new AgentModel();
+			} else if (cls.equals(IConcept.class)) {
+				return new ConceptObject();
+			} else if (cls.equals(IProperty.class)) {
+				return new PropertyObject();
+			} else if (cls.equals(IObservation.class)) {
+				return new Observation();
+			} 
+			
 			return null;
 		}
 
@@ -425,7 +467,7 @@ public class ModelManager implements IModelManager {
 	@Override
 	public void releaseNamespace(String namespace) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
