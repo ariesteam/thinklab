@@ -588,6 +588,12 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	public Object instantiate(IList semantics) throws ThinklabException {
 		return _km.instantiate(semantics);
 	}
+	
+	@Override
+	public ISemanticObject<?> entify(IList semantics) throws ThinklabException {
+		return _km.entify(semantics);
+	}
+
 
 	public IReferenceList conceptualize(Object object) throws ThinklabException {
 		return ((KnowledgeManager)_km).conceptualize(object);
@@ -708,4 +714,5 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	public ISemanticObject<?> getSemanticLiteral(IReferenceList semantics) {
 		return _km.getSemanticLiteral(semantics);
 	}
+
 }

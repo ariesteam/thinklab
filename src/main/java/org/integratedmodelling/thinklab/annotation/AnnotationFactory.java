@@ -655,4 +655,9 @@ public class AnnotationFactory {
 		return ret;
 	}
 
+
+	public ISemanticObject<?> entify(IReferenceList semantics) throws ThinklabException {
+		return getSemanticObject(semantics, instantiate(semantics));
+	}
+
 }

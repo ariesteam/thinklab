@@ -89,8 +89,12 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 
 	@Override
 	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {
-		// TODO Auto-generated method stub
-		
+		Thinklab.get().registerAnnotatedClass(cls, concept);
+	}
+
+	@Override
+	public ISemanticObject<?> entify(IList semantics) throws ThinklabException {
+		return Thinklab.get().entify(semantics);
 	}
 
 

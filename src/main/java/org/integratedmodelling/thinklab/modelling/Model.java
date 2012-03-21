@@ -2,7 +2,7 @@ package org.integratedmodelling.thinklab.modelling;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
-import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.IObserverDefinition;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
@@ -30,7 +30,7 @@ public class Model extends ObservingObject implements IModelDefinition {
 	}
 
 	@Override
-	public IList getObservable() {
+	public ISemanticObject<?> getObservable() {
 		return getObservables().get(0);
 	}
 

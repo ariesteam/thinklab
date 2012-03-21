@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.integratedmodelling.collections.Triple;
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.IObservingObjectDefinition;
@@ -22,15 +26,19 @@ public abstract class ObservingObject extends ModelObject implements IObservingO
 	ArrayList<Triple<IModel, String, Boolean>> _dependencies = 
 			new ArrayList<Triple<IModel,String, Boolean>>();
 	
-	ArrayList<IList> _observables = new ArrayList<IList>();
+	ArrayList<ISemanticObject<?>> _observables = new ArrayList<ISemanticObject<?>>();
 
 	@Override
 	public void addObservable(IList instance) {
-		_observables.add(instance);
+		try {
+			_observables.add(Thinklab.get().entify(instance));
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	@Override
-	public List<IList> getObservables() {
+	public List<ISemanticObject<?>> getObservables() {
 		return _observables;
 	}
 

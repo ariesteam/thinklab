@@ -1,5 +1,6 @@
 package org.integratedmodelling.thinklab.modelling;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,11 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	long _timeStamp;
 	ArrayList<INamespace> _importedNamespaces = new ArrayList<INamespace>();
 	IProject _project;
-	
+
+	// these shouldn't be here, but ok
+	int        _lastLineNumber = 0;
+	int        _firstLineNumber = 0;
+
 	public Namespace(IReferenceList list) {
 		super(list);
 	}
@@ -132,5 +137,26 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	public IModelObject getModelObject(String mod) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getResourceUrl() {
+		return _resourceUrl;
+	}
+	
+	@Override
+	public int getFirstLineNumber() {
+		return _firstLineNumber;
+	}
+	
+	@Override
+	public int getLastLineNumber() {
+		return _lastLineNumber;
+	}
+	
+	@Override
+	public void setLineNumbers(int startLine, int endLine) {
+		_firstLineNumber = startLine;
+		_lastLineNumber  = endLine;
 	}
 }

@@ -29,16 +29,14 @@ import java.util.Collection;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.interpreter.ModelGenerator;
-import org.integratedmodelling.lang.model.ConceptObject;
-import org.integratedmodelling.lang.model.ModelObject;
-import org.integratedmodelling.lang.model.Namespace;
-import org.integratedmodelling.lang.model.PropertyObject;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
-import org.integratedmodelling.thinklab.api.lang.ILanguageObject;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
+import org.integratedmodelling.thinklab.api.lang.parsing.IConceptDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.ILanguageDefinition;
+import org.integratedmodelling.thinklab.api.lang.parsing.IPropertyDefinition;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
+import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 
@@ -84,13 +82,13 @@ public class REPL {
 
 		@Override
 		public void onNamespaceDeclared(String namespaceId, String resourceId,
-				Namespace namespace) {
+				INamespace namespace) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void onNamespaceDefined(Namespace namespace) {
+		public void onNamespaceDefined(INamespace namespace) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -103,15 +101,15 @@ public class REPL {
 		}
 
 		@Override
-		public ConceptObject resolveExternalConcept(String id,
-				Namespace namespace, int line) throws ThinklabException {
+		public IConceptDefinition resolveExternalConcept(String id,
+				INamespace namespace, int line) throws ThinklabException {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public PropertyObject resolveExternalProperty(String id,
-				Namespace namespace, int line) throws ThinklabException {
+		public IPropertyDefinition resolveExternalProperty(String id,
+				INamespace namespace, int line) throws ThinklabException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -124,14 +122,13 @@ public class REPL {
 		}
 
 		@Override
-		public void onModelObjectDefined(Namespace namespace, ModelObject ret) {
+		public void onModelObjectDefined(INamespace namespace, IModelObject ret) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public ILanguageDefinition newLanguageObject(
-				Class<? extends ILanguageObject> cls) {
+		public ILanguageDefinition newLanguageObject(Class<?> cls) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -171,12 +168,9 @@ public class REPL {
 				try {
 
 					InputStream is = new ByteArrayInputStream(statement.getBytes());
-					Namespace bean = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, new Resolver());
+					INamespace ns = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, new Resolver());
 					is.close();
 					
-					// TODO remove
-					bean.dump(System.out);
-
 					IModelObject obj = null; // new ModelAdapter().createModelObject(bean);
 
 					if (obj instanceof IModel) {

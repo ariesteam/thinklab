@@ -20,6 +20,7 @@ public class Observation extends ModelObject implements IObservationDefinition {
 	IDataSource _datasource;
 	IContext    _context;
 	IObserver   _observer;
+	Object      _inlineState;
 	
 	@Override
 	public void setObservable(IList semantics) {
@@ -49,6 +50,11 @@ public class Observation extends ModelObject implements IObservationDefinition {
 	@Override
 	public void setObserver(IObserver observer) {
 		_observer = observer;
+	}
+
+	@Override
+	public void setInlineState(Object state) {
+		_inlineState = state;
 	}
 
 }

@@ -29,6 +29,7 @@ import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOr
 import org.integratedmodelling.multidimensional.Ticker;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.modelling.internal.IContextMapper;
 
 /**
@@ -53,6 +54,14 @@ public class ContextMapper implements IContextMapper {
 	int[] cdims = null;
 	boolean identical = false;
 	
+	static int[] getDimensionSizes(IContext context) {
+		int[] ret = new int[context.getExtents().size()];
+		int i = 0;
+		for (IExtent e : context.getExtents())
+			ret[i++] = e.getMultiplicity();
+		return ret;
+ 	}
+	
 	// tracking current position
 	int currentOverall = 0;
 	int current = 0;
@@ -69,7 +78,7 @@ public class ContextMapper implements IContextMapper {
 	public static MultidimensionalCursor getCursor(IContext ctx) {
 		MultidimensionalCursor ret = 
 			new MultidimensionalCursor(StorageOrdering.ROW_FIRST);
-		ret.defineDimensions(((Context)ctx).getDimensionSizes());
+		ret.defineDimensions(getDimensionSizes(ctx));
 		return ret;
 	}
 	
@@ -78,12 +87,14 @@ public class ContextMapper implements IContextMapper {
 		this._from = from;
 		this._to = to;
 		int td = 0;
-		int[] indexesFrom = ((Context)from).getDimensionSizes();
+		int[] indexesFrom = getDimensionSizes(from);
 		this.cdims = new int[indexesFrom.length];
 		int[] indexesTo = new int[indexesFrom.length];
 		int i = 0;
-		for (IConcept c : ((Context)from).getDimensions()) {
-			IConcept theDim = ((Context)to).getDimension(c);
+		for (IExtent ext : from.getExtents()) {
+			IConcept c = ext.getObservableClass();
+			IExtent theExt = to.getExtent(c);
+			IConcept theDim = theExt.getObservableClass();
 			int dim = theDim == null ? 1 : to.getMultiplicity(theDim);
 			if (!(dim == 1 || dim == indexesFrom[i]))
 				throw new ThinklabValidationException(
@@ -137,7 +148,7 @@ public class ContextMapper implements IContextMapper {
 			ticker.increment();
 			for (int i = 0; i < toCursor.getDimensionsCount(); i++) {
 				if (ticker.hasChanged(i)) {
-					ret.add(((Context)_to).getDimension(i));
+					ret.add(_to.getExtents().get(i).getObservableClass());
 				}
 			}
 		}

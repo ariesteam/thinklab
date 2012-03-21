@@ -1,12 +1,12 @@
 package org.integratedmodelling.thinklab.modelling;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.api.lang.parsing.IMetadataDefinition;
-import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 
-public class Metadata implements IMetadataDefinition {
+public class Metadata extends LanguageElement implements IMetadataDefinition {
 
 	HashMap<String, Object> data = new HashMap<String, Object>();
 	
@@ -26,6 +26,12 @@ public class Metadata implements IMetadataDefinition {
 	public Object get(String string) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void dump(PrintStream out) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -288,4 +288,12 @@ public class KnowledgeManager implements IKnowledgeManager {
 		return _annotationFactory.getSemanticLiteral(semantics);
 	}
 
+	@Override
+	public ISemanticObject<?> entify(IList semantics) throws ThinklabException {
+		if ( !(semantics instanceof IReferenceList)) {
+			semantics = ReferenceList.list(semantics.toArray());
+		}
+		return _annotationFactory.entify((IReferenceList) semantics);
+	}
+
 }

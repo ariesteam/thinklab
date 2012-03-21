@@ -12,8 +12,6 @@ import org.integratedmodelling.thinklab.api.modelling.INamespace;
 public class ModelObject extends LanguageElement implements IModelObject, IModelObjectDefinition {
 	
 	String     _id;
-	int        _lastLineNumber = 0;
-	int        _firstLineNumber = 0;
 	INamespace _namespace;
 	IMetadata  _metadata;
 	
@@ -36,11 +34,7 @@ public class ModelObject extends LanguageElement implements IModelObject, IModel
 		_namespace = (INamespace) namespace;
 	}
 	
-	@Override
-	public void setLineNumbers(int startLine, int endLine) {
-		_firstLineNumber = startLine;
-		_lastLineNumber  = endLine;
-	}
+
 	
 	@Override
 	public void setMetadata(IMetadataDefinition metadata) {
@@ -56,16 +50,7 @@ public class ModelObject extends LanguageElement implements IModelObject, IModel
 	public String getId() {
 		return _id;
 	}
-	
-	@Override
-	public int getFirstLineNumber() {
-		return _firstLineNumber;
-	}
-	
-	@Override
-	public int getLastLineNumber() {
-		return _lastLineNumber;
-	}
+
 
 	@Override
 	public void setId(String id) {

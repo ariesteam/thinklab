@@ -75,7 +75,7 @@ public class Context extends ModelObject implements IContextDefinition {
 	}
 
 	@Override
-	public Collection<IExtent> getExtents() {
+	public List<IExtent> getExtents() {
 		// TODO Auto-generated method stub
 		return null;
 	}
