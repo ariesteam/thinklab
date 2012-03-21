@@ -6,14 +6,12 @@
     <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
     <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
     <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
-    <!ENTITY thinklab "http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#" >
 ]>
 
 
 <rdf:RDF xmlns="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#"
      xml:base="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-     xmlns:thinklab="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -43,11 +41,28 @@
     
 
 
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasData -->
+
+    <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasData">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Metadata"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasMetadata -->
+
+    <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasMetadata">
+        <rdfs:range rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Metadata"/>
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasModelObjects -->
 
-    <owl:ObjectProperty rdf:about="&thinklab;hasModelObjects">
-        <rdfs:range rdf:resource="&thinklab;ModelObject"/>
-        <rdfs:domain rdf:resource="&thinklab;Namespace"/>
+    <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasModelObjects">
+        <rdfs:range rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Namespace"/>
     </owl:ObjectProperty>
     
 
@@ -65,8 +80,8 @@
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasFirstLineNumber -->
 
-    <owl:DatatypeProperty rdf:about="&thinklab;hasFirstLineNumber">
-        <rdfs:domain rdf:resource="&thinklab;LanguageElement"/>
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasFirstLineNumber">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#LanguageElement"/>
         <rdfs:range rdf:resource="&xsd;int"/>
     </owl:DatatypeProperty>
     
@@ -74,8 +89,8 @@
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasId -->
 
-    <owl:DatatypeProperty rdf:about="&thinklab;hasId">
-        <rdfs:domain rdf:resource="&thinklab;LanguageElement"/>
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasId">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#LanguageElement"/>
         <rdfs:range rdf:resource="&xsd;Name"/>
     </owl:DatatypeProperty>
     
@@ -83,8 +98,8 @@
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasLastLineNumber -->
 
-    <owl:DatatypeProperty rdf:about="&thinklab;hasLastLineNumber">
-        <rdfs:domain rdf:resource="&thinklab;LanguageElement"/>
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasLastLineNumber">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#LanguageElement"/>
         <rdfs:range rdf:resource="&xsd;int"/>
     </owl:DatatypeProperty>
     
@@ -92,8 +107,8 @@
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasTimeStamp -->
 
-    <owl:DatatypeProperty rdf:about="&thinklab;hasTimeStamp">
-        <rdfs:domain rdf:resource="&thinklab;Namespace"/>
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasTimeStamp">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Namespace"/>
         <rdfs:range rdf:resource="&xsd;long"/>
     </owl:DatatypeProperty>
     
@@ -110,64 +125,184 @@
     
 
 
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#AgentModel -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#AgentModel">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#CategorizingObserver -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#CategorizingObserver">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observer"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ClassifyingObserver -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ClassifyingObserver">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observer"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ConceptDefinition -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ConceptDefinition">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ConditionalObserver -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ConditionalObserver">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observer"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Context -->
 
-    <owl:Class rdf:about="&thinklab;Context">
-        <rdfs:subClassOf rdf:resource="&thinklab;ModelObject"/>
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Context">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#DataSourceDefinition -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#DataSourceDefinition">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ExpressionDefinition -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ExpressionDefinition">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#LanguageElement -->
 
-    <owl:Class rdf:about="&thinklab;LanguageElement"/>
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#LanguageElement"/>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#MeasuringObserver -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#MeasuringObserver">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observer"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Metadata -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Metadata">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#LanguageElement"/>
+    </owl:Class>
     
 
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Model -->
 
-    <owl:Class rdf:about="&thinklab;Model">
-        <rdfs:subClassOf rdf:resource="&thinklab;ModelObject"/>
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Model">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ObservingObject"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject -->
 
-    <owl:Class rdf:about="&thinklab;ModelObject">
-        <rdfs:subClassOf rdf:resource="&thinklab;LanguageElement"/>
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#LanguageElement"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Namespace -->
 
-    <owl:Class rdf:about="&thinklab;Namespace">
-        <rdfs:subClassOf rdf:resource="&thinklab;LanguageElement"/>
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Namespace">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#LanguageElement"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observer -->
 
-    <owl:Class rdf:about="&thinklab;Observer">
-        <rdfs:subClassOf rdf:resource="&thinklab;ModelObject"/>
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observer">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ObservingObject"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ObservingObject -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ObservingObject">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#PropertyDefinition -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#PropertyDefinition">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#RankingObserver -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#RankingObserver">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observer"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Scenario -->
 
-    <owl:Class rdf:about="&thinklab;Scenario">
-        <rdfs:subClassOf rdf:resource="&thinklab;ModelObject"/>
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Scenario">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
     </owl:Class>
     
 
 
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Storyline -->
 
-    <owl:Class rdf:about="&thinklab;Storyline">
-        <rdfs:subClassOf rdf:resource="&thinklab;ModelObject"/>
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Storyline">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#UnitDefinition -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#UnitDefinition">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ValuingObserver -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ValuingObserver">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observer"/>
     </owl:Class>
 </rdf:RDF>
 

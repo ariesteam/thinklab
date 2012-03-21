@@ -1,11 +1,14 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.util.Map;
 
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.lang.parsing.IDataSourceDefinition;
 
-public class DataSourceDefinition extends ModelObject implements IDataSourceDefinition {
+@Concept(NS.DATASOURCE_DEFINITION)
+public class DataSourceDefinition extends ModelObject<DataSourceDefinition> implements IDataSourceDefinition {
 
 	String _type;
 	IExpression _expression;
@@ -24,6 +27,11 @@ public class DataSourceDefinition extends ModelObject implements IDataSourceDefi
 	@Override
 	public void setParameters(Map<String, Object> parameters) {
 		_parameters = parameters;
+	}
+
+	@Override
+	public DataSourceDefinition demote() {
+		return this;
 	}
 
 }

@@ -1,13 +1,16 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
 import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.lang.parsing.IRankingObserverDefinition;
 
-public class Ranking extends Observer implements IRankingObserverDefinition {
+@Concept(NS.RANKING_OBSERVER)
+public class Ranking extends Observer<Ranking> implements IRankingObserverDefinition {
 	
 	Number _from = null;
 	Number _to = null;
-	Type _type = Type.RANKING;
+	Type   _type = Type.RANKING;
 
 	@Override
 	public Type getType() {
@@ -28,6 +31,11 @@ public class Ranking extends Observer implements IRankingObserverDefinition {
 	public void setScale(Number from, Number to) {
 		_from = from;
 		_to = to;
+	}
+
+	@Override
+	public Ranking demote() {
+		return this;
 	}
 
 }

@@ -18,12 +18,6 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 /**
  * Base class for a general non-literal semantic object.
  * 
- * TODO this one should NOT be a wrapper, but just assume that _object is the semantic
- * object itself. Wrapping behavior should be implemented in DefaultSemanticObject and SemanticLiteral.
- * 
- * TODO make it proxy other things such as IComparable and hash/equals.
- * TODO check what should be done (if anything) for cloning.
- * 
  * @author Ferd
  *
  */

@@ -35,9 +35,9 @@ package org.integratedmodelling.thinklab.time.literals;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
+import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.interfaces.annotations.LiteralImplementation;
 import org.integratedmodelling.thinklab.time.TimePlugin;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -58,7 +58,7 @@ import org.joda.time.format.DateTimeFormatter;
  * @author Ferdinando Villa
  * 
  */
-@LiteralImplementation(concept="time:DateTimeValue")
+@Literal(concept="time:DateTimeValue", javaClass=DateTime.class, datatype="")
 public class TimeValue extends SemanticLiteral<DateTime> implements IParseable {
 
 	int precision = TemporalPrecision.MILLISECOND;

@@ -42,7 +42,6 @@ public class NS {
 	public static final String ORDINAL_RANGE_MAPPING = "thinklab:OrderedRangeMapping";
 	
 	// convenience collections
-	public static final String METADATA = "metadata:Metadata";
 	public static final String PAIR = "thinklab:Pair";
 	public static final String TRIPLE = "thinklab:Triple";
 	public static final String KEY_VALUE_PAIR = "thinklab:KeyValuePair";
@@ -73,13 +72,27 @@ public class NS {
 	public static final String GEOSPACE_HAS_VALUE_DEFAULT = "geospace:hasValueDefault";
 	
 	// model beans
-	public static final String LANGUAGE_ELEMENT = "modelling.thinklab:LanguageElement";
+	public static final String METADATA = "modelling.thinklab:Metadata";
 	public static final String NAMESPACE = "modelling.thinklab:Namespace";
-	public static final String MODEL_OBJECT = "modelling.thinklab:ModelObject";
+	public static final String AGENT_MODEL = "modelling.thinklab:AgentModel";
 	public static final String CONTEXT = "modelling.thinklab:Context";
 	public static final String OBSERVER = "modelling.thinklab:Observer";
+	public static final String CATEGORIZING_OBSERVER = "modelling.thinklab:CategorizingObserver";
+	public static final String MEASURING_OBSERVER = "modelling.thinklab:MeasuringObserver";
+	public static final String CLASSIFYING_OBSERVER = "modelling.thinklab:ClassifyingObserver";
+	public static final String RANKING_OBSERVER = "modelling.thinklab:RankingObserver";
+	public static final String VALUING_OBSERVER = "modelling.thinklab:ValuingObserver";
+	public static final String CONDITIONAL_OBSERVER = "modelling.thinklab:ConditionalObserver";
 	public static final String MODEL = "modelling.thinklab:Model";
 	public static final String SCENARIO = "modelling.thinklab:Scenario";
 	public static final String STORYLINE = "modelling.thinklab:Storyline";
+	public static final String UNIT_DEFINITION = "modelling.thinklab:UnitDefinition";
+	public static final String DATASOURCE_DEFINITION = "modelling.thinklab:DataSourceDefinition";
+	public static final String CONCEPT_DEFINITION = "modelling.thinklab:ConceptDefinition";
+	public static final String PROPERTY_DEFINITION = "modelling.thinklab:PropertyDefinition";
+	public static final String EXPRESSION_DEFINITION = "modelling.thinklab:ExpressionDefinition";
+	public static final String LANGUAGE_ELEMENT = "modelling.thinklab:LanguageElement";
+	public static final String MODEL_OBJECT = "modelling.thinklab:ModelObject";
+	public static final String OBSERVING_OBJECT = "modelling.thinklab:ObservingObject";	
 
 }

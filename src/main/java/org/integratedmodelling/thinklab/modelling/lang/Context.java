@@ -1,10 +1,12 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.parsing.IContextDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.IObservationDefinition;
@@ -14,7 +16,8 @@ import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 
-public class Context extends ModelObject implements IContextDefinition {
+@Concept(NS.CONTEXT)
+public class Context extends ModelObject<Context> implements IContextDefinition {
 
 	ArrayList<Observation> _observations = new ArrayList<Observation>();
 	
@@ -138,6 +141,11 @@ public class Context extends ModelObject implements IContextDefinition {
 	public IContext collapse(IConcept dimension) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Context demote() {
+		return this;
 	}
 
 }

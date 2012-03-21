@@ -29,7 +29,6 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
-import org.integratedmodelling.thinklab.modelling.contextualization.Contextualizer;
 
 
 public class ObservationList extends ImmutableList<IObservation> {

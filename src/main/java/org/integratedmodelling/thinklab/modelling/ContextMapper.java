@@ -30,7 +30,6 @@ import org.integratedmodelling.multidimensional.Ticker;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
-import org.integratedmodelling.thinklab.modelling.internal.IContextMapper;
 
 /**
  * A helper object that maps state indexes from a context to a compatible other. The "to" context
@@ -43,7 +42,7 @@ import org.integratedmodelling.thinklab.modelling.internal.IContextMapper;
  * @author Ferdinando
  *
  */
-public class ContextMapper implements IContextMapper {
+public class ContextMapper  {
 	
 	private IContext _from;
 	private IContext _to;
@@ -139,7 +138,6 @@ public class ContextMapper implements IContextMapper {
 	}
 
 	
-	@Override
 	public Collection<IConcept> increment() {
 		
 		ArrayList<IConcept> ret = new ArrayList<IConcept>();
@@ -156,7 +154,6 @@ public class ContextMapper implements IContextMapper {
 		return ret;
 	}
 
-	@Override
 	public int current() {
 		return current;
 	}

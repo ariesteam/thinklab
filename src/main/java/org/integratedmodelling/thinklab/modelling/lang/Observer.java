@@ -1,10 +1,12 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.util.List;
 import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.lang.parsing.IExpressionDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.IObserverDefinition;
@@ -14,7 +16,8 @@ import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 
-public abstract class Observer extends ObservingObject implements IObserverDefinition {
+@Concept(NS.OBSERVER)
+public abstract class Observer<T> extends ObservingObject<T> implements IObserverDefinition {
 
 	IObserver _mediated = null;
 	IAccessor _accessor = null;

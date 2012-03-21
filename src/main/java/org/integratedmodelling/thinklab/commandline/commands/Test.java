@@ -29,7 +29,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.metadata.Metadata;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.integratedmodelling.thinklab.tests.ConceptualizeStoreTest.Person;
 
 @ThinklabCommand(name="test",argumentNames="arg",argumentTypes="thinklab:Text", argumentDescriptions="test argument")

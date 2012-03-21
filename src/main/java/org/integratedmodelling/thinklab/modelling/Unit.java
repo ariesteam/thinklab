@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.modelling.units;
+package org.integratedmodelling.thinklab.modelling;
 
 import java.io.PrintStream;
 

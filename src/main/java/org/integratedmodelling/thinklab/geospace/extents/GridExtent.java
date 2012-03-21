@@ -38,7 +38,7 @@ import org.integratedmodelling.thinklab.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.thinklab.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGridMask;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.modelling.units.Unit;
+import org.integratedmodelling.thinklab.modelling.Unit;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;

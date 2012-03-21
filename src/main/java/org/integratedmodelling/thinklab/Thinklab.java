@@ -66,7 +66,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.modelling.ModelManager;
+import org.integratedmodelling.thinklab.modelling.lang.ModelManager;
 import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.PluginManager;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;

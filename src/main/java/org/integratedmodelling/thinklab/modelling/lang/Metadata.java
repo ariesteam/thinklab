@@ -1,12 +1,15 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.lang.parsing.IMetadataDefinition;
 
-public class Metadata extends LanguageElement implements IMetadataDefinition {
+@Concept(NS.METADATA)
+public class Metadata extends LanguageElement<Metadata> implements IMetadataDefinition {
 
 	HashMap<String, Object> _data = new HashMap<String, Object>();
 	
@@ -27,6 +30,11 @@ public class Metadata extends LanguageElement implements IMetadataDefinition {
 	public void dump(PrintStream out) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Metadata demote() {
+		return this;
 	}
 	
 }

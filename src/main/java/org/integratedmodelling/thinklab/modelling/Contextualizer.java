@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.modelling.contextualization;
+package org.integratedmodelling.thinklab.modelling;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
@@ -8,7 +8,6 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.modelling.internal.IContextMapper;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
@@ -32,7 +31,7 @@ public class Contextualizer  {
 	
 	class Edge {
 		String formalId;
-		IContextMapper contextMapper;
+		ContextMapper contextMapper;
 	}
 	
 	/*

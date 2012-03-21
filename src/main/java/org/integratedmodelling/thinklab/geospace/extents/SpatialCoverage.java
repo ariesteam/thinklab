@@ -31,9 +31,8 @@ import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.interfaces.annotations.InstanceImplementation;
-import org.integratedmodelling.thinklab.modelling.Observation;
-import org.integratedmodelling.thinklab.modelling.units.Unit;
+import org.integratedmodelling.thinklab.modelling.Unit;
+import org.integratedmodelling.thinklab.modelling.lang.Observation;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
@@ -41,7 +40,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * discontinuous areal extents. 
  * @author Ferdinando Villa
  */
-@InstanceImplementation(concept="geospace:ArealFeatureSet")
 public class SpatialCoverage extends Observation implements IExtent {
 
 	double latLB, lonLB, latUB, lonUB;

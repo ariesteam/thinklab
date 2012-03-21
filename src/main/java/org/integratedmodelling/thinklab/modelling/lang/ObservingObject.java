@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,9 @@ import java.util.List;
 import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.parsing.IModelDefinition;
@@ -21,7 +23,8 @@ import org.integratedmodelling.thinklab.api.modelling.IObservingObject;
  * @author Ferd
  *
  */
-public abstract class ObservingObject extends ModelObject implements IObservingObject, IObservingObjectDefinition {
+@Concept(NS.OBSERVING_OBJECT)
+public abstract class ObservingObject<T> extends ModelObject<T> implements IObservingObject, IObservingObjectDefinition {
 	
 	ArrayList<Triple<IModel, String, Boolean>> _dependencies = 
 			new ArrayList<Triple<IModel,String, Boolean>>();

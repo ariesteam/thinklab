@@ -29,7 +29,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.modelling.Observation;
+import org.integratedmodelling.thinklab.modelling.lang.Observation;
 
 /**
  * This one is technically unnecessary, as ArealFeatureSet subsumes it, but we keep it 

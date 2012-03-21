@@ -1,5 +1,7 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.parsing.IDataSourceDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.IObservationDefinition;
@@ -14,7 +16,8 @@ import org.integratedmodelling.thinklab.api.modelling.IObserver;
  * @author Ferd
  *
  */
-public class Observation extends ModelObject implements IObservationDefinition {
+@Concept(NS.OBSERVATION)
+public class Observation extends ModelObject<Observation> implements IObservationDefinition {
 
 	IList       _observable;
 	IDataSource _datasource;
@@ -55,6 +58,11 @@ public class Observation extends ModelObject implements IObservationDefinition {
 	@Override
 	public void setInlineState(Object state) {
 		_inlineState = state;
+	}
+
+	@Override
+	public Observation demote() {
+		return this;
 	}
 
 }

@@ -1,7 +1,9 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.parsing.IExpressionDefinition;
@@ -11,7 +13,8 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 
-public class Model extends ObservingObject implements IModelDefinition {
+@Concept(NS.MODEL)
+public class Model extends ObservingObject<Model> implements IModelDefinition {
 
 	IObserver _observer;
 	
@@ -51,5 +54,9 @@ public class Model extends ObservingObject implements IModelDefinition {
 		return getObservables().get(0);
 	}
 
+	@Override
+	public Model demote() {
+		return this;
+	}
 
 }

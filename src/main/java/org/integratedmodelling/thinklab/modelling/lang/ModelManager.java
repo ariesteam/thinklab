@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.io.File;
 import java.io.FileInputStream;

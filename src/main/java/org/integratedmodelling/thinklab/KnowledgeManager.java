@@ -42,7 +42,7 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
-import org.integratedmodelling.thinklab.modelling.ModelManager;
+import org.integratedmodelling.thinklab.modelling.lang.ModelManager;
 
 /**
  * Main knowledge manager functionalities. Thinklab holds one of these and proxies all knowledge

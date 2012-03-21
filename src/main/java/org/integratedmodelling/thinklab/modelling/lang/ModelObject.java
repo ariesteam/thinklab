@@ -1,7 +1,9 @@
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.io.PrintStream;
 
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.lang.parsing.IMetadataDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.IModelObjectDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.INamespaceDefinition;
@@ -9,7 +11,8 @@ import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 
-public class ModelObject extends LanguageElement implements IModelObject, IModelObjectDefinition {
+@Concept(NS.MODEL_OBJECT)
+public abstract class ModelObject<T> extends LanguageElement<T> implements IModelObject, IModelObjectDefinition {
 	
 	String     _id;
 	INamespace _namespace;

@@ -9,7 +9,7 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.metadata.Metadata;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
