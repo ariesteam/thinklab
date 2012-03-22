@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,7 @@ import java.util.Set;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
@@ -109,7 +111,7 @@ public class Ontology implements IOntology {
 		this.properties = new Hashtable<SemanticType, IProperty>();
 	}
 	
-	protected void initialize(String cs){
+	protected void initialize(String cs) {
 		
 		this.cs = cs;
 		
@@ -825,8 +827,104 @@ public class Ontology implements IOntology {
 
 	@Override
 	public void define(Collection<IAxiom> axioms) throws ThinklabException {
-		// TODO Auto-generated method stub
+
+		OWLOntologyManager manager = Knowledge.KR().manager;
+		OWLDataFactory factory = manager.getOWLDataFactory();		
+
+		for (IAxiom axiom : axioms) {
+			
+			try {
+				if (axiom.is(IAxiom.CLASS_ASSERTION)) {
+				
+					URI uri = URI.create(getURI() + "#" + axiom.getArgument(0));
+					OWLClass newcl = factory.getOWLClass(uri);
+					manager.addAxiom(ont, factory.getOWLDeclarationAxiom(newcl));
+				
+				} else if (axiom.is(IAxiom.SUBCLASS_OF)) {
+
+					IConcept p = getConcept(axiom.getArgument(1).toString());
+					IConcept c = getConcept(axiom.getArgument(0).toString());
+					OWLClass parent = (OWLClass) ((Concept)p).entity;
+					manager.addAxiom(ont, factory.getOWLSubClassAxiom((OWLClass)((Concept)c).entity, parent));
+				}
+				
+				/* TODO etc */
+				
+			} catch (OWLOntologyChangeException e) {
+				throw new ThinklabInternalErrorException(e);
+			}
+			
+		}
 		
+		/*
+		 * re-read everything
+		 */
+		initialize(this.cs);
+		
+//		if (axiom instanceof OWLDeclarationAxiom) {
+//
+//			OWLEntity entity = ((OWLDeclarationAxiom)axiom).getEntity();
+//			String id = entity.getIRI().getFragment();
+//			
+//			if (entity instanceof OWLObjectProperty) {
+//				ns.addAxiom(Axiom.ObjectPropertyAssertion(id));
+//			} else if (entity instanceof OWLDataProperty) {
+//				ns.addAxiom(Axiom.DataPropertyAssertion(id));				
+//			} else if (entity instanceof OWLAnnotationProperty) {
+//				ns.addAxiom(Axiom.AnnotationPropertyAssertion(id));
+//			} else if (entity instanceof OWLClass) {
+//				System.out.println("CLASS: " + id + " from " + axiom);
+//				ns.addAxiom(Axiom.ClassAssertion(id));				
+//			}
+//			
+//		} else if (axiom instanceof OWLDisjointClassesAxiom) {
+//			
+//			ArrayList<String> cls = new ArrayList<String>();
+//			for (OWLClassExpression e : ((OWLDisjointClassesAxiom)axiom).getClassExpressionsAsList())  {
+//				
+//				/*
+//				 * TBC
+//				 * assuming that whatever subclass we have has been declared 
+//				 * in this ontology.
+//				 */
+//				cls.add(e.asOWLClass().getIRI().getFragment());
+//			}
+//			ns.addAxiom(Axiom.DisjointClasses(cls.toArray(new String[cls.size()])));
+//			
+//		} else if (axiom instanceof OWLSubClassOfAxiom) {
+//			
+//			OWLClassExpression sup = ((OWLSubClassOfAxiom)axiom).getSuperClass();
+//			OWLClassExpression sub = ((OWLSubClassOfAxiom)axiom).getSubClass();
+//			
+//			/*
+//			 * axioms will change according to subclass type
+//			 */
+//			if (sup instanceof OWLRestriction<?, ?, ?>) {
+//				/*
+//				 * import restrictions we support
+//				 */
+//			} else {
+//				
+//				/*
+//				 * TBC
+//				 * assuming that whatever subclass we have has been declared 
+//				 * in this ontology.
+//				 */
+//				String subId = sub.asOWLClass().getIRI().getFragment();
+//				
+//				/*
+//				 * super may be in another ontology, so ensure we have the same namespace or get the proper one.
+//				 */
+//				System.out.println("SUBCLASS: " + sup);				
+//			}
+//			
+//		} else if (axiom instanceof OWLAnnotationAssertionAxiom) {
+//			
+//		}
+//		
+//		/*
+//		 * TODO - for now: ignore inverse properties, equivalent classes
+//		 */
 	}
 
 }

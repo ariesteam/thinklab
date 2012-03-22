@@ -31,13 +31,24 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	
 	ArrayList<ISemanticObject<?>> _observables = new ArrayList<ISemanticObject<?>>();
 
+	/*
+	 * non-persistent fields
+	 */
+	ArrayList<IList> _observableDefs = new ArrayList<IList>();
+
+
+	/*
+	 *  called by the namespace after all concepts are in
+	 */
+	void createObservables() throws ThinklabException {
+		for (IList list : _observableDefs) {
+			_observables.add(Thinklab.get().entify(list));
+		}
+	}
+	
 	@Override
 	public void addObservable(IList instance) {
-		try {
-			_observables.add(Thinklab.get().entify(instance));
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+		_observableDefs.add(instance);
 	}
 
 	@Override

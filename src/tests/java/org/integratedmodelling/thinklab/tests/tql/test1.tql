@@ -1,0 +1,5 @@
+namespace org.integratedmodelling.test1;
+
+defmodel elevation of Elevation
+	as measure geospace.physics:Altitude in m;
+	

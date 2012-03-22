@@ -28,6 +28,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.lang.parsing.IConceptDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.ILanguageDefinition;
+import org.integratedmodelling.thinklab.api.lang.parsing.INamespaceDefinition;
 import org.integratedmodelling.thinklab.api.lang.parsing.IPropertyDefinition;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
@@ -152,7 +153,7 @@ public class ModelManager implements IModelManager {
 
 					if (f.exists() && f.isFile() && f.canRead()) {
 						return new FileInputStream(f);
-					} else if (reference.contains("://")) {
+					} else if (reference.contains(":/")) {
 						URL url = new URL(reference);						
 						return url.openStream();
 					}
@@ -245,13 +246,23 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public void onNamespaceDeclared(String namespaceId, String resourceId, INamespace namespace) {
+		public void onNamespaceDeclared(String namespaceId, INamespace namespace) {
+			
 		}
 
 		@Override
 		public void onNamespaceDefined(INamespace namespace) throws ThinklabException {
+			
+			/*
+			 * store it first, which publishes the knowledge so that the next ones will work
+			 */
+			if (!namespacesById.containsKey(namespace.getId())) {
+				namespacesById.put(namespace.getId(), namespace);
+			} else {
+				onException(new ThinklabValidationException("cannot redefine namespace: " + namespace.getId()), -1);
+			}
 
-
+			((Namespace)namespace).initialize();
 			/*
 			 * TODO pop resolver context
 			 */
@@ -510,25 +521,18 @@ public class ModelManager implements IModelManager {
 	@Override
 	public synchronized INamespace loadFile(String resourceId, String namespaceId, IProject project) throws ThinklabException {
 
-		Namespace ret = null;
+		INamespace ret = null;
 
 		if (resourceId.endsWith(".tql")) {
 
 			Injector injector = Guice.createInjector(new ModellingModule());
 			ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
-			INamespace nbean = thinkqlParser.parse(resourceId, getResolver(project, resourceId));
-
-			if (!namespacesById.containsKey(nbean.getId())) {
-
-				/*
-				 * annotating a Namespace will produce a NamespaceImpl. How cool
-				 * is that.
-				 */
-				ret = (Namespace) Thinklab.get().annotate(nbean);
-				namespacesById.put(nbean.getId(), ret);
-
-			} else {
-				throw new ThinklabValidationException("cannot redefine namespace: " + nbean.getId());
+			ret = thinkqlParser.parse(resourceId, getResolver(project, resourceId));
+			
+			if (namespaceId != null && !namespaceId.equals(ret.getId())) {
+				throw new ThinklabValidationException(
+						"resource "+ resourceId + " declares namespace: " + ret.getId() + 
+						" when " + namespaceId + " was expected");
 			}
 
 		} else if (resourceId.endsWith(".clj")) {
@@ -550,10 +554,10 @@ public class ModelManager implements IModelManager {
 
 			IOntology ontology = Thinklab.get().getKnowledgeRepository().requireOntology(namespaceId);
 			ret = new Namespace();
-			ret.setId(namespaceId);
-			ret.setResourceUrl(resourceId);
-			ret.setTimeStamp(ofile.lastModified());
-			ret.setOntology(ontology);
+			((INamespaceDefinition)ret).setId(namespaceId);
+			((INamespaceDefinition)ret).setResourceUrl(resourceId);
+			((INamespaceDefinition)ret).setTimeStamp(ofile.lastModified());
+			((Namespace)ret).setOntology(ontology);
 			namespacesById.put(namespaceId, ret);
 		}
 

@@ -3,7 +3,9 @@ package org.integratedmodelling.thinklab.modelling.lang;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IAxiom;
@@ -21,12 +23,13 @@ import org.integratedmodelling.thinklab.api.project.IProject;
 public class Namespace extends SemanticObject<INamespace> implements INamespaceDefinition {
 
 	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
+	ArrayList<IAxiom> _axioms = new ArrayList<IAxiom>();
+	ArrayList<INamespace> _importedNamespaces = new ArrayList<INamespace>();
+
 	IOntology _ontology;
 	String _id;
-	ArrayList<IAxiom> _axioms;
 	String _resourceUrl;
 	long _timeStamp;
-	ArrayList<INamespace> _importedNamespaces = new ArrayList<INamespace>();
 	IProject _project;
 
 	// these shouldn't be here, but ok
@@ -41,17 +44,24 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	}
 
 
-	public void initialize() {
+	public void initialize() throws ThinklabException {
 		
-		System.out.println("namespace::initialize called");
-
 		/*
-		 * TODO scan model objects and fill list
+		 * create ontology from the axioms collected in namespace
 		 */
-
+		_ontology = Thinklab.get().createOntology(
+				_id,
+				(_project == null ? NS.DEFAULT_THINKLAB_ONTOLOGY_PREFIX : _project.getOntologyNamespacePrefix()),
+				_axioms);
 		/*
-		 * TODO create ontology from axioms
+		 * initialize observables for all observing objects now that we have the
+		 * namespace concepts.
 		 */
+		for (IModelObject o : _modelObjects) {
+			if (o instanceof ObservingObject) {
+				((ObservingObject<?>)o).createObservables();
+			}
+		}
 	}
 
 	@Override

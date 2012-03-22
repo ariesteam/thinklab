@@ -23,6 +23,7 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -47,7 +48,9 @@ import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
 import org.integratedmodelling.thinklab.api.factories.IKnowledgeManager;
 import org.integratedmodelling.thinklab.api.factories.IPluginManager;
 import org.integratedmodelling.thinklab.api.factories.IProjectManager;
+import org.integratedmodelling.thinklab.api.knowledge.IAxiom;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
@@ -713,6 +716,12 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 
 	public ISemanticObject<?> getSemanticLiteral(IReferenceList semantics) {
 		return _km.getSemanticLiteral(semantics);
+	}
+
+	public IOntology createOntology(String id, String ontologyPrefix, Collection<IAxiom> axioms) throws ThinklabException {
+		IOntology ret =  _knowledgeRepository.createOntology(id, ontologyPrefix);
+		ret.define(axioms);
+		return ret;
 	}
 
 }
