@@ -279,7 +279,7 @@ public class GraphicalShell {
 			
 			session.pushVariable(ISession.COMMAND, cmd);
 			
-			ISemanticObject result = CommandManager.get().submitCommand(cmd, session);
+			ISemanticObject<?> result = CommandManager.get().submitCommand(cmd, session);
 
 			session.popVariable(ISession.COMMAND);
 			

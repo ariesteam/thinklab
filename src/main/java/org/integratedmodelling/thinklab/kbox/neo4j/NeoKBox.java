@@ -215,9 +215,8 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public ISemanticObject<?> retrieve(long id) throws ThinklabException {
-		return Thinklab.get().getSemanticObject(
-				retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), new ReferenceList()), 
-				null);
+		return Thinklab.get().entify(
+				retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), new ReferenceList()));
 	}
 	
 	@Override
@@ -343,6 +342,13 @@ public class NeoKBox implements IKbox {
 				 * default behavior for SemanticQuery: handle 
 				 * semantic closures and downstream nodes.
 				 */
+				if (query.getSubject() != null)
+					td = td.evaluator(Algorithms.semanticClosure(query.getSubject()));
+				else {
+					/*
+					 * connector
+					 */
+				}
 			}
 		}
 		return td;

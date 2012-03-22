@@ -67,6 +67,15 @@
     
 
 
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasNamespace -->
+
+    <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasNamespace">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
+        <rdfs:range rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Namespace"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -101,6 +110,15 @@
     <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasLastLineNumber">
         <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#LanguageElement"/>
         <rdfs:range rdf:resource="&xsd;int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasResourceUrl -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasResourceUrl">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Namespace"/>
+        <rdfs:range rdf:resource="&xsd;anyURI"/>
     </owl:DatatypeProperty>
     
 

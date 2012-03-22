@@ -3,6 +3,7 @@ package org.integratedmodelling.thinklab.annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabCircularDependencyException;
@@ -22,10 +23,26 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
  *
  */
 public abstract class SemanticObject<T> implements ISemanticObject<T> {
+	
+    private static final AtomicLong nextId = new AtomicLong(0);
+    private static final ThreadLocal<Long> threadId =
+        new ThreadLocal<Long>() {
+            @Override protected Long initialValue() {
+                return nextId.getAndIncrement();
+        }   
+    };
+
+    // Returns the current thread's unique ID, assigning it if necessary
+    public static long nextId() {
+        Long id = threadId.get();
+        threadId.set(new Long(id.longValue() + 1l));
+        return id;
+    }		     
+	
+	long _id = nextId();
 
 	IReferenceList _semantics;
 	private HashMap<IProperty, List<ISemanticObject<?>>> _literals;
-	private long _id;
 	
 	SemanticGraph _graph = null;
 
@@ -35,9 +52,8 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 	protected SemanticObject(IReferenceList semantics) {
 
 		this._semantics = semantics;
-		this._id = _semantics == null ? 
-				0 :
-				semantics.getId();
+		if (_semantics != null) 
+			_id = semantics.getId();
 	}
 
 	@Override

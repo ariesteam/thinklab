@@ -621,11 +621,9 @@ public class AnnotationFactory {
 		return new DefaultSemanticObject(list, object);
 	}
 
-
 	public IConcept getLiteralConceptForJavaClass(Class<? extends Object> class1) {
 		return _class2literal.get(class1);
 	}
-
 
 	public ISemanticObject<?> getSemanticLiteral(IReferenceList semantics) {
 

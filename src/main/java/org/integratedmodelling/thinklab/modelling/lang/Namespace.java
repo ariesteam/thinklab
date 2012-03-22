@@ -46,6 +46,9 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 
 	public void initialize() throws ThinklabException {
 		
+		if (Thinklab.get().hasOntology(_id)) 
+			Thinklab.get().dropOntology(_id);
+		
 		/*
 		 * create ontology from the axioms collected in namespace
 		 */

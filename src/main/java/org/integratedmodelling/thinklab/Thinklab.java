@@ -724,4 +724,12 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		return ret;
 	}
 
+	public boolean hasOntology(String id) {
+		return _knowledgeRepository.retrieveOntology(id) != null;
+	}
+
+	public void dropOntology(String id) {
+		_knowledgeRepository.releaseOntology(id);
+	}
+
 }

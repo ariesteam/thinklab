@@ -248,6 +248,13 @@ public class ModelManager implements IModelManager {
 		@Override
 		public void onNamespaceDeclared(String namespaceId, INamespace namespace) {
 			
+			if (namespacesById.get(namespaceId) != null) {
+				/*
+				 * warn only for now
+				 */
+				Thinklab.get().logger().warn("warning: namespace " + namespaceId + " is being redefined");
+				releaseNamespace(namespaceId);
+			}
 		}
 
 		@Override
@@ -483,8 +490,44 @@ public class ModelManager implements IModelManager {
 
 	@Override
 	public void releaseNamespace(String namespace) {
-		// TODO Auto-generated method stub
 		
+		namespacesById.remove(namespace);
+		ArrayList<String> toRemove = new ArrayList<String>();
+		for (String s : agentsById.keySet()) {
+			if (s.startsWith(namespace + "/")) {
+				toRemove.add(s);
+			}
+		}
+		for (String s : toRemove) {
+			agentsById.remove(s);
+		}	
+		toRemove.clear();
+		for (String s : modelsById.keySet()) {
+			if (s.startsWith(namespace + "/")) {
+				toRemove.add(s);
+			}
+		}
+		for (String s : toRemove) {
+			modelsById.remove(s);
+		}
+		toRemove.clear();
+		for (String s : scenariosById.keySet()) {
+			if (s.startsWith(namespace + "/")) {
+				toRemove.add(s);
+			}
+		}
+		for (String s : toRemove) {
+			contextsById.remove(s);
+		}
+		toRemove.clear();
+		for (String s : contextsById.keySet()) {
+			if (s.startsWith(namespace + "/")) {
+				toRemove.add(s);
+			}
+		}
+		for (String s : toRemove) {
+			contextsById.remove(s);
+		}
 	}
 
 	@Override
@@ -501,8 +544,7 @@ public class ModelManager implements IModelManager {
 
 	@Override
 	public Collection<INamespace> getNamespaces() {
-		// TODO Auto-generated method stub
-		return null;
+		return namespacesById.values();
 	}
 
 	@Override
