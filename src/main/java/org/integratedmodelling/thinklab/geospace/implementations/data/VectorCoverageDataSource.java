@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
@@ -149,7 +148,7 @@ public class VectorCoverageDataSource implements IDataSource {
 			 * a key into it.
 			 */
 			
-		} catch (ThinklabValidationException e) {
+		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}
 		return ret;
@@ -168,13 +167,7 @@ public class VectorCoverageDataSource implements IDataSource {
 	}
 
 	@Override
-	public void notifyTargetContext(IContext context) throws ThinklabException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public IDataSource transform(IContext context) throws ThinklabException {
+	public IDataSource contextualize(IContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

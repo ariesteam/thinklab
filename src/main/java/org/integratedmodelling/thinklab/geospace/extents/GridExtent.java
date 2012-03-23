@@ -310,7 +310,7 @@ public class GridExtent extends ArealExtent {
 			GridExtent ge = (GridExtent) obj;
 			
 			/*
-			 * TODO compare activation layers if we ever get to implement them.
+			 * TODO compare activation layers
 			 */
 			
 			return 
@@ -432,8 +432,7 @@ public class GridExtent extends ArealExtent {
 		" " + getCRS().getName() + ")"; 
 	}
 	
-//	@Override
-	public ISemanticObject getFullExtentValue() {
+	public ISemanticObject<?> getFullExtentValue() {
 		return new ShapeValue(getBoundary(), crs);
 	}
 
@@ -461,16 +460,7 @@ public class GridExtent extends ArealExtent {
 
 	@Override
 	public int getValueCount() {
-
 		return xDivs * yDivs;
-
-// TODO this logic is consistent with only computing states along the active cells, but this is a grid, not
-// a tessellated polygon, so we should run states even on the no-data.
-//		
-//		return 
-//			activationLayer == null ?
-//				(xDivs * yDivs) :
-//				activationLayer.totalActiveCells();
 	}
 
 	public Geometry getBoundary() {
@@ -536,28 +526,6 @@ public class GridExtent extends ArealExtent {
 		return cellLength;
 	}
 
-//	@Override
-//	public Polylist conceptualize() throws ThinklabException {
-//		
-//		Polylist ret = Polylist.list(
-//				Geospace.RASTER_GRID,
-//				// communicate the extent so we don't lose lineage info in contextualized obs
-//				Polylist.list(":extent", this),
-//				Polylist.list(":shape", this.shape),
-//				Polylist.list(":mask", this.activationLayer),
-//				Polylist.list(Geospace.X_RANGE_MAX,     Integer.toString(getXMaxCell())),
-//				Polylist.list(Geospace.Y_RANGE_MAX,     Integer.toString(getYMaxCell())),
-//				Polylist.list(Geospace.LAT_LOWER_BOUND, getSouth()),
-//				Polylist.list(Geospace.LON_LOWER_BOUND, getWest()),
-//				Polylist.list(Geospace.LAT_UPPER_BOUND, getNorth()),
-//				Polylist.list(Geospace.LON_UPPER_BOUND, getEast()),
-//				Polylist.list(Geospace.CRS_CODE, 
-//						Geospace.getCRSIdentifier(getCRS(), false)));
-//		
-//		return ret;
-//	}
-
-	
 	/*
 	 * TODO check: this should be creating the largest extent that preserves
 	 * the topology of the original extent and covers the other extent. Cell size should
@@ -652,20 +620,6 @@ public class GridExtent extends ArealExtent {
 		return nwext;
 	}
 
-//	@Override
-//	public IDatasourceTransformation getDatasourceTransformation(
-//			IConcept mainObservable, IExtent extent) throws ThinklabValidationException {
-//
-//		if (extent instanceof GridExtent) {
-//			return new Resample((GridExtent) extent);
-//		} 
-//		
-//		throw new ThinklabValidationException(
-//				"don't know how to transform a gridded observation of " + 
-//				mainObservable + 
-//				" to match extent: " + extent);
-//	}
-
 	@Override
 	public IExtent getExtent(int granule) {
 		// TODO Auto-generated method stub
@@ -731,7 +685,6 @@ public class GridExtent extends ArealExtent {
 
 	}
 
-//	@Override
 	public String getSignature() {
 		// TODO Auto-generated method stub
 		try {
@@ -742,27 +695,12 @@ public class GridExtent extends ArealExtent {
 		}
 	}
 
-//	@Override
-//	public Collection<Object> getAncestors() {
-//
-//		ArrayList<Object> ret = new ArrayList<Object>();
-//		if (ancestor != null) {
-//			ret.add(ancestor);
-//		}
-//		return ret;
-//	}
-	
-//	public void setAncestor(ShapeExtent extent) {
-//		this.ancestor = extent;
-//	}
 
-//	@Override
 	public IExtent or(IExtent myExtent) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-//	@Override
 	public IExtent getAggregatedExtent() {
 		return new ShapeExtent((ShapeValue) getFullExtentValue());
 	}
@@ -833,13 +771,11 @@ public class GridExtent extends ArealExtent {
 		this.activationLayer = mask;
 	}
 
-//	@Override
 	public boolean checkDomainDiscontinuity() throws ThinklabException {
 		return false;
 	}
 
-//	
-//	@Override
+
 	public IExtent intersection(IExtent extent)  {
 		
 		/*
@@ -903,22 +839,15 @@ public class GridExtent extends ArealExtent {
 		return extent;
 	}
 
-//	@Override
 	public IExtent union(IExtent extent) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-//	@Override
 	public IConcept getValueType() {
 		// TODO for now. We should give it a geometry/shape concept.
 		return null;
 	}
-
-//	@Override
-//	public Restriction getConstraint(String operator) throws ThinklabException {
-//		return new Restriction("boundingbox", operator, getFullExtentValue().toString());
-//	}
 
 	
 	public Collection<Integer> getNeumannNeighbors(int xcell, int ycell) {
@@ -1088,20 +1017,20 @@ public class GridExtent extends ArealExtent {
 
 	@Override
 	public boolean contains(IExtent o) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
+		ArealExtent e = (ArealExtent) o;
+		return getBoundingBox().getGeometry().contains(e.getBoundingBox().getGeometry());
 	}
 
 	@Override
 	public boolean overlaps(IExtent o) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
+		ArealExtent e = (ArealExtent) o;
+		return getBoundingBox().getGeometry().overlaps(e.getBoundingBox().getGeometry());
 	}
 
 	@Override
 	public boolean intersects(IExtent o) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return false;
+		ArealExtent e = (ArealExtent) o;
+		return getBoundingBox().getGeometry().intersects(e.getBoundingBox().getGeometry());
 	}
 
 

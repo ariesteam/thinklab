@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.functions.time;
 
 import java.util.Map;
 
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 
@@ -15,7 +16,7 @@ public class TIME implements IExpression {
 	}
 
 	@Override
-	public Object eval(Map<String, Object> parameters) {
+	public Object eval(Map<String, Object> parameters) throws ThinklabException {
 		// TODO create a WCS datasource
 		return null;
 	}

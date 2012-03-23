@@ -48,7 +48,7 @@ public class MVELExpression implements IExpression, IParseable {
 		expr = s;
 	}
 	
-	public Object eval(Map<String, Object> parms) {
+	public Object eval(Map<String, Object> parms) throws ThinklabException {
 		
 		Object ret = null;
 		ClassLoader clsl = null;

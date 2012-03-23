@@ -36,37 +36,11 @@ import com.vividsolutions.jts.geom.Envelope;
 
 public abstract class ArealExtent extends Observation implements IExtent {
 
-	public abstract ShapeValue getShape();
-	
-//	@Override
-//	public boolean contains(ITopologicallyComparable o)
-//			throws ThinklabException {
-//		ArealExtent e = (ArealExtent) o;
-//		return getBoundingBox().getGeometry().contains(e.getBoundingBox().getGeometry());
-//
-//	}
-//
-//	public abstract double getTotalAreaSquareMeters();
-//	
-//	@Override
-//	public boolean intersects(ITopologicallyComparable o)
-//			throws ThinklabException {
-//		ArealExtent e = (ArealExtent) o;
-//		return getBoundingBox().getGeometry().intersects(e.getBoundingBox().getGeometry());
-//	}
-//
-//	@Override
-//	public boolean overlaps(ITopologicallyComparable o)
-//			throws ThinklabException {
-//		ArealExtent e = (ArealExtent) o;
-//		return getBoundingBox().getGeometry().overlaps(e.getBoundingBox().getGeometry());
-//	}
-
-	// the envelope in here is always east-west on the X axis. getDefaultEnvelope() can be used to retrieve
-	// the envelope that will work with the CRS. 
 	ReferencedEnvelope envelope = null;
 	CoordinateReferenceSystem crs;
 	
+	public abstract ShapeValue getShape();
+
 	public ArealExtent(CoordinateReferenceSystem crs, double minx, double miny, double maxx, double maxy) {
 		this.crs = crs;
 		this.envelope = new ReferencedEnvelope(minx, maxx, miny, maxy, crs);
