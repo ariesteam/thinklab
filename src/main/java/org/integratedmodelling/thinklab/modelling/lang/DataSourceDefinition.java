@@ -5,7 +5,7 @@ import java.util.Map;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
-import org.integratedmodelling.thinklab.api.lang.parsing.IDataSourceDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IDataSourceDefinition;
 
 @Concept(NS.DATASOURCE_DEFINITION)
 public class DataSourceDefinition extends ModelObject<DataSourceDefinition> implements IDataSourceDefinition {

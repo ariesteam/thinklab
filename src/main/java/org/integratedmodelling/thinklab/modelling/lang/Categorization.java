@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
-import org.integratedmodelling.thinklab.api.lang.parsing.ICategorizingObserverDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.ICategorizingObserverDefinition;
 
 @Concept(NS.CATEGORIZING_OBSERVER)
 public class Categorization extends Observer<Categorization> implements ICategorizingObserverDefinition {

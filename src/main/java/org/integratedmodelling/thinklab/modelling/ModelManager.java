@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.modelling.lang;
+package org.integratedmodelling.thinklab.modelling;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,10 +26,6 @@ import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
-import org.integratedmodelling.thinklab.api.lang.parsing.IConceptDefinition;
-import org.integratedmodelling.thinklab.api.lang.parsing.ILanguageDefinition;
-import org.integratedmodelling.thinklab.api.lang.parsing.INamespaceDefinition;
-import org.integratedmodelling.thinklab.api.lang.parsing.IPropertyDefinition;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.ICategorizingObserver;
@@ -46,8 +42,31 @@ import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.IStoryline;
 import org.integratedmodelling.thinklab.api.modelling.IUnit;
 import org.integratedmodelling.thinklab.api.modelling.IValuingObserver;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.ILanguageDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IPropertyDefinition;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.modelling.lang.AgentModel;
+import org.integratedmodelling.thinklab.modelling.lang.Categorization;
+import org.integratedmodelling.thinklab.modelling.lang.Classification;
+import org.integratedmodelling.thinklab.modelling.lang.ConceptObject;
+import org.integratedmodelling.thinklab.modelling.lang.Context;
+import org.integratedmodelling.thinklab.modelling.lang.DataSourceDefinition;
+import org.integratedmodelling.thinklab.modelling.lang.FunctionDefinition;
+import org.integratedmodelling.thinklab.modelling.lang.Measurement;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
+import org.integratedmodelling.thinklab.modelling.lang.Model;
+import org.integratedmodelling.thinklab.modelling.lang.Namespace;
+import org.integratedmodelling.thinklab.modelling.lang.Observation;
+import org.integratedmodelling.thinklab.modelling.lang.PropertyObject;
+import org.integratedmodelling.thinklab.modelling.lang.Ranking;
+import org.integratedmodelling.thinklab.modelling.lang.Scenario;
+import org.integratedmodelling.thinklab.modelling.lang.Storyline;
+import org.integratedmodelling.thinklab.modelling.lang.UnitDefinition;
+import org.integratedmodelling.thinklab.modelling.lang.Value;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -341,7 +360,7 @@ public class ModelManager implements IModelManager {
 		@Override
 		public IExpression resolveFunction(String functionId,
 				Collection<String> parameterNames) {
-			return ModelManager.get().resolveFunction(functionId, parameterNames);
+			return ModelManager.this.resolveFunction(functionId, parameterNames);
 		}
 
 		@Override
@@ -387,6 +406,8 @@ public class ModelManager implements IModelManager {
 				return new UnitDefinition();
 			} else if (cls.equals(IMetadata.class)) {
 				return new Metadata();
+			} else if (cls.equals(IFunctionDefinition.class)) {
+				return new FunctionDefinition();
 			}
 			
 			return null;
@@ -404,8 +425,8 @@ public class ModelManager implements IModelManager {
 		return _resolver;
 	}
 
-	public IExpression resolveFunction(String functionId,
-			Collection<String> parameterNames) {
+	@Override
+	public IExpression resolveFunction(String functionId, Collection<String> parameterNames) {
 
 		/*
 		 * TODO see if we want to check or validate parameters
@@ -433,15 +454,15 @@ public class ModelManager implements IModelManager {
 	 * 
 	 * @return
 	 */
-	public static ModelManager get() {
+//	public static ModelManager get() {
+//
+//		if (_this == null) {
+//			_this = new ModelManager();
+//		}
+//		return _this;
+//	}
 
-		if (_this == null) {
-			_this = new ModelManager();
-		}
-		return _this;
-	}
-
-	private ModelManager() {
+	public ModelManager() {
 	}
 
 	public IModel retrieveModel(String s) {
@@ -649,6 +670,7 @@ public class ModelManager implements IModelManager {
 		return ret;
 	}
 
+	@Override
 	public Collection<INamespace> loadSourceDirectory(File sourcedir) throws ThinklabException {
 
 		ArrayList<INamespace> ret = new ArrayList<INamespace>();

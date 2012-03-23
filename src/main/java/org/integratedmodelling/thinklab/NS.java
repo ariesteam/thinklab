@@ -82,6 +82,7 @@ public class NS {
 	public static final String CONCEPT_DEFINITION = "modelling.thinklab:ConceptDefinition";
 	public static final String PROPERTY_DEFINITION = "modelling.thinklab:PropertyDefinition";
 	public static final String EXPRESSION_DEFINITION = "modelling.thinklab:ExpressionDefinition";
+	public static final String FUNCTION_DEFINITION = "modelling.thinklab:FunctionDefinition";
 	public static final String LANGUAGE_ELEMENT = "modelling.thinklab:LanguageElement";
 	public static final String MODEL_OBJECT = "modelling.thinklab:ModelObject";
 	public static final String OBSERVING_OBJECT = "modelling.thinklab:ObservingObject";	

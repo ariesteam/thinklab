@@ -4,7 +4,7 @@ import java.io.PrintStream;
 
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
-import org.integratedmodelling.thinklab.api.lang.parsing.IUnitDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IUnitDefinition;
 
 @Concept(NS.UNIT_DEFINITION)
 public class UnitDefinition extends LanguageElement<UnitDefinition> implements IUnitDefinition {

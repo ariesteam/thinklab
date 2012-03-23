@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
-import org.integratedmodelling.thinklab.api.lang.parsing.IMetadataDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IMetadataDefinition;
 
 @Concept(NS.METADATA)
 public class Metadata extends LanguageElement<Metadata> implements IMetadataDefinition {

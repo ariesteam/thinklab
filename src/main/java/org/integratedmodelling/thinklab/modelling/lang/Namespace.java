@@ -13,10 +13,10 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
-import org.integratedmodelling.thinklab.api.lang.parsing.IModelObjectDefinition;
-import org.integratedmodelling.thinklab.api.lang.parsing.INamespaceDefinition;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IModelObjectDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefinition;
 import org.integratedmodelling.thinklab.api.project.IProject;
 
 @Concept(NS.NAMESPACE)
@@ -61,9 +61,7 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		 * namespace concepts.
 		 */
 		for (IModelObject o : _modelObjects) {
-			if (o instanceof ObservingObject) {
-				((ObservingObject<?>)o).createObservables();
-			}
+			((ModelObject<?>)o).initialize();
 		}
 	}
 

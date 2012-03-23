@@ -121,6 +121,14 @@
     
 
 
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasParameters -->
+
+    <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasParameters">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#FunctionDefinition"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -173,6 +181,15 @@
     <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasTimeStamp">
         <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Namespace"/>
         <rdfs:range rdf:resource="&xsd;long"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasType -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasType">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#FunctionDefinition"/>
+        <rdfs:range rdf:resource="&xsd;Name"/>
     </owl:DatatypeProperty>
     
 
@@ -256,6 +273,14 @@
 
     <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Extent">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#State"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#FunctionDefinition -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#FunctionDefinition">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements"/>
     </owl:Class>
     
 

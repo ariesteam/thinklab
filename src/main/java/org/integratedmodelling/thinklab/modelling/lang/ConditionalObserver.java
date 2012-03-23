@@ -7,10 +7,10 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
-import org.integratedmodelling.thinklab.api.lang.parsing.IConditionalObserverDefinition;
-import org.integratedmodelling.thinklab.api.lang.parsing.IExpressionDefinition;
-import org.integratedmodelling.thinklab.api.lang.parsing.IObserverDefinition;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IConditionalObserverDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IExpressionDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
 
 @Concept(NS.CONDITIONAL_OBSERVER)
 public class ConditionalObserver extends Observer<ConditionalObserver> implements IConditionalObserverDefinition {

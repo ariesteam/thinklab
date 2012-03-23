@@ -30,7 +30,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.modelling.lang.ModelManager;
 import org.integratedmodelling.thinklab.modelling.lang.Namespace;
 
 @ThinklabCommand(name="test",argumentNames="arg",argumentTypes="thinklab:Text", argumentDescriptions="test argument")
@@ -42,7 +41,7 @@ public class Test implements ICommandHandler {
 			throws ThinklabException {
 				
 		URL test1 = ClassLoader.getSystemResource("org/integratedmodelling/thinklab/tests/tql/test1.tql");
-		INamespace ns = ModelManager.get().loadFile(test1.toString(), null, null);
+		INamespace ns = Thinklab.get().loadFile(test1.toString(), null, null);
 		System.out.println(((Namespace)ns).getSemantics().prettyPrint());
 		
 		IKbox kbox = Thinklab.get().requireKbox("models");

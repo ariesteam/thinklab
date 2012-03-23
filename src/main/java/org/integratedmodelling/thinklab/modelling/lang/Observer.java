@@ -1,20 +1,20 @@
 package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.util.List;
-import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
-import org.integratedmodelling.thinklab.api.lang.parsing.IExpressionDefinition;
-import org.integratedmodelling.thinklab.api.lang.parsing.IObserverDefinition;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IExpressionDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
 
 @Concept(NS.OBSERVER)
 public abstract class Observer<T> extends ObservingObject<T> implements IObserverDefinition {
@@ -54,14 +54,6 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 		return _mediated;
 	}
 
-	@Override
-	public void setAccessor(String accessorType, Map<String, Object> parameters) {
-
-		/*
-		 * TODO lookup accessor and instantiate it with given parameters
-		 */
-		
-	}
 
 	@Override
 	public IAccessor getAccessor() {
@@ -82,6 +74,12 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	@Override
 	public IObserver applyScenario(IScenario scenario) throws ThinklabException {
 		throw new ThinklabUnsupportedOperationException("scenarios cannot be applied at the client side");
+	}
+
+	@Override
+	public void setAccessorGeneratorFunction(IFunctionDefinition function) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

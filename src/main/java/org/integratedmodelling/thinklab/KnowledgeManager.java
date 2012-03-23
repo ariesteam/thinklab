@@ -42,7 +42,6 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
-import org.integratedmodelling.thinklab.modelling.lang.ModelManager;
 
 /**
  * Main knowledge manager functionalities. Thinklab holds one of these and proxies all knowledge
@@ -202,7 +201,7 @@ public class KnowledgeManager implements IKnowledgeManager {
 	public IConcept retrieveConcept(SemanticType t) {
 
 		IConcept ret = null;
-		INamespace ns = ModelManager.get().getNamespace(t.getConceptSpace());
+		INamespace ns = Thinklab.get().getNamespace(t.getConceptSpace());
 	    if (ns != null)
 	    	ret = ns.getConcept(t.getLocalName());
 	    if (ret == null && t.toString().equals(Thinklab.get().getKnowledgeRepository().getRootConcept().toString()))	{
@@ -214,7 +213,7 @@ public class KnowledgeManager implements IKnowledgeManager {
 	public IProperty retrieveProperty(SemanticType t) {
 		
 		IProperty ret = null;
-		INamespace ns = ModelManager.get().getNamespace(t.getConceptSpace());
+		INamespace ns = Thinklab.get().getNamespace(t.getConceptSpace());
 	    if (ns != null)
 	    	ret = ns.getProperty(t.getLocalName());
 	    return ret;

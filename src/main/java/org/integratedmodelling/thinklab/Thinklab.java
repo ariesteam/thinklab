@@ -23,7 +23,6 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -46,17 +45,24 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
 import org.integratedmodelling.thinklab.api.factories.IKnowledgeManager;
+import org.integratedmodelling.thinklab.api.factories.IModelManager;
 import org.integratedmodelling.thinklab.api.factories.IPluginManager;
 import org.integratedmodelling.thinklab.api.factories.IProjectManager;
 import org.integratedmodelling.thinklab.api.knowledge.IAxiom;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
+import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IModel;
+import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
 import org.integratedmodelling.thinklab.api.project.IProject;
@@ -69,7 +75,7 @@ import org.integratedmodelling.thinklab.interfaces.annotations.ListingProvider;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.modelling.lang.ModelManager;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.owlapi.FileKnowledgeRepository;
 import org.integratedmodelling.thinklab.plugin.PluginManager;
 import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
@@ -94,7 +100,8 @@ import org.restlet.service.MetadataService;
  * @author Ferdinando Villa
  *
  */
-public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManager, IProjectManager {
+public class Thinklab implements 
+	IKnowledgeManager, IConfiguration, IPluginManager, IProjectManager, IModelManager {
 
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.core";
 	
@@ -124,6 +131,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 	protected PluginManager _pluginManager;
 	protected IKnowledgeRepository _knowledgeRepository;
 	protected ProjectManager _projectManager;	
+	protected ModelManager _modelManager;
 	
 	Log logger = LogFactory.getLog(this.getClass());
 	
@@ -135,6 +143,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		_km             = new KnowledgeManager();
 		_pluginManager  = new PluginManager();
 		_projectManager = new ProjectManager();
+		_modelManager   = new ModelManager();
 	}
 	
 	/* (non-Javadoc)
@@ -209,7 +218,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 
 		File pth = _configuration.getWorkspace(SUBSPACE_KNOWLEDGE);
 		if (pth.exists()) {
-			ModelManager.get().loadSourceDirectory(pth);
+			_modelManager.loadSourceDirectory(pth);
 		}
 	}
 
@@ -247,7 +256,7 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 		String   id = annotation.id();
 		String[] parameterNames = annotation.parameterNames();
 		try {
-			ModelManager.get().registerFunction(id, parameterNames, cls);
+			_modelManager.registerFunction(id, parameterNames, cls);
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}
@@ -730,6 +739,96 @@ public class Thinklab implements IKnowledgeManager, IConfiguration, IPluginManag
 
 	public void dropOntology(String id) {
 		_knowledgeRepository.releaseOntology(id);
+	}
+	
+	/*
+	 * ModelManager proxy
+	 */
+
+	@Override
+	public IModel getModel(String s) {
+		return _modelManager.getModel(s);
+	}
+
+	@Override
+	public IAgentModel getAgentModel(String s) {
+		return _modelManager.getAgentModel(s);
+	}
+
+	@Override
+	public IScenario getScenario(String s) {
+		return _modelManager.getScenario(s);
+
+	}
+
+	@Override
+	public IContext getContext(String s) {
+		return _modelManager.getContext(s);
+	}
+
+	@Override
+	public INamespace getNamespace(String ns) {
+		return _modelManager.getNamespace(ns);
+	}
+
+	@Override
+	public void releaseNamespace(String namespace) {
+		_modelManager.releaseNamespace(namespace);
+	}
+
+	@Override
+	public IModelObject getModelObject(String object) {
+		return _modelManager.getModelObject(object);
+	}
+
+	@Override
+	public String getSource(String object) {
+		return _modelManager.getSource(object);
+	}
+
+	@Override
+	public Collection<IModelObject> getDependencies(String object) {
+		return _modelManager.getDependencies(object);
+	}
+
+	@Override
+	public Collection<INamespace> getNamespaces() {
+		return _modelManager.getNamespaces();
+	}
+
+	@Override
+	public IContext getCoverage(IModel model) {
+		return _modelManager.getCoverage(model);
+	}
+
+	@Override
+	public Collection<IScenario> getApplicableScenarios(IModel model,
+			IContext context, boolean isPublic) throws ThinklabException {
+		return _modelManager.getApplicableScenarios(model, context, isPublic);
+	}
+
+	@Override
+	public INamespace loadFile(String resourceId, String namespaceId,
+			IProject project) throws ThinklabException {
+		return _modelManager.loadFile(resourceId, namespaceId, project);
+	}
+
+	@Override
+	public Collection<INamespace> load(IProject project)
+			throws ThinklabException {
+		return _modelManager.load(project);
+	}
+
+	@Override
+	public IExpression resolveFunction(String functionId,
+			Collection<String> parameterNames) {
+		return _modelManager.resolveFunction(functionId, parameterNames);
+	}
+
+	@Override
+	public Collection<INamespace> loadSourceDirectory(File sourcedir)
+			throws ThinklabException {
+		return _modelManager.loadSourceDirectory(sourcedir);
 	}
 
 }

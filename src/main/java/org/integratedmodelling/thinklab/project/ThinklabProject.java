@@ -19,7 +19,7 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
-import org.integratedmodelling.thinklab.modelling.lang.ModelManager;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.utils.MiscUtilities;
 
 import agg.xt_basis.Version;
@@ -82,7 +82,7 @@ public class ThinklabProject implements IProject {
 				for (IProject p : getPrerequisites()) {
 					p.load();
 				}
-				for (INamespace ns : ModelManager.get().loadSourceDirectory(getSourceDirectory())) {
+				for (INamespace ns : Thinklab.get().loadSourceDirectory(getSourceDirectory())) {
 					_namespaces.add(ns);
 				}
 				_loaded = true;
@@ -102,7 +102,7 @@ public class ThinklabProject implements IProject {
 		if (_loaded) {
 			try {
 				for (INamespace n : _namespaces) {
-					ModelManager.get().releaseNamespace(n.getId());
+					Thinklab.get().releaseNamespace(n.getId());
 				}
 				_namespaces.clear();
 			} finally {
