@@ -54,15 +54,6 @@ public class NS {
 	public static final String HAS_THIRD_FIELD = "thinklab:hasThird";
 	public static final String METADATA_HAS_FIELD = "metadata:hasField";
 
-	// modeling concepts
-	public static final String OBSERVATION = "observation:Observation";
-	public static final String MODELLING_MODEL = "observation.modelling:Model";
-	public static final String MODELLING_NAMESPACE = "observation.modelling:Namespace";
-	public static final String MODELLING_HAS_OBSERVABLE = "observation.modelling:hasObservable";
-	public static final String MODELLING_HAS_ID = "observation.modelling:hasId";
-	public static final String MODELLING_HAS_TIMESTAMP = "observation.modelling:hasTimestamp";
-	public static final String MODELLING_HAS_DATASOURCE = "observation.modelling:hasDataSource";
-
 	// spatial convenience relationships
 	public static final String GEOSPACE_HAS_SERVICE_URL = "geospace:hasServiceUrl";
 	public static final String GEOSPACE_HAS_COVERAGE_ID = "geospace:hasCoverageId";
@@ -94,5 +85,6 @@ public class NS {
 	public static final String LANGUAGE_ELEMENT = "modelling.thinklab:LanguageElement";
 	public static final String MODEL_OBJECT = "modelling.thinklab:ModelObject";
 	public static final String OBSERVING_OBJECT = "modelling.thinklab:ObservingObject";	
+	public static final String OBSERVATION = "modelling.thinklab:Observation";
 
 }

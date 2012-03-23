@@ -3,3 +3,12 @@ namespace org.integratedmodelling.test1;
 defmodel elevation of Elevation
 	as measure geospace.physics:Altitude in m;
 	
+	
+observe wcs(server="http://ecoinformatics.uvm.edu/geoserver/wcs", id="rainfall")
+     as measure habitat:Rainfall in mm
+     with metadata {
+              dc:comment ""
+              dc:originator ""
+              dc:rights "cc-attr-nomod"
+       };
+	

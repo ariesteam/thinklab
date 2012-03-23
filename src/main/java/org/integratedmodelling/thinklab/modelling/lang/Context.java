@@ -19,13 +19,13 @@ import org.integratedmodelling.thinklab.api.modelling.IState;
 @Concept(NS.CONTEXT)
 public class Context extends ModelObject<Context> implements IContextDefinition {
 
-	ArrayList<Observation> _observations = new ArrayList<Observation>();
+	ArrayList<IObservation> _observations = new ArrayList<IObservation>();
 	
 	public void addObservation(Observation o) {
 		_observations.add(o);
 	}
 	
-	public List<Observation> getObservations() {
+	public List<IObservation> getObservations() {
 		return _observations;
 	}
 
@@ -73,8 +73,7 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 
 	@Override
 	public void addObservation(IObservationDefinition observation) {
-		// TODO Auto-generated method stub
-		
+		_observations.add(observation);
 	}
 
 	@Override

@@ -215,8 +215,7 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public ISemanticObject<?> retrieve(long id) throws ThinklabException {
-		return Thinklab.get().entify(
-				retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), new ReferenceList()));
+		return Thinklab.get().entify(retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), new ReferenceList()));
 	}
 	
 	@Override
@@ -314,13 +313,14 @@ public class NeoKBox implements IKbox {
 		 */
 		return rewriteInternal(query, 
 				Traversal.description().
-					breadthFirst().
+					depthFirst().
+					evaluator(Evaluators.excludeStartPosition())).
 					relationships(new RelationshipType() {
 						@Override
 						public String name() {
 							return HASNODE_PROPERTY;
 						}
-					}).evaluator(Evaluators.excludeStartPosition()));
+					});
 	}
 
 	private TraversalDescription rewriteInternal(SemanticQuery query,

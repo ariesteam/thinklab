@@ -24,6 +24,21 @@ public class Observation extends ModelObject<Observation> implements IObservatio
 	IContext    _context;
 	IObserver   _observer;
 	Object      _inlineState;
+
+	IDataSourceDefinition _datasourceDefinition;
+	
+	public void initialize() {
+		
+		/*
+		 * TODO turn datasource definition or inline value into 
+		 * an actual datasource.
+		 */
+		
+		/*
+		 * TODO let the datasource fill in the observation's 
+		 * context if necessary.
+		 */
+	}
 	
 	@Override
 	public void setObservable(IList semantics) {
@@ -32,7 +47,7 @@ public class Observation extends ModelObject<Observation> implements IObservatio
 
 	@Override
 	public void setDataSource(IDataSourceDefinition datasource) {
-		_datasource = (IDataSource)datasource;
+		_datasourceDefinition = datasource;
 	}
 
 	@Override
