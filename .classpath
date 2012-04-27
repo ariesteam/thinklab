@@ -76,7 +76,6 @@
 	<classpathentry kind="lib" path="lib/gt-directory-2.6.5.jar"/>
 	<classpathentry kind="lib" path="lib/gt-epsg-extension-2.6.5.jar"/>
 	<classpathentry kind="lib" path="lib/gt-epsg-hsql-2.6.5.jar"/>
-	<classpathentry kind="lib" path="lib/gt-epsg-postgresql-2.6.5.jar"/>
 	<classpathentry kind="lib" path="lib/gt-epsg-wkt-2.6.5.jar"/>
 	<classpathentry kind="lib" path="lib/gt-feature-pregeneralized-2.6.5.jar"/>
 	<classpathentry kind="lib" path="lib/gt-geotiff-2.6.5.jar"/>

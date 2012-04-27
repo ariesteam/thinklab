@@ -23,4 +23,13 @@ public class FunctionDefinition extends ModelObject<FunctionDefinition> implemen
 		return this;
 	}
 
+	@Override
+	public Map<String, Object> getParameters() {
+		return _parameters;
+	}
+
+	@Override
+	public String getId() {
+		return _type;
+	}
 }

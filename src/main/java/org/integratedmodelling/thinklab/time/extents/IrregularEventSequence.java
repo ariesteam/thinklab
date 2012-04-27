@@ -75,12 +75,6 @@ public class IrregularEventSequence extends Observation implements IExtent {
 	}
 
 	@Override
-	public IConcept getObservableClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public IState aggregate(IConcept concept) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;

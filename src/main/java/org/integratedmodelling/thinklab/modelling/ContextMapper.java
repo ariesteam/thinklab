@@ -91,9 +91,9 @@ public class ContextMapper  {
 		int[] indexesTo = new int[indexesFrom.length];
 		int i = 0;
 		for (IExtent ext : from.getExtents()) {
-			IConcept c = ext.getObservableClass();
+			IConcept c = ext.getObservable().getDirectType();
 			IExtent theExt = to.getExtent(c);
-			IConcept theDim = theExt.getObservableClass();
+			IConcept theDim = theExt.getObservable().getDirectType();
 			int dim = theDim == null ? 1 : to.getMultiplicity(theDim);
 			if (!(dim == 1 || dim == indexesFrom[i]))
 				throw new ThinklabValidationException(
@@ -146,7 +146,7 @@ public class ContextMapper  {
 			ticker.increment();
 			for (int i = 0; i < toCursor.getDimensionsCount(); i++) {
 				if (ticker.hasChanged(i)) {
-					ret.add(_to.getExtents().get(i).getObservableClass());
+					ret.add(_to.getExtents().get(i).getObservable().getDirectType());
 				}
 			}
 		}

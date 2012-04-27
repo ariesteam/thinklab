@@ -224,6 +224,9 @@ public class Thinklab implements
 
 	private void visitAnnotations() throws ThinklabException {
 		
+		/*
+		 * FIXME use asm library to find annotations without loading classes
+		 */
 		ClassUtils.visitPackage(this.getClass().getPackage().getName(), 
 				new Visitor() {
 					

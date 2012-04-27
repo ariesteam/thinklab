@@ -100,11 +100,11 @@ public class ArealLocation extends Observation implements IExtent {
 		return 0;
 	}
 
-	@Override
-	public IConcept getObservableClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public IConcept getObservableClass() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public IState aggregate(IConcept concept) throws ThinklabException {

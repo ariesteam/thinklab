@@ -601,8 +601,7 @@ public class ModelManager implements IModelManager {
 		} else if (resourceId.endsWith(".clj")) {
 
 			/*
-			 * TODO we need to rewrite the clojure modeling interface to produce
-			 * beans compatible with ModelAdapter.
+			 * TODO must rewrite the clojure modeling interface
 			 */
 
 		} else if (resourceId.endsWith(".owl")) {

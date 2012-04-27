@@ -427,12 +427,12 @@ public class RasterGrid extends Observation implements IExtent {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-	@Override
-	public IConcept getObservableClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//
+//	@Override
+//	public IConcept getObservableClass() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public IState aggregate(IConcept concept) throws ThinklabException {

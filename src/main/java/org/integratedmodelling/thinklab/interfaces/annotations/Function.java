@@ -37,4 +37,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Function {
 	public String id();
 	public String[] parameterNames();
+	public String doc() default "";
 }

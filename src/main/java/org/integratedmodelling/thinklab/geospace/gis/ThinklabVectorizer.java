@@ -73,7 +73,7 @@ public class ThinklabVectorizer  {
 		
 		return vectorize(
 				new RasterCoverage(
-						state.getObservableClass().toString() + "_objects", 
+						state.getObservable().getDirectType().toString() + "_objects", 
 						extent, 
 						state.getDataAsDoubles()),
 				extent);

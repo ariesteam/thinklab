@@ -57,7 +57,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 			throw new ThinklabValidationException("cannot create a coverage from a non-spatial state");
 		}
 		
-		buildFromData(state.getObservableClass().getLocalName(), (GridExtent)space, data);
+		buildFromData(state.getObservable().getDirectType().getLocalName(), (GridExtent)space, data);
 	}
 	
 	private void buildFromData(String name, GridExtent extent, Object data)  throws ThinklabException {

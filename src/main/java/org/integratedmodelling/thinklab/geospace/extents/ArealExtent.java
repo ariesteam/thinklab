@@ -292,10 +292,10 @@ public abstract class ArealExtent extends Observation implements IExtent {
 //		return getSignature().hashCode();
 //	}
 
-	@Override
-	public IConcept getObservableClass() {
-		return Geospace.get().SubdividedSpaceObservable();
-	}
+//	@Override
+//	public IConcept getObservableClass() {
+//		return Geospace.get().SubdividedSpaceObservable();
+//	}
 
 	
 	@Override
