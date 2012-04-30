@@ -3,14 +3,18 @@ namespace org.integratedmodelling.test1;
 defmodel elevation of Elevation
 	as measure geospace.physics:Altitude in m;
 	
+// context contains states, or models that are resolved on declaration
 
-defcontext testcontext as
+defcontext pugetRainy as
      grid(resolution="1 km", 
 	  shape="EPSG:4326 POLYGON((-124.7625 24.5210, -66.9326  24.5210, -66.9326 49.3845, -124.7625 49.3845, -124.7625 24.5210))"),
      12 as measure habitat:Rainfall in mm;
 
+
+// model, not observe - this is a resolved model but still a model.
+// model {observable | datasource} - if datasource observers must be conformant
 	
-observe wcs(server="http://ecoinformatics.uvm.edu/geoserver/wcs", id="rainfall")
+model wcs(server="http://ecoinformatics.uvm.edu/geoserver/wcs", id="rainfall")
      as measure habitat:Rainfall in mm
      with metadata {
               dc:comment ""
@@ -18,4 +22,9 @@ observe wcs(server="http://ecoinformatics.uvm.edu/geoserver/wcs", id="rainfall")
               dc:rights "cc-attr-nomod"
        };
 	
+// accessor is produced by observer using either the datasource, dependencies, or a mediated accessor; observer is notified of either all
+// observables, the DS or the dependencies before getAccessor is called.
 
+// observe {model-id | model-specs} [in {context-id | context-specs}]
+
+observe elevation in pugetRainy;
