@@ -7,9 +7,11 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IDataSource;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IExpressionDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
 
@@ -17,7 +19,10 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinitio
 public class Model extends ObservingObject<Model> implements IModelDefinition {
 
 	IObserver _observer;
-	
+	IDataSource _datasource;
+	Object      _inlineState;
+	IFunctionDefinition _datasourceDefinition;
+
 	@Override
 	public void addObserver(IObserverDefinition odef, IExpressionDefinition edef) {
 		
@@ -44,7 +49,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	}
 
 	@Override
-	public IObservation contextualize(IContext context)
+	public IObservation observe(IContext context)
 			throws ThinklabException {
 		throw new ThinklabUnsupportedOperationException("models cannot be contextualized at the client side");
 	}
@@ -57,6 +62,21 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	@Override
 	public Model demote() {
 		return this;
+	}
+
+	@Override
+	public void setDataSource(IDataSource datasource) {
+		_datasource = datasource;
+	}
+
+	@Override
+	public void setDatasourceGeneratorFunction(IFunctionDefinition function) {
+		_datasourceDefinition = function;
+	}
+
+	@Override
+	public void setInlineState(Object state) {
+		_inlineState = state;
 	}
 
 }

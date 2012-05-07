@@ -19,15 +19,17 @@ import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
+import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IContextDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IObservationDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 
 @Concept(NS.CONTEXT)
 public class Context extends ModelObject<Context> implements IContextDefinition {
 
+	ArrayList<IModel> _models = new ArrayList<IModel>();
 	ArrayList<IObservation> _observations = new ArrayList<IObservation>();
 	
 	ArrayList<IExtent> _order = new ArrayList<IExtent>();
@@ -46,8 +48,8 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	// only used for the isCovered op
 	MultidimensionalCursor _cursor = null;
 
-	public void addObservation(Observation o) {
-		_observations.add(o);
+	public void addObservation(IModel o) {
+		_models.add(o);
 	}
 	
 	public List<IObservation> getObservations() {
@@ -96,8 +98,8 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	}
 
 	@Override
-	public void addObservation(IObservationDefinition observation) {
-		_observations.add(observation);
+	public void addModel(IModelDefinition observation) {
+		_models.add(observation);
 	}
 
 	@Override
@@ -214,7 +216,7 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		}
 		
 		
-		addObservation(o);
+		_observations.add(o);
 		
 	}
 	
@@ -229,11 +231,15 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 				merge(o);
 		}
 		
+		for (IObservation o : _observations) {
+			if (! (o instanceof IExtent))
+				merge(o);
+		}
+		
 		sort();
 
-		for (IObservation o : _observations) {
-			if (o instanceof IState)
-				merge(o);
+		for (IModel m : _models) {
+			merge(m.observe(this));
 		}
 		
 	}

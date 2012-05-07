@@ -23,11 +23,9 @@ import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
-import org.integratedmodelling.thinklab.api.provenance.IProvenance;
-import org.integratedmodelling.thinklab.api.provenance.ITransformation;
 import org.integratedmodelling.thinklab.geospace.coverage.ICoverage;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
@@ -156,25 +154,7 @@ public class RegularRasterGridDataSource implements IDataSource {
 	}
 
 	@Override
-	public IConcept getValueType() {
-		// TODO could be numbers or knowledge
-		return null;
-	}
-
-	@Override
-	public Object getValue(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IDataSource contextualize(IContext context) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ITransformation<IDataSource, IProvenance<IDataSource>> getTransformation() {
+	public IAccessor contextualize(IContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
