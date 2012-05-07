@@ -28,7 +28,8 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	ArrayList<Triple<IModel, String, Boolean>> _dependencies = 
 			new ArrayList<Triple<IModel,String, Boolean>>();
 	
-	ArrayList<ISemanticObject<?>> _observables = new ArrayList<ISemanticObject<?>>();
+	ArrayList<ISemanticObject<?>> _observables = 
+			new ArrayList<ISemanticObject<?>>();
 
 	/*
 	 * non-persistent fields

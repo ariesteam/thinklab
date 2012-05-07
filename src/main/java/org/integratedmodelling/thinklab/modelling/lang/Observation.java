@@ -8,7 +8,6 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 
 /**
  * An observation pairs a datasource with an observer. The datasource may provide

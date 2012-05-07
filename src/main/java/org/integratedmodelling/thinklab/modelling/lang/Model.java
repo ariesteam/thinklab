@@ -79,4 +79,10 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		_inlineState = state;
 	}
 
+	@Override
+	public void defineObservable() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
