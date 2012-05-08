@@ -48,6 +48,24 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	// only used for the isCovered op
 	MultidimensionalCursor _cursor = null;
 
+	/**
+	 * Shallow copy everything in the context passed.
+	 * @param context
+	 */
+	public Context(Context context) {
+		this._models.addAll(context._models);
+		this._observations.addAll(context._observations);
+		this._order.addAll(context._order);
+		this._states.putAll(context._states);
+		this._extents.putAll(context._extents);
+		this._multiplicity = context._multiplicity;
+		this._isNull = context._isNull;
+	}
+
+	public Context() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void addObservation(IModel o) {
 		_models.add(o);
 	}
