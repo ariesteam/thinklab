@@ -155,7 +155,7 @@ public class VectorCoverageDataSource implements IDataSource {
 	}
 
 	@Override
-	public IAccessor contextualize(IContext context) throws ThinklabException {
+	public IAccessor getAccessor(IContext context) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -25,6 +25,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
@@ -59,6 +60,7 @@ import org.integratedmodelling.thinklab.modelling.lang.FunctionDefinition;
 import org.integratedmodelling.thinklab.modelling.lang.Measurement;
 import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.integratedmodelling.thinklab.modelling.lang.Model;
+import org.integratedmodelling.thinklab.modelling.lang.ModelObject;
 import org.integratedmodelling.thinklab.modelling.lang.Namespace;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
 import org.integratedmodelling.thinklab.modelling.lang.PropertyObject;
@@ -267,6 +269,11 @@ public class ModelManager implements IModelManager {
 		@Override
 		public void onNamespaceDeclared(String namespaceId, INamespace namespace) {
 			
+			/*
+			 * TODO remove any objects in this namespace in project-defined kbox unless
+			 * resource has same modification date.
+			 */
+			
 			if (namespacesById.get(namespaceId) != null) {
 				/*
 				 * warn only for now
@@ -278,7 +285,7 @@ public class ModelManager implements IModelManager {
 
 		@Override
 		public void onNamespaceDefined(INamespace namespace) throws ThinklabException {
-			
+						
 			/*
 			 * store it first, which publishes the knowledge so that the next ones will work
 			 */
@@ -289,9 +296,11 @@ public class ModelManager implements IModelManager {
 			}
 
 			((Namespace)namespace).initialize();
+			
 			/*
 			 * TODO pop resolver context
 			 */
+			
 		}
 
 		@Override
@@ -364,8 +373,23 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public void onModelObjectDefined(INamespace namespace, IModelObject ret) {
-			// TODO Auto-generated method stub
+		public void onModelObjectDefined(INamespace namespace, IModelObject ret) throws ThinklabException {
+
+			/**
+			 * Store anything that wants to be stored by reporting storage metadata.
+			 */
+			IMetadata md = ((ModelObject<?>)ret).getStorageMetadata();
+			if (md != null) {
+				ret.getMetadata().merge(md);
+				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
+				if (kbox != null) {
+					try {
+						kbox.store(ret);
+					} catch (ThinklabException e) {
+						onException(e, ret.getLastLineNumber());
+					}
+				}
+			}
 
 		}
 

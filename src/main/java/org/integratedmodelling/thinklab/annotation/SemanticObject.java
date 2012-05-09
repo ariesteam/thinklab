@@ -19,6 +19,10 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 /**
  * Base class for a general non-literal semantic object.
  * 
+ * ALL semantic objects are properly hashed with a thread-unique ID and can be used as keys
+ * in hashes. Their default equals() method checks for identity - only the same objects will
+ * respond true.
+ * 
  * @author Ferd
  *
  */
@@ -33,7 +37,7 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
     };
 
     // Returns the current thread's unique ID, assigning it if necessary
-    public static long nextId() {
+    private static long nextId() {
         Long id = threadId.get();
         threadId.set(new Long(id.longValue() + 1l));
         return id;

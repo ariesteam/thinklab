@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IMetadataDefinition;
 
 @Concept(NS.METADATA)
@@ -35,6 +36,11 @@ public class Metadata extends LanguageElement<Metadata> implements IMetadataDefi
 	@Override
 	public Metadata demote() {
 		return this;
+	}
+
+	@Override
+	public void merge(IMetadata md) {
+		_data.putAll(((Metadata)md)._data);
 	}
 	
 }

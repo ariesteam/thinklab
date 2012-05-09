@@ -18,6 +18,19 @@ public abstract class ModelObject<T> extends LanguageElement<T> implements IMode
 	INamespace _namespace;
 	IMetadata  _metadata;
 	
+	/**
+	 * This is called after the model object is defined. If it returns anything other than
+	 * null, the metadata are merged with the object's and the object is stored in the 
+	 * thinklab kbox for the namespace, so that it can be found by queries and used to
+	 * resolve dependencies.
+	 * 
+	 * @return
+	 */
+	public IMetadata getStorageMetadata() {
+		return null;
+	}
+	
+	
 	@Override
 	public void dump(PrintStream out) {
 	}

@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.modelling.lang.datasources;
 
+import java.util.Map;
+
 import org.integratedmodelling.common.HashableObject;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -7,6 +9,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
+import org.integratedmodelling.thinklab.api.modelling.ISerialAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 
 /**
@@ -19,7 +22,7 @@ public class ConstantDataSource implements IDataSource {
 	
 	private Object _state = null;
 
-	class ConstantAccessor extends HashableObject implements IAccessor {
+	class ConstantAccessor extends HashableObject implements ISerialAccessor {
 
 		@Override
 		public IConcept getStateType() {
@@ -35,11 +38,17 @@ public class ConstantDataSource implements IDataSource {
 
 		@Override
 		public Object get(String key) throws ThinklabException {
-			return _state;
+			return null;
 		}
 
 		@Override
 		public void notifyDependencyKey(String key, IConcept concept) {
+		}
+
+		@Override
+		public Object getValue(int overallContextIndex,
+				Map<String, Object> context) {
+			return _state;
 		}
 		
 	}
@@ -49,7 +58,7 @@ public class ConstantDataSource implements IDataSource {
 	}
 
 	@Override
-	public IAccessor contextualize(IContext context) throws ThinklabException {
+	public IAccessor getAccessor(IContext context) throws ThinklabException {
 		return new ConstantAccessor();
 	}
 
