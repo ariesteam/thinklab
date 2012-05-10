@@ -5,6 +5,7 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
@@ -23,11 +24,31 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	IDataSource _datasource;
 	IFunctionDefinition _datasourceDefinition;
 
+	
+	
 	/* ------------------------------------------------------------------------------
 	 * local methods
 	 * ------------------------------------------------------------------------------
 	 */
 	
+	/**
+	 * Ensure that we get stored if we have a non-trivial datasource and no 
+	 * dependencies, so we can be used to resolve dangling references.
+	 */
+	@Override
+	public IMetadata getStorageMetadata() {
+
+		if (_datasource != null & _dependencies.size() == 0) {
+			/*
+			 * TODO add total extents from datasource and 
+			 * observation type from observer, which must be
+			 * uniform.
+			 */
+		}
+		
+		return null;
+	}
+
 	/*
 	 * Return the observer's accessor after publishing our dependencies, datasource etc.
 	 * This function takes a CompiledContext reflecting the same info in the context
