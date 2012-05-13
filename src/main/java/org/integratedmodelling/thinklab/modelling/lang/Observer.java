@@ -22,6 +22,11 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	IObserver _mediated = null;
 	IAccessor _accessor = null;
 	
+	@Override
+	public IContext getUnresolvedContext(IContext totalContext)  {
+		return totalContext;
+	}
+	
 	/**
 	 * Add one observer with an optional conditional expression to contextualize the model to use. Creation
 	 * of conditional observers if more than one observer is added or there are conditions is

@@ -6,7 +6,7 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.query.Query;
-import org.integratedmodelling.thinklab.query.operators.GreaterOrEqual;
+import org.integratedmodelling.thinklab.query.operators.Operators;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class QueryTest {
 		
 		IQuery allAdults =
 				Query.select(Thinklab.c("thinklab.test:Person")).
-					restrict(Thinklab.p("thinklab.test:hasAge"), new GreaterOrEqual(18));
+					restrict(Thinklab.p("thinklab.test:hasAge"), Operators.compare(18, Operators.GE));
 		
 		/*
 		 * query all persons

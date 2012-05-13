@@ -434,6 +434,7 @@ public class NeoKBox implements IKbox {
 						index.add(node, toId(property), value);
 					}
 				});
+		
 		registerTypeAdapter(Thinklab.c(NS.FLOAT),
 				new TypeAdapter() {
 					

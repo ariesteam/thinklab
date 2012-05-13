@@ -168,7 +168,6 @@ public class ConceptualizeStoreTest  {
 		 */
 		Assert.assertTrue(clone instanceof Person);
 		
-		
 		// there's quite a bit to check. Just run a few tests.
 		Assert.assertTrue(clone._name.equals("dick") && clone._age == 71);
 		Assert.assertTrue(clone._parents == null);
@@ -178,7 +177,6 @@ public class ConceptualizeStoreTest  {
 		Assert.assertTrue(mr._parents != null && mr._parents[0]._name.equals("dick"));
 		Assert.assertTrue(mr._children != null && mr._children[0]._name.equals("pipp"));
 		Assert.assertTrue(mr._partner != null && mr._partner._name.equals("john"));
-		
 		
 		IKbox thinklabKbox = Thinklab.get().requireKbox("thinklab");
 		

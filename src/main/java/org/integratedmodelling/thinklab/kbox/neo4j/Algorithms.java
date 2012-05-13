@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.kbox.neo4j;
 
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.traversal.Evaluation;
@@ -20,8 +21,7 @@ public class Algorithms {
 					return Evaluation.EXCLUDE_AND_CONTINUE;
 
 				Node node = arg0.endNode();
-				
-
+			
 				IConcept c = 
 					Thinklab.c(node.getProperty(NeoKBox.TYPE_PROPERTY).toString());
 				if (c.getSemanticClosure().contains(concept)) {
@@ -30,7 +30,6 @@ public class Algorithms {
 				return Evaluation.EXCLUDE_AND_PRUNE;
 			}
 		};
-	}
-	
+	}	
 	
 }

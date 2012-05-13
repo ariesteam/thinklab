@@ -1,0 +1,55 @@
+package org.integratedmodelling.thinklab.query.operators;
+
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+
+/**
+ * Convenience class to obtain common operators without creating new objects, 
+ * sometimes even in a smart way.
+ * 
+ * @author Ferd
+ *
+ */
+public class Operators {
+
+	static final public int EQ = 0;
+	static final public int LT = 1;
+	static final public int GT = 2;
+	static final public int LE = 3;
+	static final public int GE = 4;
+	static final public int NE = 5;
+	
+	/**
+	 * 
+	 * @param field
+	 * @param match
+	 * @return
+	 */
+	static public IQuery tableSelect(String field, IQuery match) {
+		return new TableSelect(field, match);
+	}
+	
+	/**
+	 * Return an appropriate operator to express identity for the
+	 * passed object. If a semantic object, return a default semantic 
+	 * matcher; if a POD, return an appropriate equality operator.
+	 * 
+	 * @param match
+	 */
+	static public IQuery is(Object match) {
+		return null;
+	}
+	
+	/**
+	 * Return an appropriate comparison operator for the object
+	 * passed and the chosen comparison, which should be one of
+	 * the constants defined in this class.
+	 * 
+	 * @param match
+	 * @param operator
+	 * @return
+	 */
+	static public IQuery compare(Object match, int operator) {
+		return null;
+	}
+	
+}
