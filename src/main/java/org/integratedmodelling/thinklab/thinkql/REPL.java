@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.UUID;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.interpreter.ModelGenerator;
@@ -131,7 +132,16 @@ public class REPL {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
+		@Override
+		public boolean isGeneratedId(String id) {
+			return id.endsWith("___");
+		}
+
+		@Override
+		public String generateId(IModelObject o) {
+			return UUID.randomUUID().toString() + "___";
+		}
 	}
 	
 	public void run(String[] args) throws Exception {

@@ -179,8 +179,10 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 	@Override
 	public List<SemanticQuery> getRestrictions() {
 		List<SemanticQuery> ret = new ArrayList<SemanticQuery>();
-		for (IQuery q : _restrictions) {
-			ret.add((SemanticQuery) q);
+		if (_restrictions != null) {
+			for (IQuery q : _restrictions) {
+				ret.add((SemanticQuery) q);
+			}
 		}
 		return ret;
 	}

@@ -964,6 +964,8 @@ public class GridExtent extends ArealExtent {
 //
 //	}
 	
+	
+	
 	@Override
 	public boolean isCovered(int granule) {
 
@@ -971,6 +973,11 @@ public class GridExtent extends ArealExtent {
 			return true;
 		
 		return activationLayer.isActive(granule);
+	}
+
+	@Override
+	public ISemanticObject<?> getObservable() {
+		return Geospace.get().RasterGridObservable();
 	}
 
 	@Override

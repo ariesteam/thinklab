@@ -1,11 +1,12 @@
 package org.integratedmodelling.thinklab.tests;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.query.Query;
+import org.integratedmodelling.thinklab.query.operators.GreaterOrEqual;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,11 +36,22 @@ public class QueryTest {
 			System.out.println((i++) + ": " + o);
 		}
 		
+		IQuery allPeople = 
+				Query.select(Thinklab.c("thinklab.test:Person"));
+		
+		IQuery allAdults =
+				Query.select(Thinklab.c("thinklab.test:Person")).
+					restrict(Thinklab.p("thinklab.test:hasAge"), new GreaterOrEqual(18));
+		
 		/*
-		 * query namespaces
+		 * query all persons
 		 */	
 		i = 0;
-		for (ISemanticObject<?> o : kbox.query(Query.select(Thinklab.c(NS.NAMESPACE)))) {
+		for (ISemanticObject<?> o : kbox.query(allPeople)) {
+			System.out.println((i++) + ": " + o);
+		}
+		
+		for (ISemanticObject<?> o : kbox.query(allAdults)) {
 			System.out.println((i++) + ": " + o);
 		}
 	}

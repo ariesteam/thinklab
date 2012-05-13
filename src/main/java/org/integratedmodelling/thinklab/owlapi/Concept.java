@@ -799,14 +799,17 @@ public class Concept extends Knowledge implements IConcept {
 			return ret;
 		}
 		
-		return collectChildren(new HashSet<IConcept>());
+		Set<IConcept> ret = collectChildren(new HashSet<IConcept>());
+		ret.add(this);
+		
+		return ret;
 	}
 	
 
 	private Set<IConcept> collectChildren(Set<IConcept> hashSet) {
 
 		for (IConcept c : getChildren()) {
-			if (!hashSet.contains(c));
+			if (!hashSet.contains(c))
 				((Concept)c).collectChildren(hashSet);
 			hashSet.add(c);
 		}			

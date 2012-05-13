@@ -116,7 +116,7 @@ public class CompiledContext extends Context {
 			 */
 		}
 		
-		return null;
+		return ret;
 	}
 
 }

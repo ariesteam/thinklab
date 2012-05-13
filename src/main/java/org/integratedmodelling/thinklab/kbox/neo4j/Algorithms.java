@@ -15,13 +15,19 @@ public class Algorithms {
 			
 			@Override
 			public Evaluation evaluate(Path arg0) {
-				Node node = arg0.startNode();
+
+				if (arg0.length() < 1)
+					return Evaluation.EXCLUDE_AND_CONTINUE;
+
+				Node node = arg0.endNode();
+				
+
 				IConcept c = 
 					Thinklab.c(node.getProperty(NeoKBox.TYPE_PROPERTY).toString());
 				if (c.getSemanticClosure().contains(concept)) {
 					return Evaluation.INCLUDE_AND_CONTINUE;
 				}
-				return Evaluation.EXCLUDE_AND_CONTINUE;
+				return Evaluation.EXCLUDE_AND_PRUNE;
 			}
 		};
 	}

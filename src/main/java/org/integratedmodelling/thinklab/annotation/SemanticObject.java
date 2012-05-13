@@ -86,6 +86,12 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 		return 
 			object instanceof IConcept &&
 			getDirectType().is((IConcept)object);
+		
+		/*
+		 * TODO implement is(ISemanticObject) by generating a 
+		 * SemanticQuery from the argument and matching it to
+		 * our semantics.
+		 */
 	}
 
 	@Override

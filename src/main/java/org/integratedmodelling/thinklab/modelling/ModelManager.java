@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.UUID;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
@@ -437,6 +438,16 @@ public class ModelManager implements IModelManager {
 			return null;
 		}
 
+		@Override
+		public boolean isGeneratedId(String id) {
+			return ModelManager.isGeneratedId(id);
+		}
+
+		@Override
+		public String generateId(IModelObject o) {
+			return ModelManager.generateId(o);
+		}
+
 	}
 
 	private Resolver _resolver = null;
@@ -449,6 +460,14 @@ public class ModelManager implements IModelManager {
 		return _resolver;
 	}
 
+	public static boolean isGeneratedId(String id) {
+		return id.endsWith("___");
+	}
+
+	public static String generateId(IModelObject o) {
+		return UUID.randomUUID().toString() + "___";
+	}
+	
 	@Override
 	public IExpression resolveFunction(String functionId, Collection<String> parameterNames) {
 
@@ -677,7 +696,6 @@ public class ModelManager implements IModelManager {
 
 	@Override
 	public IModelObject getModelObject(String object) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

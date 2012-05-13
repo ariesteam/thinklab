@@ -1,8 +1,10 @@
 package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -18,6 +20,7 @@ import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelObjectDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefinition;
 import org.integratedmodelling.thinklab.api.project.IProject;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 
 @Concept(NS.NAMESPACE)
 public class Namespace extends SemanticObject<INamespace> implements INamespaceDefinition {
@@ -26,6 +29,8 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	ArrayList<IAxiom> _axioms = new ArrayList<IAxiom>();
 	ArrayList<INamespace> _importedNamespaces = new ArrayList<INamespace>();
 
+	HashMap<String, IModelObject> _namedObjects = new HashMap<String, IModelObject>();
+	
 	IOntology _ontology;
 	String _id;
 	String _resourceUrl;
@@ -62,7 +67,14 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		 */
 		for (IModelObject o : _modelObjects) {
 			((ModelObject<?>)o).initialize();
+			if (!isAnonymous(o)) {
+				_namedObjects.put(o.getId(), o);
+			}
 		}
+	}
+
+	private boolean isAnonymous(IModelObject o) {
+		return o.getId() == null || ModelManager.isGeneratedId(o.getId());
 	}
 
 	@Override
@@ -145,8 +157,7 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	
 	@Override
 	public IModelObject getModelObject(String mod) {
-		// TODO Auto-generated method stub
-		return null;
+		return _namedObjects.get(mod);
 	}
 
 	@Override

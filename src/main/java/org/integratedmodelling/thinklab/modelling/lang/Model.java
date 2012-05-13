@@ -55,17 +55,24 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	 * passed to observe(), and modifies it by adding the accessor tree and the resolver
 	 * for any unresolved dependencies along the model structure. 
 	 */
-	IAccessor getAccessor(CompiledContext context) {
+	IAccessor getAccessor(CompiledContext context) throws ThinklabException {
 		
 		Observer<?> observer = (Observer<?>) _observer;
 
 		/*
-		 * see if we have a datasource and if so, give it to the observer
-		 * so it can create an accessor for it.
+		 * see if we have a datasource and if so, have it return the accessor and
+		 * be done with it.
 		 */
+		if (_datasource != null)
+			return _datasource.getAccessor(context);
 
 		/*
-		 * if we have dependencies, the observer should use them, not us.
+		 * if we have dependencies, they're actually for a switching observer
+		 * so give them to it.
+		 */
+		
+		/*
+		 * 
 		 */
 		
 		return observer.getAccessor();
@@ -76,7 +83,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	 * ------------------------------------------------------------------------------
 	 */
 	
-	
+
 	@Override
 	public void addObserver(IObserverDefinition odef, IExpressionDefinition edef) {
 		

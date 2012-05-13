@@ -320,37 +320,58 @@ public class NeoKBox implements IKbox {
 						public String name() {
 							return HASNODE_PROPERTY;
 						}
-					});
+					}, Direction.OUTGOING);
 	}
 
+	
+	/*
+	 * TODO this is entirely not clarified. At the moment it only gets first-class objects (directly inserted) and does not
+	 * use the index at all. Probably this is what should happen:
+	 * 
+	 * 1. walk the query depth-first and recursively rewrite each subquery (not instanceof IOperator)'
+	 * 	  when done, execute it and collect the nodes in a HashSet with which to initialize an evaluator for the next level
+	 *	  If level = 0, the nodes are the result 
+	 *
+	 * 2. for IOperators, we should use the indexes - which being Lucene-based, can use multiple properties so we should
+	 *    rewrite the parts we can rewrite into queries and add evaluators for the rest
+	 *    
+	 *    The current implementation always starts at the top node, the one above will not - what's best?
+	 * 
+	 */
 	private TraversalDescription rewriteInternal(SemanticQuery query,
 			TraversalDescription td) {
 		
-		if (query != null) {
+		if (query == null)
+			return td;
+		
+		/*
+		 * chain any further evaluators.
+		 */
+		if (query instanceof IOperator) {
+			
 			/*
-			 * chain any further evaluators.
+			 * must have registered its query adapter.
 			 */
-			if (query instanceof IOperator) {
-				
+			
+		} else {
+			
+			/*
+			 * default behavior for SemanticQuery: handle 
+			 * semantic closures and downstream nodes.
+			 */
+			if (query.getSubject() != null)
+				td = td.evaluator(Algorithms.semanticClosure(query.getSubject()));
+			else {
 				/*
-				 * must have registered its query adapter.
+				 * connector
 				 */
-				
-			} else {
-				
-				/*
-				 * default behavior for SemanticQuery: handle 
-				 * semantic closures and downstream nodes.
-				 */
-				if (query.getSubject() != null)
-					td = td.evaluator(Algorithms.semanticClosure(query.getSubject()));
-				else {
-					/*
-					 * connector
-					 */
-				}
 			}
 		}
+			
+		for (SemanticQuery r : query.getRestrictions()) {
+			
+		}
+
 		return td;
 	}
 

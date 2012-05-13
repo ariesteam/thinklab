@@ -38,6 +38,7 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
@@ -61,9 +62,9 @@ public class Geospace  {
 	private IConcept multiPointType;
 	private IConcept multiLineStringType;
 	private IConcept multiPolygonType;
-	private ISemanticObject areaLocationInstance;
-	private ISemanticObject rasterGridInstance;
-	private ISemanticObject spatialCoverageInstance;
+	private ISemanticObject<?> areaLocationInstance;
+	private ISemanticObject<?> rasterGridInstance;
+	private ISemanticObject<?> spatialCoverageInstance;
 	private IConcept arealLocationType;
 	private IConcept rasterGridObservable;
 	private IConcept subdividedSpaceObservable;
@@ -314,11 +315,11 @@ public class Geospace  {
 		return shapeType;
 	}
 
-	public ISemanticObject absoluteArealLocationInstance(IOntology session) {
+	public ISemanticObject<?> absoluteArealLocationInstance(IOntology session) {
 		return areaLocationInstance;
 	}
 	
-	public ISemanticObject absoluteRasterGridInstance(IOntology session) {
+	public ISemanticObject<?> absoluteRasterGridInstance(IOntology session) {
 		return rasterGridInstance;
 	}
 
@@ -358,8 +359,16 @@ public class Geospace  {
 		return rasterSpaceType;
 	}
 
-	public IConcept RasterGridObservable() {
-		return rasterGridObservable;
+	public ISemanticObject<?> RasterGridObservable() {
+		
+		if (rasterGridInstance == null) {
+			try {
+				rasterGridInstance = Thinklab.get().entify(PolyList.list(rasterGridObservable));
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
+		return rasterGridInstance;
 	}
 
 	public IConcept SubdividedSpaceObservable() {

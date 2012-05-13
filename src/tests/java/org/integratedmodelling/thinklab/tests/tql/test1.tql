@@ -20,5 +20,3 @@ defmodel rainfall of Rainfall
 	as measure habitat:Rainfall in m;
 	
 	
-observe rainfall in puget;
-	

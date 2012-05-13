@@ -18,12 +18,17 @@ public class UnitDefinition extends LanguageElement<UnitDefinition> implements I
 
 	@Override
 	public void dump(PrintStream out) {
-		
+		out.append(_expression);
 	}
 
 	@Override
 	public UnitDefinition demote() {
 		return this;
+	}
+
+	@Override
+	public String getStringExpression() {
+		return _expression;
 	}
 
 }

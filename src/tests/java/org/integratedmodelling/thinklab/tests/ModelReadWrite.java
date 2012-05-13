@@ -3,7 +3,10 @@ package org.integratedmodelling.thinklab.tests;
 import java.net.URL;
 
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.modelling.lang.Namespace;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,6 +29,11 @@ public class ModelReadWrite {
 
 		URL test1 = ClassLoader.getSystemResource("org/integratedmodelling/thinklab/tests/tql/test1.tql");
 		INamespace ns = Thinklab.get().loadFile(test1.toString(), null, null);
+		
+		IModel model = (IModel) ns.getModelObject("rainfall");
+		IContext ctx = (IContext)ns.getModelObject("puget");
+		
+		IObservation result = model.observe(ctx);
 		
 		System.out.println(((Namespace)ns).getSemantics().prettyPrint());
 		

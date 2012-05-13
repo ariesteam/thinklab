@@ -34,7 +34,8 @@ public class NS {
 
 	// standard operations
 	public static final String OPERATION_EQUALS = "thinklab:Equal";
-	
+	public static final String OPERATION_GREATER_OR_EQUAL = "thinklab:GreaterOrEqual";
+
 	// observable types
 	public static final String BOOLEAN_RANKING = "thinklab:BooleanRanking";
 	public static final String ORDINAL_RANKING = "thinklab:OrdinalRanking";
@@ -87,5 +88,6 @@ public class NS {
 	public static final String MODEL_OBJECT = "modelling.thinklab:ModelObject";
 	public static final String OBSERVING_OBJECT = "modelling.thinklab:ObservingObject";	
 	public static final String OBSERVATION = "modelling.thinklab:Observation";
+
 
 }

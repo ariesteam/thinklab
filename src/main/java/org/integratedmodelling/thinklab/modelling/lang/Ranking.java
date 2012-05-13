@@ -1,12 +1,16 @@
 package org.integratedmodelling.thinklab.modelling.lang;
 
 import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.modelling.IAccessor;
+import org.integratedmodelling.thinklab.api.modelling.IMediatingObserver;
+import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IRankingObserverDefinition;
 
 @Concept(NS.RANKING_OBSERVER)
-public class Ranking extends Observer<Ranking> implements IRankingObserverDefinition {
+public class Ranking extends Observer<Ranking> implements IRankingObserverDefinition, IMediatingObserver {
 	
 	Number _from = null;
 	Number _to = null;
@@ -36,6 +40,12 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 	@Override
 	public Ranking demote() {
 		return this;
+	}
+
+	@Override
+	public IAccessor getMediator(IObserver observer) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
