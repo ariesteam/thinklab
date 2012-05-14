@@ -89,6 +89,16 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 	}
 	
 	/**
+	 * Produce a query that will select objects that incarnate the passed concept, using a
+	 * string for the concept.
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public static Query select(String c) {
+		return new Query(Thinklab.c(c));
+	}
+	/**
 	 * Produce a query that ANDs all the passed queries, selecting only
 	 * objects that match them all.
 	 *  

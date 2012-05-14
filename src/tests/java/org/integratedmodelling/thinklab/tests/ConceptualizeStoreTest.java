@@ -5,48 +5,16 @@ import junit.framework.Assert;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.modelling.lang.Metadata;
+import org.integratedmodelling.thinklab.tests.data.TestData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 public class ConceptualizeStoreTest  {
-	
-	/*
-	 * We build complicated graphs of these and try to process and store their
-	 * semantics, to stress-test the handling of circular references. Ontology
-	 * "thinklab.test" contains the concept and all the properties that will allow
-	 * automatic annotation of this class.
-	 * 
-	 * Fields that have corresponding properties in the same namespace as the
-	 * concept will be automatically conceptualized. Alternatively, specific 
-	 * fields can be annotated with @Property to select the ones that define
-	 * the object's semantics.
-	 */
-	@Concept("thinklab.test:Person")
-	public static class Person {
-		
-		public String _name;
-		public int    _age;
-		public Person[] _children;
-		public Person[] _parents;
-		public Person   _partner;
-		
-		public Person() {}
-		
-		public Person(String name, int age, Person[] parents, Person[] children, Person partner) {
-			_name = name;
-			_age = age;
-			_partner = partner;
-			_children = children;
-			_parents = parents;
-		}
-	}
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -145,35 +113,35 @@ public class ConceptualizeStoreTest  {
 		 * create a complicated family tree with old Dick as the
 		 * patriarch.
 		 */
-		Person john = new Person("john", 34, null, null, null);
-		Person mary = new Person("mary", 29, null, null, john);
+		TestData.Person john = new TestData.Person("john", 34, null, null, null);
+		TestData.Person mary = new TestData.Person("mary", 29, null, null, john);
 		john._partner = mary;
-		Person dick = new Person("dick", 71, null, new Person[]{mary}, null);
-		Person pipp = new Person("pipp", 12, new Person[]{john, mary}, null, null);
-		mary._parents = new Person[]{dick};
-		pipp._parents = new Person[]{john, mary};
-		john._children = new Person[]{pipp};
-		mary._children = new Person[]{pipp};
+		TestData.Person dick = new TestData.Person("dick", 71, null, new TestData.Person[]{mary}, null);
+		TestData.Person pipp = new TestData.Person("pipp", 12, new TestData.Person[]{john, mary}, null, null);
+		mary._parents = new TestData.Person[]{dick};
+		pipp._parents = new TestData.Person[]{john, mary};
+		john._children = new TestData.Person[]{pipp};
+		mary._children = new TestData.Person[]{pipp};
 		mary._partner = john;
 				
 		/*
 		 * just getting out of these two alive is quite the test.
 		 */
 		IList semantics = Thinklab.get().conceptualize(dick);
-		Person clone = (Person) Thinklab.get().instantiate(semantics);
+		TestData.Person clone = (TestData.Person) Thinklab.get().instantiate(semantics);
 		
 		/*
 		 * the new object in porco is a clone of dick, made by copying 
 		 * his family tree.
 		 */
-		Assert.assertTrue(clone instanceof Person);
+		Assert.assertTrue(clone instanceof TestData.Person);
 		
 		// there's quite a bit to check. Just run a few tests.
 		Assert.assertTrue(clone._name.equals("dick") && clone._age == 71);
 		Assert.assertTrue(clone._parents == null);
 		Assert.assertTrue(clone._children != null && clone._children[0]._name.equals("mary"));
 		
-		Person mr = clone._children[0];
+		TestData.Person mr = clone._children[0];
 		Assert.assertTrue(mr._parents != null && mr._parents[0]._name.equals("dick"));
 		Assert.assertTrue(mr._children != null && mr._children[0]._name.equals("pipp"));
 		Assert.assertTrue(mr._partner != null && mr._partner._name.equals("john"));
