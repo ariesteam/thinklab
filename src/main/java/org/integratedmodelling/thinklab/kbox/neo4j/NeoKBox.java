@@ -4,8 +4,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.integratedmodelling.collections.Pair;
@@ -23,6 +25,7 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
@@ -47,6 +50,11 @@ public class NeoKBox implements IKbox {
 
 	static final String TYPE_PROPERTY = "_type";	
 	static final String HASNODE_PROPERTY = "_hasnode";
+	
+	/*
+	 * 
+	 */
+	static final String BASE_INDEX = "pindex";
 	
 	private static IntelligentMap<KboxTypeAdapter> _typeAdapters = null;
 	
@@ -289,6 +297,51 @@ public class NeoKBox implements IKbox {
 		return  (IReferenceList) ref.resolve(root.newList(rl.toArray()));		
 	}
 
+	private List<ISemanticObject<?>> query(SemanticQuery query) {
+		
+		Set<Node> results = retrieveMatches(query, new HashSet<Node>());
+		return applySorting(results, query);
+	}
+	
+	private List<ISemanticObject<?>> applySorting(Set<Node> results, SemanticQuery query) {
+
+		ArrayList<Long> ret = new ArrayList<Long>();
+		if (query instanceof IMetadataHolder) {
+			/*
+			 * TODO sort if the query's metadata specify it
+			 */
+		} else {
+			for (Node n : results) 
+				ret.add(n.getId());
+		}
+		
+		return new KBoxResult(this, ret);
+	}
+
+	private Set<Node> retrieveMatches(SemanticQuery query, HashSet<Node> hashSet) {
+
+		HashSet<Node> ret = new HashSet<Node>();
+		
+		/*
+		 * create the base index search following the restrictions structure
+		 */
+		
+		/*
+		 * lookup matching nodes; if 0, return empty set
+		 */
+		
+		/*
+		 * for each object query (or special literal), recurse and intersect
+		 * result set appropriately
+		 */
+		
+		return ret;
+	}
+
+	
+	/*
+	 * THE METHODS BELOW ARE NOT WHAT WE SHOULD USE 
+	 */
 	private List<Long> queryObjects(SemanticQuery query) {
 		
 		List<Long> ret = new ArrayList<Long>();
@@ -399,6 +452,8 @@ public class NeoKBox implements IKbox {
 	
 	/*
 	 * insert default type adapters. More can be added for specific types.
+	 * 
+	 * TODO ensure value is stored appropriately if numeric
 	 */
 	private void initializeTypeAdapters() {
 
@@ -408,7 +463,7 @@ public class NeoKBox implements IKbox {
 					@Override
 					protected void setAndIndex(Node node, IProperty property, Object value) {
 						node.setProperty(toId(property), value);
-						Index<Node> index = _db.index().forNodes(toId(property));
+						Index<Node> index = _db.index().forNodes(BASE_INDEX);
 						index.add(node, toId(property), value);
 					}
 				});
@@ -419,7 +474,7 @@ public class NeoKBox implements IKbox {
 					@Override
 					protected void setAndIndex(Node node, IProperty property, Object value) {
 						node.setProperty(toId(property), value);
-						Index<Node> index = _db.index().forNodes(toId(property));
+						Index<Node> index = _db.index().forNodes(BASE_INDEX);
 						index.add(node, toId(property), value);
 					}
 				});
@@ -430,7 +485,7 @@ public class NeoKBox implements IKbox {
 					@Override
 					protected void setAndIndex(Node node, IProperty property, Object value) {
 						node.setProperty(toId(property), value);
-						Index<Node> index = _db.index().forNodes(toId(property));
+						Index<Node> index = _db.index().forNodes(BASE_INDEX);
 						index.add(node, toId(property), value);
 					}
 				});
@@ -441,7 +496,7 @@ public class NeoKBox implements IKbox {
 					@Override
 					protected void setAndIndex(Node node, IProperty property, Object value) {
 						node.setProperty(toId(property), value);
-						Index<Node> index = _db.index().forNodes(toId(property));
+						Index<Node> index = _db.index().forNodes(BASE_INDEX);
 						index.add(node, toId(property), value);
 					}
 
@@ -452,7 +507,7 @@ public class NeoKBox implements IKbox {
 					@Override
 					protected void setAndIndex(Node node, IProperty property, Object value) {
 						node.setProperty(toId(property), value);
-						Index<Node> index = _db.index().forNodes(toId(property));
+						Index<Node> index = _db.index().forNodes(BASE_INDEX);
 						index.add(node, toId(property), value);
 					}
 
