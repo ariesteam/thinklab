@@ -52,8 +52,7 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 	Quantifier _quantifier = Quantifier.ANY();
 	List<IQuery> _restrictions = null;
 	
-	protected Query() {
-		
+	protected Query() {	
 	}
 	
 	protected Query(IConcept c) {
@@ -72,6 +71,18 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 		_restrictions = Arrays.asList(queries);
 	}
 
+	public boolean isRestriction() {
+		return _subject instanceof IProperty;
+	}
+	
+	public boolean isConnector() {
+		return _subject == null && _restrictions != null;
+	}
+	
+	public boolean isEmpty() {
+		return _subject == null && _restrictions == null;
+	}
+	
 	/*
 	 * -----------------------------------------------------------------------------------
 	 * Static API - the way to create default queries.
@@ -205,6 +216,14 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 	@Override
 	public Quantifier getQuantifier() {
 		return _quantifier;
+	}
+	
+	/*
+	 * Only call if isRestriction() returns true
+	 * @return
+	 */
+	public IProperty getProperty() {
+		return (IProperty)_subject;
 	}
 
 	/*
