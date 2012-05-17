@@ -3,6 +3,7 @@ package org.integratedmodelling.thinklab.kbox.neo4j;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.interfaces.storage.KboxTypeAdapter;
 import org.integratedmodelling.thinklab.kbox.KBoxResult;
+import org.integratedmodelling.thinklab.query.Query;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -43,6 +45,7 @@ import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.index.lucene.ValueContext;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.Traversal;
 
@@ -190,11 +193,11 @@ public class NeoKBox implements IKbox {
 	@Override
 	public List<ISemanticObject<?>> query(IQuery query) throws ThinklabException {
 		
-		if (query != null && !(query instanceof SemanticQuery)) {
+		if (query != null && !(query instanceof Query)) {
 			throw new ThinklabUnsupportedOperationException("query type not supported: " + query);
 		}
 		
-		return new KBoxResult(this, queryObjects((SemanticQuery) query));
+		return new KBoxResult(this, queryObjects((Query) query));
 	}
 	
 //	private List<ISemanticObject> applySortingStrategy(Set<Long> matches) {
@@ -228,7 +231,8 @@ public class NeoKBox implements IKbox {
 	
 	@Override
 	public void removeAll(IQuery query) {
-		for (long l : queryObjects((SemanticQuery) query)) {
+		
+		for (long l : queryObjects((Query) query)) {
 			try {
 				remove(l);
 			} catch (ThinklabException e) {
@@ -296,14 +300,8 @@ public class NeoKBox implements IKbox {
 		
 		return  (IReferenceList) ref.resolve(root.newList(rl.toArray()));		
 	}
-
-	private List<ISemanticObject<?>> query(SemanticQuery query) {
-		
-		Set<Node> results = retrieveMatches(query, new HashSet<Node>());
-		return applySorting(results, query);
-	}
 	
-	private List<ISemanticObject<?>> applySorting(Set<Node> results, SemanticQuery query) {
+	private List<Long> applySorting(Collection<Node> results, SemanticQuery query) {
 
 		ArrayList<Long> ret = new ArrayList<Long>();
 		if (query instanceof IMetadataHolder) {
@@ -315,7 +313,7 @@ public class NeoKBox implements IKbox {
 				ret.add(n.getId());
 		}
 		
-		return new KBoxResult(this, ret);
+		return ret;
 	}
 
 	private Set<Node> retrieveMatches(SemanticQuery query, HashSet<Node> hashSet) {
@@ -342,91 +340,34 @@ public class NeoKBox implements IKbox {
 	/*
 	 * THE METHODS BELOW ARE NOT WHAT WE SHOULD USE 
 	 */
-	private List<Long> queryObjects(SemanticQuery query) {
+	private List<Long> queryObjects(Query query) {
 		
 		List<Long> ret = new ArrayList<Long>();
 		
-		TraversalDescription td = rewrite(query);
-		
-		if (td != null) {
-			for (Node n : td.traverse(_db.getReferenceNode()).nodes()) {
-				ret.add(n.getId());
-			}
-		}
-		
-		return ret;
-	}
-	
-	private TraversalDescription rewrite(SemanticQuery query) {
-		
-		/*
-		 * create the "total" traverser and pass it downstream to restrict according
-		 * to the query. We only look for object we stored explicitly, i.e. those
-		 * that connect directly to the root node.
-		 */
-		return rewriteInternal(query, 
-				Traversal.description().
+		if (query == null || query.isEmpty()) {
+
+			TraversalDescription td = Traversal.description().
 					depthFirst().
-					evaluator(Evaluators.excludeStartPosition())).
+					evaluator(Evaluators.excludeStartPosition()).
 					relationships(new RelationshipType() {
 						@Override
 						public String name() {
 							return HASNODE_PROPERTY;
 						}
 					}, Direction.OUTGOING);
-	}
+				for (Node n : td.traverse(_db.getReferenceNode()).nodes()) {
+						ret.add(n.getId());
+				}
+				
+				return ret;
+		} 
+		
+		Set<Node> results = retrieveMatches(query, new HashSet<Node>());
+		return applySorting(results, query);
 
+	}
 	
-	/*
-	 * TODO this is entirely not clarified. At the moment it only gets first-class objects (directly inserted) and does not
-	 * use the index at all. Probably this is what should happen:
-	 * 
-	 * 1. walk the query depth-first and recursively rewrite each subquery (not instanceof IOperator)'
-	 * 	  when done, execute it and collect the nodes in a HashSet with which to initialize an evaluator for the next level
-	 *	  If level = 0, the nodes are the result 
-	 *
-	 * 2. for IOperators, we should use the indexes - which being Lucene-based, can use multiple properties so we should
-	 *    rewrite the parts we can rewrite into queries and add evaluators for the rest
-	 *    
-	 *    The current implementation always starts at the top node, the one above will not - what's best?
-	 * 
-	 */
-	private TraversalDescription rewriteInternal(SemanticQuery query,
-			TraversalDescription td) {
-		
-		if (query == null)
-			return td;
-		
-		/*
-		 * chain any further evaluators.
-		 */
-		if (query instanceof IOperator) {
-			
-			/*
-			 * must have registered its query adapter.
-			 */
-			
-		} else {
-			
-			/*
-			 * default behavior for SemanticQuery: handle 
-			 * semantic closures and downstream nodes.
-			 */
-			if (query.getSubject() != null)
-				td = td.evaluator(Algorithms.semanticClosure(query.getSubject()));
-			else {
-				/*
-				 * connector
-				 */
-			}
-		}
-			
-		for (SemanticQuery r : query.getRestrictions()) {
-			
-		}
 
-		return td;
-	}
 
 	/*
 	 * class to simplify handling of base types. 
@@ -466,6 +407,14 @@ public class NeoKBox implements IKbox {
 						Index<Node> index = _db.index().forNodes(BASE_INDEX);
 						index.add(node, toId(property), value);
 					}
+
+					@Override
+					public Set<Long> searchIndex(IKbox kbox,
+							IProperty property, IOperator operator)
+							throws ThinklabException {
+						// TODO Auto-generated method stub
+						return null;
+					}
 				});
 		
 		registerTypeAdapter(Thinklab.c(NS.INTEGER),
@@ -475,7 +424,15 @@ public class NeoKBox implements IKbox {
 					protected void setAndIndex(Node node, IProperty property, Object value) {
 						node.setProperty(toId(property), value);
 						Index<Node> index = _db.index().forNodes(BASE_INDEX);
-						index.add(node, toId(property), value);
+						index.add(node, toId(property), new ValueContext(value).indexNumeric());
+					}
+
+					@Override
+					public Set<Long> searchIndex(IKbox kbox,
+							IProperty property, IOperator operator)
+							throws ThinklabException {
+						// TODO Auto-generated method stub
+						return null;
 					}
 				});
 		
@@ -486,7 +443,15 @@ public class NeoKBox implements IKbox {
 					protected void setAndIndex(Node node, IProperty property, Object value) {
 						node.setProperty(toId(property), value);
 						Index<Node> index = _db.index().forNodes(BASE_INDEX);
-						index.add(node, toId(property), value);
+						index.add(node, toId(property), new ValueContext(value).indexNumeric());
+					}
+
+					@Override
+					public Set<Long> searchIndex(IKbox kbox,
+							IProperty property, IOperator operator)
+							throws ThinklabException {
+						// TODO Auto-generated method stub
+						return null;
 					}
 				});
 		
@@ -497,7 +462,15 @@ public class NeoKBox implements IKbox {
 					protected void setAndIndex(Node node, IProperty property, Object value) {
 						node.setProperty(toId(property), value);
 						Index<Node> index = _db.index().forNodes(BASE_INDEX);
-						index.add(node, toId(property), value);
+						index.add(node, toId(property), new ValueContext(value).indexNumeric());
+					}
+
+					@Override
+					public Set<Long> searchIndex(IKbox kbox,
+							IProperty property, IOperator operator)
+							throws ThinklabException {
+						// TODO Auto-generated method stub
+						return null;
 					}
 
 				});
@@ -508,7 +481,15 @@ public class NeoKBox implements IKbox {
 					protected void setAndIndex(Node node, IProperty property, Object value) {
 						node.setProperty(toId(property), value);
 						Index<Node> index = _db.index().forNodes(BASE_INDEX);
-						index.add(node, toId(property), value);
+						index.add(node, toId(property), new ValueContext(value).indexNumeric());
+					}
+
+					@Override
+					public Set<Long> searchIndex(IKbox kbox,
+							IProperty property, IOperator operator)
+							throws ThinklabException {
+						// TODO Auto-generated method stub
+						return null;
 					}
 
 				});

@@ -15,6 +15,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  * accessors.
  * 
  * @author Ferd
+ * @deprecated abandoned - look at CompiledContext
  *
  */
 public class Contextualizer  {

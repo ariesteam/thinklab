@@ -1,6 +1,12 @@
 package org.integratedmodelling.thinklab.query.operators;
 
+import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.query.Query;
 
 /**
  * Convenience class to obtain common operators without creating new objects, 
@@ -51,5 +57,47 @@ public class Operators {
 	static public IQuery compare(Object match, int operator) {
 		return null;
 	}
+	
+	public class Compare extends Query implements IOperator {
+
+		private Object _operand;
+		int _operation;
+		
+		public Compare(Object what, int operation) {
+			_operand = what;
+		}
+		
+		@Override
+		public Pair<IConcept, Object[]> getQueryParameters() {
+			return new Pair<IConcept, Object[]>(
+					Thinklab.c(getConcept()), 
+					new Object[]{_operand});
+		}
+
+		private String getConcept() {
+			switch (_operation) {
+			case Operators.GE:
+				return NS.OPERATION_GREATER_OR_EQUAL;
+			case Operators.GT:
+				return NS.OPERATION_GREATER_THAN;
+			case Operators.LE:
+				return NS.OPERATION_LESS_OR_EQUAL;
+			case Operators.LT:
+				return NS.OPERATION_LESS_THAN;
+			case Operators.EQ:
+				return NS.OPERATION_EQUALS;
+			case Operators.NE:
+				return NS.OPERATION_NOT_EQUALS;
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isLiteral() {
+			return true;
+		}
+
+	}
+
 	
 }

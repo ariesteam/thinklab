@@ -1,7 +1,11 @@
 package org.integratedmodelling.thinklab.interfaces.storage;
 
+import java.util.Set;
+
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
+import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 
 /*
  * Linked to a literal type to provide strategies for storage and indexing. 
@@ -18,5 +22,17 @@ public interface KboxTypeAdapter {
 	 * 
 	 */
 	void setAndIndexProperty(long id, IKbox kbox, IProperty property, Object value);
+	
+	/**
+	 * Use whatever indexing strategy is appropriate to search and return the 
+	 * set of object IDs that match the given operator applied to the given 
+	 * property.
+	 * 
+	 * @param kbox
+	 * @param property
+	 * @param operator
+	 * @return
+	 */
+	Set<Long> searchIndex(IKbox kbox, IProperty property, IOperator operator) throws ThinklabException;
 	
 }

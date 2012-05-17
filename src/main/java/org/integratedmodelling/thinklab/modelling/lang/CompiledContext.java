@@ -13,9 +13,11 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IState;
+import org.integratedmodelling.thinklab.query.Query;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -61,11 +63,15 @@ public class CompiledContext extends Context {
 
 	/*
 	 * table of resolved DB results for all references looked up. Indexed
-	 * by _index in each node in _modelstruc. The contents of each list
-	 * are IModels, just cast them.
+	 * by _index in each node in _modelstruc. Contains triples of:
+	 * 1. the observable resolved
+	 * 2. the context required for that observable
+	 * 3. the list of results that observe that observable in that context
+	 * 
+	 *  The result objects in (3) are always IModels; the observables (1) can be any semantic object.
 	 */
-	List<List<ISemanticObject<?>>> _resolved = 
-			new ArrayList<List<ISemanticObject<?>>>();
+	List<Triple<ISemanticObject<?>, IContext, List<ISemanticObject<?>>>> _resolved = 
+			new ArrayList<Triple<ISemanticObject<?>, IContext, List<ISemanticObject<?>>>>();
 	
 	public CompiledContext(IContext context) {
 		super((Context) context);
@@ -174,8 +180,8 @@ public class CompiledContext extends Context {
 		_cursor = new MultidimensionalCursor();
 		int[] dims = new int[_resolved.size()];
 		int i = 0;
-		for (List<ISemanticObject<?>> l : _resolved) {
-			dims[i++] = l.size();
+		for (Triple<ISemanticObject<?>, IContext, List<ISemanticObject<?>>> l : _resolved) {
+			dims[i++] = l.getThird().size();
 		}
 		_cursor.defineDimensions(dims);
 		
@@ -213,7 +219,10 @@ public class CompiledContext extends Context {
 				/*
 				 * the index of the result to use for resolution will be in _index.
 				 */
-				_resolved.add(resolved);
+				_resolved.add(new Triple<ISemanticObject<?>, IContext, List<ISemanticObject<?>>>(
+						model.getObservable(),
+						unresolved,
+						resolved));
 				ret._index = _resolved.size() - 1;
 			}
 			
