@@ -12,9 +12,9 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
@@ -62,6 +62,7 @@ public class NeoKBox implements IKbox {
 	 * 
 	 */
 	static final String BASE_INDEX = "pindex";
+	static final String RELS_INDEX = "rindex";
 	static final String TYPE_INDEX = "tindex";
 	
 	private static IntelligentMap<KboxTypeAdapter> _typeAdapters = null;
@@ -155,12 +156,14 @@ public class NeoKBox implements IKbox {
 			} else {
 				
 				Node target = storeInstanceInternal(s.getSecond(), refs);
-				node.createRelationshipTo(target, new RelationshipType() {
+				Relationship rel = node.createRelationshipTo(target, new RelationshipType() {
 					@Override
 					public String name() {
 						return toId(s.getFirst());
 					}
 				});
+				
+				_db.index().forRelationships(RELS_INDEX).add(rel, "name", toId(s.getFirst()));
 			}
 		}
 		
@@ -206,25 +209,6 @@ public class NeoKBox implements IKbox {
 		
 		return new KBoxResult(this, queryObjects((Query) query));
 	}
-	
-//	private List<ISemanticObject> applySortingStrategy(Set<Long> matches) {
-//		
-//		ArrayList<Long> res = new ArrayList<Long>(matches);
-//		
-//		/*
-//		 * if we have a list of properties for the top node to sort against,
-//		 * create the appropriate Comparator and sort the nodes based on their
-//		 * properties.
-//		 */
-//		if (_sortProperties != null) {
-//			
-//			/*
-//			 * TODO
-//			 */
-//		}
-//		
-//		return new KBoxResult(this, res);
-//	}
 
 	@Override
 	public String getUri() {
@@ -237,7 +221,7 @@ public class NeoKBox implements IKbox {
 	}
 	
 	@Override
-	public void removeAll(IQuery query) {
+	public void removeAll(IQuery query) throws ThinklabException {
 		
 		for (long l : queryObjects((Query) query)) {
 			try {
@@ -308,24 +292,24 @@ public class NeoKBox implements IKbox {
 		return  (IReferenceList) ref.resolve(root.newList(rl.toArray()));		
 	}
 	
-	private List<Long> applySorting(Collection<Node> results, SemanticQuery query) {
+	private List<Long> applySorting(Set<Long> results, SemanticQuery query) {
 
 		ArrayList<Long> ret = new ArrayList<Long>();
-		if (query instanceof IMetadataHolder && ((IMetadataHolder) query).getMetadataFieldAsString(":sort") != null) {
+		if (query instanceof IMetadataHolder && ((IMetadataHolder) query).getMetadataFieldAsString(IKbox.SORT_FIELD) != null) {
 			/*
 			 * TODO sort if the query's metadata specify it
 			 */
 		} else {
-			for (Node n : results) 
-				ret.add(n.getId());
+			for (Long n : results) 
+				ret.add(n);
 		}
 		
 		return ret;
 	}
 
-	private Set<Node> retrieveMatches(Query query, HashSet<Node> context) {
+	private Set<Long> retrieveMatches(Query query, HashSet<Long> hashSet, IProperty pcontext) throws ThinklabException {
 
-		HashSet<Node> ret = new HashSet<Node>();
+		HashSet<Long> ret = new HashSet<Long>();
 		
 		if (query.isConnector()) {
 			
@@ -336,11 +320,12 @@ public class NeoKBox implements IKbox {
 		} else if (query.isRestriction()) {
 			
 			/*
-			 * turn the target into a set, then traverse using an evaluator for source node in
-			 * context and end node into target set, joined by given relationship
+			 * get the target node set, then use relationship index to find all rels that
+			 * lead to nodes in the set, and intersect their source nodes with the current 
+			 * context.
 			 */
-			Set<Node> target = retrieveMatches((Query) query.getRestrictions().iterator().next(), null);
-			
+			Set<Long> target = retrieveMatches((Query) query.getRestrictions().iterator().next(), 
+					null, query.getProperty());
 			
 		} else {
 			
@@ -349,6 +334,7 @@ public class NeoKBox implements IKbox {
 				/*
 				 * get result set of index search after translating operator
 				 */
+				return getNodesMatching((IOperator)query, query.getProperty());
 				
 			} else {
 				
@@ -365,20 +351,29 @@ public class NeoKBox implements IKbox {
 	}
 
 	
-	private Set<Node> getNodesOfType(Set<IConcept> zio) {
+	private Set<Long> getNodesMatching(IOperator query, IProperty pcontext) throws ThinklabException {
 		
-		HashSet<Node> ret = new HashSet<Node>();
+		// find type adapter based on property range. If no range, assume string.
+		Collection<IConcept> types = pcontext.getRange();
+		KboxTypeAdapter zio = _typeAdapters.get(types.size() > 0 ? types.iterator().next() : Thinklab.TEXT);
+		
+		return zio.searchIndex(this, pcontext, query);
+	}
+
+	private Set<Long> getNodesOfType(Set<IConcept> zio) {
+		
+		HashSet<Long> ret = new HashSet<Long>();
 		BooleanQuery bq = new BooleanQuery();
 		for (IConcept c : zio) {
 			bq.add(new TermQuery(new Term(TYPE_PROPERTY, c.toString())), Occur.SHOULD);
 		}
 		bq.setMinimumNumberShouldMatch(1);
 		for (Node n : _db.index().forNodes(TYPE_INDEX).query(TYPE_PROPERTY, bq))
-			ret.add(n);
+			ret.add(n.getId());
 		return ret;
 	}
 
-	private List<Long> queryObjects(Query query) {
+	private List<Long> queryObjects(Query query) throws ThinklabException {
 		
 		List<Long> ret = new ArrayList<Long>();
 		
@@ -405,7 +400,7 @@ public class NeoKBox implements IKbox {
 		 * initial node context and restructure the query appropriately
 		 */
 		
-		Set<Node> results = retrieveMatches(query, new HashSet<Node>());
+		Set<Long> results = retrieveMatches(query, new HashSet<Long>(), null);
 		return applySorting(results, query);
 
 	}
