@@ -327,5 +327,11 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		return ret;
 	}
 
+	@Override
+	public int hasEqualExtents(IContext second) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 	
 }

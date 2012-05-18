@@ -13,11 +13,9 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
-import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.query.Query;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -201,6 +199,13 @@ public class CompiledContext extends Context {
 			/*
 			 * TODO lookup first in the resolved models, use that index if found.
 			 */
+			for (Triple<ISemanticObject<?>, IContext, List<ISemanticObject<?>>> r : _resolved) {
+				if (model.getObservable().is(r.getFirst()) && unresolved.hasEqualExtents(r.getSecond()) == 0) {
+					/*
+					 * TODO use it, forget the rest
+					 */
+				}
+			}
 			
 			List<ISemanticObject<?>> resolved = 
 					Thinklab.get().getLookupKboxForNamespace(model.getNamespace()).

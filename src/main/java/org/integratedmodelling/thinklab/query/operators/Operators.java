@@ -55,10 +55,16 @@ public class Operators {
 	 * @return
 	 */
 	static public IQuery compare(Object match, int operator) {
-		return null;
+		return new Compare(match, operator);
 	}
 	
-	public class Compare extends Query implements IOperator {
+	/*
+	 * --------------------------------------------------------------------------
+	 * Some of the actual IOperators we dispense
+	 * -------------------------------------------------------------------------- 
+	 */
+	
+	public static class Compare extends Query implements IOperator {
 
 		private Object _operand;
 		int _operation;

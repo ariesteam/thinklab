@@ -33,10 +33,12 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 
-public class Query implements IQuery, IParseable, SemanticQuery {
+public class Query implements IQuery, IParseable, SemanticQuery, IMetadataHolder {
 
 	/*
 	 * either a property or a concept, whose nature defines what we match in the
@@ -45,6 +47,7 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 	 * restrictions, then evaluates the result based on the quantifier.
 	 */
 	IKnowledge _subject;
+	IMetadata  _metadata = null;
 	
 	/*
 	 * these only matter if (_subject instanceof IProperty)
@@ -59,7 +62,7 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 		_subject = c;
 	}
 
-	protected Query(IProperty p, IQuery[] queries) {
+	protected Query(IProperty p, IQuery queries) {
 		_subject = p;
 		_quantifier = Quantifier.ALL();
 		if (queries != null)
@@ -250,13 +253,13 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 	}
 
 	@Override
-	public IQuery restrict(IProperty property, IQuery... queries) {
+	public IQuery restrict(IProperty property, IQuery query) {
 
 		if (_restrictions == null) {
 			_restrictions = new ArrayList<IQuery>();
 		}
 		
-		_restrictions.add(new Query(property, queries));
+		_restrictions.add(new Query(property, query));
 		
 		return this;
 	}
@@ -333,6 +336,95 @@ public class Query implements IQuery, IParseable, SemanticQuery {
 		}
 		
 		return match;
+	}
+
+	@Override
+	public IMetadata getMetadata() {
+		return _metadata;
+	}
+
+	@Override
+	public String getMetadataFieldAsString(String field) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer getMetadataFieldAsInt(String field) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getMetadataFieldAsLong(String field) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double getMetadataFieldAsDouble(String field) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Float getMetadataFieldAsFloat(String field) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean getMetadataFieldAsBoolean(String field) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getMetadataFieldAsConcept(String field) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getMetadataFieldAsString(String field, String def) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getMetadataFieldAsInt(String field, int def) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public long getMetadataFieldAsLong(String field, long def) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getMetadataFieldAsDouble(String field, double def) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getMetadataFieldAsFloat(String field, float def) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean getMetadataFieldAsBoolean(String field, boolean def) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public IConcept getMetadataFieldAsConcept(String field, IConcept def) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

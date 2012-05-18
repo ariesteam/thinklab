@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
@@ -58,6 +62,7 @@ public class NeoKBox implements IKbox {
 	 * 
 	 */
 	static final String BASE_INDEX = "pindex";
+	static final String TYPE_INDEX = "tindex";
 	
 	private static IntelligentMap<KboxTypeAdapter> _typeAdapters = null;
 	
@@ -138,8 +143,10 @@ public class NeoKBox implements IKbox {
 		
 		node = _db.createNode();
 		refs.put(instance, node);
-
-		node.setProperty(TYPE_PROPERTY, instance.getDirectType().toString());
+		String type = instance.getDirectType().toString();
+		node.setProperty(TYPE_PROPERTY, type);
+		Index<Node> index = _db.index().forNodes(TYPE_INDEX);
+		index.add(node, TYPE_PROPERTY, type);
 		
 		for (final Pair<IProperty, ISemanticObject<?>> s : instance.getRelationships()) {
 			
@@ -304,7 +311,7 @@ public class NeoKBox implements IKbox {
 	private List<Long> applySorting(Collection<Node> results, SemanticQuery query) {
 
 		ArrayList<Long> ret = new ArrayList<Long>();
-		if (query instanceof IMetadataHolder) {
+		if (query instanceof IMetadataHolder && ((IMetadataHolder) query).getMetadataFieldAsString(":sort") != null) {
 			/*
 			 * TODO sort if the query's metadata specify it
 			 */
@@ -316,30 +323,61 @@ public class NeoKBox implements IKbox {
 		return ret;
 	}
 
-	private Set<Node> retrieveMatches(SemanticQuery query, HashSet<Node> hashSet) {
+	private Set<Node> retrieveMatches(Query query, HashSet<Node> context) {
 
 		HashSet<Node> ret = new HashSet<Node>();
 		
-		/*
-		 * create the base index search following the restrictions structure
-		 */
-		
-		/*
-		 * lookup matching nodes; if 0, return empty set
-		 */
-		
-		/*
-		 * for each object query (or special literal), recurse and intersect
-		 * result set appropriately
-		 */
+		if (query.isConnector()) {
+			
+			/*
+			 * get each result set and intersect according to connector
+			 */
+			
+		} else if (query.isRestriction()) {
+			
+			/*
+			 * turn the target into a set, then traverse using an evaluator for source node in
+			 * context and end node into target set, joined by given relationship
+			 */
+			Set<Node> target = retrieveMatches((Query) query.getRestrictions().iterator().next(), null);
+			
+			
+		} else {
+			
+			if (query instanceof IOperator) {
+				
+				/*
+				 * get result set of index search after translating operator
+				 */
+				
+			} else {
+				
+				/*
+				 * select object based on concept's semantic closure
+				 */
+				return getNodesOfType(query.getSubject().getSemanticClosure());
+			}
+			
+		}
+
 		
 		return ret;
 	}
 
 	
-	/*
-	 * THE METHODS BELOW ARE NOT WHAT WE SHOULD USE 
-	 */
+	private Set<Node> getNodesOfType(Set<IConcept> zio) {
+		
+		HashSet<Node> ret = new HashSet<Node>();
+		BooleanQuery bq = new BooleanQuery();
+		for (IConcept c : zio) {
+			bq.add(new TermQuery(new Term(TYPE_PROPERTY, c.toString())), Occur.SHOULD);
+		}
+		bq.setMinimumNumberShouldMatch(1);
+		for (Node n : _db.index().forNodes(TYPE_INDEX).query(TYPE_PROPERTY, bq))
+			ret.add(n);
+		return ret;
+	}
+
 	private List<Long> queryObjects(Query query) {
 		
 		List<Long> ret = new ArrayList<Long>();
@@ -362,12 +400,16 @@ public class NeoKBox implements IKbox {
 				return ret;
 		} 
 		
+		/*
+		 * TODO if metadata contain a start node (e.g. root), add it to the 
+		 * initial node context and restructure the query appropriately
+		 */
+		
 		Set<Node> results = retrieveMatches(query, new HashSet<Node>());
 		return applySorting(results, query);
 
 	}
 	
-
 
 	/*
 	 * class to simplify handling of base types. 
