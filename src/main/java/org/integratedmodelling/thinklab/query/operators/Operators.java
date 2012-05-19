@@ -71,6 +71,7 @@ public class Operators {
 		
 		public Compare(Object what, int operation) {
 			_operand = what;
+			_operation = operation;
 		}
 		
 		@Override

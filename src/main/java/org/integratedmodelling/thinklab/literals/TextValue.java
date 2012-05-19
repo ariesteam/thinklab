@@ -27,7 +27,10 @@ import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
-@Literal(concept=NS.TEXT, datatype="xsd:string", javaClass=String.class)
+@Literal(
+	concept=NS.TEXT, 
+	datatype="http://www.w3.org/2001/XMLSchema#string", 
+	javaClass=String.class)
 public class TextValue extends SemanticLiteral<String> implements IParseable {
     
     public TextValue() {

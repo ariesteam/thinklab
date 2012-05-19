@@ -31,7 +31,10 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
 /**
  * @author Ferdinando Villa
  */
-@Literal(datatype="xsd:long", javaClass=Long.class, concept=NS.LONG)
+@Literal(
+		datatype="http://www.w3.org/2001/XMLSchema#long", 
+		javaClass=Long.class, 
+		concept=NS.LONG)
 public class LongValue extends SemanticLiteral<Long> implements IParseable {	
 	
    public LongValue() {

@@ -35,6 +35,11 @@ public class TestData {
 			_children = children;
 			_parents = parents;
 		}
+		
+		@Override
+		public String toString() {
+			return "[" + _name + " age: " + _age + "]";
+		}
 	}
 	
 	public static void addFamily(IKbox kbox, String patriarchName) throws ThinklabException {

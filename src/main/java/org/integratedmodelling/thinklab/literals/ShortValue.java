@@ -31,7 +31,10 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
 /**
  * @author Ferdinando Villa
  */
-@Literal(datatype="xsd:int", javaClass=Integer.class, concept=NS.INTEGER)
+@Literal(
+	datatype="http://www.w3.org/2001/XMLSchema#int", 
+	javaClass=Integer.class, 
+	concept=NS.INTEGER)
 public class ShortValue extends SemanticLiteral<Integer> implements IParseable {	
 	
    public ShortValue() {

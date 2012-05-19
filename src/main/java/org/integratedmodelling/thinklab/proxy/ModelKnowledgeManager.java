@@ -97,5 +97,9 @@ public class ModelKnowledgeManager implements IKnowledgeManager {
 		return Thinklab.get().entify(semantics);
 	}
 
+	@Override
+	public IConcept getXSDMapping(String string) {
+		return Thinklab.get().getXSDMapping(string);
+	}
 
 }

@@ -31,7 +31,10 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
 /**
  * @author Ferdinando Villa
  */
-@Literal(datatype="xsd:double", javaClass=Double.class, concept=NS.DOUBLE)
+@Literal(
+		datatype="http://www.w3.org/2001/XMLSchema#double", 
+		javaClass=Double.class, 
+		concept=NS.DOUBLE)
 public class DoubleValue extends SemanticLiteral<Double> implements IParseable {	
 	
    public DoubleValue() {

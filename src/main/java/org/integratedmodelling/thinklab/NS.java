@@ -34,10 +34,10 @@ public class NS {
 
 	// standard operations
 	public static final String OPERATION_EQUALS = "thinklab:Equal";
-	public static final String OPERATION_GREATER_OR_EQUAL = "thinklab:GreaterOrEqual";
+	public static final String OPERATION_GREATER_OR_EQUAL = "thinklab:GreaterEqual";
 	public static final String OPERATION_GREATER_THAN = "thinklab:GreaterThan";
-	public static final String OPERATION_LESS_OR_EQUAL = "thinklab:LessOrEqual";
-	public static final String OPERATION_LESS_THAN = "thinklab:LessThan";
+	public static final String OPERATION_LESS_OR_EQUAL = "thinklab:LowerEqual";
+	public static final String OPERATION_LESS_THAN = "thinklab:LowerThan";
 	public static final String OPERATION_NOT_EQUALS = "thinklab:NotEqual";
 
 	// observable types

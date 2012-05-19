@@ -36,9 +36,18 @@ public class Configuration implements IConfiguration {
 	public Configuration() throws ThinklabException {
 		
 		String installPath = System.getenv(Env.ENV_THINKLAB_INSTALL_DIR);
-		if (installPath == null)
+		
+		/*
+		 * try current directory before giving up.
+		 */
+		if (installPath == null) {
+			if (new File("." + File.separator + "knowledge" + File.separator + "thinklab.owl").exists())
+				installPath = ".";
+		}
+		
+		if (installPath /* still */ == null) 
 			throw new ThinklabConfigurationException(
-				"configuration error: the environmental variable " +
+				"Thinklab installation not found: the environmental variable " +
 				Env.ENV_THINKLAB_INSTALL_DIR + 
 				" must be defined");
 	

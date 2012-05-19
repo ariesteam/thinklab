@@ -273,13 +273,9 @@ public class Property extends Knowledge implements IProperty {
 					if (c.isDataType()) {
 						OWLDataType dtype = (OWLDataType) c;
 						// FIXME! complete this
-						String tltype = null; // Thinklab.get().getXSDMapping(dtype.getURI().toString());
+						IConcept tltype = Thinklab.get().getXSDMapping(dtype.getURI().toString());
 						if (tltype != null) {
-							try {
-								ret.add(Thinklab.c(tltype));
-							} catch (Exception e) {
-								// just don't add it
-							}
+							ret.add(tltype);
 						}
 					}
 				}

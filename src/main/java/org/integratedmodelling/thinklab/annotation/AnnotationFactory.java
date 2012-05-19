@@ -48,6 +48,7 @@ public class AnnotationFactory {
 	HashMap<Class<?>, IConcept> _class2literal    = new HashMap<Class<?>, IConcept>();
 	HashMap<Class<?>, String>_class2datatype   = new HashMap<Class<?>, String>();
 	HashMap<Class<?>, IConcept> _class2concept = new HashMap<Class<?>, IConcept>();
+	HashMap<String, IConcept> _datatype2concept = new HashMap<String, IConcept>();
 	HashMap<IConcept, Class<?>> _annotatedLiteralClass =
 			new HashMap<IConcept, Class<?>>();
 	HashMap<IConcept, Class<?>> _javaLiteralClass =
@@ -575,6 +576,7 @@ public class AnnotationFactory {
 		_annotatedLiteralClass.put(concept, clls);
 		_javaLiteralClass.put(concept, javaClass);
 		_annotatedLiteralDatatype.put(datatype, clls);
+		_datatype2concept.put(datatype, concept);
 	}
 
 	public boolean isJavaLiteralClass(Class<?> cls) {
@@ -655,6 +657,10 @@ public class AnnotationFactory {
 
 	public ISemanticObject<?> entify(IReferenceList semantics) throws ThinklabException {
 		return getSemanticObject(semantics, instantiate(semantics));
+	}
+
+	public IConcept getXSDMapping(String string) {
+		return _datatype2concept.get(string);
 	}
 
 }

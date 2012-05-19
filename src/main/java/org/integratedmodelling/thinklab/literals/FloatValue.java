@@ -31,7 +31,10 @@ import org.integratedmodelling.thinklab.api.lang.IParseable;
 /**
  * @author Ferdinando Villa
  */
-@Literal(datatype="xsd:float", javaClass=Float.class, concept=NS.FLOAT)
+@Literal(
+		datatype="http://www.w3.org/2001/XMLSchema#float", 
+		javaClass=Float.class, 
+		concept=NS.FLOAT)
 public class FloatValue extends SemanticLiteral<Float> implements IParseable {	
 
     

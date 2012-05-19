@@ -295,4 +295,9 @@ public class KnowledgeManager implements IKnowledgeManager {
 		return _annotationFactory.entify((IReferenceList) semantics);
 	}
 
+	@Override
+	public IConcept getXSDMapping(String string) {
+		return _annotationFactory.getXSDMapping(string);
+	}
+
 }

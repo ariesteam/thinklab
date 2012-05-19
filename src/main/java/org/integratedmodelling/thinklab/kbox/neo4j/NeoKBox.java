@@ -20,6 +20,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
+import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -32,6 +33,7 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.interfaces.storage.KboxTypeAdapter;
@@ -49,6 +51,7 @@ import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.index.lucene.QueryContext;
 import org.neo4j.index.lucene.ValueContext;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.Traversal;
@@ -59,7 +62,8 @@ public class NeoKBox implements IKbox {
 	static final String HASNODE_PROPERTY = "_hasnode";
 	
 	/*
-	 * 
+	 * index names. One for types, one for properties and one (currently unused)
+	 * for relationships.
 	 */
 	static final String BASE_INDEX = "pindex";
 	static final String RELS_INDEX = "rindex";
@@ -79,6 +83,50 @@ public class NeoKBox implements IKbox {
 	String _url = null;
 	List<IProperty> _sortProperties;
 	
+	class NumberTypeAdapter extends TypeAdapter {
+		
+		@Override
+		protected void setAndIndex(Node node, IProperty property, Object value) {
+			node.setProperty(toId(property), value);
+			Index<Node> index = _db.index().forNodes(BASE_INDEX);
+			index.add(node, toId(property), new ValueContext(value).indexNumeric());
+		}
+
+		@Override
+		public Set<Long> searchIndex(IKbox kbox,
+				IProperty property, IOperator operator)
+				throws ThinklabException {
+			
+			Set<Long> ret = new HashSet<Long>();
+			Index<Node> index = _db.index().forNodes(BASE_INDEX);
+			Pair<IConcept, Object[]> op = operator.getQueryParameters();
+			Object qc = null;
+			
+			if (op.getFirst().equals(NS.OPERATION_EQUALS)) {
+				/*
+				 * mah - can't find anything to match a number
+				 */
+				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), (Number)(op.getSecond()[0]), true, true);
+			} else if (op.getFirst().equals(NS.OPERATION_GREATER_THAN)) {
+				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), null, false, true);
+			} else if (op.getFirst().equals(NS.OPERATION_LESS_THAN)) {
+				qc = QueryContext.numericRange(toId(property), null, (Number)(op.getSecond()[0]), true, false);				
+			} else if (op.getFirst().equals(NS.OPERATION_GREATER_OR_EQUAL)) {
+				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), null, true, true);				
+			} else if (op.getFirst().equals(NS.OPERATION_LESS_OR_EQUAL)) {
+				qc = QueryContext.numericRange(toId(property), null, (Number)(op.getSecond()[0]), true, true);				
+			} else if (op.getFirst().equals(NS.OPERATION_NOT_EQUALS)) {
+			
+				/*
+				 * TODO this should be an OR of a less than and a greater than
+				 */
+			}
+			for (Node n : index.query(qc))
+				ret.add(n.getId());
+			
+			return ret;
+		}
+	}
 	public NeoKBox(String url) {
 		
 		if (_typeAdapters == null) {
@@ -167,6 +215,30 @@ public class NeoKBox implements IKbox {
 			}
 		}
 		
+		/*
+		 * if object has metadata, additionally store those metadata whose key is a known
+		 * property and whose value has a corresponding type adapter.
+		 */
+		if (instance instanceof IMetadataHolder) {
+			
+			IMetadata metadata = ((IMetadataHolder)instance).getMetadata();
+			
+			for (String key : metadata.getKeys()) {
+				IProperty p = Thinklab.get().getProperty(key);
+				if (p == null)
+					continue;
+				IConcept c = 
+						Thinklab.get().getLiteralConceptForJavaClass(metadata.get(key).getClass());
+				if (c == null)
+					continue;
+				
+				KboxTypeAdapter adapter = _typeAdapters.get(c);
+				
+				if (adapter != null) {
+					adapter.setAndIndexProperty(node.getId(), this, p, metadata.get(key));
+				}
+			}
+		}
 		return node;
 	}
 
@@ -307,25 +379,91 @@ public class NeoKBox implements IKbox {
 		return ret;
 	}
 
-	private Set<Long> retrieveMatches(Query query, HashSet<Long> hashSet, IProperty pcontext) throws ThinklabException {
+	/**
+	 * FIXME still incomplete re: handling of quantifiers and optimization - barely implemented
+	 * 		 enough to support model testing.
+	 * 
+	 * @param query
+	 * @param ncontext the nodes that we're restricting - we should be a restriction if this
+	 * 	      is not null.
+	 * @param pcontext the property context, either for an operator on a field or a relationship
+	 *        to other objects. Can be null.
+	 * @return
+	 * @throws ThinklabException
+	 */
+	private Set<Long> retrieveMatches(Query query, Set<Long> ncontext, IProperty pcontext) throws ThinklabException {
 
-		HashSet<Long> ret = new HashSet<Long>();
-		
 		if (query.isConnector()) {
 			
 			/*
 			 * get each result set and intersect according to connector
 			 */
+			Set<Long> ret = null;
+			
+			for (SemanticQuery r : query.getRestrictions()) {
+				Set<Long> rest = retrieveMatches((Query) r, ncontext, null);
+
+				if (ret == null) 
+					ret = rest;
+				else {
+					if (query.getQuantifier().equals(Quantifier.ALL)) {
+						ret.retainAll(rest);
+						if (ret.isEmpty())
+							return ret;
+					} else if (query.getQuantifier().equals(Quantifier.ANY)) {
+						ret.addAll(rest);
+					} else {
+						/*
+						 * TODO
+						 */
+						throw new ThinklabUnsupportedOperationException(
+								"query: implementation of quantifiers other than any and all is incomplete");
+					}
+				}
+				
+			}
+			
+			return ret == null ? new HashSet<Long>() : ret;
 			
 		} else if (query.isRestriction()) {
 			
 			/*
-			 * get the target node set, then use relationship index to find all rels that
-			 * lead to nodes in the set, and intersect their source nodes with the current 
-			 * context.
+			 * nothing to restrict, no need to continue.
+			 */
+			if (ncontext != null && ncontext.isEmpty())
+				return ncontext;
+			
+			Set<Long> ret = new HashSet<Long>();
+			
+			/*
+			 * get the target node set
 			 */
 			Set<Long> target = retrieveMatches((Query) query.getRestrictions().iterator().next(), 
 					null, query.getProperty());
+			/*
+			 * if we have a relationship context (meaning it wasn't an
+			 * operator query) use relationship index to find all rels that
+			 * lead to nodes in the set, and intersect their source nodes with the current 
+			 * context.
+			 */
+			if (pcontext != null) {
+				for (long id : ncontext) {
+					Node node = _db.getNodeById(id);
+					for (Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+						if (isProperty(rel, pcontext) && target.contains(rel.getEndNode().getId()))
+							ret.add(id);
+					}
+				}
+			} else {
+				/*
+				 * otherwise we are intersecting with an operator query, i.e. the result 
+				 * set is the intersection of the node context with the query results.
+				 */
+				ret = ncontext;
+				ncontext.retainAll(target);
+			}
+			
+			return ret;
 			
 		} else {
 			
@@ -334,23 +472,41 @@ public class NeoKBox implements IKbox {
 				/*
 				 * get result set of index search after translating operator
 				 */
-				return getNodesMatching((IOperator)query, query.getProperty());
+				return getNodesMatching((IOperator)query, pcontext);
 				
 			} else {
 				
 				/*
-				 * select object based on concept's semantic closure
+				 * Most important case: 
+				 * 
+				 * select object based on concept's semantic closure and restrict to 
+				 * given properties.
+				 * 
+				 * TODO FIXME this one really should collect all POD operators in the restrictions
+				 * and apply them in one shot to the property index, then proceed intersecting
+				 * only the other restrictions. Otherwise we're making potentially huge sets.
 				 */
-				return getNodesOfType(query.getSubject().getSemanticClosure());
+				Set<Long> main = getNodesOfType(query.getSubject().getSemanticClosure());
+				
+				/*
+				 * restrict the result set by applying all restriction (all in AND)
+				 */
+				for (SemanticQuery r : query.getRestrictions()) {
+					main = retrieveMatches((Query) r, main, null);
+				}
+				
+				return main;
 			}
 			
 		}
 
-		
-		return ret;
 	}
 
-	
+	private boolean isProperty(Relationship rel, IProperty pcontext) {
+		IProperty p = Thinklab.p(rel.getType().name());
+		return p.is(pcontext);
+	}
+
 	private Set<Long> getNodesMatching(IOperator query, IProperty pcontext) throws ThinklabException {
 		
 		// find type adapter based on property range. If no range, assume string.
@@ -400,7 +556,7 @@ public class NeoKBox implements IKbox {
 		 * initial node context and restructure the query appropriately
 		 */
 		
-		Set<Long> results = retrieveMatches(query, new HashSet<Long>(), null);
+		Set<Long> results = retrieveMatches(query, null, null);
 		return applySorting(results, query);
 
 	}
@@ -449,87 +605,15 @@ public class NeoKBox implements IKbox {
 					public Set<Long> searchIndex(IKbox kbox,
 							IProperty property, IOperator operator)
 							throws ThinklabException {
-						// TODO Auto-generated method stub
+						Index<Node> index = _db.index().forNodes(BASE_INDEX);
 						return null;
 					}
 				});
 		
-		registerTypeAdapter(Thinklab.c(NS.INTEGER),
-				new TypeAdapter() {
-					
-					@Override
-					protected void setAndIndex(Node node, IProperty property, Object value) {
-						node.setProperty(toId(property), value);
-						Index<Node> index = _db.index().forNodes(BASE_INDEX);
-						index.add(node, toId(property), new ValueContext(value).indexNumeric());
-					}
-
-					@Override
-					public Set<Long> searchIndex(IKbox kbox,
-							IProperty property, IOperator operator)
-							throws ThinklabException {
-						// TODO Auto-generated method stub
-						return null;
-					}
-				});
-		
-		registerTypeAdapter(Thinklab.c(NS.DOUBLE),
-				new TypeAdapter() {
-					
-					@Override
-					protected void setAndIndex(Node node, IProperty property, Object value) {
-						node.setProperty(toId(property), value);
-						Index<Node> index = _db.index().forNodes(BASE_INDEX);
-						index.add(node, toId(property), new ValueContext(value).indexNumeric());
-					}
-
-					@Override
-					public Set<Long> searchIndex(IKbox kbox,
-							IProperty property, IOperator operator)
-							throws ThinklabException {
-						// TODO Auto-generated method stub
-						return null;
-					}
-				});
-		
-		registerTypeAdapter(Thinklab.c(NS.FLOAT),
-				new TypeAdapter() {
-					
-					@Override
-					protected void setAndIndex(Node node, IProperty property, Object value) {
-						node.setProperty(toId(property), value);
-						Index<Node> index = _db.index().forNodes(BASE_INDEX);
-						index.add(node, toId(property), new ValueContext(value).indexNumeric());
-					}
-
-					@Override
-					public Set<Long> searchIndex(IKbox kbox,
-							IProperty property, IOperator operator)
-							throws ThinklabException {
-						// TODO Auto-generated method stub
-						return null;
-					}
-
-				});
-		registerTypeAdapter(Thinklab.c(NS.LONG),
-				new TypeAdapter() {
-					
-					@Override
-					protected void setAndIndex(Node node, IProperty property, Object value) {
-						node.setProperty(toId(property), value);
-						Index<Node> index = _db.index().forNodes(BASE_INDEX);
-						index.add(node, toId(property), new ValueContext(value).indexNumeric());
-					}
-
-					@Override
-					public Set<Long> searchIndex(IKbox kbox,
-							IProperty property, IOperator operator)
-							throws ThinklabException {
-						// TODO Auto-generated method stub
-						return null;
-					}
-
-				});
+		registerTypeAdapter(Thinklab.c(NS.INTEGER), new NumberTypeAdapter());
+		registerTypeAdapter(Thinklab.c(NS.DOUBLE), new NumberTypeAdapter());		
+		registerTypeAdapter(Thinklab.c(NS.FLOAT), new NumberTypeAdapter());
+		registerTypeAdapter(Thinklab.c(NS.LONG), new NumberTypeAdapter());
 	}
 
 	@Override

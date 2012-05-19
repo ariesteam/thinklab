@@ -48,14 +48,6 @@ public class QueryTest {
 		
 		IKbox kbox = Thinklab.get().requireKbox(KBOX_NAME);
 		
-		/*
-		 * query everything
-		 */	
-		int i = 0;
-		for (ISemanticObject<?> o : kbox.query(null)) {
-			System.out.println((i++) + ": " + o);
-		}
-		
 		IQuery allPeople = 
 				Query.select(Thinklab.c("thinklab.test:Person"));
 		
@@ -67,18 +59,22 @@ public class QueryTest {
 				Query.select("thinklab.test:Person").
 					restrict(Thinklab.p("thinklab.test:hasAge"), 
 							Operators.compare(18, Operators.LT));
-		/*
-		 * query all persons
-		 */	
-		i = 0;
+
+		
+		int i = 0;
+		System.out.println("Everyone:");
 		for (ISemanticObject<?> o : kbox.query(allPeople)) {
 			System.out.println((i++) + ": " + o);
 		}
 		
+		i=0;
+		System.out.println("\nAdults:");
 		for (ISemanticObject<?> o : kbox.query(allAdults)) {
 			System.out.println((i++) + ": " + o);
 		}
 		
+		i=0;
+		System.out.println("\nChildren:");
 		for (ISemanticObject<?> o : kbox.query(allChildren)) {
 			System.out.println((i++) + ": " + o);
 		}

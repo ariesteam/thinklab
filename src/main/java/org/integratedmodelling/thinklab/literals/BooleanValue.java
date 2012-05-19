@@ -28,7 +28,10 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 
-@Literal(datatype="xsd:boolean", javaClass=java.lang.Boolean.class, concept=NS.BOOLEAN)
+@Literal(
+		datatype="http://www.w3.org/2001/XMLSchema#boolean", 
+		javaClass=java.lang.Boolean.class, 
+		concept=NS.BOOLEAN)
 public class BooleanValue extends SemanticLiteral<Boolean> implements IParseable {
     
     public static ISemanticObject<Boolean> TRUE = new BooleanValue(true);
