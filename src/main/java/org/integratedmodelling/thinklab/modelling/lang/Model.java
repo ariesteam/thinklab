@@ -1,7 +1,10 @@
 package org.integratedmodelling.thinklab.modelling.lang;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -15,6 +18,7 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IExpressionDefinit
 import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
+import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
 import org.integratedmodelling.thinklab.modelling.lang.datasources.ConstantDataSource;
 
 @Concept(NS.MODEL)
@@ -38,15 +42,17 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	@Override
 	public IMetadata getStorageMetadata() {
 
-		if (_datasource != null & _dependencies.size() == 0) {
-			/*
-			 * TODO add total extents from datasource and 
-			 * observation type from observer, which must be
-			 * uniform.
-			 */
+		IMetadata ret = null;
+		
+		if (_datasource != null & _dependencies.size() == 0 &&
+			_datasource instanceof IStorageMetadataProvider) {
+			
+			ret = new Metadata();
+			
+			((IStorageMetadataProvider)_datasource).addStorageMetadata(ret);			
 		}
 		
-		return null;
+		return ret;
 	}
 
 	/*
@@ -136,12 +142,23 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 
 	@Override
 	public void setDatasourceGeneratorFunction(IFunctionDefinition function) {
-		_datasourceDefinition = function;
+		
+		IExpression func = Thinklab.get().resolveFunction(function.getId(), function.getParameters().keySet());
+		try {
+			if (func == null)
+				throw new ThinklabValidationException("function " + function.getId() + " cannot be resolved");
+			Object ds = func.eval(function.getParameters());
+			if (! (ds instanceof IDataSource)) {
+				throw new ThinklabValidationException("function " + function.getId() + " does not return a datasource");
+			}
+			_datasource = (IDataSource)ds;
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 	@Override
 	public void setInlineState(Object state) {
-		
 		_datasource = new ConstantDataSource(state);
 	}
 

@@ -524,4 +524,9 @@ public class VectorCoverage implements ICoverage {
 		return ret;
 	}
 
+	@Override
+	public ReferencedEnvelope getEnvelope() {
+		return new ReferencedEnvelope(boundingBox);
+	}
+
 }

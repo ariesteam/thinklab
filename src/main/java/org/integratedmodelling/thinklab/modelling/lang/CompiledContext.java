@@ -172,6 +172,7 @@ public class CompiledContext extends Context {
 		if (cd.detectCycles()) {
 			
 		}
+		
 		/*
 		 * create cursor for alternative model structures
 		 */

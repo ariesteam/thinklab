@@ -328,6 +328,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#MatchesPattern -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#MatchesPattern">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NotEqual -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NotEqual">

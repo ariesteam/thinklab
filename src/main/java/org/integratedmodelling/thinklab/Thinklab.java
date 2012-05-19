@@ -573,15 +573,29 @@ public class Thinklab implements
 	 *  
 	 * @param ns
 	 * @return
+	 * @throws ThinklabException 
 	 */
-	public IKbox getStorageKboxForNamespace(INamespace ns) {
-		// TODO Auto-generated method stub
-		return null;
+	public IKbox getStorageKboxForNamespace(INamespace ns) throws ThinklabException {
+
+		String rbox = "thinklab";
+		if (ns.getProject() != null)
+			rbox = ns.getProject().getProperties().getProperty(IProject.STORAGE_KBOX_PROPERTY, rbox);
+		return requireKbox(rbox);
 	}
 
-	public IKbox getLookupKboxForNamespace(INamespace ns) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Return the designated kbox to resolve references for a namespace. Defaults to thinklab
+	 * kbox if the project's properties don't specify one.
+	 * 
+	 * @param ns
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IKbox getLookupKboxForNamespace(INamespace ns) throws ThinklabException {
+		String rbox = "thinklab";
+		if (ns.getProject() != null)
+			rbox = ns.getProject().getProperties().getProperty(IProject.LOOKUP_KBOX_PROPERTY, rbox);
+		return requireKbox(rbox);
 	}
 
 	@Override

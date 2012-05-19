@@ -8,7 +8,7 @@ defcontext puget as
 /**
  * this uses a datasource so it stores an observation for its full extent 
  */	
-model wcs(server="http://ecoinformatics.uvm.edu/geoserver/wcs", id="global:annual_precip_global")
+model wcs(service="http://ecoinformatics.uvm.edu/geoserver/wcs", id="global:annual_precip_global")
      as measure habitat:Rainfall in mm
      with metadata {
               dc:comment ""

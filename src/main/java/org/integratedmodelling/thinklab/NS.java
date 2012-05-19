@@ -39,6 +39,7 @@ public class NS {
 	public static final String OPERATION_LESS_OR_EQUAL = "thinklab:LowerEqual";
 	public static final String OPERATION_LESS_THAN = "thinklab:LowerThan";
 	public static final String OPERATION_NOT_EQUALS = "thinklab:NotEqual";
+	public static final String OPERATION_LIKE = "thinklab:MatchesPattern";
 
 	// observable types
 	public static final String BOOLEAN_RANKING = "thinklab:BooleanRanking";
@@ -92,6 +93,8 @@ public class NS {
 	public static final String MODEL_OBJECT = "modelling.thinklab:ModelObject";
 	public static final String OBSERVING_OBJECT = "modelling.thinklab:ObservingObject";	
 	public static final String OBSERVATION = "modelling.thinklab:Observation";
+
+	public static final String HAS_OBSERVABLE = "observation:hasObserver";
 
 
 }

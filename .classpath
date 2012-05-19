@@ -347,5 +347,6 @@
 	<classpathentry kind="lib" path="lib/jspf.remote.lipermi-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/jspf.remote.xmlrpc-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-spatial-0.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

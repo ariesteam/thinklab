@@ -49,6 +49,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.Traverser;
 import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.graphdb.index.Index;
+import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.index.lucene.QueryContext;
@@ -82,51 +83,6 @@ public class NeoKBox implements IKbox {
 	EmbeddedGraphDatabase _db = null;
 	String _url = null;
 	List<IProperty> _sortProperties;
-	
-	class NumberTypeAdapter extends TypeAdapter {
-		
-		@Override
-		protected void setAndIndex(Node node, IProperty property, Object value) {
-			node.setProperty(toId(property), value);
-			Index<Node> index = _db.index().forNodes(BASE_INDEX);
-			index.add(node, toId(property), new ValueContext(value).indexNumeric());
-		}
-
-		@Override
-		public Set<Long> searchIndex(IKbox kbox,
-				IProperty property, IOperator operator)
-				throws ThinklabException {
-			
-			Set<Long> ret = new HashSet<Long>();
-			Index<Node> index = _db.index().forNodes(BASE_INDEX);
-			Pair<IConcept, Object[]> op = operator.getQueryParameters();
-			Object qc = null;
-			
-			if (op.getFirst().equals(NS.OPERATION_EQUALS)) {
-				/*
-				 * mah - can't find anything to match a number
-				 */
-				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), (Number)(op.getSecond()[0]), true, true);
-			} else if (op.getFirst().equals(NS.OPERATION_GREATER_THAN)) {
-				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), null, false, true);
-			} else if (op.getFirst().equals(NS.OPERATION_LESS_THAN)) {
-				qc = QueryContext.numericRange(toId(property), null, (Number)(op.getSecond()[0]), true, false);				
-			} else if (op.getFirst().equals(NS.OPERATION_GREATER_OR_EQUAL)) {
-				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), null, true, true);				
-			} else if (op.getFirst().equals(NS.OPERATION_LESS_OR_EQUAL)) {
-				qc = QueryContext.numericRange(toId(property), null, (Number)(op.getSecond()[0]), true, true);				
-			} else if (op.getFirst().equals(NS.OPERATION_NOT_EQUALS)) {
-			
-				/*
-				 * TODO this should be an OR of a less than and a greater than
-				 */
-			}
-			for (Node n : index.query(qc))
-				ret.add(n.getId());
-			
-			return ret;
-		}
-	}
 	public NeoKBox(String url) {
 		
 		if (_typeAdapters == null) {
@@ -584,6 +540,52 @@ public class NeoKBox implements IKbox {
 	 * -----------------------------------------------------------------------------------------------------
 	 */
 	
+	class NumberTypeAdapter extends TypeAdapter {
+		
+		@Override
+		protected void setAndIndex(Node node, IProperty property, Object value) {
+			node.setProperty(toId(property), value);
+			Index<Node> index = _db.index().forNodes(BASE_INDEX);
+			index.add(node, toId(property), new ValueContext(value).indexNumeric());
+		}
+
+		@Override
+		public Set<Long> searchIndex(IKbox kbox,
+				IProperty property, IOperator operator)
+				throws ThinklabException {
+			
+			Set<Long> ret = new HashSet<Long>();
+			Index<Node> index = _db.index().forNodes(BASE_INDEX);
+			Pair<IConcept, Object[]> op = operator.getQueryParameters();
+			Object qc = null;
+			
+			if (op.getFirst().equals(NS.OPERATION_EQUALS)) {
+				
+				/*
+				 * mah - can't find anything to match a number
+				 */
+				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), (Number)(op.getSecond()[0]), true, true);
+			} else if (op.getFirst().equals(NS.OPERATION_GREATER_THAN)) {
+				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), null, false, true);
+			} else if (op.getFirst().equals(NS.OPERATION_LESS_THAN)) {
+				qc = QueryContext.numericRange(toId(property), null, (Number)(op.getSecond()[0]), true, false);				
+			} else if (op.getFirst().equals(NS.OPERATION_GREATER_OR_EQUAL)) {
+				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), null, true, true);				
+			} else if (op.getFirst().equals(NS.OPERATION_LESS_OR_EQUAL)) {
+				qc = QueryContext.numericRange(toId(property), null, (Number)(op.getSecond()[0]), true, true);				
+			} else if (op.getFirst().equals(NS.OPERATION_NOT_EQUALS)) {
+			
+				/*
+				 * TODO this should be an OR of a less than and a greater than
+				 */
+			}
+			for (Node n : index.query(qc))
+				ret.add(n.getId());
+			
+			return ret;
+		}
+	}
+
 	/*
 	 * insert default type adapters. More can be added for specific types.
 	 * 
@@ -605,8 +607,21 @@ public class NeoKBox implements IKbox {
 					public Set<Long> searchIndex(IKbox kbox,
 							IProperty property, IOperator operator)
 							throws ThinklabException {
+
 						Index<Node> index = _db.index().forNodes(BASE_INDEX);
-						return null;
+						Pair<IConcept, Object[]> op = operator.getQueryParameters();
+						IndexHits<Node> zio = null;
+						if (op.getFirst().equals(NS.OPERATION_EQUALS) ||
+							op.getFirst().equals(NS.OPERATION_LIKE)) {
+							zio = index.query(toId(property), new QueryContext(op.getSecond()[0]));
+						}
+						
+						Set<Long> ret = new HashSet<Long>();
+						if (zio != null) {
+							for (Node n : zio)
+								ret.add(n.getId());
+						}
+						return ret;
 					}
 				});
 		

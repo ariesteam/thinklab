@@ -80,6 +80,11 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	}
 	
 	@Override
+	public ReferencedEnvelope getEnvelope() {
+		return boundingBox;
+	}
+
+	@Override
 	public double[] getNodataValue() {
 		return this.noData;
 	}

@@ -56,7 +56,7 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
  * @author Ferdinando Villa
  *
  */
-@Literal(concept="geospace:SpatialRecord", datatype="", javaClass=Geometry.class)
+@Literal(concept="geospace:SpatialRecord", datatype="http://www.integratedmodelling.org/ks/geospace/geospace.owl#geometry", javaClass=Geometry.class)
 public class ShapeValue extends SemanticLiteral<Geometry> implements IParseable, ITopologicallyComparable<ShapeValue> {
 
 	PrecisionModel precisionModel = null;

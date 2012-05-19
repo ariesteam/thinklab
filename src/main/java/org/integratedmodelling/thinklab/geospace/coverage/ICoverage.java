@@ -21,6 +21,7 @@ package org.integratedmodelling.thinklab.geospace.coverage;
 
 import java.io.File;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
@@ -107,5 +108,11 @@ public interface ICoverage {
 	 * 
 	 */
 	public abstract void setName(String covId);
+
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract ReferencedEnvelope getEnvelope();
 
 }

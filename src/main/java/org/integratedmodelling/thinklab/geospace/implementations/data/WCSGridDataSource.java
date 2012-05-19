@@ -22,39 +22,68 @@ package org.integratedmodelling.thinklab.geospace.implementations.data;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.geospace.coverage.AbstractRasterCoverage;
 import org.integratedmodelling.thinklab.geospace.coverage.WCSCoverage;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
+import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
+import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 
 @Concept("geospace:WCSDataSource")
-public class WCSGridDataSource extends RegularRasterGridDataSource {
+public class WCSGridDataSource extends RegularRasterGridDataSource implements IStorageMetadataProvider {
 
 	private GridExtent finalExtent = null;
+	private Properties _properties = new Properties();
+	private String _service;
+	private String _id;
 	
 	public WCSGridDataSource(String service, String id, double[] noData) throws ThinklabException {
 
-		Properties p = new Properties();
-		p.put(WCSCoverage.WCS_SERVICE_PROPERTY, service);
+		_service = service;
+		_id = id;
+		
+		_properties.put(WCSCoverage.WCS_SERVICE_PROPERTY, service);
 		
 		for (double d : noData) {
 			if (!Double.isNaN(d)) {
-				String s = p.getProperty(AbstractRasterCoverage.NODATA_PROPERTY, "");
+				String s = _properties.getProperty(AbstractRasterCoverage.NODATA_PROPERTY, "");
 				if (s.length() > 0)
 					s += ",";
 				s += d;
-				p.put(AbstractRasterCoverage.NODATA_PROPERTY, s);
+				_properties.put(AbstractRasterCoverage.NODATA_PROPERTY, s);
 			}
 		}
 			
-		Thinklab.get().logger().info("reading WCS source " + service + "#" + id);
-
-		this.coverage = new WCSCoverage(id, p);
 	}
 
+	
+	private void readData() throws ThinklabException {
+		
+		if (this.coverage == null) {
+			Thinklab.get().logger().info("reading WCS source " + _service + "#" + _id);
+			this.coverage = new WCSCoverage(_id, _properties);
+		}
+	}
+
+
+	@Override
+	public void addStorageMetadata(IMetadata metadata) {
+		try {
+			readData();
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		
+		((Metadata)metadata).put(
+				IMetadata.GEOSPACE_BOUNDING_BOX, 
+				new PolygonValue(coverage.getEnvelope()));
+	}
+	
+	
 	
 //	@Override
 //	public IDataSource<?> transform(IDatasourceTransformation transformation)
