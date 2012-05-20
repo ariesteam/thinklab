@@ -357,7 +357,7 @@ public class NeoKBox implements IKbox {
 			Set<Long> ret = null;
 			
 			for (SemanticQuery r : query.getRestrictions()) {
-				Set<Long> rest = retrieveMatches((Query) r, ncontext, null);
+				Set<Long> rest = retrieveMatches((Query) r, ncontext, pcontext);
 
 				if (ret == null) 
 					ret = rest;
@@ -392,35 +392,16 @@ public class NeoKBox implements IKbox {
 			Set<Long> ret = new HashSet<Long>();
 			
 			/*
-			 * get the target node set
+			 * if it's a restriction, we only have one.
 			 */
-			Set<Long> target = retrieveMatches((Query) query.getRestrictions().iterator().next(), 
-					null, query.getProperty());
+			Query restriction = (Query) query.getRestrictions().iterator().next();
+			
 			/*
-			 * if we have a relationship context (meaning it wasn't an
-			 * operator query) use relationship index to find all rels that
-			 * lead to nodes in the set, and intersect their source nodes with the current 
-			 * context.
+			 * get the target node set, intersected appropriately with whatever
+			 * node context we have.
 			 */
-			if (pcontext != null) {
-				for (long id : ncontext) {
-					Node node = _db.getNodeById(id);
-					for (Relationship rel : node.getRelationships(Direction.OUTGOING)) {
-						if (isProperty(rel, pcontext) && target.contains(rel.getEndNode().getId()))
-							ret.add(id);
-					}
-				}
-			} else {
-				/*
-				 * otherwise we are intersecting with an operator query, i.e. the result 
-				 * set is the intersection of the node context with the query results.
-				 */
-				ret = ncontext;
-				ncontext.retainAll(target);
-			}
-			
-			return ret;
-			
+			return retrieveMatches(restriction, ncontext, query.getProperty());
+
 		} else {
 			
 			if (query instanceof IOperator) {
@@ -428,9 +409,16 @@ public class NeoKBox implements IKbox {
 				/*
 				 * get result set of index search after translating operator
 				 */
-				return getNodesMatching((IOperator)query, pcontext);
+				return getNodesMatching((IOperator)query, ncontext, pcontext);
 				
 			} else {
+				
+				/*
+				 * we may get here under a property restriction with a source
+				 * nodeset.
+				 */
+				if (pcontext != null && ncontext != null && ncontext.isEmpty())
+					return ncontext;
 				
 				/*
 				 * Most important case: 
@@ -451,25 +439,45 @@ public class NeoKBox implements IKbox {
 					main = retrieveMatches((Query) r, main, null);
 				}
 				
+				/*
+				 * if these were the target of a restriction, retain all in node context
+				 * that relate to these through the restriction property.
+				 */
+				if (pcontext != null && ncontext != null) {
+					HashSet<Long> ret = new HashSet<Long>();
+					for (long id : ncontext) {
+						Node node = _db.getNodeById(id);
+						for (Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+							if (isProperty(rel, pcontext) && main.contains(rel.getEndNode().getId()))
+								ret.add(id);
+						}
+					}
+					return ret;
+				}
+				
 				return main;
 			}
-			
 		}
-
 	}
 
 	private boolean isProperty(Relationship rel, IProperty pcontext) {
-		IProperty p = Thinklab.p(rel.getType().name());
+		IProperty p = Thinklab.p(fromId(rel.getType().name()));
 		return p.is(pcontext);
 	}
 
-	private Set<Long> getNodesMatching(IOperator query, IProperty pcontext) throws ThinklabException {
+	private Set<Long> getNodesMatching(IOperator query, Set<Long> ncontext, IProperty pcontext) throws ThinklabException {
 		
 		// find type adapter based on property range. If no range, assume string.
 		Collection<IConcept> types = pcontext.getRange();
 		KboxTypeAdapter zio = _typeAdapters.get(types.size() > 0 ? types.iterator().next() : Thinklab.TEXT);
 		
-		return zio.searchIndex(this, pcontext, query);
+		Set<Long> set = zio.searchIndex(this, pcontext, query);
+		if (ncontext != null) {
+			Set<Long> ret = ncontext;
+			ret.retainAll(set);
+			set = ret;
+		}
+		return set;
 	}
 
 	private Set<Long> getNodesOfType(Set<IConcept> zio) {

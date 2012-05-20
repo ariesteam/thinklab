@@ -25,6 +25,7 @@ public class QueryTest {
 	private static void populateKbox() throws Exception {
 		
 		IKbox kbox = Thinklab.get().requireKbox(KBOX_NAME);
+		kbox.clear();
 		
 		/*
 		 * add some stuff
@@ -38,8 +39,6 @@ public class QueryTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		IKbox kbox = Thinklab.get().requireKbox(KBOX_NAME);
-		kbox.clear();
 		Thinklab.shutdown();
 	}
 
@@ -59,7 +58,13 @@ public class QueryTest {
 				Query.select("thinklab.test:Person").
 					restrict(Thinklab.p("thinklab.test:hasAge"), 
 							Operators.compare(18, Operators.LT));
-
+		
+		IQuery allParents =
+				Query.select("thinklab.test:Person").
+					restrict(Thinklab.p("thinklab.test:hasChildren"),
+								Query.select("thinklab.test:Person").
+									restrict(Thinklab.p("thinklab.test:hasAge"), 
+											Operators.compare(18, Operators.LT)));
 		
 		int i = 0;
 		System.out.println("Everyone:");
@@ -76,6 +81,12 @@ public class QueryTest {
 		i=0;
 		System.out.println("\nChildren:");
 		for (ISemanticObject<?> o : kbox.query(allChildren)) {
+			System.out.println((i++) + ": " + o);
+		}
+		
+		i=0;
+		System.out.println("\nParents:");
+		for (ISemanticObject<?> o : kbox.query(allParents)) {
 			System.out.println((i++) + ": " + o);
 		}
 	}
