@@ -1,6 +1,7 @@
 package org.integratedmodelling.thinklab;
 
 
+
 /**
  * One and only holder of semantic concept IDs. These will all be expected to exist.
  * 
@@ -32,6 +33,10 @@ public class NS {
 	public static final String BOOLEAN = "thinklab:Boolean";
 	public static final String NUMBER = "thinklab:Number";
 
+	public static final String POLYGON = "geospace:PolygonValue";
+	public static final String POINT = "geospace:PointValue";
+	public static final String LINE = "geospace:LineValue";
+	
 	// standard operations
 	public static final String OPERATION_EQUALS = "thinklab:Equal";
 	public static final String OPERATION_GREATER_OR_EQUAL = "thinklab:GreaterEqual";
@@ -41,6 +46,20 @@ public class NS {
 	public static final String OPERATION_NOT_EQUALS = "thinklab:NotEqual";
 	public static final String OPERATION_LIKE = "thinklab:MatchesPattern";
 
+	// topological and specific for space
+	static final public String OPERATION_CROSSES = "thinklab:Crosses";
+	static final public String OPERATION_INTERSECTS = "thinklab:Intersects";
+	static final public String OPERATION_INTERSECTS_ENVELOPE = "thinklab:IntersectsEnvelope";
+	static final public String OPERATION_COVERS = "thinklab:Covers";
+	static final public String OPERATION_COVERED_BY = "thinklab:IsCoveredBy";
+	static final public String OPERATION_OVERLAPS = "thinklab:Overlaps";
+	static final public String OPERATION_TOUCHES = "thinklab:Touches";
+	static final public String OPERATION_CONTAINS = "thinklab:Contains";
+	static final public String OPERATION_CONTAINED_BY = "thinklab:IsContainedBy";
+	static final public String OPERATION_NEAREST_NEIGHBOUR = "thinklab:NearestNeighbour";
+	static final public String OPERATION_WITHIN_DISTANCE = "thinklab:WithinDistance";
+
+	
 	// observable types
 	public static final String BOOLEAN_RANKING = "thinklab:BooleanRanking";
 	public static final String ORDINAL_RANKING = "thinklab:OrdinalRanking";

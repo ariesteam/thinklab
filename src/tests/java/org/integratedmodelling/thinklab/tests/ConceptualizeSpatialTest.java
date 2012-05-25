@@ -4,7 +4,9 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
+import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -51,27 +53,16 @@ public class ConceptualizeSpatialTest  {
 		 */
 		Geometry g =
 			new WKTReader().read("POLYGON ((-180 -60, 180.0000188 -60, 180.0000188 90.0000078, -180 90.0000078, -180 -60))");
-		PolygonValue pv = new PolygonValue((Polygon)g);
+		PolygonValue pv = new PolygonValue((Polygon)g, Geospace.get().getDefaultCRS());
 
-
-		RawPlace rplace = new RawPlace();
-		rplace.boundingBox = (Polygon)g;
-		rplace.name = "BohRaw";
-		
-		ISemanticObject<?> rbox = Thinklab.get().annotate(rplace);
-		Object rpolygon = Thinklab.get().instantiate(rbox.getSemantics());
-
-		System.out.println(rbox.getSemantics().prettyPrint());
-
-		
 		Place place = new Place();
 		place.boundingBox = pv;
 		place.name = "Boh";
 		
 		ISemanticObject<?> box = Thinklab.get().annotate(place);
-		Object polygon = Thinklab.get().instantiate(box.getSemantics());
-
-
+		IList semantics = box.getSemantics();
+		System.out.println(semantics.prettyPrint());
+		Object polygon = Thinklab.get().instantiate(semantics);
 		
 		System.out.println(box.getSemantics().prettyPrint());
 	}

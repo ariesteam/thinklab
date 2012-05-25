@@ -1,18 +1,22 @@
 package org.integratedmodelling.thinklab.geospace.literals;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
 
 @Literal(
-		concept="geospace:Polygon", 
+		concept="geospace:PolygonValue", 
 		datatype="http://www.integratedmodelling.org/ks/geospace/geospace.owl#polygon",
-		javaClass=Polygon.class)
+		javaClass=PolygonValue.class)
 public class PolygonValue extends ShapeValue {
 
 	public PolygonValue(IConcept c, Polygon value) {
@@ -26,7 +30,6 @@ public class PolygonValue extends ShapeValue {
 
 	public PolygonValue(String s) throws ThinklabValidationException {
 		super(s);
-		// TODO Auto-generated constructor stub
 	}
 
 	public PolygonValue(String s, IConcept c)
@@ -59,6 +62,14 @@ public class PolygonValue extends ShapeValue {
 	public PolygonValue(ReferencedEnvelope e) {
 		super(e);
 		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public IList conceptualize() throws ThinklabException {
+		return PolyList.list(
+				Thinklab.c("geospace:PolygonValue"),
+				PolyList.list(Thinklab.p("geospace:hasWKB"), getWKB()),
+				PolyList.list(Thinklab.p("geospace:hasCRSCode"), Geospace.getCRSIdentifier(getCRS(), true)));
 	}
 
 }

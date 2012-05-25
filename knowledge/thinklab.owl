@@ -139,7 +139,9 @@
 
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Comparison -->
 
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Comparison"/>
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Comparison">
+        <rdfs:comment rdf:datatype="&xsd;string">Comparison notions - of course these are actually properties and they may become so in the future. For now Thinklab uses concepts to index operators.</rdfs:comment>
+    </owl:Class>
     
 
 
@@ -170,7 +172,23 @@
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Contains -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Contains">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralComparison"/>
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Covers -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Covers">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Crosses -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Crosses">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Coincidence"/>
     </owl:Class>
     
 
@@ -255,11 +273,43 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Intersects -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Intersects">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Intersection"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IntersectsEnvelope -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IntersectsEnvelope">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Intersection"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Interval -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Interval">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValued"/>
         <rdfs:comment rdf:datatype="&xsd;string">Abstract class subsuming different interval types (usually corresponding to literals)</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IsContainedBy -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IsContainedBy">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IsCoveredBy -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#IsCoveredBy">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Containment"/>
     </owl:Class>
     
 
@@ -336,6 +386,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NearestNeighbour -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NearestNeighbour">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Connection"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NotEqual -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#NotEqual">
@@ -375,6 +433,14 @@
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#OrdinalRanking">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Categorical"/>
         <rdfs:comment>A concept whose disjoint children have an ordinal but not numeric relationship to each other.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Overlaps -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Overlaps">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Coincidence"/>
     </owl:Class>
     
 
@@ -464,6 +530,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Touches -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Touches">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Tangency"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Triple -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Triple">
@@ -477,6 +551,14 @@
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Tuple">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#LiteralValued"/>
         <isAbstract rdf:datatype="&xsd;boolean">true</isAbstract>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#WithinDistance -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#WithinDistance">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/thinklab/thinklab-core.owl#Connection"/>
     </owl:Class>
     
 
@@ -589,5 +671,5 @@
 
 
 
-<!-- Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net -->
+<!-- Generated by the OWL API (version 3.2.3.1824) http://owlapi.sourceforge.net -->
 

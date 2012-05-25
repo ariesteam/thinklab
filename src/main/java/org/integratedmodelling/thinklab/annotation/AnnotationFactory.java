@@ -25,7 +25,6 @@ import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
@@ -190,17 +189,14 @@ public class AnnotationFactory {
 
 		if (list == null)
 			list = new ReferenceList();
-
-		if (o instanceof ISemanticLiteral<?>) {
-			o = ((ISemanticLiteral<?>)o).demote();
-		}
 		
 		/*
-		 * If literal, we always create a full list.
+		 * If literal, we always create a full list unless the literal is a 
+		 * IConceptualizable, which takes over.
 		 */
 		Class<?> cls = o.getClass();
 		IConcept literalType = _class2literal.get(cls);
-		if (literalType != null) {
+		if (literalType != null && !(o instanceof IConceptualizable)) {
 			return list.newList(literalType, o);
 		} 	
 		
@@ -320,11 +316,13 @@ public class AnnotationFactory {
 		
 		/*
 		 * check first if it's just a literal we're instantiating. If so, we
-		 * have it already.
+		 * have it already.Do not try to parse as a literal if the object is
+		 * a IConceptualizable - that takes over.
+		 * 
 		 */
 		Class<?> cls = _annotatedLiteralClass.get(concept);
 		Class<?> ocl = _javaLiteralClass.get(concept);
-		if (cls != null) {
+		if (cls != null && !IConceptualizable.class.isAssignableFrom(cls)) {
 			
 			if (annotation.length() < 2) {
 				System.out.println("xio porco");
@@ -346,10 +344,13 @@ public class AnnotationFactory {
 		
 		/*
 		 * find class. If an IConceptualizable, create object, call instantiate() and
-		 * return it.
+		 * return it. We may already have the class if this was a literal but also a
+		 * IConceptualizable, which we handle later.
 		 */
-		cls = _concept2class.get(concept);
 		if (cls == null)
+			cls = _concept2class.get(concept);
+
+		if (cls /* still */ == null)
 			return null;
 		
 		/*

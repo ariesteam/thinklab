@@ -24,11 +24,13 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
@@ -59,7 +61,8 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
  *
  */
 @Literal(concept="geospace:SpatialRecord", datatype="http://www.integratedmodelling.org/ks/geospace/geospace.owl#geometry", javaClass=Geometry.class)
-public class ShapeValue extends SemanticLiteral<Geometry> implements IParseable, ITopologicallyComparable<ShapeValue> {
+public class ShapeValue extends SemanticLiteral<Geometry> 
+	implements IParseable, IConceptualizable, ITopologicallyComparable<ShapeValue> {
 
 	PrecisionModel precisionModel = null;
 	CoordinateReferenceSystem crs = null;
@@ -510,8 +513,42 @@ public class ShapeValue extends SemanticLiteral<Geometry> implements IParseable,
 
 	@Override
 	public boolean is(Object object) {
-		// TODO Auto-generated method stub
-		return false;
+		return 
+			object instanceof ShapeValue && 
+			((ShapeValue)object).value.equals(value);
+	}
+
+	@Override
+	public IList conceptualize() throws ThinklabException {
+		return PolyList.list(
+				Thinklab.c("geospace:SpatialRecord"),
+				PolyList.list(Thinklab.p("geospace:hasWKB"), getWKB()),
+				PolyList.list(Thinklab.p("geospace:hasCRSCode"), Geospace.getCRSIdentifier(getCRS(), true)));
+	}
+
+	@Override
+	public void define(IList l) throws ThinklabException {
+		
+		System.out.println(l.prettyPrint());
+		
+		/*
+		 * create geometry and CRS, set into value
+		 */
+		try {
+			String wkb = ((IList)(l.nth(1))).nth(1).toString();
+			String crs = ((IList)(l.nth(2))).nth(1).toString();
+			this.value = new WKBReader().read(WKBReader.hexToBytes(wkb));
+			this.crs = Geospace.getCRSFromID(crs);
+			
+		} catch (ParseException e) {
+			throw new ThinklabValidationException(e);
+		}
+		
+		/*
+		 * establish proper concept
+		 */
+		setConceptWithoutValidation(null);
+		
 	}
 
 }

@@ -12,6 +12,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.query.Query;
 
 /**
@@ -30,6 +31,18 @@ public class Operators {
 	static final public int GE = 4;
 	static final public int NE = 5;
 	
+	static final public int CROSSES = 6;
+	static final public int INTERSECTS = 7;
+	static final public int INTERSECTS_ENVELOPE = 8;
+	static final public int COVERS = 9;
+	static final public int COVERED_BY = 10;
+	static final public int OVERLAPS = 11;
+	static final public int TOUCHES = 12;
+	static final public int CONTAINS = 13;
+	static final public int CONTAINED_BY = 14;
+	static final public int NEAREST_NEIGHBOUR = 15;
+	static final public int WITHIN_DISTANCE = 16;
+
 	/**
 	 * 
 	 * @param field
@@ -88,6 +101,9 @@ public class Operators {
 	 * @return
 	 */
 	static public IQuery compare(Object match, int operator) {
+		if (match instanceof ShapeValue && operator == EQ) {
+			return new SpatialCompare(match,operator);
+		}
 		return new Compare(match, operator);
 	}
 	
@@ -137,6 +153,48 @@ public class Operators {
 			return true;
 		}
 
+	}
+	
+	public static class SpatialCompare extends Query implements IOperator {
+
+		private Object _operand;
+		int _operation;
+		
+		public SpatialCompare(Object what, int operation) {
+			_operand = what;
+			_operation = operation;
+		}
+		
+		@Override
+		public Pair<IConcept, Object[]> getQueryParameters() {
+			return new Pair<IConcept, Object[]>(
+					Thinklab.c(getConcept()), 
+					new Object[]{_operand});
+		}
+
+		private String getConcept() {
+			switch (_operation) {
+			case Operators.GE:
+				return NS.OPERATION_GREATER_OR_EQUAL;
+			case Operators.GT:
+				return NS.OPERATION_GREATER_THAN;
+			case Operators.LE:
+				return NS.OPERATION_LESS_OR_EQUAL;
+			case Operators.LT:
+				return NS.OPERATION_LESS_THAN;
+			case Operators.EQ:
+				return NS.OPERATION_EQUALS;
+			case Operators.NE:
+				return NS.OPERATION_NOT_EQUALS;
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isLiteral() {
+			return true;
+		}
+		
 	}
 
 	

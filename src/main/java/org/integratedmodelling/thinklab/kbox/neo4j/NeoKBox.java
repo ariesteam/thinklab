@@ -18,6 +18,7 @@ import org.apache.lucene.search.TermQuery;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.lang.Quantifier;
@@ -34,11 +35,19 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
+import org.integratedmodelling.thinklab.geospace.Geospace;
+import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.interfaces.storage.KboxTypeAdapter;
 import org.integratedmodelling.thinklab.kbox.KBoxResult;
 import org.integratedmodelling.thinklab.query.Query;
+import org.neo4j.gis.spatial.DefaultLayer;
+import org.neo4j.gis.spatial.GeometryEncoder;
+import org.neo4j.gis.spatial.SpatialDatabaseRecord;
+import org.neo4j.gis.spatial.SpatialDatabaseService;
+import org.neo4j.gis.spatial.SpatialRecord;
+import org.neo4j.gis.spatial.pipes.GeoPipeline;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -56,6 +65,8 @@ import org.neo4j.index.lucene.QueryContext;
 import org.neo4j.index.lucene.ValueContext;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.Traversal;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 public class NeoKBox implements IKbox {
 
@@ -81,6 +92,8 @@ public class NeoKBox implements IKbox {
 	}
 
 	EmbeddedGraphDatabase _db = null;
+	SpatialDatabaseService _sdb = null;
+	
 	String _url = null;
 	List<IProperty> _sortProperties;
 	public NeoKBox(String url) {
@@ -89,6 +102,14 @@ public class NeoKBox implements IKbox {
 			initializeTypeAdapters();
 		}
 		this._url = url;
+	}
+	
+	public SpatialDatabaseService getSpatialDB() {
+		
+		if (_sdb == null) {
+			_sdb = new SpatialDatabaseService(_db);
+		}
+		return _sdb;
 	}
 	
 	/**
@@ -531,11 +552,11 @@ public class NeoKBox implements IKbox {
 	 */
 	public abstract class TypeAdapter implements KboxTypeAdapter {
 
-		protected abstract void setAndIndex(Node node, IProperty property, Object value);
+		protected abstract void setAndIndex(Node node, IProperty property, Object value) throws ThinklabException;
 
 		@Override
 		public void setAndIndexProperty(long id, IKbox kbox,
-				IProperty property, Object value) {
+				IProperty property, Object value) throws ThinklabException {
 			
 			Node node = _db.getNodeById(id);
 			setAndIndex(node, property, value);
@@ -594,6 +615,65 @@ public class NeoKBox implements IKbox {
 		}
 	}
 
+	
+	class ShapeTypeAdapter extends TypeAdapter {
+		
+		@Override
+		protected void setAndIndex(Node node, IProperty property, Object value) throws ThinklabException {
+
+			/*
+			 * Extract the geometry in the appropriate projection - neo4j-spatial doesn't handle
+			 * projections.
+			 */
+			if (!(value instanceof ShapeValue)) 
+				throw new ThinklabInternalErrorException("kbox: trying to store a non-spatial value as a shape");
+			
+			Geometry geometry = ((ShapeValue)value).transform(Geospace.get().getDefaultCRS()).getGeometry();
+			
+			String idName = toId(property);
+			DefaultLayer layer = getSpatialDB().getOrCreateDefaultLayer(idName);
+			GeometryEncoder encoder = layer.getGeometryEncoder();
+			encoder.encodeGeometry(geometry, node);
+			layer.add(node);			
+		}
+
+		
+		
+		@Override
+		public Set<Long> searchIndex(IKbox kbox,
+				IProperty property, IOperator operator)
+				throws ThinklabException {
+			
+			Set<Long> ret = new HashSet<Long>();
+			Pair<IConcept, Object[]> op = operator.getQueryParameters();
+			String idName = toId(property);
+			DefaultLayer layer = getSpatialDB().getOrCreateDefaultLayer(idName);
+			GeoPipeline pipeline = null;
+			
+			if (op.getFirst().equals(NS.OPERATION_EQUALS)) {				
+				pipeline = GeoPipeline.startEqualExactSearch(layer, getGeometry(op), 0);
+			} else if (op.getFirst().equals(NS.OPERATION_NOT_EQUALS)) {
+			
+				/*
+				 * TODO this should be an OR of a less than and a greater than
+				 */
+			}
+			
+			if (pipeline != null) {
+				for (SpatialRecord result : pipeline) {
+					ret.add(((SpatialDatabaseRecord)result).getNodeId());
+				}
+			}
+			
+			return ret;
+		}
+
+
+
+		private Geometry getGeometry(Pair<IConcept, Object[]> op) throws ThinklabException {
+			return 	((ShapeValue)op.getSecond()[0]).transform(Geospace.get().getDefaultCRS()).getGeometry();
+		}
+	}
 	/*
 	 * insert default type adapters. More can be added for specific types.
 	 * 
@@ -633,10 +713,24 @@ public class NeoKBox implements IKbox {
 					}
 				});
 		
+		/*
+		 * numbers
+		 */
 		registerTypeAdapter(Thinklab.c(NS.INTEGER), new NumberTypeAdapter());
 		registerTypeAdapter(Thinklab.c(NS.DOUBLE), new NumberTypeAdapter());		
 		registerTypeAdapter(Thinklab.c(NS.FLOAT), new NumberTypeAdapter());
 		registerTypeAdapter(Thinklab.c(NS.LONG), new NumberTypeAdapter());
+
+		/*
+		 * shapes
+		 */
+		registerTypeAdapter(Thinklab.c(NS.POLYGON), new ShapeTypeAdapter());
+		registerTypeAdapter(Thinklab.c(NS.POINT), new ShapeTypeAdapter());
+		registerTypeAdapter(Thinklab.c(NS.LINE), new ShapeTypeAdapter());
+
+		/*
+		 * TODO time values and periods
+		 */
 	}
 
 	@Override

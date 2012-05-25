@@ -35,8 +35,6 @@ public class ModelReadWrite {
 		
 		IObservation result = model.observe(ctx);
 		
-		System.out.println(((Namespace)ns).getSemantics().prettyPrint());
-		
 	}
 
 }

@@ -21,7 +21,7 @@ public interface KboxTypeAdapter {
 	 * will be found by annotating it first.
 	 * 
 	 */
-	void setAndIndexProperty(long id, IKbox kbox, IProperty property, Object value);
+	void setAndIndexProperty(long id, IKbox kbox, IProperty property, Object value) throws ThinklabException;
 	
 	/**
 	 * Use whatever indexing strategy is appropriate to search and return the 

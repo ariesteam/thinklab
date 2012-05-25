@@ -108,6 +108,12 @@
         <owl:versionInfo rdf:datatype="&xsd;string">Created by Ferdinando Villa on Tue Aug 07 11:25:41 EDT 2007</owl:versionInfo>
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#ArealLocation"/>
         <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SimpleShape"/>
+        <rdfs:domain>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasBoundingBox"/>
+                <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#polygon"/>
+            </owl:Restriction>
+        </rdfs:domain>
     </owl:ObjectProperty>
     
 
@@ -203,14 +209,19 @@
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasBoundingBox -->
 
     <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasBoundingBox">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
         <rdfs:label rdf:datatype="&xsd;string">hasBoundingBox</rdfs:label>
         <owl:versionInfo rdf:datatype="&xsd;string">Created by Ferdinando Villa on Tue Aug 07 11:25:41 EDT 2007</owl:versionInfo>
-        <rdfs:domain>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasBoundingBox"/>
-                <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#polygon"/>
-            </owl:Restriction>
-        </rdfs:domain>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasCRSCode -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasCRSCode">
+        <rdfs:comment rdf:datatype="&xsd;string">Links CRS code to shape literals.</rdfs:comment>
+        <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
     
 
@@ -248,7 +259,7 @@
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasImageFormat -->
 
     <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasImageFormat">
-        <rdfs:comment rdf:datatype="&xsd;string">Specifies image output formats for WCS data sources. Default in thinklab is &apos;geotiff&apos;.</rdfs:comment>
+        <rdfs:comment rdf:datatype="&xsd;string">Specifies image output formats for WCS data sources. Default in thinklab is &#39;geotiff&#39;.</rdfs:comment>
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#WCSDataSource"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
@@ -412,7 +423,7 @@
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasValueDefault -->
 
     <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasValueDefault">
-        <rdfs:comment>Provides a default value for an attribute when a feature doesn&apos;t have it or has an empty value.</rdfs:comment>
+        <rdfs:comment>Provides a default value for an attribute when a feature doesn&#39;t have it or has an empty value.</rdfs:comment>
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#VectorCoverageDataSource"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
@@ -444,6 +455,16 @@
     <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasVarianceRatio">
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#ClassifiedGrid"/>
         <rdfs:range rdf:resource="&xsd;double"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasWKB -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasWKB">
+        <rdfs:comment rdf:datatype="&xsd;string">links WKB string representation to shape literals.</rdfs:comment>
+        <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
     
 
@@ -651,6 +672,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#LineValue -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#LineValue">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#MultiLineString"/>
+        <rdfs:comment>Line literal for use in Thinklab to annotate lines with their CRS.</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#LinearCoverage -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#LinearCoverage">
@@ -708,6 +738,15 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#PointValue -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#PointValue">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#MultiPoint"/>
+        <rdfs:comment>Point literal for Thinklab</rdfs:comment>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#Polygon -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#Polygon">
@@ -720,6 +759,15 @@
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#PolygonSpatialCoverage">
         <rdfs:subClassOf rdf:resource="&observation;IrregularDiscreteObservationSpace"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#PolygonValue -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#PolygonValue">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#MultiPolygon"/>
+        <rdfs:comment>Polygon literal for Thinklab</rdfs:comment>
     </owl:Class>
     
 
@@ -794,14 +842,14 @@
         <rdfs:subClassOf rdf:resource="&observation;ExtentObservation"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
-                <owl:someValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
+                <owl:onProperty rdf:resource="&observation;hasObservable"/>
+                <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasObservable"/>
-                <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
+                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
+                <owl:someValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment rdf:datatype="&xsd;string">The observation of a coverage in geographical space. It is an indirect observation as it describes space by dividing it into contiguous boundaries.  Such observations merely describe space, not any feature or property. They are used to contextualize other observations in geospace. Subclasses of this one can be initalized through literals such as  WKT shapes for brevity.</rdfs:comment>
@@ -980,5 +1028,5 @@
 
 
 
-<!-- Generated by the OWL API (version 3.3.1957) http://owlapi.sourceforge.net -->
+<!-- Generated by the OWL API (version 3.2.3.1824) http://owlapi.sourceforge.net -->
 
