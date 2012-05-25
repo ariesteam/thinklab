@@ -24,10 +24,12 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -96,6 +98,11 @@ public class ShapeValue extends SemanticLiteral<Geometry> implements IParseable,
     	setConceptWithoutValidation(null);
 	}
 
+	@Override
+	public IList getSemantics() {
+		return ReferenceList.list(concept, demote());
+	}
+    
     /**
      * Construct a rectangular "cell" from two points.
      * @param x1

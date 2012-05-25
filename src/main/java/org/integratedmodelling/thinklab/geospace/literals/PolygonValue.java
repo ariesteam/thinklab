@@ -35,11 +35,6 @@ public class PolygonValue extends ShapeValue {
 		// TODO Auto-generated constructor stub
 	}
 
-	public PolygonValue(Polygon shape, IConcept c) {
-		super(shape, c);
-		// TODO Auto-generated constructor stub
-	}
-
 	public PolygonValue(Polygon geometry) {
 		super(geometry);
 		// TODO Auto-generated constructor stub

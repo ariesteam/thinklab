@@ -8,11 +8,17 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IReferenceList;
+import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.integratedmodelling.thinklab.tests.data.TestData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKTReader;
 
 public class ConceptualizeStoreTest  {
 	
@@ -40,6 +46,23 @@ public class ConceptualizeStoreTest  {
 		Assert.assertTrue (
 				oquarant.equals(40) && 
 				ostocazz.equals("stocazzo"));
+	}
+	
+	@Test
+	public void testComplexLiterals() throws Exception {
+		
+		/*
+		 * promote and demote some polygons, periods, dates etc
+		 */
+		Geometry g =
+			new WKTReader().read("POLYGON ((-180 -60, 180.0000188 -60, 180.0000188 90.0000078, -180 90.0000078, -180 -60))");
+		
+		ISemanticObject<?> box = Thinklab.get().annotate(g);
+		Object polygon = Thinklab.get().instantiate(box.getSemantics());
+		
+		PolygonValue pv = new PolygonValue((Polygon)g);
+		IReferenceList zio = Thinklab.get().conceptualize(pv);
+		System.out.println(pv.getSemantics().prettyPrint());
 	}
 	
 	/*

@@ -67,15 +67,6 @@
     
 
 
-    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasMetadata -->
-
-    <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasMetadata">
-        <rdfs:range rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Metadata"/>
-        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
-    </owl:ObjectProperty>
-    
-
-
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasModelObjects -->
 
     <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasModelObjects">

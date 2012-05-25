@@ -44,6 +44,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
+import org.integratedmodelling.thinklab.configuration.Configuration;
 import org.integratedmodelling.thinklab.interfaces.IKnowledgeRepository;
 import org.semanticweb.owl.apibinding.OWLManager;
 import org.semanticweb.owl.inference.OWLClassReasoner;
@@ -150,8 +151,24 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		registry.registerURI("owl", URI.create("http://www.w3.org/2002/07/owl"));
 		df = manager.getOWLDataFactory();
 		rootConcept = getRootConcept();
+
+		/* add an autourimapper for the ontologies directory if any exists */
+		File ontologiesFolder = 
+				Thinklab.get().getLoadPath(IConfiguration.SUBSPACE_KNOWLEDGE);
+			
+		if (ontologiesFolder.exists()) {
+			
+			Thinklab.get().logger().info(
+					"publishing " + ontologiesFolder + 
+					" location into ontology manager");
+			AutoURIMapper mapper = new AutoURIMapper(ontologiesFolder, true);
+			manager.addURIMapper(mapper);
+		}
+
 		
 		/*
+		 * TODO this is disabled, needs to be done on a project basis.
+		 * 
 		 * register a plugin listener that will publish the physical location of
 		 * ontologies in plugins, so we don't need to be online to use thinklab.
 		 */

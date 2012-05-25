@@ -25,6 +25,7 @@ import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
@@ -178,6 +179,7 @@ public class AnnotationFactory {
 	 * -----------------------------------------------------------------------------
 	 */
 	public IReferenceList conceptualize(Object o) throws ThinklabException {
+		
 		return conceptualizeInternal(o,
 				Collections.synchronizedMap(new WeakHashMap<Object, IReferenceList>()), 
 				null);
@@ -188,6 +190,10 @@ public class AnnotationFactory {
 
 		if (list == null)
 			list = new ReferenceList();
+
+		if (o instanceof ISemanticLiteral<?>) {
+			o = ((ISemanticLiteral<?>)o).demote();
+		}
 		
 		/*
 		 * If literal, we always create a full list.
@@ -225,6 +231,7 @@ public class AnnotationFactory {
 			ref = list.getForwardReference();
 			objectHash.put(o, ref);
 		}
+		
 		
 		/*
 		 * if conceptualizable, that's all we need to do, and it's not going to
