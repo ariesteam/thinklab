@@ -30,10 +30,10 @@ public class QueryTest {
 		/*
 		 * add some stuff
 		 */
-		TestData.addFamily(kbox, "dick");
-		TestData.addFamily(kbox, "burp");
-		TestData.addFamily(kbox, "pork");
-		TestData.addFamily(kbox, "putt");
+		TestData.addFamily(kbox, "Dick");
+		TestData.addFamily(kbox, "Burp");
+		TestData.addFamily(kbox, "Pork");
+		TestData.addFamily(kbox, "Putt");
 
 	}
 
@@ -48,22 +48,23 @@ public class QueryTest {
 		IKbox kbox = Thinklab.get().requireKbox(KBOX_NAME);
 		
 		IQuery allPeople = 
-				Query.select(Thinklab.c("thinklab.test:Person"));
+				Query.select("thinklab.test:Person");
 		
 		IQuery allAdults =
 				Query.select("thinklab.test:Person").
-					restrict(Thinklab.p("thinklab.test:hasAge"), 
+					restrict("thinklab.test:hasAge", 
 							Operators.compare(18, Operators.GE));
+		
 		IQuery allChildren =
 				Query.select("thinklab.test:Person").
-					restrict(Thinklab.p("thinklab.test:hasAge"), 
+					restrict("thinklab.test:hasAge", 
 							Operators.compare(18, Operators.LT));
 		
 		IQuery allParents =
 				Query.select("thinklab.test:Person").
-					restrict(Thinklab.p("thinklab.test:hasChildren"),
+					restrict("thinklab.test:hasChildren",
 								Query.select("thinklab.test:Person").
-									restrict(Thinklab.p("thinklab.test:hasAge"), 
+									restrict("thinklab.test:hasAge", 
 											Operators.compare(18, Operators.LT)));
 		
 		int i = 0;

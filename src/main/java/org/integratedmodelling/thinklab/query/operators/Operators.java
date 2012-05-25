@@ -64,12 +64,52 @@ public class Operators {
 	 * @param match
 	 */
 	static public IQuery is(Object match) {
-		if (match instanceof ISemanticObject<?>) {
+		if (match instanceof ISemanticObject<?> && !((ISemanticObject<?>)match).isLiteral()) {
 			return getConformanceQuery((ISemanticObject<?>)match, new HashSet<ISemanticObject<?>>());
 		} else if (match instanceof IConcept) {
 			return Query.select((IConcept) match);
 		}
 		return compare(match, EQ);
+	}
+	
+	static public IQuery intersects(Object match) {
+		return new SpatialCompare(match, INTERSECTS);
+	}
+
+	static public IQuery contains(Object match) {
+		return new SpatialCompare(match, CONTAINS);
+	}
+
+	static public IQuery containedBy(Object match) {
+		return new SpatialCompare(match, CONTAINED_BY);
+	}
+
+	static public IQuery coveredBy(Object match) {
+		return new SpatialCompare(match, COVERED_BY);
+	}
+
+	static public IQuery covers(Object match) {
+		return new SpatialCompare(match, COVERS);
+	}
+
+	static public IQuery crosses(Object match) {
+		return new SpatialCompare(match, CROSSES);
+	}
+
+	static public IQuery intersectsEnvelope(Object match) {
+		return new SpatialCompare(match, INTERSECTS_ENVELOPE);
+	}
+
+	static public IQuery overlaps(Object match) {
+		return new SpatialCompare(match, OVERLAPS);
+	}
+
+	static public IQuery touches(Object match) {
+		return new SpatialCompare(match, TOUCHES);
+	}
+
+	static public IQuery isNeighbour(Object match, double metersWithinCentroid) {
+		return new SpatialCompare(match, NEAREST_NEIGHBOUR, metersWithinCentroid);
 	}
 	
 	private static IQuery getConformanceQuery(ISemanticObject<?> match, Set<ISemanticObject<?>> refs) {
@@ -158,6 +198,7 @@ public class Operators {
 	public static class SpatialCompare extends Query implements IOperator {
 
 		private Object _operand;
+		private Object _operand2;
 		int _operation;
 		
 		public SpatialCompare(Object what, int operation) {
@@ -165,27 +206,43 @@ public class Operators {
 			_operation = operation;
 		}
 		
+		public SpatialCompare(Object match, int operation,
+				double distance) {
+			this(match, operation);
+			_operand2 = distance;
+		}
+
 		@Override
 		public Pair<IConcept, Object[]> getQueryParameters() {
 			return new Pair<IConcept, Object[]>(
 					Thinklab.c(getConcept()), 
-					new Object[]{_operand});
+					_operand2 == null ? 
+						new Object[]{_operand} :
+						new Object[]{_operand, _operand2});
 		}
 
 		private String getConcept() {
 			switch (_operation) {
-			case Operators.GE:
-				return NS.OPERATION_GREATER_OR_EQUAL;
-			case Operators.GT:
-				return NS.OPERATION_GREATER_THAN;
-			case Operators.LE:
-				return NS.OPERATION_LESS_OR_EQUAL;
-			case Operators.LT:
-				return NS.OPERATION_LESS_THAN;
-			case Operators.EQ:
-				return NS.OPERATION_EQUALS;
-			case Operators.NE:
-				return NS.OPERATION_NOT_EQUALS;
+			case Operators.INTERSECTS:
+				return NS.OPERATION_INTERSECTS;
+			case Operators.CONTAINS:
+				return NS.OPERATION_CONTAINS;
+			case Operators.CONTAINED_BY:
+				return NS.OPERATION_CONTAINED_BY;
+			case Operators.COVERED_BY:
+				return NS.OPERATION_COVERED_BY;
+			case Operators.COVERS:
+				return NS.OPERATION_COVERS;
+			case Operators.CROSSES:
+				return NS.OPERATION_CROSSES;
+			case Operators.INTERSECTS_ENVELOPE:
+				return NS.OPERATION_INTERSECTS_ENVELOPE;
+			case Operators.OVERLAPS:
+				return NS.OPERATION_OVERLAPS;
+			case Operators.TOUCHES:
+				return NS.OPERATION_TOUCHES;
+			case Operators.NEAREST_NEIGHBOUR:
+				return NS.OPERATION_NEAREST_NEIGHBOUR;
 			}
 			return null;
 		}

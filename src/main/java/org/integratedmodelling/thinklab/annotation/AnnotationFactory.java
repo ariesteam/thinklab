@@ -228,7 +228,6 @@ public class AnnotationFactory {
 			objectHash.put(o, ref);
 		}
 		
-		
 		/*
 		 * if conceptualizable, that's all we need to do, and it's not going to
 		 * add references to objects upstream.
@@ -242,9 +241,13 @@ public class AnnotationFactory {
 		 */
 		IConcept mainc = _class2concept.get(cls);
 		if (mainc == null) {
+			
 			/*
 			 * list will have unresolved reference
 			 */
+			Thinklab.get().logger().warn(
+					"instantiate: couldn't find a semantic annotation for class " + cls.getCanonicalName());
+			
 			return list;
 		}
 		

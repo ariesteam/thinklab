@@ -21,6 +21,7 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.NS;
@@ -66,6 +67,7 @@ import org.neo4j.index.lucene.ValueContext;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.Traversal;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class NeoKBox implements IKbox {
@@ -75,7 +77,8 @@ public class NeoKBox implements IKbox {
 	
 	/*
 	 * index names. One for types, one for properties and one (currently unused)
-	 * for relationships.
+	 * for relationships. Spatial indices have the name of the property they
+	 * refer to.
 	 */
 	static final String BASE_INDEX = "pindex";
 	static final String RELS_INDEX = "rindex";
@@ -92,6 +95,10 @@ public class NeoKBox implements IKbox {
 	}
 
 	EmbeddedGraphDatabase _db = null;
+	
+	/*
+	 * created to wrap _db only once if/when first used.
+	 */
 	SpatialDatabaseService _sdb = null;
 	
 	String _url = null;
@@ -124,7 +131,6 @@ public class NeoKBox implements IKbox {
 			_typeAdapters = new IntelligentMap<KboxTypeAdapter>();
 		}
 		_typeAdapters.put(type, adapter);
-		
 	}
 	
 	@Override
@@ -410,8 +416,6 @@ public class NeoKBox implements IKbox {
 			if (ncontext != null && ncontext.isEmpty())
 				return ncontext;
 			
-			Set<Long> ret = new HashSet<Long>();
-			
 			/*
 			 * if it's a restriction, we only have one.
 			 */
@@ -622,7 +626,7 @@ public class NeoKBox implements IKbox {
 		protected void setAndIndex(Node node, IProperty property, Object value) throws ThinklabException {
 
 			/*
-			 * Extract the geometry in the appropriate projection - neo4j-spatial doesn't handle
+			 * Extract the geometry in lat/lon - neo4j-spatial doesn't handle
 			 * projections.
 			 */
 			if (!(value instanceof ShapeValue)) 
@@ -650,14 +654,29 @@ public class NeoKBox implements IKbox {
 			DefaultLayer layer = getSpatialDB().getOrCreateDefaultLayer(idName);
 			GeoPipeline pipeline = null;
 			
-			if (op.getFirst().equals(NS.OPERATION_EQUALS)) {				
+			if (op.getFirst().equals(NS.OPERATION_INTERSECTS)) {
+				pipeline = GeoPipeline.startIntersectSearch(layer, getGeometry(op));
+			} else if (op.getFirst().equals(NS.OPERATION_CONTAINS)) {
+				pipeline = GeoPipeline.startContainSearch(layer, getGeometry(op));
+			} else if (op.getFirst().equals(NS.OPERATION_CONTAINED_BY)) {
+				pipeline = GeoPipeline.startWithinSearch(layer, getGeometry(op));
+			} else if (op.getFirst().equals(NS.OPERATION_COVERED_BY)) {
+				pipeline = GeoPipeline.startCoveredBySearch(layer, getGeometry(op));
+			} else if (op.getFirst().equals(NS.OPERATION_COVERS)) {
+				pipeline = GeoPipeline.startCoverSearch(layer, getGeometry(op));
+			} else if (op.getFirst().equals(NS.OPERATION_CROSSES)) {
+				pipeline = GeoPipeline.startCrossSearch(layer, getGeometry(op));
+			} else if (op.getFirst().equals(NS.OPERATION_INTERSECTS_ENVELOPE)) {
+				pipeline = GeoPipeline.startIntersectWindowSearch(layer, getGeometry(op).getEnvelopeInternal());
+			} else if (op.getFirst().equals(NS.OPERATION_OVERLAPS)) {
+				pipeline = GeoPipeline.startOverlapSearch(layer, getGeometry(op));
+			} else if (op.getFirst().equals(NS.OPERATION_TOUCHES)) {
+				pipeline = GeoPipeline.startTouchSearch(layer, getGeometry(op));
+			} else if (op.getFirst().equals(NS.OPERATION_NEAREST_NEIGHBOUR)) {
+				pipeline = GeoPipeline.startNearestNeighborLatLonSearch(layer, getCentroid(op), getDistance(op)/1000.0);
+			} else if (op.getFirst().equals(NS.OPERATION_EQUALS)) {				
 				pipeline = GeoPipeline.startEqualExactSearch(layer, getGeometry(op), 0);
-			} else if (op.getFirst().equals(NS.OPERATION_NOT_EQUALS)) {
-			
-				/*
-				 * TODO this should be an OR of a less than and a greater than
-				 */
-			}
+			}  
 			
 			if (pipeline != null) {
 				for (SpatialRecord result : pipeline) {
@@ -668,7 +687,15 @@ public class NeoKBox implements IKbox {
 			return ret;
 		}
 
+		private double getDistance(Pair<IConcept, Object[]> op) throws ThinklabValidationException {
+			if (op.getSecond().length < 2 || !(op.getSecond()[1] instanceof Number))
+				throw new ThinklabValidationException("spatial operator: no distance parameter passed");
+			return ((Number)(op.getSecond()[1])).doubleValue();
+		}
 
+		private Coordinate getCentroid(Pair<IConcept, Object[]> op) throws ThinklabException {
+			return getGeometry(op).getCentroid().getCoordinate();
+		}
 
 		private Geometry getGeometry(Pair<IConcept, Object[]> op) throws ThinklabException {
 			return 	((ShapeValue)op.getSecond()[0]).transform(Geospace.get().getDefaultCRS()).getGeometry();

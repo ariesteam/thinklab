@@ -7,7 +7,6 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
-import org.integratedmodelling.thinklab.modelling.lang.Namespace;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

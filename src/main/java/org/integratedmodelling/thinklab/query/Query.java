@@ -253,7 +253,7 @@ public class Query implements IQuery, IParseable, SemanticQuery, IMetadataHolder
 	}
 
 	@Override
-	public IQuery restrict(IProperty property, IQuery query) {
+	public Query restrict(IProperty property, IQuery query) {
 
 		if (_restrictions == null) {
 			_restrictions = new ArrayList<IQuery>();
@@ -262,6 +262,13 @@ public class Query implements IQuery, IParseable, SemanticQuery, IMetadataHolder
 		_restrictions.add(new Query(property, query));
 		
 		return this;
+	}
+
+	/**
+	 * for convenience of use in a fluent interface
+	 */
+	public Query restrict(String property, IQuery query) {
+		return restrict(Thinklab.p(property), query);
 	}
 
 	@Override
