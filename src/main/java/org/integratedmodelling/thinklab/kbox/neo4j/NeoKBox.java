@@ -417,7 +417,8 @@ public class NeoKBox implements IKbox {
 				return ncontext;
 			
 			/*
-			 * if it's a restriction, we only have one.
+			 * if isRestriction() returns true, we only have one restriction query to
+			 * worry about.
 			 */
 			Query restriction = (Query) query.getRestrictions().iterator().next();
 			
@@ -446,19 +447,22 @@ public class NeoKBox implements IKbox {
 					return ncontext;
 				
 				/*
-				 * Most important case: 
+				 * Most important case (we usually start all queries here): 
 				 * 
 				 * select object based on concept's semantic closure and restrict to 
 				 * given properties.
 				 * 
 				 * TODO FIXME this one really should collect all POD operators in the restrictions
 				 * and apply them in one shot to the property index, then proceed intersecting
-				 * only the other restrictions. Otherwise we're making potentially huge sets.
+				 * only the other restrictions. Otherwise we're making potentially huge sets that
+				 * don't need to exist in memory.
 				 */
 				Set<Long> main = getNodesOfType(query.getSubject().getSemanticClosure());
 				
 				/*
-				 * restrict the result set by applying all restriction (all in AND)
+				 * restrict the result set by applying all restriction (all in AND). This
+				 * loop should be changed to produce one index search for all POD operators 
+				 * taken together.
 				 */
 				for (SemanticQuery r : query.getRestrictions()) {
 					main = retrieveMatches((Query) r, main, null);
@@ -701,10 +705,10 @@ public class NeoKBox implements IKbox {
 			return 	((ShapeValue)op.getSecond()[0]).transform(Geospace.get().getDefaultCRS()).getGeometry();
 		}
 	}
+	
 	/*
-	 * insert default type adapters. More can be added for specific types.
-	 * 
-	 * TODO ensure value is stored appropriately if numeric
+	 * insert default type adapters. More can be added for specific types by
+	 * calling static registerTypeAdapter() externally.
 	 */
 	private void initializeTypeAdapters() {
 
@@ -787,6 +791,4 @@ public class NeoKBox implements IKbox {
 		} 
 	}
 
-
-	
 }

@@ -40,6 +40,8 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	// these shouldn't be here, but ok
 	int        _lastLineNumber = 0;
 	int        _firstLineNumber = 0;
+	
+	private int _nextAxiom;
 
 	public Namespace(IReferenceList list) {
 		super(list);
@@ -49,28 +51,38 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	}
 
 
-	public void initialize() throws ThinklabException {
-		
-		if (Thinklab.get().hasOntology(_id)) 
-			Thinklab.get().dropOntology(_id);
-		
-		/*
-		 * create ontology from the axioms collected in namespace
-		 */
-		_ontology = Thinklab.get().createOntology(
-				_id,
-				(_project == null ? NS.DEFAULT_THINKLAB_ONTOLOGY_PREFIX : _project.getOntologyNamespacePrefix()),
-				_axioms);
-		/*
-		 * initialize observables for all observing objects now that we have the
-		 * namespace concepts.
-		 */
-		for (IModelObject o : _modelObjects) {
-			((ModelObject<?>)o).initialize();
-			if (!isAnonymous(o)) {
-				_namedObjects.put(o.getId(), o);
+	/**
+	 * Exec all axioms accumulated so far to actualize gathered knowledge.
+	 * @throws ThinklabException 
+	 */
+	public void flushKnowledge() throws ThinklabException {
+
+		if (_ontology == null) {
+			
+			if (Thinklab.get().hasOntology(_id)) 
+				Thinklab.get().dropOntology(_id);
+			
+			/*
+			 * create ontology from the axioms collected in namespace
+			 */
+			_ontology = Thinklab.get().createOntology(
+					_id,
+					(_project == null ? NS.DEFAULT_THINKLAB_ONTOLOGY_PREFIX : _project.getOntologyNamespacePrefix()),
+					_axioms);
+		} else {
+			ArrayList<IAxiom> axioms = new ArrayList<IAxiom>();
+			for (int i = _nextAxiom; i < _axioms.size(); i++) {
+				axioms.add(_axioms.get(i));
 			}
+			_ontology.define(axioms);
 		}
+		
+		_nextAxiom = _axioms.size();
+		
+	}
+	
+	public void initialize() throws ThinklabException {
+
 	}
 
 	private boolean isAnonymous(IModelObject o) {
@@ -133,6 +145,9 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	@Override
 	public void addModelObject(IModelObjectDefinition modelObject) {
 		_modelObjects.add((IModelObject)modelObject);
+		if (!isAnonymous(modelObject)) {
+			_namedObjects.put(modelObject.getId(), modelObject);
+		}
 	}
 
 	@Override

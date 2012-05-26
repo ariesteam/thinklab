@@ -376,8 +376,19 @@ public class ModelManager implements IModelManager {
 		@Override
 		public void onModelObjectDefined(INamespace namespace, IModelObject ret) throws ThinklabException {
 
-			/**
-			 * Store anything that wants to be stored by reporting storage metadata.
+			/*
+			 * actualize all knowledge so that the object is complete and we can create observables
+			 * as required.
+			 */
+			((Namespace)namespace).flushKnowledge();
+			
+			/*
+			 * this creates any remanining knowledge.
+			 */
+			((ModelObject<?>)ret).initialize();
+			
+			/*
+			 * store anything that reports storage metadata.
 			 */
 			IMetadata md = ((ModelObject<?>)ret).getStorageMetadata();
 			if (md != null) {

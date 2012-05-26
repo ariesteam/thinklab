@@ -11,70 +11,70 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 
 @Literal(
-		concept="geospace:PolygonValue", 
-		datatype="http://www.integratedmodelling.org/ks/geospace/geospace.owl#polygon",
-		javaClass=PolygonValue.class)
-public class PolygonValue extends ShapeValue {
+		concept="geospace:PointValue", 
+		datatype="http://www.integratedmodelling.org/ks/geospace/geospace.owl#point",
+		javaClass=PointValue.class)
+public class PointValue extends ShapeValue {
 
-	public PolygonValue(IConcept c, Polygon value) {
+	public PointValue(IConcept c, Point value) {
 		super(c, value);
 	}
 
-	public PolygonValue(IConcept c, MultiPolygon value) {
+	public PointValue(IConcept c, MultiPoint value) {
 		super(c, value);
 	}
 
-	public PolygonValue() {
+	public PointValue() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public PolygonValue(String s) throws ThinklabValidationException {
+	public PointValue(String s) throws ThinklabValidationException {
 		super(s);
 	}
 
-	public PolygonValue(String s, IConcept c)
+	public PointValue(String s, IConcept c)
 			throws ThinklabValidationException {
 		super(s, c);
 		// TODO Auto-generated constructor stub
 	}
 
-	public PolygonValue(Polygon geometry) {
+	public PointValue(Point geometry) {
 		super(geometry);
 	}
 
-	public PolygonValue(Polygon geometry, CoordinateReferenceSystem crs) {
+	public PointValue(Point geometry, CoordinateReferenceSystem crs) {
 		super(geometry, crs);
 	}
 
-	public PolygonValue(MultiPolygon geometry) {
+	public PointValue(MultiPoint geometry) {
 		super(geometry);
 	}
 
-	public PolygonValue(MultiPolygon geometry, CoordinateReferenceSystem crs) {
+	public PointValue(MultiPoint geometry, CoordinateReferenceSystem crs) {
 		super(geometry, crs);
 	}
 
-	public PolygonValue(double x1, double y1, double x2, double y2) {
+	public PointValue(double x1, double y1, double x2, double y2) {
 		super(x1, y1, x2, y2);
 	}
 
-	public PolygonValue(String s, CoordinateReferenceSystem crs)
+	public PointValue(String s, CoordinateReferenceSystem crs)
 			throws ThinklabValidationException {
 		super(s, crs);
 	}
 
-	public PolygonValue(ReferencedEnvelope e) {
+	public PointValue(ReferencedEnvelope e) {
 		super(e);
 	}
 	
 	@Override
 	public IList conceptualize() throws ThinklabException {
 		return PolyList.list(
-				Thinklab.c("geospace:PolygonValue"),
+				Thinklab.c("geospace:PointValue"),
 				PolyList.list(Thinklab.p("geospace:hasWKB"), getWKB()),
 				PolyList.list(Thinklab.p("geospace:hasCRSCode"), Geospace.getCRSIdentifier(getCRS(), true)));
 	}

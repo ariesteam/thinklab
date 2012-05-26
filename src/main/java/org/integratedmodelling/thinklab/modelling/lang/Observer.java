@@ -59,7 +59,6 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 		return _mediated;
 	}
 
-
 	@Override
 	public IAccessor getAccessor() {
 		return _accessor;
@@ -68,23 +67,22 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	@Override
 	public List<IObservation> observe(IContext context)
 			throws ThinklabException {
-		throw new ThinklabUnsupportedOperationException("models cannot be observed at the client side");
+		return null;
 	}
 
 	@Override
 	public IObserver train(IContext context) throws ThinklabException {
-		throw new ThinklabUnsupportedOperationException("models cannot be trained at the client side");
+		return this;
 	}
 
 	@Override
 	public IObserver applyScenario(IScenario scenario) throws ThinklabException {
-		throw new ThinklabUnsupportedOperationException("scenarios cannot be applied at the client side");
+		return this;
 	}
 
 	@Override
 	public void setAccessorGeneratorFunction(IFunctionDefinition function) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("accessor " + function);
 	}
 	
 

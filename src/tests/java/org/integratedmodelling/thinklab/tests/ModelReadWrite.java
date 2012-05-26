@@ -16,6 +16,7 @@ public class ModelReadWrite {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Thinklab.boot();
+		Thinklab.get().requireKbox("thinklab").clear();
 	}
 
 	@AfterClass

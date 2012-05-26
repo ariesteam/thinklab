@@ -163,9 +163,30 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	}
 
 	@Override
-	public void defineObservable() {
-		// TODO Auto-generated method stub
+	public void initialize() throws ThinklabException {
 		
+		/*
+		 * this creates the observable if it was explicitly defined.
+		 */
+		super.initialize();
+		
+		if (_observer != null) {
+			((Observer<?>)_observer).initialize();
+		}
+
+		/*
+		 * see if we have any observable of our own; if not, take it
+		 * from the observer, which must be single.
+		 */
+		if (_observables.size() == 0) {
+			
+			if (_observer == null)
+				throw new ThinklabValidationException(
+						"invalid model without either an observable or an observer");
+			
+			_observables.addAll(_observer.getObservables());
+		}
 	}
 
+	
 }

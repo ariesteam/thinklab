@@ -11,70 +11,70 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.LineString;
 
 @Literal(
-		concept="geospace:PolygonValue", 
-		datatype="http://www.integratedmodelling.org/ks/geospace/geospace.owl#polygon",
-		javaClass=PolygonValue.class)
-public class PolygonValue extends ShapeValue {
+		concept="geospace:LineValue", 
+		datatype="http://www.integratedmodelling.org/ks/geospace/geospace.owl#line",
+		javaClass=LineValue.class)
+public class LineValue extends ShapeValue {
 
-	public PolygonValue(IConcept c, Polygon value) {
+	public LineValue(IConcept c, LineString value) {
 		super(c, value);
 	}
 
-	public PolygonValue(IConcept c, MultiPolygon value) {
+	public LineValue(IConcept c, MultiLineString value) {
 		super(c, value);
 	}
 
-	public PolygonValue() {
+	public LineValue() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public PolygonValue(String s) throws ThinklabValidationException {
+	public LineValue(String s) throws ThinklabValidationException {
 		super(s);
 	}
 
-	public PolygonValue(String s, IConcept c)
+	public LineValue(String s, IConcept c)
 			throws ThinklabValidationException {
 		super(s, c);
 		// TODO Auto-generated constructor stub
 	}
 
-	public PolygonValue(Polygon geometry) {
+	public LineValue(LineString geometry) {
 		super(geometry);
 	}
 
-	public PolygonValue(Polygon geometry, CoordinateReferenceSystem crs) {
+	public LineValue(LineString geometry, CoordinateReferenceSystem crs) {
 		super(geometry, crs);
 	}
 
-	public PolygonValue(MultiPolygon geometry) {
+	public LineValue(MultiLineString geometry) {
 		super(geometry);
 	}
 
-	public PolygonValue(MultiPolygon geometry, CoordinateReferenceSystem crs) {
+	public LineValue(MultiLineString geometry, CoordinateReferenceSystem crs) {
 		super(geometry, crs);
 	}
 
-	public PolygonValue(double x1, double y1, double x2, double y2) {
+	public LineValue(double x1, double y1, double x2, double y2) {
 		super(x1, y1, x2, y2);
 	}
 
-	public PolygonValue(String s, CoordinateReferenceSystem crs)
+	public LineValue(String s, CoordinateReferenceSystem crs)
 			throws ThinklabValidationException {
 		super(s, crs);
 	}
 
-	public PolygonValue(ReferencedEnvelope e) {
+	public LineValue(ReferencedEnvelope e) {
 		super(e);
 	}
 	
 	@Override
 	public IList conceptualize() throws ThinklabException {
 		return PolyList.list(
-				Thinklab.c("geospace:PolygonValue"),
+				Thinklab.c("geospace:LineValue"),
 				PolyList.list(Thinklab.p("geospace:hasWKB"), getWKB()),
 				PolyList.list(Thinklab.p("geospace:hasCRSCode"), Geospace.getCRSIdentifier(getCRS(), true)));
 	}
