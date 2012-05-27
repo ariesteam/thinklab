@@ -50,13 +50,12 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	@Override
 	public IMetadata getStorageMetadata() {
 
-		IMetadata ret = null;
+		IMetadata ret = new Metadata();
+		
+		((Metadata)ret).put(NS.HAS_DIRECT_DATA, new Boolean(_datasource != null));
 		
 		if (_datasource != null & _dependencies.size() == 0 &&
-			_datasource instanceof IStorageMetadataProvider) {
-			
-			ret = new Metadata();
-			
+			_datasource instanceof IStorageMetadataProvider) {			
 			((IStorageMetadataProvider)_datasource).addStorageMetadata(ret);			
 		}
 		

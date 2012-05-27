@@ -37,7 +37,7 @@ public abstract class ModelObject<T> extends LanguageElement<T> implements IMode
 	 * don't store metadata as our Kbox implementation floats them to the
 	 * top object level for easier searching.
 	 */
-	IMetadata  _metadata;
+	IMetadata  _metadata = new Metadata();
 	
 	/**
 	 * This is called after the model object is defined. If it returns anything other than

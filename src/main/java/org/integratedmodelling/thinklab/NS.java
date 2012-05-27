@@ -129,6 +129,6 @@ public class NS {
 	public static final String HAS_MODEL = "modelling.thinklab:hasModel";
 	public static final String HAS_EXTENT_FUNCTION = "modelling.thinklab:hasExtentFunction";
 	public static final String HAS_ACCESSOR_FUNCTION = "modelling.thinklab:hasAccessorFunction";
-
+	public static final String HAS_DIRECT_DATA = "modelling.thinklab:hasDirectData";
 
 }

@@ -5,7 +5,6 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.junit.AfterClass;
@@ -25,14 +24,6 @@ public class ConceptualizeSpatialTest  {
 
 		@Property("geospace:hasBoundingBox")
 		PolygonValue boundingBox;
-	}
-
-	@Concept("geospace.features:BiogeographicalRegion")
-	public static class RawPlace {
-			String name;
-
-		@Property("geospace:hasBoundingBox")
-		Polygon boundingBox;
 	}
 
 	@BeforeClass
@@ -67,22 +58,5 @@ public class ConceptualizeSpatialTest  {
 		System.out.println(box.getSemantics().prettyPrint());
 	}
 
-	
-	@Test
-	public void testSpatialLiterals() throws Exception {
-		
-		/*
-		 * promote and demote some polygons, periods, dates etc
-		 */
-		Geometry g =
-			new WKTReader().read("POLYGON ((-180 -60, 180.0000188 -60, 180.0000188 90.0000078, -180 90.0000078, -180 -60))");
-		
-		ISemanticObject<?> box = Thinklab.get().annotate(g);
-		Object polygon = Thinklab.get().instantiate(box.getSemantics());
-		
-		PolygonValue pv = new PolygonValue((Polygon)g);
-		IReferenceList zio = Thinklab.get().conceptualize(pv);
-		System.out.println(pv.getSemantics().prettyPrint());
-	}
 	
 }

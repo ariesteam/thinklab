@@ -47,24 +47,7 @@ public class ConceptualizeStoreTest  {
 				oquarant.equals(40) && 
 				ostocazz.equals("stocazzo"));
 	}
-	
-	@Test
-	public void testComplexLiterals() throws Exception {
 		
-		/*
-		 * promote and demote some polygons, periods, dates etc
-		 */
-		Geometry g =
-			new WKTReader().read("POLYGON ((-180 -60, 180.0000188 -60, 180.0000188 90.0000078, -180 90.0000078, -180 -60))");
-		
-		ISemanticObject<?> box = Thinklab.get().annotate(g);
-		Object polygon = Thinklab.get().instantiate(box.getSemantics());
-		
-		PolygonValue pv = new PolygonValue((Polygon)g);
-		IReferenceList zio = Thinklab.get().conceptualize(pv);
-		System.out.println(pv.getSemantics().prettyPrint());
-	}
-	
 	/*
 	 * Create a simple object with a hashmap member and no self-references.
 	 */
