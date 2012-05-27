@@ -14,6 +14,7 @@ import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOr
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
@@ -29,7 +30,12 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 @Concept(NS.CONTEXT)
 public class Context extends ModelObject<Context> implements IContextDefinition {
 
+	@Property(NS.HAS_MODEL)
 	ArrayList<IModel> _models = new ArrayList<IModel>();
+	
+	@Property(NS.HAS_EXTENT_FUNCTION)
+	ArrayList<IFunctionDefinition> _generatorFunctions = new ArrayList<IFunctionDefinition>();
+	
 	ArrayList<IObservation> _observations = new ArrayList<IObservation>();
 	
 	ArrayList<IExtent> _order = new ArrayList<IExtent>();
@@ -38,6 +44,8 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	
 	int _multiplicity = 0;
 	boolean _isNull = false;
+	
+	private boolean _initialized = false;
 	
 	/*
 	 * just store them if we have them, for speed.
@@ -214,33 +222,45 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 
 	@Override
 	public void addObservationGeneratorFunction(IFunctionDefinition function) throws ThinklabValidationException {
-
-		// find function and validate parameters
-		IExpression func = Thinklab.get().resolveFunction(function.getId(), function.getParameters().keySet());
-		
-		if (func == null) {
-			throw new ThinklabValidationException("function " + function.getId() + " is unknown");
-		}
-		Observation o = null;
-		
-		// run function and store observation
-		try {
-			 o = (Observation) func.eval(function.getParameters());
-			 if (o == null)
-				 throw new ThinklabValidationException("function " + function.getId() + " does not return any value");
-			 
-		} catch (ThinklabException e) {
-			throw new ThinklabValidationException(e);
-		}
-		
-		
-		_observations.add(o);
-		
+		_generatorFunctions.add(function);
 	}
 	
 	@Override
 	public void initialize() throws ThinklabException {
-				
+
+		if (_initialized)
+			return;
+		
+		/*
+		 * we only need it in models and contexts for now.
+		 */
+		_namespaceId = _namespace.getId();
+
+		for (IFunctionDefinition function : _generatorFunctions) {
+			
+			// find function and validate parameters
+			IExpression func = Thinklab.get().resolveFunction(function.getId(), function.getParameters().keySet());
+			
+			if (func == null) {
+				throw new ThinklabValidationException("function " + function.getId() + " is unknown");
+			}
+			Observation o = null;
+			
+			// run function and store observation
+			try {
+				 o = (Observation) func.eval(function.getParameters());
+				 if (o == null)
+					 throw new ThinklabValidationException("function " + function.getId() + " does not return any value");
+				 
+			} catch (ThinklabException e) {
+				throw new ThinklabValidationException(e);
+			}
+			
+			
+			_observations.add(o);
+
+		}
+		
 		_extents.clear();
 		_states.clear();
 		
@@ -260,6 +280,7 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 			merge(m.observe(this));
 		}
 		
+		_initialized = true;
 	}
 	
 	/*

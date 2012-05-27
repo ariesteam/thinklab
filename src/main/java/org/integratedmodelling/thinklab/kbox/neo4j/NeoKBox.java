@@ -23,6 +23,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.Quantifier;
+import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.list.ReferenceList;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -238,9 +239,46 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public void remove(long handle) throws ThinklabException {
-		// TODO Auto-generated method stub
+		removeInternal(handle, true);
 	}
 
+	private void removeInternal(long handle, boolean atomic) throws ThinklabException {
+
+		Transaction tx = atomic ? _db.beginTx() : null;
+
+		try {
+
+			/*
+			 * TODO check what we need to do with the index. Apparently it should be
+			 * "lazy" but automatic - no need to remove stuff - but we should also
+			 * check with the spatial plugin.
+			 */		
+			Node n = _db.getNodeById(handle);
+			if (n == null)
+				return;
+				
+			for (Relationship r : n.getRelationships(Direction.OUTGOING)) 
+				removeInternal(r.getEndNode().getId(), false);
+					
+			n.delete();
+			
+			
+		} catch (Exception e) {
+			
+			if (tx != null)
+				tx.failure();
+			throw new ThinklabIOException(e.getMessage());
+	
+		} finally {
+			
+			if (tx != null)
+				tx.finish();
+		}
+
+	
+
+	}
+	
 	@Override
 	public void clear() throws ThinklabException {
 
@@ -277,14 +315,27 @@ public class NeoKBox implements IKbox {
 	
 	@Override
 	public void removeAll(IQuery query) throws ThinklabException {
-		
-		for (long l : queryObjects((Query) query)) {
-			try {
-				remove(l);
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
+
+		Transaction tx = _db.beginTx();
+
+		try {
+
+			for (long l : queryObjects((Query) query)) {
+				try {
+					removeInternal(l, false);
+				} catch (ThinklabException e) {
+					throw new ThinklabRuntimeException(e);
+				}
 			}
-		}
+			
+		} catch (Exception e) {
+			
+			tx.failure();
+			throw new ThinklabIOException(e.getMessage());
+	
+		} finally {
+			tx.finish();
+		}		
 	}
 
 	@Override
@@ -331,9 +382,27 @@ public class NeoKBox implements IKbox {
 		 * literals
 		 */
 		for (String p : node.getPropertyKeys()) {
+			
 			// skip system properties
 			if (p.startsWith("_"))
 				continue;
+			
+			/*
+			* properties added by third-party plugins must be skipped too - if we're
+			* really unlucky, third-party plugins may have added properties that 
+			* translate to ontologies but let's be optimistic.
+			*/ 
+			if (!SemanticType.validate(fromId(p)))
+				continue;
+			/*
+			 * this should take care of any strangeness, but potentially allow some
+			 * subtle internal errors that silently skip previously valid properties (can
+			 * happen if the ontologies have changed and the kbox hasn't been
+			 * synchronized).
+			 */
+			if (Thinklab.get().getProperty(fromId(p)) == null)
+				continue;
+			
 			rl.add(root.newList(Thinklab.p(fromId(p)), Thinklab.get().conceptualize(node.getProperty(p))));
 		}
 

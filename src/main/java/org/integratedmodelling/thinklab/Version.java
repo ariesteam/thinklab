@@ -23,6 +23,8 @@ public class Version {
 	
 	/**
 	 * Version constants. Should be updated manually at each release.
+	 * TODO find a way to insert the build hash from git and any other
+	 * stats such as build date etc.
 	 */
 	public static final int VERSION_MAJOR = 1;
 	public static final int VERSION_MINOR = 0;

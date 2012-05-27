@@ -118,6 +118,7 @@ public class NS {
 	public static final String HAS_TIMESTAMP = "modelling.thinklab:hasTimeStamp";
 	public static final String HAS_OBSERVER = "modelling.thinklab:hasObserver";
 	public static final String HAS_ID = "modelling.thinklab:hasId";
+	public static final String HAS_NAMESPACE_ID = "modelling.thinklab:hasNamespaceId";
 	public static final String HAS_EXPRESSION = "modelling.thinklab:hasExpression";
 	public static final String HAS_DATASOURCE_DEFINITION = "modelling.thinklab:hasDatasourceDefinition";
 	public static final String HAS_MEDIATED_OBSERVER = "modelling.thinklab:hasMediatedObserver";
@@ -125,6 +126,9 @@ public class NS {
 	public static final String HAS_PARAMETERS = "modelling.thinklab:hasParameters";
 	public static final String HAS_INLINE_STATE = "modelling.thinklab:hasInlineState";
 	public static final String HAS_UNIT_DEFINITION = "modelling.thinklab:hasUnitDefinition";
+	public static final String HAS_MODEL = "modelling.thinklab:hasModel";
+	public static final String HAS_EXTENT_FUNCTION = "modelling.thinklab:hasExtentFunction";
+	public static final String HAS_ACCESSOR_FUNCTION = "modelling.thinklab:hasAccessorFunction";
 
 
 }

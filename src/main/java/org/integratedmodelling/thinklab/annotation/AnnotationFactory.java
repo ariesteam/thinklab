@@ -363,8 +363,15 @@ public class AnnotationFactory {
 		if (cls == null)
 			cls = _concept2class.get(concept);
 
-		if (cls /* still */ == null)
-			return null;
+		if (cls /* still */ == null) {
+
+			/*
+			 * we have semantics but no corresponding Java peer - just
+			 * create a DefaultSemanticObject with that semantics to 
+			 * avoid throwing away the semantics.
+			 */
+			return new DefaultSemanticObject(annotation, null);
+		}
 		
 		/*
 		 * create object. Find the most appropriate constructor - if there is one with 
@@ -385,7 +392,7 @@ public class AnnotationFactory {
 			if (pt.length == 0)
 				hasEmptyConstructor = true;
 		}
-				if (ret == null && hasEmptyConstructor) {
+		if (ret == null && hasEmptyConstructor) {
 			try {
 				ret = cls.newInstance();
 			} catch (Exception e) {

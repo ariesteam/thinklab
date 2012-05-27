@@ -1,5 +1,6 @@
 package org.integratedmodelling.thinklab.modelling.lang;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.integratedmodelling.thinklab.NS;
@@ -13,12 +14,13 @@ public class FunctionDefinition extends ModelObject<FunctionDefinition> implemen
 	@Property(NS.HAS_TYPE)
 	String _type;
 	@Property(NS.HAS_PARAMETERS)
-	Map<String, Object> _parameters;
+	HashMap<String, Object> _parameters;
 	
 	@Override
 	public void set(String type, Map<String, Object> parms) {
 		_type = type;
-		_parameters  = parms;
+		_parameters  = new HashMap<String, Object>();
+		_parameters.putAll(parms);
 	}
 
 	@Override

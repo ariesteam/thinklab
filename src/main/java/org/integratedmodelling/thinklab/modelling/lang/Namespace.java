@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IAxiom;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
@@ -25,6 +25,12 @@ import org.integratedmodelling.thinklab.modelling.ModelManager;
 @Concept(NS.NAMESPACE)
 public class Namespace extends SemanticObject<INamespace> implements INamespaceDefinition {
 
+	@Property(NS.HAS_TIMESTAMP)
+	long _timeStamp;
+
+	@Property(NS.HAS_ID)
+	String _id;
+	
 	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
 	ArrayList<IAxiom> _axioms = new ArrayList<IAxiom>();
 	ArrayList<INamespace> _importedNamespaces = new ArrayList<INamespace>();
@@ -32,9 +38,8 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	HashMap<String, IModelObject> _namedObjects = new HashMap<String, IModelObject>();
 	
 	IOntology _ontology;
-	String _id;
 	String _resourceUrl;
-	long _timeStamp;
+
 	IProject _project;
 
 	// these shouldn't be here, but ok

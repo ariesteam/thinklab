@@ -34,6 +34,8 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	ArrayList<ISemanticObject<?>> _observables = 
 			new ArrayList<ISemanticObject<?>>();
 
+	private boolean _initialized = false;
+	
 	/*
 	 * non-persistent fields
 	 */
@@ -60,8 +62,14 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	}
 	
 	public void initialize() throws ThinklabException {
+		
+		if (_initialized)
+			return;
+		
 		for (IList list : _observableDefs) {
 			_observables.add(Thinklab.get().entify(list));
 		}
+		
+		_initialized = true;
 	}
 }

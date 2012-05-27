@@ -1,7 +1,6 @@
 package org.integratedmodelling.thinklab.modelling.lang;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -36,6 +35,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	
 	IDataSource _datasource;
 
+	private boolean _initialized;
 	
 	
 	/* ------------------------------------------------------------------------------
@@ -161,6 +161,14 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	@Override
 	public void initialize() throws ThinklabException {
 		
+		if (_initialized) 
+			return;
+		
+		/*
+		 * we only need it in models and contexts for now.
+		 */
+		_namespaceId = _namespace.getId();
+		
 		/*
 		 * this creates the observable if it was explicitly defined.
 		 */
@@ -172,17 +180,14 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 					Thinklab.get().resolveFunction(
 							_datasourceDefinition.getId(), 
 							_datasourceDefinition.getParameters().keySet());
-			try {
-				if (func == null)
-					throw new ThinklabValidationException("function " + _datasourceDefinition.getId() + " cannot be resolved");
-				Object ds = func.eval(_datasourceDefinition.getParameters());
-				if (! (ds instanceof IDataSource)) {
-					throw new ThinklabValidationException("function " + _datasourceDefinition.getId() + " does not return a datasource");
-				}
-				_datasource = (IDataSource)ds;
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
+			if (func == null)
+				throw new ThinklabValidationException("function " + _datasourceDefinition.getId() + " cannot be resolved");
+			Object ds = func.eval(_datasourceDefinition.getParameters());
+			if (! (ds instanceof IDataSource)) {
+				throw new ThinklabValidationException("function " + _datasourceDefinition.getId() + " does not return a datasource");
 			}
+			_datasource = (IDataSource)ds;
+				
 		} else if (_inlineState != null) {
 			_datasource = new ConstantDataSource(_inlineState);
 
@@ -204,6 +209,8 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 			
 			_observables.addAll(_observer.getObservables());
 		}
+		
+		_initialized = true;
 	}
 
 	

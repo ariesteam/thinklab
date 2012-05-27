@@ -8,9 +8,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.UUID;
 
 import org.integratedmodelling.collections.Pair;
@@ -20,13 +22,16 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.factories.IModelManager;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
+import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
@@ -69,6 +74,8 @@ import org.integratedmodelling.thinklab.modelling.lang.Storyline;
 import org.integratedmodelling.thinklab.modelling.lang.UnitDefinition;
 import org.integratedmodelling.thinklab.modelling.lang.Value;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
+import org.integratedmodelling.thinklab.query.Query;
+import org.integratedmodelling.thinklab.query.operators.Operators;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
 
@@ -120,6 +127,17 @@ public class ModelManager implements IModelManager {
 		ArrayList<Pair<String,Integer>> infos = new ArrayList<Pair<String,Integer>>();
 		String resourceId = "(not set)";
 		IProject project;
+		
+		/* this will be set to the resource's timestamp if the namespace is read 
+		 * from a resource whose timestamp can be determined. Otherwise any
+		 * storeable resource will be refreshed.
+		 */
+		long _timestamp = new Date().getTime();
+		/*
+		 * timestamp of kbox-stored namespace, if this is < _timestamp and neither is 0 we
+		 * need to refresh the kbox with the contents of the namespace.
+		 */
+		long _storedTimestamp = 0l;
 
 		public Resolver(Object resource) {
 			this.resourceId = resource.toString();
@@ -172,9 +190,14 @@ public class ModelManager implements IModelManager {
 					File f = new File(reference);
 
 					if (f.exists() && f.isFile() && f.canRead()) {
+						_timestamp = f.lastModified();
 						return new FileInputStream(f);
 					} else if (reference.contains(":/")) {
-						URL url = new URL(reference);						
+						URL url = new URL(reference);
+						if (url.toString().startsWith("file:")) {
+							f = new File(url.getFile());
+							_timestamp = f.lastModified();
+						}
 						return url.openStream();
 					}
 
@@ -269,9 +292,33 @@ public class ModelManager implements IModelManager {
 		public void onNamespaceDeclared(String namespaceId, INamespace namespace) {
 			
 			/*
-			 * TODO remove any objects in this namespace in project-defined kbox unless
-			 * resource has same modification date.
+			 * if we have stored this namespace previously, retrieve its record and set the
+			 * previous modification date.
 			 */
+			IQuery query = Query.select(NS.NAMESPACE).restrict(NS.HAS_ID, Operators.is(namespaceId));
+			try {
+				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
+				List<ISemanticObject<?>> res = kbox.query(query);
+				if (res.size() > 0) {
+					Namespace ns = (Namespace)res.get(0);
+					_storedTimestamp = ns.getTimeStamp();
+				}
+				
+				/*
+				 * if we have stored something and we are younger than the stored ns, remove
+				 * all models coming from it so we can add our new ones.
+				 */
+				if (_storedTimestamp != 0l && _timestamp > _storedTimestamp) {
+					Thinklab.get().logger().info(
+						"refreshing permanent storage for namespace " + namespaceId + " in kbox " + kbox.getUri());
+					kbox.removeAll(Query.select(NS.MODEL).restrict(NS.HAS_NAMESPACE_ID, Operators.is(namespaceId)));
+				}
+			} catch (ThinklabException e) {
+				/*
+				 * TBC
+				 * do nothing
+				 */
+			}
 			
 			if (namespacesById.get(namespaceId) != null) {
 				
@@ -281,11 +328,13 @@ public class ModelManager implements IModelManager {
 				Thinklab.get().logger().warn("warning: namespace " + namespaceId + " is being redefined");
 				releaseNamespace(namespaceId);
 			}
+
+			((Namespace)namespace).setTimeStamp(_timestamp);
 			
 			namespacesById.put(namespaceId, namespace);
 
 		}
-
+		
 		@Override
 		public void onNamespaceDefined(INamespace namespace) throws ThinklabException {
 
@@ -299,6 +348,19 @@ public class ModelManager implements IModelManager {
 			 * TODO pop resolver context
 			 */
 			
+			
+			/*
+			 * if was stored and not changed, do nothing
+			 */
+			if (_storedTimestamp == 0l || _timestamp > _storedTimestamp) {
+				
+				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
+				if (_storedTimestamp != 0l) {
+					IQuery query = Query.select(NS.NAMESPACE).restrict(NS.HAS_ID, Operators.is(namespace.getId()));
+					kbox.removeAll(query);
+				}
+				kbox.store(namespace);
+			}
 		}
 
 		@Override
@@ -388,7 +450,7 @@ public class ModelManager implements IModelManager {
 			 * store anything that reports storage metadata.
 			 */
 			IMetadata md = ((ModelObject<?>)ret).getStorageMetadata();
-			if (md != null) {
+			if (md != null && (_storedTimestamp == 0l || (_timestamp != 0l && _timestamp > _storedTimestamp))) {
 				ret.getMetadata().merge(md);
 				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
 				if (kbox != null) {
@@ -399,7 +461,6 @@ public class ModelManager implements IModelManager {
 					}
 				}
 			}
-
 		}
 
 		@Override
@@ -421,8 +482,6 @@ public class ModelManager implements IModelManager {
 				return new Model();
 			} else if (cls.equals(IContext.class)) {
 				return new Context();
-//			} else if (cls.equals(IDataSource.class)) {
-//				return new DataSourceDefinition();
 			} else if (cls.equals(IStoryline.class)) {
 				return new Storyline();
 			} else if (cls.equals(IScenario.class)) {

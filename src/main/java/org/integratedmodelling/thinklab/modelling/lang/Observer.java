@@ -3,7 +3,9 @@ package org.integratedmodelling.thinklab.modelling.lang;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
@@ -21,6 +23,10 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 
 	@Property(NS.HAS_MEDIATED_OBSERVER)
 	IObserver _mediated = null;
+	
+	@Property(NS.HAS_ACCESSOR_FUNCTION)
+	IFunctionDefinition _accessorGenerator = null;
+	
 	IAccessor _accessor = null;
 	
 	@Override
@@ -83,9 +89,34 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 
 	@Override
 	public void setAccessorGeneratorFunction(IFunctionDefinition function) {
-		System.out.println("accessor " + function);
+		_accessorGenerator = function;
 	}
-	
 
+	@Override
+	public T demote() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void initialize() throws ThinklabException {
+
+		super.initialize();
+
+		if (_accessorGenerator != null) {
+			
+			IExpression func = 
+					Thinklab.get().resolveFunction(
+							_accessorGenerator.getId(), 
+							_accessorGenerator.getParameters().keySet());
+			if (func == null)
+				throw new ThinklabValidationException("function " + _accessorGenerator.getId() + " cannot be resolved");
+			Object ds = func.eval(_accessorGenerator.getParameters());
+			if (! (ds instanceof IAccessor)) {
+				throw new ThinklabValidationException("function " + _accessorGenerator.getId() + " does not return a datasource");
+			}
+			_accessor = (IAccessor)ds;
+		}
+	}
 	
 }

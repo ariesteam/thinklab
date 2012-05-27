@@ -21,10 +21,14 @@ public abstract class ModelObject<T> extends LanguageElement<T> implements IMode
 	@Property(NS.HAS_ID)
 	String     _id;
 	
+	@Property(NS.HAS_NAMESPACE_ID)
+	String _namespaceId;
+		
 	/*
 	 * no @Property
 	 * store without namespace to avoid chain effect of trying to store the whole thing
-	 * for each stored object.
+	 * for each stored object. We only store the namespace ID to be able to retrieve
+	 * objects by namespace.
 	 */
 	INamespace _namespace;
 	
@@ -87,6 +91,7 @@ public abstract class ModelObject<T> extends LanguageElement<T> implements IMode
 
 	@Override
 	public void setId(String id) {
+		
 		if (SemanticType.validate(id)) {
 			SemanticType st = new SemanticType(id);
 			_namespace = Thinklab.get().getNamespace(st.getConceptSpace());
