@@ -8,6 +8,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
@@ -25,9 +26,11 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IObservingObjectDe
 @Concept(NS.OBSERVING_OBJECT)
 public abstract class ObservingObject<T> extends ModelObject<T> implements IObservingObject, IObservingObjectDefinition {
 	
+	@Property(NS.HAS_DEPENDENCY)
 	ArrayList<Triple<IModel, String, Boolean>> _dependencies = 
 			new ArrayList<Triple<IModel,String, Boolean>>();
-	
+
+	@Property(NS.HAS_OBSERVABLE)
 	ArrayList<ISemanticObject<?>> _observables = 
 			new ArrayList<ISemanticObject<?>>();
 

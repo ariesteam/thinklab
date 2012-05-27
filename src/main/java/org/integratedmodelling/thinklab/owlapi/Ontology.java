@@ -840,6 +840,8 @@ public class Ontology implements IOntology {
 					OWLClass newcl = factory.getOWLClass(uri);
 					manager.addAxiom(ont, factory.getOWLDeclarationAxiom(newcl));
 				
+					concepts.put(kr.registry.getSemanticType(newcl), new Concept(newcl));
+
 				} else if (axiom.is(IAxiom.SUBCLASS_OF)) {
 
 					IConcept p = getConcept(axiom.getArgument(1).toString());

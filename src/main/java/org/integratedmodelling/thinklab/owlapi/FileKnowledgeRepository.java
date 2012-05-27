@@ -595,8 +595,8 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 				onto.isSystem = false;
 				tempontologies.put(name, onto);
 				// FIXME check -- 
-				// ontologies.put(name, onto);
-				// registry.updateRegistry(manager, ontology);
+				 ontologies.put(name, onto);
+				 registry.updateRegistry(manager, ontology);
 				onto.initialize(name);
 				return onto;
 			} catch (OWLOntologyCreationException e) {

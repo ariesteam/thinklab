@@ -46,7 +46,7 @@ public class NS {
 	public static final String OPERATION_NOT_EQUALS = "thinklab:NotEqual";
 	public static final String OPERATION_LIKE = "thinklab:MatchesPattern";
 
-	// topological and specific for space
+	// topological operators and other specifically for space and time
 	static final public String OPERATION_CROSSES = "thinklab:Crosses";
 	static final public String OPERATION_INTERSECTS = "thinklab:Intersects";
 	static final public String OPERATION_INTERSECTS_ENVELOPE = "thinklab:IntersectsEnvelope";
@@ -59,7 +59,6 @@ public class NS {
 	static final public String OPERATION_NEAREST_NEIGHBOUR = "thinklab:NearestNeighbour";
 	static final public String OPERATION_WITHIN_DISTANCE = "thinklab:WithinDistance";
 
-	
 	// observable types
 	public static final String BOOLEAN_RANKING = "thinklab:BooleanRanking";
 	public static final String ORDINAL_RANKING = "thinklab:OrdinalRanking";
@@ -113,7 +112,19 @@ public class NS {
 	public static final String OBSERVING_OBJECT = "modelling.thinklab:ObservingObject";	
 	public static final String OBSERVATION = "modelling.thinklab:Observation";
 
-	public static final String HAS_OBSERVABLE = "observation:hasObserver";
+	// properties for model beans
+	public static final String HAS_DEPENDENCY = "modelling.thinklab:hasDependency";
+	public static final String HAS_OBSERVABLE = "modelling.thinklab:hasObservable";
+	public static final String HAS_TIMESTAMP = "modelling.thinklab:hasTimeStamp";
+	public static final String HAS_OBSERVER = "modelling.thinklab:hasObserver";
+	public static final String HAS_ID = "modelling.thinklab:hasId";
+	public static final String HAS_EXPRESSION = "modelling.thinklab:hasExpression";
+	public static final String HAS_DATASOURCE_DEFINITION = "modelling.thinklab:hasDatasourceDefinition";
+	public static final String HAS_MEDIATED_OBSERVER = "modelling.thinklab:hasMediatedObserver";
+	public static final String HAS_TYPE = "modelling.thinklab:hasType";
+	public static final String HAS_PARAMETERS = "modelling.thinklab:hasParameters";
+	public static final String HAS_INLINE_STATE = "modelling.thinklab:hasInlineState";
+	public static final String HAS_UNIT_DEFINITION = "modelling.thinklab:hasUnitDefinition";
 
 
 }

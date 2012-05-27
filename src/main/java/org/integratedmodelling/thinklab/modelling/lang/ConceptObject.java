@@ -12,4 +12,8 @@ public class ConceptObject extends ModelObject<ConceptObject> implements IConcep
 		return this;
 	}
 
+	@Override
+	public String getName() {
+		return getNamespace().getId() + ":" + _id;
+	}
 }

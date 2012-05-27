@@ -2,8 +2,11 @@ package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.io.PrintStream;
 
+import org.integratedmodelling.lang.SemanticType;
 import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
@@ -15,8 +18,21 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefiniti
 @Concept(NS.MODEL_OBJECT)
 public abstract class ModelObject<T> extends LanguageElement<T> implements IModelObject, IModelObjectDefinition {
 	
+	@Property(NS.HAS_ID)
 	String     _id;
+	
+	/*
+	 * no @Property
+	 * store without namespace to avoid chain effect of trying to store the whole thing
+	 * for each stored object.
+	 */
 	INamespace _namespace;
+	
+	/*
+	 * no @Property
+	 * don't store metadata as our Kbox implementation floats them to the
+	 * top object level for easier searching.
+	 */
 	IMetadata  _metadata;
 	
 	/**
@@ -71,7 +87,13 @@ public abstract class ModelObject<T> extends LanguageElement<T> implements IMode
 
 	@Override
 	public void setId(String id) {
-		_id = id;
+		if (SemanticType.validate(id)) {
+			SemanticType st = new SemanticType(id);
+			_namespace = Thinklab.get().getNamespace(st.getConceptSpace());
+			_id = st.getLocalName();
+		} else {
+			_id = id;
+		}
 	}
 
 

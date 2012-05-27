@@ -97,8 +97,6 @@ public class CompiledContext extends Context {
 		 */
 		IAccessor root = createAccessorGraph(_root, index);
 		
-
-		
 		/*
 		 * create new context with just our states and extents to pass
 		 * to accessor visitor. If the context changes, the previous one

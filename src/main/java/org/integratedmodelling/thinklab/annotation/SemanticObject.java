@@ -49,6 +49,7 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 	private HashMap<IProperty, List<ISemanticObject<?>>> _literals;
 	
 	SemanticGraph _graph = null;
+	private boolean _beingConceptualized;
 
 	protected SemanticObject() {
 	}
@@ -64,7 +65,14 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 	public IReferenceList getSemantics() {
 		if (_semantics == null)
 			try {
+				/*
+				 * by setting _beingConceptualized = true, we prevent this from 
+				 * causing infinite recursion in conceptualize() while allowing
+				 * SemanticObject members to be handled properly.
+				 */
+				_beingConceptualized = true;
 				_semantics = Thinklab.get().conceptualize(this);
+				_beingConceptualized = false;
 			} catch (ThinklabException e) {
 				throw new ThinklabRuntimeException(e);
 			}
@@ -250,6 +258,15 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 		if (!_literals.containsKey(p))
 			_literals.put(p, new ArrayList<ISemanticObject<?>>());
 		_literals.get(p).add(tg);
+	}
+
+	/*
+	 * required ugliness (at least until I figure out something better) to allow 
+	 * conceptualizing objects that are themselves instances of SemanticObject but
+	 * need their semantics instantiated.
+	 */
+	public boolean beingConceptualized() {
+		return _beingConceptualized;
 	}
 
 

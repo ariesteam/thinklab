@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabAnnotationException;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
@@ -71,7 +72,7 @@ public class AnnotationFactory {
 	private IProperty getPropertyFromFieldName(Field f, IConcept main) {
 
 		String name = f.getName();
-		Class<?> ptype = f.getClass();
+		Class<?> ptype = f.getType();
 
 		boolean multiple =
 				ptype.isArray() ||
@@ -237,6 +238,15 @@ public class AnnotationFactory {
 		}
 		
 		/*
+		 * if semantic object not currently being conceptualized, just use its semantics
+		 * FUCK this is called by getSemantics() too - we need something else
+		 */
+		if (o instanceof SemanticObject<?> && !((SemanticObject<?>)o).beingConceptualized()) {
+			IList ls = ((ISemanticObject<?>) o).getSemantics();
+			return (IReferenceList) ref.resolve(list.newList(ls.toArray()));	
+		}
+		
+		/*
 		 * if we get here, we need a @Concept annotation to proceed.
 		 */
 		IConcept mainc = _class2concept.get(cls);
@@ -245,10 +255,10 @@ public class AnnotationFactory {
 			/*
 			 * list will have unresolved reference
 			 */
-			Thinklab.get().logger().warn(
+			throw new ThinklabAnnotationException(
 					"instantiate: couldn't find a semantic annotation for class " + cls.getCanonicalName());
 			
-			return list;
+//			return list;
 		}
 		
 		ArrayList<Object> sa = new ArrayList<Object>();
@@ -385,11 +395,9 @@ public class AnnotationFactory {
 		
 		if (ret == null) {
 
-			Thinklab.get().logger().warn(
+			throw new ThinklabAnnotationException(
 					"instantiate: couldn't find a suitable constructor for class " + cls.getCanonicalName() +
-					" associated to concept " + annotation.first());
-			
-			return null;
+					" associated to concept " + annotation.first());			
 		}
 
 		/*

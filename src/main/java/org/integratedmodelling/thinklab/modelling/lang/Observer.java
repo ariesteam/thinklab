@@ -3,9 +3,9 @@ package org.integratedmodelling.thinklab.modelling.lang;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
@@ -19,6 +19,7 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinitio
 @Concept(NS.OBSERVER)
 public abstract class Observer<T> extends ObservingObject<T> implements IObserverDefinition {
 
+	@Property(NS.HAS_MEDIATED_OBSERVER)
 	IObserver _mediated = null;
 	IAccessor _accessor = null;
 	

@@ -33,7 +33,6 @@ import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.ICategorizingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IClassifyingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
-import org.integratedmodelling.thinklab.api.modelling.IDataSource;
 import org.integratedmodelling.thinklab.api.modelling.IMeasuringObserver;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
@@ -56,7 +55,6 @@ import org.integratedmodelling.thinklab.modelling.lang.Categorization;
 import org.integratedmodelling.thinklab.modelling.lang.Classification;
 import org.integratedmodelling.thinklab.modelling.lang.ConceptObject;
 import org.integratedmodelling.thinklab.modelling.lang.Context;
-import org.integratedmodelling.thinklab.modelling.lang.DataSourceDefinition;
 import org.integratedmodelling.thinklab.modelling.lang.FunctionDefinition;
 import org.integratedmodelling.thinklab.modelling.lang.Measurement;
 import org.integratedmodelling.thinklab.modelling.lang.Metadata;
@@ -276,26 +274,25 @@ public class ModelManager implements IModelManager {
 			 */
 			
 			if (namespacesById.get(namespaceId) != null) {
+				
 				/*
 				 * warn only for now
 				 */
 				Thinklab.get().logger().warn("warning: namespace " + namespaceId + " is being redefined");
 				releaseNamespace(namespaceId);
 			}
+			
+			namespacesById.put(namespaceId, namespace);
+
 		}
 
 		@Override
 		public void onNamespaceDefined(INamespace namespace) throws ThinklabException {
-						
-			/*
-			 * store it first, which publishes the knowledge so that the next ones will work
-			 */
-			if (!namespacesById.containsKey(namespace.getId())) {
-				namespacesById.put(namespace.getId(), namespace);
-			} else {
-				onException(new ThinklabValidationException("cannot redefine namespace: " + namespace.getId()), -1);
-			}
 
+			/*
+			 * at this point, this should be moot as we define everything incrementally, 
+			 * but leave it here for any final tasks we may want to implement.
+			 */
 			((Namespace)namespace).initialize();
 			
 			/*
@@ -424,8 +421,8 @@ public class ModelManager implements IModelManager {
 				return new Model();
 			} else if (cls.equals(IContext.class)) {
 				return new Context();
-			} else if (cls.equals(IDataSource.class)) {
-				return new DataSourceDefinition();
+//			} else if (cls.equals(IDataSource.class)) {
+//				return new DataSourceDefinition();
 			} else if (cls.equals(IStoryline.class)) {
 				return new Storyline();
 			} else if (cls.equals(IScenario.class)) {

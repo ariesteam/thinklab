@@ -4,6 +4,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IMeasuringObserver;
 import org.integratedmodelling.thinklab.api.modelling.IMediatingObserver;
@@ -16,6 +17,9 @@ import org.integratedmodelling.thinklab.modelling.Unit;
 @Concept(NS.MEASURING_OBSERVER)
 public class Measurement extends Observer<Measurement> implements IMeasuringObserverDefinition, IMediatingObserver {
 
+	@Property(NS.HAS_UNIT_DEFINITION)
+	IUnitDefinition _unitDefinition;
+	
 	IUnit _unit;
 
 	public IUnit getUnit() {
@@ -24,7 +28,7 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 
 	@Override
 	public void setUnit(IUnitDefinition unit) {
-		_unit = new Unit(unit.getStringExpression());
+		_unitDefinition = unit;
 	}
 
 	@Override
@@ -40,6 +44,14 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 		
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void initialize() throws ThinklabException {
+		
+		super.initialize();
+		
+		_unit = new Unit(_unitDefinition.getStringExpression());
 	}
 	
 }

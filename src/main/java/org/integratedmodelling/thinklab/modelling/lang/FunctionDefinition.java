@@ -4,12 +4,15 @@ import java.util.Map;
 
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 
-@Concept(NS.DATASOURCE_DEFINITION)
+@Concept(NS.FUNCTION_DEFINITION)
 public class FunctionDefinition extends ModelObject<FunctionDefinition> implements IFunctionDefinition {
 
+	@Property(NS.HAS_TYPE)
 	String _type;
+	@Property(NS.HAS_PARAMETERS)
 	Map<String, Object> _parameters;
 	
 	@Override

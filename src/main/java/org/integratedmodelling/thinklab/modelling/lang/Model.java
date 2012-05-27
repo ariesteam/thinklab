@@ -6,6 +6,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
@@ -24,9 +25,16 @@ import org.integratedmodelling.thinklab.modelling.lang.datasources.ConstantDataS
 @Concept(NS.MODEL)
 public class Model extends ObservingObject<Model> implements IModelDefinition {
 
+	@Property(NS.HAS_OBSERVER)
 	IObserver _observer;
-	IDataSource _datasource;
+	
+	@Property(NS.HAS_DATASOURCE_DEFINITION)
 	IFunctionDefinition _datasourceDefinition;
+
+	@Property(NS.HAS_INLINE_STATE)
+	Object _inlineState;
+	
+	IDataSource _datasource;
 
 	
 	
@@ -142,24 +150,12 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 
 	@Override
 	public void setDatasourceGeneratorFunction(IFunctionDefinition function) {
-		
-		IExpression func = Thinklab.get().resolveFunction(function.getId(), function.getParameters().keySet());
-		try {
-			if (func == null)
-				throw new ThinklabValidationException("function " + function.getId() + " cannot be resolved");
-			Object ds = func.eval(function.getParameters());
-			if (! (ds instanceof IDataSource)) {
-				throw new ThinklabValidationException("function " + function.getId() + " does not return a datasource");
-			}
-			_datasource = (IDataSource)ds;
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
+		_datasourceDefinition = function;
 	}
 
 	@Override
 	public void setInlineState(Object state) {
-		_datasource = new ConstantDataSource(state);
+		_inlineState = state;
 	}
 
 	@Override
@@ -169,6 +165,28 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		 * this creates the observable if it was explicitly defined.
 		 */
 		super.initialize();
+
+		if (_datasourceDefinition != null) {
+			
+			IExpression func = 
+					Thinklab.get().resolveFunction(
+							_datasourceDefinition.getId(), 
+							_datasourceDefinition.getParameters().keySet());
+			try {
+				if (func == null)
+					throw new ThinklabValidationException("function " + _datasourceDefinition.getId() + " cannot be resolved");
+				Object ds = func.eval(_datasourceDefinition.getParameters());
+				if (! (ds instanceof IDataSource)) {
+					throw new ThinklabValidationException("function " + _datasourceDefinition.getId() + " does not return a datasource");
+				}
+				_datasource = (IDataSource)ds;
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		} else if (_inlineState != null) {
+			_datasource = new ConstantDataSource(_inlineState);
+
+		}
 		
 		if (_observer != null) {
 			((Observer<?>)_observer).initialize();
