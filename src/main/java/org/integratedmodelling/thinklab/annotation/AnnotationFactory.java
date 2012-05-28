@@ -293,6 +293,14 @@ public class AnnotationFactory {
 		return (IReferenceList) ref.resolve(list.newList(sa.toArray()));
 	}
 	
+	/*
+	 * take the passed list and internalize its references to the second
+	 * argument if it has any. It probably only works properly with 
+	 * non-cyclic lists - TODO/FIXME must check.
+	 * 
+	 * SHOULD BE MOVED TO ReferenceList and properly handle refs - if
+	 * I only can get my mind to work again on this problem.
+	 */
 	private IList internalize(IList semantics, IReferenceList list) {
 
 		ArrayList<Object> objs = new ArrayList<Object>();
@@ -306,7 +314,6 @@ public class AnnotationFactory {
 		
 		return list.newList(objs.toArray());
 	}
-
 
 	private Collection<Object> getAllInstances(Object value) {
 
