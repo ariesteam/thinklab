@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
@@ -31,10 +32,15 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	@Property(NS.HAS_ID)
 	String _id;
 	
+	String _trainingKbox = null;
+	String _storageKbox = null;
+	String _lookupKbox = null;
+	
 	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
 	ArrayList<IAxiom> _axioms = new ArrayList<IAxiom>();
 	ArrayList<INamespace> _importedNamespaces = new ArrayList<INamespace>();
-
+	HashSet<IAxiom> _axiomHash = new HashSet<IAxiom>();
+	
 	HashMap<String, IModelObject> _namedObjects = new HashMap<String, IModelObject>();
 	
 	IOntology _ontology;
@@ -129,7 +135,11 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 
 	@Override
 	public void addAxiom(IAxiom axiom) {
+		
+		if (_axiomHash.contains(axiom)) 
+			return;
 		_axioms.add(axiom);
+		_axiomHash.add(axiom);
 	}
 
 	@Override
@@ -200,4 +210,36 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		_firstLineNumber = startLine;
 		_lastLineNumber  = endLine;
 	}
+	
+	@Override
+	public void setStorageKbox(String kboxUri) {
+		_storageKbox = kboxUri;
+	}
+
+	@Override
+	public void setTrainingKbox(String kboxUri) {
+		_trainingKbox = kboxUri;
+	}
+
+	@Override
+	public String getStorageKbox() {
+		return _storageKbox;
+	}
+
+	@Override
+	public String getTrainingKbox() {
+		return _trainingKbox;
+	}
+	
+	@Override
+	public void setLookupKbox(String kboxUri) {
+		_lookupKbox = kboxUri;
+	}
+	
+	@Override
+	public String getLookupKbox() {
+		return _lookupKbox;
+	}
+
+
 }

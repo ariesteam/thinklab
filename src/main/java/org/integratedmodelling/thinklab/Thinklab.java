@@ -567,9 +567,9 @@ public class Thinklab implements
 
 	/**
 	 * Return the designated kbox to store data for this namespace.
-	 * In this implementation, the projects that contain the namespace
-	 * can designate a kbox; if not, this defaults to a public
-	 * overall kbox if one exists.
+	 * The namespace can contain a specification for that, or the project that contains the namespace
+	 * can designate a default kbox if not specified; if even that is not specified, this defaults to a public
+	 * overall kbox named "thinklab".
 	 *  
 	 * @param ns
 	 * @return
@@ -578,14 +578,16 @@ public class Thinklab implements
 	public IKbox getStorageKboxForNamespace(INamespace ns) throws ThinklabException {
 
 		String rbox = "thinklab";
-		if (ns.getProject() != null)
+		if (ns.getStorageKbox() != null) 
+			rbox = ns.getStorageKbox();
+		else if (ns.getProject() != null)
 			rbox = ns.getProject().getProperties().getProperty(IProject.STORAGE_KBOX_PROPERTY, rbox);
 		return requireKbox(rbox);
 	}
 
 	/**
 	 * Return the designated kbox to resolve references for a namespace. Defaults to thinklab
-	 * kbox if the project's properties don't specify one.
+	 * kbox if neither the namespace statement or the project's properties specify one.
 	 * 
 	 * @param ns
 	 * @return
@@ -593,11 +595,30 @@ public class Thinklab implements
 	 */
 	public IKbox getLookupKboxForNamespace(INamespace ns) throws ThinklabException {
 		String rbox = "thinklab";
-		if (ns.getProject() != null)
+		if (ns.getLookupKbox() != null) 
+			rbox = ns.getLookupKbox();
+		else if (ns.getProject() != null)
 			rbox = ns.getProject().getProperties().getProperty(IProject.LOOKUP_KBOX_PROPERTY, rbox);
 		return requireKbox(rbox);
 	}
 
+	/**
+	 * Return the designated kbox to provide data for training of models in a namespace. Defaults to thinklab
+	 * kbox if neither the namespace statement or the project's properties specify one.
+	 * 
+	 * @param ns
+	 * @return
+	 * @throws ThinklabException
+	 */
+	public IKbox getTrainingKboxForNamespace(INamespace ns) throws ThinklabException {
+		String rbox = "thinklab";
+		if (ns.getTrainingKbox() != null) 
+			rbox = ns.getTrainingKbox();
+		else if (ns.getProject() != null)
+			rbox = ns.getProject().getProperties().getProperty(IProject.TRAINING_KBOX_PROPERTY, rbox);
+		return requireKbox(rbox);
+	}
+	
 	@Override
 	public ISemanticObject<?> parse(String literal, IConcept concept)
 			throws ThinklabException {

@@ -845,7 +845,7 @@ public class Ontology implements IOntology {
 				} else if (axiom.is(IAxiom.SUBCLASS_OF)) {
 
 					IConcept p = getConcept(axiom.getArgument(1).toString());
-					IConcept c = getConcept(axiom.getArgument(0).toString());
+					IConcept c = Thinklab.get().getConcept(axiom.getArgument(0).toString());
 					OWLClass parent = (OWLClass) ((Concept)p).entity;
 					manager.addAxiom(ont, factory.getOWLSubClassAxiom((OWLClass)((Concept)c).entity, parent));
 				}

@@ -21,7 +21,6 @@ public class ModelReadWrite {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Thinklab.boot();
-		Thinklab.get().requireKbox("thinklab").clear();
 	}
 
 	@AfterClass
@@ -38,7 +37,7 @@ public class ModelReadWrite {
 		IModel model = (IModel) ns.getModelObject("rainfall");
 		IContext ctx = (IContext)ns.getModelObject("puget");
 
-		IKbox kbox = Thinklab.get().requireKbox("thinklab");
+		IKbox kbox = Thinklab.get().getStorageKboxForNamespace(ns);
 		
 		/*
 		 * find models that observe rainfall
