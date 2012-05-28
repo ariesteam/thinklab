@@ -195,7 +195,7 @@ public class NeoKBox implements IKbox {
 					}
 				});
 				
-				_db.index().forRelationships(RELS_INDEX).add(rel, "name", toId(s.getFirst()));
+//				_db.index().forRelationships(RELS_INDEX).add(rel, "name", toId(s.getFirst()));
 			}
 		}
 		
@@ -239,43 +239,50 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public void remove(long handle) throws ThinklabException {
-		removeInternal(handle, true);
+		HashSet<Node> nodes = new HashSet<Node>();
+		HashSet<Relationship> rels = new HashSet<Relationship>();
+		removeInternal(_db.getNodeById(handle), nodes, rels);
+		zap(nodes, rels);
 	}
 
-	private void removeInternal(long handle, boolean atomic) throws ThinklabException {
-
-		Transaction tx = atomic ? _db.beginTx() : null;
-
+	private void zap(HashSet<Node> nodes, HashSet<Relationship> rels) throws ThinklabIOException {
+		
+		Transaction tx = _db.beginTx();
 		try {
-
-			/*
-			 * TODO check what we need to do with the index. Apparently it should be
-			 * "lazy" but automatic - no need to remove stuff - but we should also
-			 * check with the spatial plugin.
-			 */		
-			Node n = _db.getNodeById(handle);
-			if (n == null)
-				return;
-				
-			for (Relationship r : n.getRelationships(Direction.OUTGOING)) 
-				removeInternal(r.getEndNode().getId(), false);
-					
-			n.delete();
-			
-			
+			for (Relationship r : rels) {
+				r.delete();
+			}
+			for (Node n : nodes)  {
+				n.delete();
+			}
+			tx.success();
 		} catch (Exception e) {
-			
-			if (tx != null)
-				tx.failure();
+			tx.failure();
 			throw new ThinklabIOException(e.getMessage());
-	
 		} finally {
-			
-			if (tx != null)
-				tx.finish();
-		}
+			tx.finish();
+		}		
+		
+	}
 
-	
+	private void removeInternal(Node n, HashSet<Node> nodes, HashSet<Relationship> rels) throws ThinklabException {
+		
+		if (nodes.contains(n))
+			return;	
+
+		nodes.add(n);
+		
+		for (Relationship r : n.getRelationships(Direction.OUTGOING)) {
+			removeInternal(r.getEndNode(), nodes, rels);
+			rels.add(r);
+		}
+		
+		/*
+		 * node may have incoming relationship HAS_NODE or other from plugins
+		 */
+		for (Relationship r : n.getRelationships(Direction.INCOMING)) {
+			rels.add(r);
+		}
 
 	}
 	
@@ -315,27 +322,16 @@ public class NeoKBox implements IKbox {
 	
 	@Override
 	public void removeAll(IQuery query) throws ThinklabException {
-
-		Transaction tx = _db.beginTx();
-
-		try {
-
-			for (long l : queryObjects((Query) query)) {
-				try {
-					removeInternal(l, false);
-				} catch (ThinklabException e) {
-					throw new ThinklabRuntimeException(e);
-				}
+		HashSet<Node> nodes = new HashSet<Node>();
+		HashSet<Relationship> rels = new HashSet<Relationship>();
+		for (long l : queryObjects((Query) query)) {
+			try {
+				removeInternal(_db.getNodeById(l), nodes, rels);
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
 			}
-			
-		} catch (Exception e) {
-			
-			tx.failure();
-			throw new ThinklabIOException(e.getMessage());
-	
-		} finally {
-			tx.finish();
-		}		
+		}
+		zap(nodes, rels);
 	}
 
 	@Override
@@ -650,6 +646,10 @@ public class NeoKBox implements IKbox {
 		
 		@Override
 		protected void setAndIndex(Node node, IProperty property, Object value) {
+			
+			if (value instanceof Boolean)
+				value = new Integer((Boolean)value ? 1 : 0);
+			
 			node.setProperty(toId(property), value);
 			Index<Node> index = _db.index().forNodes(BASE_INDEX);
 			index.add(node, toId(property), new ValueContext(value).indexNumeric());
@@ -665,20 +665,24 @@ public class NeoKBox implements IKbox {
 			Pair<IConcept, Object[]> op = operator.getQueryParameters();
 			Object qc = null;
 			
+			Object opp = op.getSecond()[0];
+			if (opp instanceof Boolean)
+				opp = new Integer((Boolean)opp ? 1 : 0);
+			
 			if (op.getFirst().equals(NS.OPERATION_EQUALS)) {
 				
 				/*
 				 * mah - can't find anything to match a number
 				 */
-				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), (Number)(op.getSecond()[0]), true, true);
+				qc = QueryContext.numericRange(toId(property), (Number)opp, (Number)opp, true, true);
 			} else if (op.getFirst().equals(NS.OPERATION_GREATER_THAN)) {
-				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), null, false, true);
+				qc = QueryContext.numericRange(toId(property), (Number)opp, null, false, true);
 			} else if (op.getFirst().equals(NS.OPERATION_LESS_THAN)) {
-				qc = QueryContext.numericRange(toId(property), null, (Number)(op.getSecond()[0]), true, false);				
+				qc = QueryContext.numericRange(toId(property), null, (Number)opp, true, false);				
 			} else if (op.getFirst().equals(NS.OPERATION_GREATER_OR_EQUAL)) {
-				qc = QueryContext.numericRange(toId(property), (Number)(op.getSecond()[0]), null, true, true);				
+				qc = QueryContext.numericRange(toId(property), (Number)opp, null, true, true);				
 			} else if (op.getFirst().equals(NS.OPERATION_LESS_OR_EQUAL)) {
-				qc = QueryContext.numericRange(toId(property), null, (Number)(op.getSecond()[0]), true, true);				
+				qc = QueryContext.numericRange(toId(property), null, (Number)opp, true, true);				
 			} else if (op.getFirst().equals(NS.OPERATION_NOT_EQUALS)) {
 			
 				/*
@@ -814,12 +818,13 @@ public class NeoKBox implements IKbox {
 				});
 		
 		/*
-		 * numbers
+		 * numbers. We treat booleans as a number.
 		 */
 		registerTypeAdapter(Thinklab.c(NS.INTEGER), new NumberTypeAdapter());
 		registerTypeAdapter(Thinklab.c(NS.DOUBLE), new NumberTypeAdapter());		
 		registerTypeAdapter(Thinklab.c(NS.FLOAT), new NumberTypeAdapter());
 		registerTypeAdapter(Thinklab.c(NS.LONG), new NumberTypeAdapter());
+		registerTypeAdapter(Thinklab.c(NS.BOOLEAN), new NumberTypeAdapter());
 
 		/*
 		 * shapes

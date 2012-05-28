@@ -326,16 +326,6 @@
 	<classpathentry kind="lib" path="lib/slf4j-simple-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis-1.0.b2.jar"/>
 	<classpathentry kind="lib" path="lib/pipes-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-community-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-cypher-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-graph-algo-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-graph-matching-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-jmx-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-kernel-1.6.1-tests.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-kernel-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-lucene-index-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-shell-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-udc-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/jpf-tools.jar"/>
 	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/JPF 1.5"/>
 	<classpathentry kind="lib" path="lib/jspf.core-1.0.2.jar"/>
@@ -347,10 +337,19 @@
 	<classpathentry kind="lib" path="lib/jspf.remote.lipermi-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/jspf.remote.xmlrpc-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-spatial-0.8.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-graph-collections-0.3.jar"/>
 	<classpathentry kind="lib" path="lib/gremlin-groovy-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/gremlin-java-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/pipes-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-community-1.8.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-cypher-1.8.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-algo-1.8.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-matching-1.8.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-jmx-1.8.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-kernel-1.8.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-lucene-index-1.8.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-shell-1.8.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-udc-1.8.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-spatial-0.8.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-collections-0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

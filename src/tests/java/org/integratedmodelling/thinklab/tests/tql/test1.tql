@@ -1,9 +1,9 @@
 namespace org.integratedmodelling.test1
 	storage kbox test.models;
 
-defmodel rainfall-global of (Rainfall is habitat:Rainfall)
+defmodel rainfall-global of (concept Rainfall is habitat:Rainfall)
 	as measure habitat:Rainfall in m;
-
+	
 /**
  * this uses a datasource so it is stored with its computed extents to resolve 
  * observables later. 

@@ -34,7 +34,7 @@ public class ModelReadWrite {
 		URL test1 = ClassLoader.getSystemResource("org/integratedmodelling/thinklab/tests/tql/test1.tql");
 		INamespace ns = Thinklab.get().loadFile(test1.toString(), null, null);
 		
-		IModel model = (IModel) ns.getModelObject("rainfall");
+		IModel model = (IModel) ns.getModelObject("rainfall-global");
 		IContext ctx = (IContext)ns.getModelObject("puget");
 
 		IKbox kbox = Thinklab.get().getStorageKboxForNamespace(ns);

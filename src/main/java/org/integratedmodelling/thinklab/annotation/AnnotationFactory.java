@@ -239,10 +239,9 @@ public class AnnotationFactory {
 		
 		/*
 		 * if semantic object not currently being conceptualized, just use its semantics
-		 * FUCK this is called by getSemantics() too - we need something else
 		 */
 		if (o instanceof SemanticObject<?> && !((SemanticObject<?>)o).beingConceptualized()) {
-			IList ls = ((ISemanticObject<?>) o).getSemantics();
+			IList ls = internalize(((ISemanticObject<?>) o).getSemantics(), list);
 			return (IReferenceList) ref.resolve(list.newList(ls.toArray()));	
 		}
 		
@@ -294,6 +293,21 @@ public class AnnotationFactory {
 		return (IReferenceList) ref.resolve(list.newList(sa.toArray()));
 	}
 	
+	private IList internalize(IList semantics, IReferenceList list) {
+
+		ArrayList<Object> objs = new ArrayList<Object>();
+		
+		for (Object o : semantics.toArray()) {
+			if (o instanceof IList) {
+				o = internalize((IList)o, list);
+			}
+			objs.add(o);
+		}
+		
+		return list.newList(objs.toArray());
+	}
+
+
 	private Collection<Object> getAllInstances(Object value) {
 
 		Collection<Object> ret = null;
