@@ -1,7 +1,6 @@
 package org.integratedmodelling.thinklab;
 
 
-
 /**
  * One and only holder of semantic concept IDs. These will all be expected to exist.
  * 
@@ -78,6 +77,9 @@ public class NS {
 	public static final String HAS_THIRD_FIELD = "thinklab:hasThird";
 	public static final String METADATA_HAS_FIELD = "metadata:hasField";
 
+	// conceptualized extents
+	public static final String GRID_EXTENT = "geospace:GridExtent";
+	
 	// spatial convenience relationships
 	public static final String GEOSPACE_HAS_SERVICE_URL = "geospace:hasServiceUrl";
 	public static final String GEOSPACE_HAS_COVERAGE_ID = "geospace:hasCoverageId";
@@ -85,7 +87,15 @@ public class NS {
 	public static final String GEOSPACE_HAS_VALUE_TYPE = "geospace:hasValueType";
 	public static final String GEOSPACE_HAS_VALUE_EXPRESSION = "geospace:hasValueExpression";
 	public static final String GEOSPACE_HAS_VALUE_DEFAULT = "geospace:hasValueDefault";
-	
+	public static final String GEOSPACE_HAS_MINX = "geospace:hasMinX";
+	public static final String GEOSPACE_HAS_MAXX = "geospace:hasMaxX";
+	public static final String GEOSPACE_HAS_MAXY = "geospace:hasMaxY";
+	public static final String GEOSPACE_HAS_MINY = "geospace:hasMinY";
+	public static final String GEOSPACE_HAS_XDIVS = "geospace:hasXDivs";
+	public static final String GEOSPACE_HAS_YDIVS = "geospace:hasYDivs";
+	public static final String GEOSPACE_HAS_SHAPE = "geospace:hasShape";
+	public static final String GEOSPACE_HAS_CRSCODE = "geospace:hasCRSCode";
+
 	// model beans
 	public static final String METADATA = "modelling.thinklab:Metadata";
 	public static final String NAMESPACE = "modelling.thinklab:Namespace";
@@ -130,5 +140,8 @@ public class NS {
 	public static final String HAS_EXTENT_FUNCTION = "modelling.thinklab:hasExtentFunction";
 	public static final String HAS_ACCESSOR_FUNCTION = "modelling.thinklab:hasAccessorFunction";
 	public static final String HAS_DIRECT_DATA = "modelling.thinklab:hasDirectData";
+	public static final String HAS_ALLOWED_COVERAGE = "modelling.thinklab:hasAllowedCoverage";
+
+
 
 }

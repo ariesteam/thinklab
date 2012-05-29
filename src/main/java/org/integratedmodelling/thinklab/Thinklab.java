@@ -772,7 +772,8 @@ public class Thinklab implements
 
 	public IOntology createOntology(String id, String ontologyPrefix, Collection<IAxiom> axioms) throws ThinklabException {
 		IOntology ret =  _knowledgeRepository.createOntology(id, ontologyPrefix);
-		ret.define(axioms);
+		if (axioms != null)
+			ret.define(axioms);
 		return ret;
 	}
 

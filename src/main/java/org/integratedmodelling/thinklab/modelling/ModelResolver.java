@@ -1,11 +1,16 @@
 package org.integratedmodelling.thinklab.modelling;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IState;
+import org.integratedmodelling.thinklab.modelling.lang.Context;
 import org.integratedmodelling.thinklab.modelling.lang.Model;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -72,44 +77,161 @@ public class ModelResolver {
 		boolean isMediation = false;
 	}
 	
-	/*
-	 * the "mother" dependency graph, containing reference to resolved or resolvable 
-	 * models. Created at compile() time and used to create actual
-	 * model graphs for each possible solution.
-	 * 
-	 * Circular dependencies are possible but should be resolved on the actual
-	 * model graphs, as each solution may bring in different dependencies. 
-	 * Creating this queries the kbox for unresolved observables.
-	 */
 	DefaultDirectedGraph<ModelRef, DependencyEdge> _modelstruc = null;
 	ModelRef _root = null;
-
+	private HashMap<String, IModel> _modHash;
+	
+	public void buildModelGraph(IModel rootModel) {
+		
+		_root = new ModelRef(rootModel);
+		
+		/*
+		 * TODO
+		 * recurse dependencies checking the graph and the coverage as we go
+		 */
+	}
 	
 	/**
 	 * Get the best model for the semantic object passed. If the passed object
-	 * is a model, just return it, so we can use it also to "resolve" when
-	 * the user has specified a precise model. Otherwise we look for what
-	 * observes it.
+	 * is a model, just file its observables and return it. Otherwise we assume the
+	 * argument is an observable and look for models that
+	 * observe it. If coverage of the best model is incomplete, we may build 
+	 * a model that merges more than one, in order of score, to cover the context
+	 * as fully as possible.
 	 * 
 	 * @param toResolve
 	 * @return
 	 */
 	public IModel resolve(ISemanticObject<?> toResolve, IContext context) {
 		
-		if (toResolve instanceof Model) {
-			return (Model)toResolve;
+		IModel ret = null;
+		
+		/*
+		 * setup hash if we're calling this for the first time.
+		 */
+		if (_modHash == null) {
+			
+			_modHash = new HashMap<String, IModel>();
+			
+			/*
+			 * fill in what we already know and is already harmonized with the context.
+			 */
+			for (IState state : context.getStates()) {
+				_modHash.put(((SemanticObject<?>)(state.getObservable())).getSignature(), promoteStateToModel(state));
+			}
 		}
 		
+		if (toResolve instanceof Model) {
+			ret =  (Model)toResolve;
+		} else {
+			
+			/*
+			 * observable
+			 */
+			SemanticObject<?> observable = (SemanticObject<?>) toResolve;
+			String sig = observable.getSignature();
+			
+			/*
+			 * if we already have a strategy, use that unless it creates circular dependencies
+			 * TODO log strategy
+			 */
+			if (_modHash.containsKey(sig) && isAcyclic(observable, _modHash.get(sig))) {
+				return _modHash.get(sig);
+			}
+			
+			IContext coverage = new Context();
+			ArrayList<IModel> models = new ArrayList<IModel>();
+			/*
+			 * scan models in order of decreasing quality.
+			 * loop until we get the best coverage; stop if/when we get to 100%
+			 * TODO log strategy
+			 */
+			
+			for (IModel m : getSuitableModels(observable, context)) {
+				
+				/*
+				 * don't use it at all if it would create circular dependencies.
+				 * TODO log strategy
+				 */
+				if (!isAcyclic(observable, m))
+					continue;
+				
+				/*
+				 * add model to list
+				 * TODO: merge extent metadata into coverage
+				 */
+				models.add(m);
+				
+				/*
+				 * compute coverage in all required dimensions, using
+				 * extent metadata; break if context is fully covered.
+				 */
+				if (coverage.isCovered(IContext.ALL_EXTENTS))
+					break;
+			}
+			
+			/*
+			 * finalize choice
+			 */
+			if (models.size() > 1) {
+				
+				/*
+				 * make multiple model with all suitable alternatives
+				 */
+				
+			} else {
+				ret = models.size() == 0 ? null : models.get(0);
+			}	
+			
+		}
+
+		/*
+		 * set model as resolvers for ALL the observables it can resolve.
+		 */
+		if (ret != null) {
+			for (ISemanticObject<?> obs : ret.getObservables()) {
+				_modHash.put(((SemanticObject<?>)obs).getSignature(), ret);
+			}
+		}
+		
+		return ret;
+	}
+
+	/*
+	 * for simple handling throughout the algorithm, although later we'll just use the state as
+	 * an accessor and throw away the model.
+	 */
+	private IModel promoteStateToModel(IState state) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
+	private List<IModel> getSuitableModels(SemanticObject<?> observable,
+			IContext context) {
+		ArrayList<IModel> ret = new ArrayList<IModel>();
+		
+		/*
+		 * query all models and build score based on metadata
+		 */
+		
+		/*
+		 * must be covered at least some or not specify coverage at all (which 
+		 * gives them a lower score)
+		 */
+		
+		return ret;
+	}
+
 	/**
-	 * Collect models and dependencies from graph, coalescing dependencies for multiple
-	 * observables into a graph with a unique model per node; analyze the resulting graph for cycles
+	 * Try out the scenario of using the given model for the passed observable. Analyze the
+	 * resulting graph and return whether it creates circular dependencies.
 	 * 
-	 * @return
+	 * @param iModel
+	 * @param observable 
+	 * 
+	 * @return true if NO circular dependencies are created by using this model for the observable.
 	 */
-	public boolean isAcyclic() {
+	public boolean isAcyclic(SemanticObject<?> observable, IModel iModel) {
 		return true;
 	}
 	

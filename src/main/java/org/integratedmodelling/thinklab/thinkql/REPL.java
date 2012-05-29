@@ -36,6 +36,7 @@ import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.ILanguageDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IPropertyDefinition;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
@@ -141,6 +142,12 @@ public class REPL {
 		@Override
 		public String generateId(IModelObject o) {
 			return UUID.randomUUID().toString() + "___";
+		}
+
+		@Override
+		public Object runFunction(IFunctionDefinition function) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 	

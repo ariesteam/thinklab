@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -847,7 +846,7 @@ public class Ontology implements IOntology {
 					IConcept p = getConcept(axiom.getArgument(1).toString());
 					IConcept c = Thinklab.get().getConcept(axiom.getArgument(0).toString());
 					OWLClass parent = (OWLClass) ((Concept)p).entity;
-					manager.addAxiom(ont, factory.getOWLSubClassAxiom((OWLClass)((Concept)c).entity, parent));
+					manager.addAxiom(ont, factory.getOWLSubClassAxiom(parent, (OWLClass)((Concept)c).entity));
 				}
 				
 				/* TODO etc */
@@ -862,6 +861,7 @@ public class Ontology implements IOntology {
 		 * re-read everything
 		 */
 		initialize(this.cs);
+		
 		
 //		if (axiom instanceof OWLDeclarationAxiom) {
 //

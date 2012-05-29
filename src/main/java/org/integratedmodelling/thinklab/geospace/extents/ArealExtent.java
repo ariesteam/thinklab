@@ -40,6 +40,9 @@ public abstract class ArealExtent extends Observation implements IExtent {
 	
 	public abstract ShapeValue getShape();
 
+	protected ArealExtent() {
+	}
+	
 	public ArealExtent(CoordinateReferenceSystem crs, double minx, double miny, double maxx, double maxy) {
 		this.crs = crs;
 		this.envelope = new ReferencedEnvelope(minx, maxx, miny, maxy, crs);

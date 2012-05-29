@@ -74,12 +74,20 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 				Thinklab.get().dropOntology(_id);
 			
 			/*
-			 * create ontology from the axioms collected in namespace
+			 * create ontology from the axioms collected in namespace. First create the bare ontology and 
+			 * assign it to the NS
 			 */
 			_ontology = Thinklab.get().createOntology(
 					_id,
 					(_project == null ? NS.DEFAULT_THINKLAB_ONTOLOGY_PREFIX : _project.getOntologyNamespacePrefix()),
-					_axioms);
+					null);
+			
+			/*
+			 * add current axioms when we already assigned _ontology, so that namespace lookup will work from
+			 * inside define()
+			 */
+			_ontology.define(_axioms);
+			
 		} else {
 			ArrayList<IAxiom> axioms = new ArrayList<IAxiom>();
 			for (int i = _nextAxiom; i < _axioms.size(); i++) {

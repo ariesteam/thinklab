@@ -29,8 +29,13 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -58,7 +63,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * @author Ferdinando
  *
  */
-public class GridExtent extends ArealExtent {
+public class GridExtent extends ArealExtent implements IConceptualizable {
 
 	GeometryFactory gFactory = null;
 	int xDivs = 0;
@@ -75,6 +80,12 @@ public class GridExtent extends ArealExtent {
 	private CoordinateReferenceSystem metersCRS = null;
 	Geometry boundary = null;
 	public ShapeValue shape;
+	
+	public GridExtent() {
+		/*
+		 * for conceptualization - make sure you use this properly
+		 */
+	}
 	
 	public GridExtent(
 				CoordinateReferenceSystem crs, 
@@ -695,11 +706,11 @@ public class GridExtent extends ArealExtent {
 		}
 	}
 
-
-	public IExtent or(IExtent myExtent) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//
+//	public IExtent or(IExtent myExtent) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	public IExtent getAggregatedExtent() {
 		return new ShapeExtent((ShapeValue) getFullExtentValue());
@@ -1038,6 +1049,29 @@ public class GridExtent extends ArealExtent {
 	public boolean intersects(IExtent o) throws ThinklabException {
 		ArealExtent e = (ArealExtent) o;
 		return getBoundingBox().getGeometry().intersects(e.getBoundingBox().getGeometry());
+	}
+
+	@Override
+	public IList conceptualize() throws ThinklabException {
+		
+		return PolyList.listNotNull(
+				Thinklab.c(NS.GRID_EXTENT),
+				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINX), envelope.getMinX()),
+				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXX), envelope.getMaxX()),
+				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINY), envelope.getMinY()),
+				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXY), envelope.getMaxY()),
+				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_CRSCODE), Geospace.getCRSIdentifier(crs, true)),
+				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_XDIVS), xDivs),
+				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_YDIVS), yDivs),
+				(shape == null ? 
+						null :
+						PolyList.list(NS.GEOSPACE_HAS_SHAPE, shape)));
+	}
+
+	@Override
+	public void define(IList conceptualization) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 

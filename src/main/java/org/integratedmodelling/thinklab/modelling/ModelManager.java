@@ -515,6 +515,17 @@ public class ModelManager implements IModelManager {
 			return ModelManager.generateId(o);
 		}
 
+		@Override
+		public Object runFunction(IFunctionDefinition function) {
+			IExpression f = resolveFunction(function.getId(), function.getParameters().keySet());
+			if (f != null) {
+				try {
+					return f.eval(function.getParameters());
+				} catch (ThinklabException e) {
+				}
+			}
+			return null;
+		}
 	}
 
 	private Resolver _resolver = null;

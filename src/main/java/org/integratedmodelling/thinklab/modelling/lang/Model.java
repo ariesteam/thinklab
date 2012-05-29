@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.modelling.lang;
 
+import java.util.ArrayList;
+
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
@@ -12,6 +14,7 @@ import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
+import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IExpressionDefinition;
@@ -33,7 +36,11 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	@Property(NS.HAS_INLINE_STATE)
 	Object _inlineState;
 	
+	@Property(NS.HAS_ALLOWED_COVERAGE)
+	ArrayList<IExtent> _allowedCoverage = new ArrayList<IExtent>();
+	
 	IDataSource _datasource;
+	IContext _allowedContext = new Context();
 
 	private boolean _initialized;
 	
@@ -96,7 +103,6 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	 * ------------------------------------------------------------------------------
 	 */
 	
-
 	@Override
 	public void addObserver(IObserverDefinition odef, IExpressionDefinition edef) {
 		
@@ -210,6 +216,20 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		}
 		
 		_initialized = true;
+	}
+
+	@Override
+	public IContext getCoverage() {
+		return _allowedContext;
+	}
+
+	@Override
+	public void addCoveredExtent(IExtent extent) throws ThinklabException {
+		_allowedContext.merge(extent);
+		_allowedCoverage.clear();
+		for (IExtent e : _allowedContext.getExtents()) {
+			_allowedCoverage.add(e);
+		}
 	}
 
 	
