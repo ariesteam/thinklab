@@ -51,7 +51,7 @@ public class ModelResolver {
 		String _observableSig = null;
 		
 		public ModelRef(IModel model) {
-			
+			_model = model;
 		}
 		
 		/*

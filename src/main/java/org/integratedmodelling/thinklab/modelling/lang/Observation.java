@@ -27,62 +27,12 @@ public class Observation extends ModelObject<Observation> implements IObservatio
 	IList       _observableDefinition;
 	
 	public void initialize() {
-		
-		/*
-		 * TODO turn datasource definition or inline value into 
-		 * an actual datasource.
-		 */
-		
-		/*
-		 * TODO let the datasource fill in the observation's 
-		 * context if necessary.
-		 */
 	}
-	
-//	@Override
-//	public void setObservable(IList semantics) {
-//		_observableDefinition = semantics;
-//	}
-//
-//	@Override
-//	public void setDatasourceGeneratorFunction(IFunctionDefinition datasource) {
-//		_datasourceDefinition = datasource;
-//	}
-//
-//	@Override
-//	public ISemanticObject<?> getObservable() {
-//		return _observable;
-//	}
-//
-//	@Override
-//	public IDataSource getDataSource() {
-//		return _datasource;
-//	}
-//
-//	@Override
-//	public IContext getContext() {
-//		return _context;
-//	}
-//
-//	@Override
-//	public void setObserver(IObserver observer) {
-//		_observer = observer;
-//	}
-//
-//	@Override
-//	public void setInlineState(Object state) {
-//		_inlineState = state;
-//	}
 
 	@Override
 	public Observation demote() {
 		return this;
 	}
-
-//	@Override
-//	public void setDataSource(IDataSource datasource) {
-//		_datasource = datasource;
-//	}
 
 	@Override
 	public IObserver getObserver() {
@@ -91,14 +41,12 @@ public class Observation extends ModelObject<Observation> implements IObservatio
 
 	@Override
 	public ISemanticObject<?> getObservable() {
-		// TODO Auto-generated method stub
-		return null;
+		return _observable;
 	}
 
 	@Override
 	public IContext getContext() {
-		// TODO Auto-generated method stub
-		return null;
+		return _context;
 	}
 
 }

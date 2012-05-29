@@ -32,8 +32,10 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
@@ -42,6 +44,7 @@ import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.coverage.RasterActivationLayer;
 import org.integratedmodelling.thinklab.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGridMask;
+import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.modelling.Unit;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -63,6 +66,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * @author Ferdinando
  *
  */
+@Concept(NS.GRID_EXTENT)
 public class GridExtent extends ArealExtent implements IConceptualizable {
 
 	GeometryFactory gFactory = null;
@@ -1070,8 +1074,38 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 
 	@Override
 	public void define(IList conceptualization) throws ThinklabException {
-		// TODO Auto-generated method stub
+
+		double xmax, xmin, ymax, ymin;
+		int xdivs, ydivs;
+		String crsId;
+		ShapeValue shp = null;
 		
+		for (Object o : conceptualization.toArray()) {
+			if (o instanceof IList) {
+				IProperty p = (IProperty)((IList)o).first();
+				if (p.equals(NS.GEOSPACE_HAS_MAXX)) {
+					xmax = (Double) ((IList)o).nth(1);
+				} else if (p.equals(NS.GEOSPACE_HAS_MAXY)) {
+					ymax = (Double) ((IList)o).nth(1);
+				} else if (p.equals(NS.GEOSPACE_HAS_MINX)) {
+					xmin = (Double) ((IList)o).nth(1);
+				} else if (p.equals(NS.GEOSPACE_HAS_MINY)) {
+					ymin = (Double) ((IList)o).nth(1);
+				} else if (p.equals(NS.GEOSPACE_HAS_CRSCODE)) {
+					crsId = (String) ((IList)o).nth(1);
+				} else if (p.equals(NS.GEOSPACE_HAS_XDIVS)) {
+					xdivs = (Integer) ((IList)o).nth(1);
+				} else if (p.equals(NS.GEOSPACE_HAS_YDIVS)) {
+					ydivs = (Integer) ((IList)o).nth(1);
+				} else if (p.equals(NS.GEOSPACE_HAS_SHAPE)) {
+					shp = (ShapeValue) ((IList)o).nth(1);
+				} 
+			}
+		}
+		
+		/*
+		 * TODO setup
+		 */
 	}
 
 

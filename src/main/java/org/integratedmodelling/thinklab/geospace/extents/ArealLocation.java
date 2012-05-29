@@ -34,7 +34,7 @@ import org.integratedmodelling.thinklab.modelling.lang.Observation;
 /**
  * This one is technically unnecessary, as ArealFeatureSet subsumes it, but we keep it 
  * for now as only ArealLocation admits literals, and this makes things easier.
- * @author UVM Affiliate
+ * @author Ferd
  *
  */
 @Concept("geospace:ArealLocation")
