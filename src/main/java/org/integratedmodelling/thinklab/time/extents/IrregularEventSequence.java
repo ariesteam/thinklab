@@ -41,6 +41,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
+import org.integratedmodelling.thinklab.time.Time;
 
 public class IrregularEventSequence extends Observation implements IExtent {
 
@@ -164,6 +165,9 @@ public class IrregularEventSequence extends Observation implements IExtent {
 		return null;
 	}
 
-
+	@Override
+	public IConcept getDomainConcept() {
+		return Time.get().TimeDomain();
+	}
 
 }

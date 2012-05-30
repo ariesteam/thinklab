@@ -38,7 +38,7 @@ import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.time.TimePlugin;
+import org.integratedmodelling.thinklab.time.Time;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -71,11 +71,11 @@ public class TimeValue extends SemanticLiteral<DateTime> implements IParseable {
 
 	/* set to "now" */
 	public TimeValue() throws ThinklabException {
-		super(TimePlugin.DateTime(), new DateTime());
+		super(Time.DateTime(), new DateTime());
 	}
 
 	public TimeValue(DateTime date) {
-		super(TimePlugin.DateTime(), date);
+		super(Time.DateTime(), date);
 	}
 	
 	public TimeValue(IConcept c, DateTime date) {
@@ -101,7 +101,7 @@ public class TimeValue extends SemanticLiteral<DateTime> implements IParseable {
 			} else {
 				value = new DateTime(s);
 			}
-			concept = TimePlugin.DateTime();
+			concept = Time.DateTime();
 		} catch (Exception e) {
 			throw new ThinklabValidationException(e);
 		}

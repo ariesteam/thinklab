@@ -42,14 +42,14 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
  * @author Ferd
  *
  */
-public class TimePlugin  {
+public class Time  {
 
 	public static final String PLUGIN_ID = "org.integratedmodelling.thinklab.time";
 	
 	public static final String CONTINUOUS_TIME_OBSERVABLE_INSTANCE = "time:ContinuousTimeObservableInstance";
 	public static final String ABSOLUTE_TIME_OBSERVABLE_INSTANCE = "time:AbsoluteTimeObservableInstance";
 
-	public static final String TIME_OBSERVABLE_ID = "time:TemporalObservable";
+	public static final String TIME_OBSERVABLE_ID = "time:TemporalCoverage";
 	
 	static public String DATETIME_TYPE_ID;
     static public String TIMERECORD_TYPE_ID;
@@ -65,12 +65,14 @@ public class TimePlugin  {
     static private IConcept timeRecordConcept;
     static private IConcept dateTimeConcept;
     static private IConcept durationConcept;
-    static private IConcept timeObservable;
+    static private IConcept timeDomain;
     
-    private static ISemanticObject absoluteTimeInstance; 
-    private static ISemanticObject continuousTimeInstance; 
+    private static ISemanticObject<?> absoluteTimeInstance; 
+    private static ISemanticObject<?> continuousTimeInstance; 
 
-    public void load() throws ThinklabException {
+    private static Time _this;
+    
+    private Time()  {
 
     	/*
     	 * FIXME all this is silly. Just use a global TIME object with the IDs as constants.
@@ -97,13 +99,19 @@ public class TimePlugin  {
     	timeRecordConcept = Thinklab.c(TIMERECORD_TYPE_ID);
     	dateTimeConcept = Thinklab.c(DATETIME_TYPE_ID);
     	durationConcept = Thinklab.c(DURATION_TYPE_ID);
-    	timeObservable = Thinklab.c(TIME_OBSERVABLE_ID);
+    	timeDomain = Thinklab.c(TIME_OBSERVABLE_ID);
     	
     	absoluteTimeInstance = null ;// km.requireInstance(ABSOLUTE_TIME_OBSERVABLE_INSTANCE);
     	continuousTimeInstance = null; // km.requireInstance(CONTINUOUS_TIME_OBSERVABLE_INSTANCE);
 
     }
 
+    public static Time get() {
+    	if (_this == null)
+    		_this = new Time();
+    	return _this;
+    }
+    
     public void unload() throws ThinklabException {
         // TODO Auto-generated method stub
 
@@ -125,16 +133,16 @@ public class TimePlugin  {
 		return durationConcept;
 	}
 	
-	public static ISemanticObject continuousTimeInstance() {
+	public static ISemanticObject<?> continuousTimeInstance() {
 		return continuousTimeInstance;
 	}
 
-	public static ISemanticObject absoluteTimeInstance() {
+	public static ISemanticObject<?> absoluteTimeInstance() {
 		return absoluteTimeInstance;
 	}
 
-	public IConcept TimeObservable() {
-		return timeObservable;
+	public IConcept TimeDomain() {
+		return timeDomain;
 	}
 
 

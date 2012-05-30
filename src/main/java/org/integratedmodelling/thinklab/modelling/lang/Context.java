@@ -174,24 +174,30 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		if (observation instanceof IExtent) {
 			mergeExtent((IExtent)observation);
 		} else {
-			
+			/*
+			 * TODO must be a state with a datasource that we can redefine
+			 * for this context, or a model we can recompute in this context.
+			 */		
 		}
+		
+		sort();
+
 	}
 
 	@Override
 	public void merge(IContext context) throws ThinklabException {
 
 		_cursor = null;
+		_order.clear(); // in case we have nothing in the context
 
 		for (IExtent e : context.getExtents()) {
 			merge(e);
 		}
 		
-		sort();
-		
 		for (IState s : context.getStates()) {
 			merge(s);
 		}
+		
 	}
 
 	@Override
@@ -307,8 +313,8 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 			@Override
 			public int compare(IExtent o1, IExtent o2) {
 				// neg if o1 < o2
-				boolean o1t = o1.getObservable().getDirectType().getConceptSpace().equals("time");
-				boolean o2t = o2.getObservable().getDirectType().getConceptSpace().equals("time");
+				boolean o1t = o1.getDomainConcept().getConceptSpace().equals("time");
+				boolean o2t = o2.getDomainConcept().getConceptSpace().equals("time");
 				if (o1t && !o2t) return -1;
 				if (!o1t && o2t) return 1;
 				return 0;
@@ -318,14 +324,12 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	
 	private void mergeExtent(IExtent itsExtent) throws ThinklabException {
 
-		IConcept dimension = itsExtent.getObservable().getDirectType();
+		IConcept dimension = itsExtent.getDomainConcept();
 		IExtent myExtent  = _extents.get(dimension);
 
 		if (myExtent == null) {
-
 			/* just add the extent */
 			_extents.put(dimension, itsExtent);
-
 		} else {
 
 			/* ask CM to modify the current extent record in order to represent the

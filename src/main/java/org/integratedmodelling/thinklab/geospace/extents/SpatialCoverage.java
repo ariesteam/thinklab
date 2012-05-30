@@ -259,4 +259,9 @@ public class SpatialCoverage extends Observation implements IExtent {
 		return null;
 	}
 
+	@Override
+	public IConcept getDomainConcept() {
+		return Geospace.get().SpatialCoverage();
+	}
+
 }

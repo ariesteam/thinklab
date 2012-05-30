@@ -524,6 +524,11 @@ public class RasterGrid extends Observation implements IExtent {
 		return null;
 	}
 
+	@Override
+	public IConcept getDomainConcept() {
+		return Geospace.get().SpatialCoverage();
+	}
+
 //	@Override
 //	public void checkUnitConformance(
 //			IConcept concept, 

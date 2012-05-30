@@ -36,7 +36,6 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	@Property(NS.HAS_INLINE_STATE)
 	Object _inlineState;
 	
-	@Property(NS.HAS_ALLOWED_COVERAGE)
 	ArrayList<IExtent> _allowedCoverage = new ArrayList<IExtent>();
 	
 	IDataSource _datasource;
@@ -67,7 +66,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		} else if (_allowedCoverage.size() > 0) {
 			for (IExtent e : _allowedCoverage) {
 				if (e instanceof IStorageMetadataProvider) {
-					
+					((IStorageMetadataProvider)e).addStorageMetadata(ret);
 				}
 			}
 		}

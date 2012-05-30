@@ -30,6 +30,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
+import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
 
@@ -202,6 +203,12 @@ public class ArealLocation extends Observation implements IExtent, IConceptualiz
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public IConcept getDomainConcept() {
+		return Geospace.get().SpatialCoverage();
+	}
+
 
 //	@Override
 //	public void checkUnitConformance(IConcept concept, Unit unit)

@@ -40,7 +40,7 @@ import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
-import org.integratedmodelling.thinklab.time.TimePlugin;
+import org.integratedmodelling.thinklab.time.Time;
 import org.joda.time.Interval;
 
 @Literal(concept="time:PeriodValue", javaClass=Interval.class, datatype="")
@@ -49,7 +49,7 @@ public class PeriodValue
 	implements IParseable, ITopologicallyComparable<PeriodValue> {
     
     private static IConcept getBaseTimeConcept() throws ThinklabException {
-        return Thinklab.c(TimePlugin.PERIOD_TYPE_ID);
+        return Thinklab.c(Time.PERIOD_TYPE_ID);
     }
     
     @Override

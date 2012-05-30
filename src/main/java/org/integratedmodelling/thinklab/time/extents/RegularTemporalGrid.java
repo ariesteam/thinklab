@@ -41,6 +41,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
+import org.integratedmodelling.thinklab.time.Time;
 import org.joda.time.DateTime;
 
 /**
@@ -761,4 +762,11 @@ public class RegularTemporalGrid extends Observation implements IExtent {
 //		// TODO Auto-generated method stub
 //		return null;
 //	}
+	
+
+	@Override
+	public IConcept getDomainConcept() {
+		return Time.get().TimeDomain();
+	}
+
 }

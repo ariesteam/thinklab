@@ -67,9 +67,11 @@ public class Geospace  {
 	private ISemanticObject<?> spatialCoverageInstance;
 	private IConcept arealLocationType;
 	private IConcept rasterGridObservable;
+	private IConcept spatialCoverageObservable;
 	private IConcept subdividedSpaceObservable;
-	private IConcept spaceObservable;
+//	private IConcept spaceObservable;
 	private IConcept gridClassifierType;
+	private IConcept spaceDomain;
 	
 	private static String hasBoundingBoxPropertyID;
 	private static String hasCentroidPropertyID;
@@ -87,9 +89,8 @@ public class Geospace  {
 	public static final String LON_UPPER_BOUND = "geospace:hasLonUpperBound";
 	public static final String CRS_CODE = "geospace:hasCoordinateReferenceSystem";
 	public static final String COVERAGE_SOURCE_URL = "geospace:hasSourceURL";
-	public static final String RASTER_CONCEPTUAL_MODEL = "geospace:RasterSpatialCoverage";
-	public static final String POLYGON_COVERAGE_CONCEPTUAL_MODEL = "geospace:PolygonSpatialCoverage";
 	public static final String RASTER_GRID_OBSERVABLE = "geospace:ContinuousRegularSpatialGrid";
+	public static final String SHAPE_COVERAGE_OBSERVABLE = "geospace:PolygonSpatialCoverage";
 	public static final String PREFERRED_CRS_PROPERTY = "geospace.preferred.crs";
 	public static final String HAS_VALUE_ATTRIBUTE = "geospace:hasValueAttribute";
 	public static final String HAS_SOURCE_LINK_ATTRIBUTE = "geospace:hasSourceLinkAttribute";
@@ -172,7 +173,7 @@ public class Geospace  {
 	private Geospace() throws ThinklabException {
 				
 			/*
-			 * TODO put all these class names into global strings
+			 * TODO put all these class names into global strings in NS
 			 */
 			pointType = Thinklab.get().getConcept("geospace:Point");
 			lineStringType = Thinklab.get().getConcept("geospace:LineString");
@@ -180,16 +181,12 @@ public class Geospace  {
 			multiPointType = Thinklab.get().getConcept("geospace:MultiPoint");
 			multiLineStringType = Thinklab.get().getConcept("geospace:MultiLineString");
 			multiPolygonType = Thinklab.get().getConcept("geospace:MultiPolygon");
-//			areaLocationInstance = Thinklab.get().getConcept("geospace:ArealLocationInstance");
-//			rasterGridInstance = Thinklab.get().getConcept("geospace:RegularGridInstance");
-//			spatialCoverageInstance = Thinklab.get().getConcept("geospace:SpatialCoverageInstance");
 			arealLocationType = Thinklab.get().getConcept("geospace:ArealLocation");
-			rasterSpaceType = Thinklab.get().getConcept(RASTER_CONCEPTUAL_MODEL);
 			rasterGridObservable = Thinklab.get().getConcept(RASTER_GRID_OBSERVABLE);
-			subdividedSpaceObservable = Thinklab.get().getConcept("geospace:SubdividedSpace");
-			spaceObservable = Thinklab.get().getConcept("geospace:SpaceObservable");
+			spatialCoverageObservable = Thinklab.get().getConcept(SHAPE_COVERAGE_OBSERVABLE);
+			spaceDomain = Thinklab.get().getConcept("geospace:SpatialCoverage");
 			gridClassifierType = Thinklab.get().getConcept(GRID_CLASSIFIER);
-			
+
 			shapeType = Thinklab.get().getConcept("geospace:SpatialRecord");
 			
 			hasBoundingBoxPropertyID = "geospace:hasBoundingBox";
@@ -374,17 +371,25 @@ public class Geospace  {
 	public IConcept SubdividedSpaceObservable() {
 		return subdividedSpaceObservable;
 	}
-	
-	public IConcept SpaceObservable() {
-		return spaceObservable;
-	}
+//	
+//	public IConcept SpaceObservable() {
+//		return spaceObservable;
+//	}
 
 
 	public void setPreferredCRS(CoordinateReferenceSystem crs) {
 		preferredCRS = crs;
 	}
 
-	public ISemanticObject absoluteSpatialCoverageInstance(IOntology session) {
+	public ISemanticObject<?> SpatialCoverageObservable() {
+		
+		if (spatialCoverageInstance == null) {
+			try {
+				spatialCoverageInstance = Thinklab.get().entify(PolyList.list(spatialCoverageObservable));
+			} catch (ThinklabException e) {
+				throw new ThinklabRuntimeException(e);
+			}
+		}
 		return spatialCoverageInstance;
 	}
 
@@ -727,6 +732,10 @@ public class Geospace  {
 					BooleanValue.parseBoolean(Thinklab.get().getProperties().getProperty("square.cells.meters", "false"));
 		}
 		return _useSquareCellsM;
+	}
+
+	public IConcept SpatialCoverage() {
+		return spaceDomain;
 	}
 	
 }

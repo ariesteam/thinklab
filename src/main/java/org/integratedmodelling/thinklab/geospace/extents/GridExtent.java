@@ -29,15 +29,11 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.NS;
-import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
-import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
-import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -46,7 +42,9 @@ import org.integratedmodelling.thinklab.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGridMask;
 import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
+import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
 import org.integratedmodelling.thinklab.modelling.Unit;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -63,11 +61,15 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * reason, we implement ILineageTraceable so that the original objects can be reconstructed.
  * This must be transferred to the conceptualized grid in some (preferably elegant) way (TODO).
  * 
+ * Provides storage metadata that we float to the models and contexts that contain it, so that
+ * they can be queried for coverage with another context as parameter.
+ * 
  * @author Ferdinando
  *
  */
 @Concept(NS.GRID_EXTENT)
-public class GridExtent extends ArealExtent implements IConceptualizable {
+public class GridExtent extends ArealExtent 
+	implements /* IConceptualizable,*/ IStorageMetadataProvider {
 
 	GeometryFactory gFactory = null;
 	int xDivs = 0;
@@ -980,7 +982,6 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 //	}
 	
 	
-	
 	@Override
 	public boolean isCovered(int granule) {
 
@@ -1055,57 +1056,74 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 		return getBoundingBox().getGeometry().intersects(e.getBoundingBox().getGeometry());
 	}
 
+//	@Override
+//	public IList conceptualize() throws ThinklabException {
+//		
+//		return PolyList.listNotNull(
+//				Thinklab.c(NS.GRID_EXTENT),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINX), envelope.getMinX()),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXX), envelope.getMaxX()),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINY), envelope.getMinY()),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXY), envelope.getMaxY()),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_CRSCODE), Geospace.getCRSIdentifier(crs, true)),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_XDIVS), xDivs),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_YDIVS), yDivs),
+//				(shape == null ? 
+//						null :
+//						PolyList.list(NS.GEOSPACE_HAS_SHAPE, shape)));
+//	}
+//
+//	@Override
+//	public void define(IList conceptualization) throws ThinklabException {
+//
+//		double xmax, xmin, ymax, ymin;
+//		int xdivs, ydivs;
+//		String crsId;
+//		ShapeValue shp = null;
+//		
+//		for (Object o : conceptualization.toArray()) {
+//			if (o instanceof IList) {
+//				IProperty p = (IProperty)((IList)o).first();
+//				if (p.equals(NS.GEOSPACE_HAS_MAXX)) {
+//					xmax = (Double) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_MAXY)) {
+//					ymax = (Double) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_MINX)) {
+//					xmin = (Double) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_MINY)) {
+//					ymin = (Double) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_CRSCODE)) {
+//					crsId = (String) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_XDIVS)) {
+//					xdivs = (Integer) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_YDIVS)) {
+//					ydivs = (Integer) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_SHAPE)) {
+//					shp = (ShapeValue) ((IList)o).nth(1);
+//				} 
+//			}
+//		}
+//		
+//		/*
+//		 * TODO setup
+//		 */
+//	}
+
 	@Override
-	public IList conceptualize() throws ThinklabException {
-		
-		return PolyList.listNotNull(
-				Thinklab.c(NS.GRID_EXTENT),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINX), envelope.getMinX()),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXX), envelope.getMaxX()),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINY), envelope.getMinY()),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXY), envelope.getMaxY()),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_CRSCODE), Geospace.getCRSIdentifier(crs, true)),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_XDIVS), xDivs),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_YDIVS), yDivs),
-				(shape == null ? 
-						null :
-						PolyList.list(NS.GEOSPACE_HAS_SHAPE, shape)));
+	public void addStorageMetadata(IMetadata metadata) {
+		/*
+		 * TODO check if we want anything else. This will be used in model query
+		 * to locate us and determine our %coverage of a context, so it'd better
+		 * be accurate.
+		 */
+		if (shape != null) {
+			((Metadata)metadata).put(NS.GEOSPACE_HAS_SHAPE, shape);
+		}
 	}
 
 	@Override
-	public void define(IList conceptualization) throws ThinklabException {
-
-		double xmax, xmin, ymax, ymin;
-		int xdivs, ydivs;
-		String crsId;
-		ShapeValue shp = null;
-		
-		for (Object o : conceptualization.toArray()) {
-			if (o instanceof IList) {
-				IProperty p = (IProperty)((IList)o).first();
-				if (p.equals(NS.GEOSPACE_HAS_MAXX)) {
-					xmax = (Double) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_MAXY)) {
-					ymax = (Double) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_MINX)) {
-					xmin = (Double) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_MINY)) {
-					ymin = (Double) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_CRSCODE)) {
-					crsId = (String) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_XDIVS)) {
-					xdivs = (Integer) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_YDIVS)) {
-					ydivs = (Integer) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_SHAPE)) {
-					shp = (ShapeValue) ((IList)o).nth(1);
-				} 
-			}
-		}
-		
-		/*
-		 * TODO setup
-		 */
+	public IConcept getDomainConcept() {
+		return Geospace.get().SpatialCoverage();
 	}
 
 

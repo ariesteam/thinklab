@@ -565,7 +565,7 @@
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ArealCoverage -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#ArealCoverage">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverageObservation"/>
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverage"/>
         <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
     </owl:Class>
     
@@ -590,7 +590,7 @@
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ClassifiedGrid -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#ClassifiedGrid">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverageObservation"/>
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverage"/>
     </owl:Class>
     
 
@@ -734,7 +734,7 @@
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#LinearCoverage -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#LinearCoverage">
-        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverageObservation"/>
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverage"/>
         <thinklab-core:AbstractClass rdf:datatype="&xsd;string">true</thinklab-core:AbstractClass>
     </owl:Class>
     
@@ -894,20 +894,20 @@
     
 
 
-    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverageObservation -->
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverage -->
 
-    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverageObservation">
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialCoverage">
         <rdfs:subClassOf rdf:resource="&observation;ExtentObservation"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
-                <owl:someValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="&observation;hasObservable"/>
                 <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
+                <owl:someValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment rdf:datatype="&xsd;string">The observation of a coverage in geographical space. It is an indirect observation as it describes space by dividing it into contiguous boundaries.  Such observations merely describe space, not any feature or property. They are used to contextualize other observations in geospace. Subclasses of this one can be initalized through literals such as  WKT shapes for brevity.</rdfs:comment>

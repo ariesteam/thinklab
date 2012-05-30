@@ -41,15 +41,14 @@ public class SHAPE implements IExpression {
 		/*
 		 * shape is explicit
 		 */
-		if (parameters.containsKey("shape")) {
-			if (parameters.get("shape") instanceof ShapeValue) {
-				shape = (PolygonValue) parameters.get("shape");
-			} else if (parameters.containsKey("wkt")) {
-				shape = new PolygonValue(parameters.get("shape").toString());
-			}
+		if (parameters.get("shape") instanceof ShapeValue) {
+			shape = (PolygonValue) parameters.get("shape");
+		} else if (parameters.containsKey("wkt")) {
+			shape = new PolygonValue(parameters.get("wkt").toString());
+		}
 
+		if (shape != null) {
 			ret = new ShapeExtent(shape);
-	
 		} else if (parameters.containsKey("wfs")) {
 
 			/*

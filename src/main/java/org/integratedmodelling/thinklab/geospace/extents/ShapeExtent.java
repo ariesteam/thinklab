@@ -27,14 +27,10 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.NS;
-import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
-import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
-import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IEntifiable;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
@@ -42,6 +38,8 @@ import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.coverage.VectorCoverage;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
+import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -57,7 +55,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author Ferdinando
  *
  */
-public class ShapeExtent extends ArealExtent implements IEntifiable, IConceptualizable {
+public class ShapeExtent extends ArealExtent implements IEntifiable, /* IConceptualizable,*/ IStorageMetadataProvider {
 
 	// we either have one shape or a feature collection. If we see space as a collection of features, the
 	// shape should be the convex hull of all features, but we don't compute it unless necessary.
@@ -70,6 +68,11 @@ public class ShapeExtent extends ArealExtent implements IEntifiable, IConceptual
 	
 	public ShapeExtent() {
 		
+	}
+	
+	@Override
+	public ISemanticObject<?> getObservable() {
+		return Geospace.get().SpatialCoverageObservable();
 	}
 	
 	public ShapeExtent(ReferencedEnvelope envelope, CoordinateReferenceSystem crs) {
@@ -439,55 +442,72 @@ public class ShapeExtent extends ArealExtent implements IEntifiable, IConceptual
 	 * (non-Javadoc)
 	 * @see org.integratedmodelling.thinklab.api.knowledge.IConceptualizable#conceptualize()
 	 */
+//	@Override
+//	public IList conceptualize() throws ThinklabException {
+//		
+//		return PolyList.listNotNull(
+//				Thinklab.c(NS.SHAPE_EXTENT),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINX), envelope.getMinX()),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXX), envelope.getMaxX()),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINY), envelope.getMinY()),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXY), envelope.getMaxY()),
+//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_CRSCODE), Geospace.getCRSIdentifier(crs, true)),
+//				(shape == null ? 
+//						null :
+//						PolyList.list(NS.GEOSPACE_HAS_SHAPE, shape)));
+//	}
+//
+//	/*
+//	 * TODO >1 shapes
+//	 * (non-Javadoc)
+//	 * @see org.integratedmodelling.thinklab.api.knowledge.IConceptualizable#define(org.integratedmodelling.thinklab.api.lang.IList)
+//	 */
+//	@Override
+//	public void define(IList conceptualization) throws ThinklabException {
+//
+//		double xmax, xmin, ymax, ymin;
+//		String crsId;
+//		ShapeValue shp = null;
+//		
+//		for (Object o : conceptualization.toArray()) {
+//			if (o instanceof IList) {
+//				IProperty p = (IProperty)((IList)o).first();
+//				if (p.equals(NS.GEOSPACE_HAS_MAXX)) {
+//					xmax = (Double) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_MAXY)) {
+//					ymax = (Double) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_MINX)) {
+//					xmin = (Double) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_MINY)) {
+//					ymin = (Double) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_CRSCODE)) {
+//					crsId = (String) ((IList)o).nth(1);
+//				} else if (p.equals(NS.GEOSPACE_HAS_SHAPE)) {
+//					shp = (ShapeValue) ((IList)o).nth(1);
+//				} 
+//			}
+//		}
+//		
+//		/*
+//		 * TODO setup
+//		 */
+//	}
+
 	@Override
-	public IList conceptualize() throws ThinklabException {
-		
-		return PolyList.listNotNull(
-				Thinklab.c(NS.SHAPE_EXTENT),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINX), envelope.getMinX()),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXX), envelope.getMaxX()),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINY), envelope.getMinY()),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXY), envelope.getMaxY()),
-				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_CRSCODE), Geospace.getCRSIdentifier(crs, true)),
-				(shape == null ? 
-						null :
-						PolyList.list(NS.GEOSPACE_HAS_SHAPE, shape)));
+	public void addStorageMetadata(IMetadata metadata) {
+		/*
+		 * TODO check if we want anything else. This will be used in model query
+		 * to locate us and determine our %coverage of a context, so it'd better
+		 * be accurate.
+		 */
+		if (shape != null) {
+			((Metadata)metadata).put(NS.GEOSPACE_HAS_SHAPE, shape);
+		}
 	}
 
-	/*
-	 * TODO >1 shapes
-	 * (non-Javadoc)
-	 * @see org.integratedmodelling.thinklab.api.knowledge.IConceptualizable#define(org.integratedmodelling.thinklab.api.lang.IList)
-	 */
 	@Override
-	public void define(IList conceptualization) throws ThinklabException {
-
-		double xmax, xmin, ymax, ymin;
-		String crsId;
-		ShapeValue shp = null;
-		
-		for (Object o : conceptualization.toArray()) {
-			if (o instanceof IList) {
-				IProperty p = (IProperty)((IList)o).first();
-				if (p.equals(NS.GEOSPACE_HAS_MAXX)) {
-					xmax = (Double) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_MAXY)) {
-					ymax = (Double) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_MINX)) {
-					xmin = (Double) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_MINY)) {
-					ymin = (Double) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_CRSCODE)) {
-					crsId = (String) ((IList)o).nth(1);
-				} else if (p.equals(NS.GEOSPACE_HAS_SHAPE)) {
-					shp = (ShapeValue) ((IList)o).nth(1);
-				} 
-			}
-		}
-		
-		/*
-		 * TODO setup
-		 */
+	public IConcept getDomainConcept() {
+		return Geospace.get().SpatialCoverage();
 	}
 
 }

@@ -41,6 +41,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
+import org.integratedmodelling.thinklab.time.Time;
 import org.integratedmodelling.thinklab.time.literals.TimeValue;
 
 /**
@@ -409,4 +410,11 @@ public class TemporalLocation extends Observation implements IExtent {
 //		// we have no gaps
 //		return true;
 //	}
+	
+
+	@Override
+	public IConcept getDomainConcept() {
+		return Time.get().TimeDomain();
+	}
+
 }

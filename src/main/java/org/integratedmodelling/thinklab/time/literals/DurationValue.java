@@ -44,7 +44,7 @@ import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
-import org.integratedmodelling.thinklab.time.TimePlugin;
+import org.integratedmodelling.thinklab.time.Time;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -69,7 +69,7 @@ public class DurationValue extends SemanticLiteral<Long> implements IParseable {
     
     public DurationValue() throws ThinklabException {
         super();
-        concept = TimePlugin.Duration();
+        concept = Time.Duration();
     }
 
     public DurationValue(IConcept c, Long l) {
@@ -111,7 +111,7 @@ public class DurationValue extends SemanticLiteral<Long> implements IParseable {
         	/* oh do I like this */
         	Amount<Duration> duration = Amount.valueOf(s).to(MILLI(SECOND));
         	value = duration.getExactValue();
-        	concept = TimePlugin.Duration();
+        	concept = Time.Duration();
         } catch (Exception e) {
             throw new ThinklabValidationException(e);
         }

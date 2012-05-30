@@ -1,16 +1,11 @@
 namespace org.integratedmodelling.test1
 	covering 
-		grid(resolution="1 km", 
-		      shape="EPSG:4326 POLYGON((-21.2660 27.6363, -21.2660 61.0088, 39.8693 61.0088, 39.8693 27.6363, -21.2660 27.6363))")
+		shape(wkt="EPSG:4326 POLYGON((-21.2660 27.6363, -21.2660 61.0088, 39.8693 61.0088, 39.8693 27.6363, -21.2660 27.6363))")
 	storage kbox test.models;
 
 defmodel rainfall-global of 
-		(concept Rainfall is habitat:Rainfall)
+		( concept Rainfall is habitat:Rainfall )
 	as measure habitat:Rainfall in m;
-	
-defmodel rainfall-annual of 
-		(concept RainfallAnnual is habitat:Rainfall)
-	as measure habitat:Rainfall in m;	
 	
 /**
  * this uses a datasource so it is stored with its computed extents to resolve 
@@ -24,8 +19,8 @@ model wcs(service="http://ecoinformatics.uvm.edu/geoserver/wcs", id="global:annu
               dc:rights "cc-attr-nomod"
        };
 	
-	
 defcontext puget as
      grid(resolution="1 km", 
 	  shape="EPSG:4326 POLYGON((-124.7625 24.5210, -66.9326  24.5210, -66.9326 49.3845, -124.7625 49.3845, -124.7625 24.5210))");
+	  
 	
