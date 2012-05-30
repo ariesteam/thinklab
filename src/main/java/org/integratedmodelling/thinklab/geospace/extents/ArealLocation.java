@@ -26,6 +26,8 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
@@ -38,7 +40,7 @@ import org.integratedmodelling.thinklab.modelling.lang.Observation;
  *
  */
 @Concept("geospace:ArealLocation")
-public class ArealLocation extends Observation implements IExtent {
+public class ArealLocation extends Observation implements IExtent, IConceptualizable {
 
 	ShapeValue boundingBox = null;
 	ShapeValue shape = null;
@@ -83,28 +85,20 @@ public class ArealLocation extends Observation implements IExtent {
 	}
 
 	@Override
-	public double[] getDataAsDoubles() throws ThinklabValidationException {
+	public double[] getDataAsDoubles() throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public double getDoubleValue(int index) throws ThinklabValidationException {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getDoubleValue(int index) throws ThinklabException {
+		return shape.getArea();
 	}
 
 	@Override
 	public int getValueCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
-
-//	@Override
-//	public IConcept getObservableClass() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
 	@Override
 	public IState aggregate(IConcept concept) throws ThinklabException {
@@ -195,6 +189,18 @@ public class ArealLocation extends Observation implements IExtent {
 	public IExtent force(IExtent extent) throws ThinklabException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public IList conceptualize() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void define(IList conceptualization) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 //	@Override

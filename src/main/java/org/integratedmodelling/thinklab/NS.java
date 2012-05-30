@@ -79,6 +79,7 @@ public class NS {
 
 	// conceptualized extents
 	public static final String GRID_EXTENT = "geospace:GridExtent";
+	public static final String SHAPE_EXTENT = "geospace:ShapeExtent";
 	
 	// spatial convenience relationships
 	public static final String GEOSPACE_HAS_SERVICE_URL = "geospace:hasServiceUrl";
