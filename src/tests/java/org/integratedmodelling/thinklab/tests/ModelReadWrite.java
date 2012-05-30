@@ -11,7 +11,7 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
-import org.integratedmodelling.thinklab.query.Query;
+import org.integratedmodelling.thinklab.query.Queries;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class ModelReadWrite {
 		 * find models that observe rainfall
 		 */
 		IQuery query =
-				Query.select(NS.MODEL).restrict(NS.HAS_OBSERVABLE, Query.select("habitat:Rainfall"));
+				Queries.select(NS.MODEL).restrict(NS.HAS_OBSERVABLE, Queries.select("habitat:Rainfall"));
 		
 		System.out.println("Models observing rainfall:");
 		for (ISemanticObject<?> o : kbox.query(query)) {

@@ -6,6 +6,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
+import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 
@@ -23,7 +24,7 @@ public class GRID implements IExpression {
 	@Override
 	public Object eval(Map<String, Object> parameters) throws ThinklabValidationException, ThinklabException {
 		
-		ShapeValue shape = null;
+		PolygonValue shape = null;
 		
 		/*
 		 * resolution is either explicit (x [, y]) or implicit (resolution)
@@ -43,9 +44,9 @@ public class GRID implements IExpression {
 		 */
 		if (parameters.containsKey("shape")) {
 			if (parameters.get("shape") instanceof ShapeValue) {
-				shape = (ShapeValue) parameters.get("shape");
+				shape = (PolygonValue) parameters.get("shape");
 			} else {
-				shape = new ShapeValue(parameters.get("shape").toString());
+				shape = new PolygonValue(parameters.get("shape").toString());
 			}
 		}
 		

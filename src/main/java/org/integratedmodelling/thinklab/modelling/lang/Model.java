@@ -64,6 +64,12 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		if (_datasource != null & _dependencies.size() == 0 &&
 			_datasource instanceof IStorageMetadataProvider) {			
 			((IStorageMetadataProvider)_datasource).addStorageMetadata(ret);			
+		} else if (_allowedCoverage.size() > 0) {
+			for (IExtent e : _allowedCoverage) {
+				if (e instanceof IStorageMetadataProvider) {
+					
+				}
+			}
 		}
 		
 		return ret;

@@ -1,10 +1,11 @@
-package org.integratedmodelling.thinklab.query.operators;
+package org.integratedmodelling.thinklab.query;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
@@ -12,8 +13,9 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.query.Query;
+import org.integratedmodelling.thinklab.query.operators.TableSelect;
 
 /**
  * Convenience class to obtain common operators without creating new objects, 
@@ -22,7 +24,7 @@ import org.integratedmodelling.thinklab.query.Query;
  * @author Ferd
  *
  */
-public class Operators {
+public class Queries {
 
 	static final public int EQ = 0;
 	static final public int LT = 1;
@@ -43,6 +45,110 @@ public class Operators {
 	static final public int NEAREST_NEIGHBOUR = 15;
 	static final public int WITHIN_DISTANCE = 16;
 
+
+	/**
+	 * Produce a query that will select objects that incarnate the passed concept.
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public static Query select(IConcept c) {
+		return new Query(c);
+	}
+
+	/**
+	 * Produce a query that will select objects that incarnate the passed concept, using a
+	 * string for the concept.
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public static Query select(String c) {
+		return new Query(Thinklab.c(c));
+	}
+	
+	/**
+	 * Produce a query that ANDs all the passed queries, selecting only
+	 * objects that match them all.
+	 *  
+	 * @param queries
+	 * @return
+	 */
+	public static Query and(IQuery ... queries) {
+		return new Query(Quantifier.ALL(), queries);
+	}
+
+	/**
+	 * Produce a query that ORs all the passed queries, selecting objects
+	 * that match one or more of them.
+	 *  
+	 * @param queries
+	 * @return
+	 */
+	public static Query or(IQuery ... queries) {
+		return new Query(Quantifier.ANY(), queries);
+	}
+
+	/**
+	 * Produce a query that selects objects that do not
+	 * match any of the passed queries.
+	 * 
+	 * @param queries
+	 * @return
+	 */
+	public static Query no(IQuery ... queries) {
+		return new Query(Quantifier.NONE(), queries);
+	}
+	
+	/**
+	 * Produce a query that selects object that match exactly n of the passed
+	 * queries.
+	 * 
+	 * @param n
+	 * @param queries
+	 * @return
+	 */
+	public static Query exactly(int n, IQuery ... queries) {
+		return new Query(Quantifier.EXACTLY(n), queries);
+	}
+
+	/**
+	 * Produce a query that selects objects that match at least n of
+	 * the passed queries.
+	 * 
+	 * @param n
+	 * @param queries
+	 * @return
+	 */
+	public static Query atLeast(int n, IQuery ... queries) {
+		return new Query(Quantifier.RANGE(n, Quantifier.INFINITE), queries);
+	}
+
+	/**
+	 * Produce a query that selects objects that match at most n of
+	 * the passed queries.
+	 * 
+	 * @param n
+	 * @param queries
+	 * @return
+	 */
+	public static Query atMost(int n, IQuery ... queries) {
+		return new Query(Quantifier.RANGE(Quantifier.INFINITE, n), queries);
+	}
+
+	/**
+	 * Produce a query that selects objects that match at between min and max of
+	 * the passed queries.
+	 * 
+	 * @param min
+	 * @param max
+	 * @param queries
+	 * @return
+	 */
+	public static Query between(int min, int max, IQuery ... queries) {
+		return new Query(Quantifier.RANGE(min, max), queries);
+	}
+	
 	/**
 	 * 
 	 * @param field
@@ -67,7 +173,7 @@ public class Operators {
 		if (match instanceof ISemanticObject<?> && !((ISemanticObject<?>)match).isLiteral()) {
 			return getConformanceQuery((ISemanticObject<?>)match, new HashSet<ISemanticObject<?>>());
 		} else if (match instanceof IConcept) {
-			return Query.select((IConcept) match);
+			return Queries.select((IConcept) match);
 		}
 		return compare(match, EQ);
 	}
@@ -84,14 +190,44 @@ public class Operators {
 		return new SpatialCompare(match, CONTAINED_BY);
 	}
 
+	/**
+	 * Coverage can be used on spatial and temporal literals or on 
+	 * models, contexts, and extents, all with matching arguments 
+	 * (argument types can be either of model, context and extent for
+	 * the same set of subjects).
+	 * 
+	 * @param match
+	 * @return
+	 */
 	static public IQuery coveredBy(Object match) {
+		if (match instanceof IExtent) {
+			return new ExtentCoverageQuery((IExtent)match, COVERED_BY);
+		}	
 		return new SpatialCompare(match, COVERED_BY);
 	}
 
+	/**
+	 * Coverage can be used on spatial and temporal literals or on 
+	 * models, contexts, and extents, all with matching arguments 
+	 * (argument types can be either of model, context and extent for
+	 * the same set of subjects).
+	 * 
+	 * @param match
+	 * @return
+	 */
 	static public IQuery covers(Object match) {
+		if (match instanceof IExtent) {
+			return new ExtentCoverageQuery((IExtent)match, COVERS);
+		}
 		return new SpatialCompare(match, COVERS);
 	}
 
+	/**
+	 * Spatial query for objects that cross the target
+	 * 
+	 * @param match
+	 * @return
+	 */
 	static public IQuery crosses(Object match) {
 		return new SpatialCompare(match, CROSSES);
 	}
@@ -119,10 +255,10 @@ public class Operators {
 		
 		refs.add(match);
 		
-		IQuery ret = Query.select(match.getDirectType());
+		IQuery ret = Queries.select(match.getDirectType());
 		for (Pair<IProperty, ISemanticObject<?>> rel : match.getRelationships()) {
 			if (rel.getSecond().isLiteral()) {
-				ret = ret.restrict(rel.getFirst(), Operators.compare(rel.getSecond().demote(), EQ));
+				ret = ret.restrict(rel.getFirst(), Queries.compare(rel.getSecond().demote(), EQ));
 			} else {
 				ret = ret.restrict(rel.getFirst(), getConformanceQuery(rel.getSecond(), refs));
 			}
@@ -172,17 +308,17 @@ public class Operators {
 
 		private String getConcept() {
 			switch (_operation) {
-			case Operators.GE:
+			case Queries.GE:
 				return NS.OPERATION_GREATER_OR_EQUAL;
-			case Operators.GT:
+			case Queries.GT:
 				return NS.OPERATION_GREATER_THAN;
-			case Operators.LE:
+			case Queries.LE:
 				return NS.OPERATION_LESS_OR_EQUAL;
-			case Operators.LT:
+			case Queries.LT:
 				return NS.OPERATION_LESS_THAN;
-			case Operators.EQ:
+			case Queries.EQ:
 				return NS.OPERATION_EQUALS;
-			case Operators.NE:
+			case Queries.NE:
 				return NS.OPERATION_NOT_EQUALS;
 			}
 			return null;
@@ -223,25 +359,25 @@ public class Operators {
 
 		private String getConcept() {
 			switch (_operation) {
-			case Operators.INTERSECTS:
+			case Queries.INTERSECTS:
 				return NS.OPERATION_INTERSECTS;
-			case Operators.CONTAINS:
+			case Queries.CONTAINS:
 				return NS.OPERATION_CONTAINS;
-			case Operators.CONTAINED_BY:
+			case Queries.CONTAINED_BY:
 				return NS.OPERATION_CONTAINED_BY;
-			case Operators.COVERED_BY:
+			case Queries.COVERED_BY:
 				return NS.OPERATION_COVERED_BY;
-			case Operators.COVERS:
+			case Queries.COVERS:
 				return NS.OPERATION_COVERS;
-			case Operators.CROSSES:
+			case Queries.CROSSES:
 				return NS.OPERATION_CROSSES;
-			case Operators.INTERSECTS_ENVELOPE:
+			case Queries.INTERSECTS_ENVELOPE:
 				return NS.OPERATION_INTERSECTS_ENVELOPE;
-			case Operators.OVERLAPS:
+			case Queries.OVERLAPS:
 				return NS.OPERATION_OVERLAPS;
-			case Operators.TOUCHES:
+			case Queries.TOUCHES:
 				return NS.OPERATION_TOUCHES;
-			case Operators.NEAREST_NEIGHBOUR:
+			case Queries.NEAREST_NEIGHBOUR:
 				return NS.OPERATION_NEAREST_NEIGHBOUR;
 			}
 			return null;
@@ -251,8 +387,21 @@ public class Operators {
 		public boolean isLiteral() {
 			return true;
 		}
-		
 	}
 
-	
+	public static class ExtentCoverageQuery extends Query {
+
+		private IExtent _operand;
+		private int _operator;
+		
+		public ExtentCoverageQuery(IExtent what, int covers) {
+			
+			_operand = what;
+			_operator = covers;
+			
+			/*
+			 * TODO build query.
+			 */
+		}
+	}
 }

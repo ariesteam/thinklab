@@ -315,12 +315,36 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMaxX -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMaxX"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMaxY -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMaxY"/>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMembershipRatio -->
 
     <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMembershipRatio">
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#ClassifiedGrid"/>
         <rdfs:range rdf:resource="&xsd;double"/>
     </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMinX -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMinX"/>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMinY -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasMinY"/>
     
 
 
@@ -348,6 +372,12 @@
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#WCSDataSource"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasShape -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasShape"/>
     
 
 
@@ -469,6 +499,12 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasXDivs -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasXDivs"/>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasXRangeMax -->
 
     <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasXRangeMax">
@@ -486,6 +522,12 @@
         <rdfs:domain rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#RasterGrid"/>
         <rdfs:range rdf:resource="&xsd;int"/>
     </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasYDivs -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasYDivs"/>
     
 
 
@@ -641,6 +683,14 @@
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#GridClassifier">
         <rdfs:subClassOf rdf:resource="&thinklab-core;LiteralValued"/>
         <rdfs:comment>A filter that operates on grid-distributed values, selecting only those that match a condition.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#GridExtent -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#GridExtent">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#RasterGrid"/>
     </owl:Class>
     
 
@@ -817,6 +867,14 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#ShapeExtent -->
+
+    <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#ShapeExtent">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#ArealFeatureSet"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#SimpleShape -->
 
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SimpleShape">
@@ -842,14 +900,14 @@
         <rdfs:subClassOf rdf:resource="&observation;ExtentObservation"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasObservable"/>
-                <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
+                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
+                <owl:someValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&observation;hasConceptualModel"/>
-                <owl:someValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
+                <owl:onProperty rdf:resource="&observation;hasObservable"/>
+                <owl:allValuesFrom rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#SpatialRecord"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment rdf:datatype="&xsd;string">The observation of a coverage in geographical space. It is an indirect observation as it describes space by dividing it into contiguous boundaries.  Such observations merely describe space, not any feature or property. They are used to contextualize other observations in geospace. Subclasses of this one can be initalized through literals such as  WKT shapes for brevity.</rdfs:comment>
@@ -947,6 +1005,14 @@
     <owl:Class rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#WFSDataSource">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#ExternalVectorCoverageDataSource"/>
     </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#polygon -->
+
+    <rdf:Description rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#polygon">
+        <rdfs:comment rdf:datatype="&xsd;string">A Common Query Language expression, used to filter contents of shape source</rdfs:comment>
+    </rdf:Description>
     
 
 

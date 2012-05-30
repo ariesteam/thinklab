@@ -83,7 +83,7 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	private double cellAreaMeters = -1.0;
 	private CoordinateReferenceSystem metersCRS = null;
 	Geometry boundary = null;
-	public ShapeValue shape;
+	public PolygonValue shape;
 	
 	public GridExtent() {
 		/*
@@ -122,7 +122,7 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	 * @param linearResolution
 	 * @throws ThinklabException
 	 */
-	public GridExtent(ShapeValue shape, String resolutionInMeters) throws ThinklabException {
+	public GridExtent(PolygonValue shape, String resolutionInMeters) throws ThinklabException {
 		
 		super(shape);
 		ShapeValue bb = shape.getBoundingBox().convertToMeters();
@@ -144,7 +144,7 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	 * set envelope from shape's bounding box, adjusted to keep cells square when
 	 * measured in meters.
 	 */
-	private void setAdjustedEnvelope(ShapeValue shape, int majorAxisResolution) throws ThinklabException {
+	private void setAdjustedEnvelope(PolygonValue shape, int majorAxisResolution) throws ThinklabException {
 		
 		int x, y; double dx = 0, dy = 0;
 		ReferencedEnvelope env = shape.getEnvelope();
@@ -246,7 +246,7 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	 * @param linearResolution
 	 * @throws ThinklabException
 	 */
-	public GridExtent(ShapeValue shape, int linearResolution) throws ThinklabException {
+	public GridExtent(PolygonValue shape, int linearResolution) throws ThinklabException {
 		
 		super(shape);
 		setAdjustedEnvelope(shape, linearResolution);
@@ -312,7 +312,7 @@ public class GridExtent extends ArealExtent implements IConceptualizable {
 	 * @param roi
 	 * @throws ThinklabException
 	 */
-	public void createActivationLayer(ShapeValue roi) throws ThinklabException {
+	public void createActivationLayer(PolygonValue roi) throws ThinklabException {
 		this.activationLayer = ThinklabRasterizer.createMask(roi, this);
 		this.shape = roi;
 	}

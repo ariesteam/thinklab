@@ -6,7 +6,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 
-@Function(id="raster", parameterNames= { "file", "value", "x", "y", "resolution" })
+@Function(id="raster", parameterNames= { "file", "value", "x", "y", "resolution", "wcs" })
 public class RASTER implements IExpression {
 
 	@Override

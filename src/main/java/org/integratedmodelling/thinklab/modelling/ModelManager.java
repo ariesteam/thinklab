@@ -74,8 +74,7 @@ import org.integratedmodelling.thinklab.modelling.lang.Storyline;
 import org.integratedmodelling.thinklab.modelling.lang.UnitDefinition;
 import org.integratedmodelling.thinklab.modelling.lang.Value;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
-import org.integratedmodelling.thinklab.query.Query;
-import org.integratedmodelling.thinklab.query.operators.Operators;
+import org.integratedmodelling.thinklab.query.Queries;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.MiscUtilities;
 
@@ -295,7 +294,7 @@ public class ModelManager implements IModelManager {
 			 * if we have stored this namespace previously, retrieve its record and set the
 			 * previous modification date.
 			 */
-			IQuery query = Query.select(NS.NAMESPACE).restrict(NS.HAS_ID, Operators.is(namespaceId));
+			IQuery query = Queries.select(NS.NAMESPACE).restrict(NS.HAS_ID, Queries.is(namespaceId));
 			try {
 				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
 				List<ISemanticObject<?>> res = kbox.query(query);
@@ -311,7 +310,7 @@ public class ModelManager implements IModelManager {
 				if (_storedTimestamp != 0l && _timestamp > _storedTimestamp) {
 					Thinklab.get().logger().info(
 						"refreshing permanent storage for namespace " + namespaceId + " in kbox " + kbox.getUri());
-					kbox.removeAll(Query.select(NS.MODEL).restrict(NS.HAS_NAMESPACE_ID, Operators.is(namespaceId)));
+					kbox.removeAll(Queries.select(NS.MODEL).restrict(NS.HAS_NAMESPACE_ID, Queries.is(namespaceId)));
 				}
 			} catch (ThinklabException e) {
 				/*
@@ -356,7 +355,7 @@ public class ModelManager implements IModelManager {
 				
 				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
 				if (_storedTimestamp != 0l) {
-					IQuery query = Query.select(NS.NAMESPACE).restrict(NS.HAS_ID, Operators.is(namespace.getId()));
+					IQuery query = Queries.select(NS.NAMESPACE).restrict(NS.HAS_ID, Queries.is(namespace.getId()));
 					kbox.removeAll(query);
 				}
 				kbox.store(namespace);

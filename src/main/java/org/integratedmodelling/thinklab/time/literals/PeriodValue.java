@@ -39,11 +39,14 @@ import org.integratedmodelling.thinklab.annotation.SemanticLiteral;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
+import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.time.TimePlugin;
 import org.joda.time.Interval;
 
 @Literal(concept="time:PeriodValue", javaClass=Interval.class, datatype="")
-public class PeriodValue extends SemanticLiteral<Interval> implements IParseable {
+public class PeriodValue 
+	extends SemanticLiteral<Interval> 
+	implements IParseable, ITopologicallyComparable<PeriodValue> {
     
     private static IConcept getBaseTimeConcept() throws ThinklabException {
         return Thinklab.c(TimePlugin.PERIOD_TYPE_ID);
@@ -111,6 +114,24 @@ public class PeriodValue extends SemanticLiteral<Interval> implements IParseable
 	public String asText() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean contains(PeriodValue o) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean overlaps(PeriodValue o) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean intersects(PeriodValue o) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

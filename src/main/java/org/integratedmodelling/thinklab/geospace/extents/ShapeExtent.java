@@ -108,7 +108,7 @@ public class ShapeExtent extends ArealExtent implements IEntifiable, IConceptual
 	}
 
 //	@Override
-	public ISemanticObject getFullExtentValue() {
+	public ISemanticObject<?> getFullExtentValue() {
 		return shape;
 	}
 

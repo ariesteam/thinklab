@@ -24,6 +24,7 @@ model wcs(service="http://ecoinformatics.uvm.edu/geoserver/wcs", id="global:annu
               dc:rights "cc-attr-nomod"
        };
 	
+	
 defcontext puget as
      grid(resolution="1 km", 
 	  shape="EPSG:4326 POLYGON((-124.7625 24.5210, -66.9326  24.5210, -66.9326 49.3845, -124.7625 49.3845, -124.7625 24.5210))");

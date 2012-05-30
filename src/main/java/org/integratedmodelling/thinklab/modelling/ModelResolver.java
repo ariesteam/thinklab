@@ -212,6 +212,11 @@ public class ModelResolver {
 		
 		/*
 		 * query all models and build score based on metadata
+		 * 
+		 * to search: get each extent in context, and if it is a storage metadata
+		 * provider, ask its metadata and find the (single) property that points to a topologically
+		 * comparable literal if any. If found, use that in a Queries.covers(..) query - or
+		 * something like that.
 		 */
 		
 		/*

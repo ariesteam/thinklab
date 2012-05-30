@@ -5,8 +5,7 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.query.Query;
-import org.integratedmodelling.thinklab.query.operators.Operators;
+import org.integratedmodelling.thinklab.query.Queries;
 import org.integratedmodelling.thinklab.tests.data.TestData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -48,24 +47,24 @@ public class QueryTest {
 		IKbox kbox = Thinklab.get().requireKbox(KBOX_NAME);
 		
 		IQuery allPeople = 
-				Query.select("thinklab.test:Person");
+				Queries.select("thinklab.test:Person");
 		
 		IQuery allAdults =
-				Query.select("thinklab.test:Person").
+				Queries.select("thinklab.test:Person").
 					restrict("thinklab.test:hasAge", 
-							Operators.compare(18, Operators.GE));
+							Queries.compare(18, Queries.GE));
 		
 		IQuery allChildren =
-				Query.select("thinklab.test:Person").
+				Queries.select("thinklab.test:Person").
 					restrict("thinklab.test:hasAge", 
-							Operators.compare(18, Operators.LT));
+							Queries.compare(18, Queries.LT));
 		
 		IQuery allParents =
-				Query.select("thinklab.test:Person").
+				Queries.select("thinklab.test:Person").
 					restrict("thinklab.test:hasChildren",
-								Query.select("thinklab.test:Person").
+								Queries.select("thinklab.test:Person").
 									restrict("thinklab.test:hasAge", 
-											Operators.compare(18, Operators.LT)));
+											Queries.compare(18, Queries.LT)));
 		
 		int i = 0;
 		System.out.println("Everyone:");
