@@ -34,6 +34,7 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
@@ -317,7 +318,7 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public ISemanticObject<?> retrieve(long id) throws ThinklabException {
-		return Thinklab.get().entify(retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), new ReferenceList()));
+		return Thinklab.get().entify(retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), null));
 	}
 	
 	@Override
@@ -362,6 +363,9 @@ public class NeoKBox implements IKbox {
 	 */
 	private IReferenceList retrieveList(Node node, HashMap<Node, IReferenceList> refs, ReferenceList root) throws ThinklabException {
 		
+		if (root == null)
+			root = new ReferenceList();
+		
 		IReferenceList ref = null;
 		if (refs.containsKey(node)) {
 			return refs.get(node);
@@ -399,7 +403,9 @@ public class NeoKBox implements IKbox {
 			if (Thinklab.get().getProperty(fromId(p)) == null)
 				continue;
 			
-			rl.add(root.newList(Thinklab.p(fromId(p)), Thinklab.get().conceptualize(node.getProperty(p))));
+			rl.add(root.newList(
+						Thinklab.p(fromId(p)), 
+						root.internalize(Thinklab.get().conceptualize(node.getProperty(p)))));
 		}
 
 		/*
@@ -536,13 +542,17 @@ public class NeoKBox implements IKbox {
 				/*
 				 * if these were the target of a restriction, retain all in node context
 				 * that relate to these through the restriction property.
+				 * 
+				 * TODO count the matches and insert node based on quantifier match 
+				 * instead of just inserting the node.
+				 * 
 				 */
 				if (pcontext != null && ncontext != null) {
 					HashSet<Long> ret = new HashSet<Long>();
 					for (long id : ncontext) {
 						Node node = _db.getNodeById(id);
 						for (Relationship rel : node.getRelationships(Direction.OUTGOING)) {
-							if (isProperty(rel, pcontext) && main.contains(rel.getEndNode().getId()))
+							if (isProperty(rel, pcontext) && main.contains(rel.getEndNode().getId())) 
 								ret.add(id);
 						}
 					}

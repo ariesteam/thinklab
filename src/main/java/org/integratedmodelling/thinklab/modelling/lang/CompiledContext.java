@@ -16,6 +16,7 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IState;
+import org.integratedmodelling.thinklab.modelling.ModelResolver;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -83,6 +84,7 @@ public class CompiledContext extends Context {
 	 */
 	public IObservation run(int index) {
 
+		
 		DefaultDirectedGraph<IAccessor, DefaultEdge> graph = 
 				new DefaultDirectedGraph<IAccessor, DefaultEdge>(DefaultEdge.class);
 
@@ -151,36 +153,39 @@ public class CompiledContext extends Context {
 	 */
 	public void compile(Model model) throws ThinklabException {
 
-		_modelstruc = 
-				new DefaultDirectedGraph<ModelRef, DependencyEdge>(DependencyEdge.class);
+		ModelResolver resolver = new ModelResolver(model.getNamespace());
+		resolver.buildModelGraph(model, this);
 		
-		/*
-		 * create the dependency graph, looking up
-		 * dependencies as necessary.
-		 */
-		_root = compileModel(model, false);
-		
-		/*
-		 * resolve or notify any circular dependencies, leaving an
-		 * acyclical accessor graph.
-		 */
-		CycleDetector<ModelRef, DependencyEdge> cd = 
-				new CycleDetector<ModelRef, DependencyEdge>(_modelstruc);
-		
-		if (cd.detectCycles()) {
-			
-		}
-		
-		/*
-		 * create cursor for alternative model structures
-		 */
-		_cursor = new MultidimensionalCursor();
-		int[] dims = new int[_resolved.size()];
-		int i = 0;
-		for (Triple<ISemanticObject<?>, IContext, List<ISemanticObject<?>>> l : _resolved) {
-			dims[i++] = l.getThird().size();
-		}
-		_cursor.defineDimensions(dims);
+//		_modelstruc = 
+//				new DefaultDirectedGraph<ModelRef, DependencyEdge>(DependencyEdge.class);
+//		
+//		/*
+//		 * create the dependency graph, looking up
+//		 * dependencies as necessary.
+//		 */
+//		_root = compileModel(model, false);
+//		
+//		/*
+//		 * resolve or notify any circular dependencies, leaving an
+//		 * acyclical accessor graph.
+//		 */
+//		CycleDetector<ModelRef, DependencyEdge> cd = 
+//				new CycleDetector<ModelRef, DependencyEdge>(_modelstruc);
+//		
+//		if (cd.detectCycles()) {
+//			
+//		}
+//		
+//		/*
+//		 * create cursor for alternative model structures
+//		 */
+//		_cursor = new MultidimensionalCursor();
+//		int[] dims = new int[_resolved.size()];
+//		int i = 0;
+//		for (Triple<ISemanticObject<?>, IContext, List<ISemanticObject<?>>> l : _resolved) {
+//			dims[i++] = l.getThird().size();
+//		}
+//		_cursor.defineDimensions(dims);
 		
 	}
 

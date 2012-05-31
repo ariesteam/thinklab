@@ -93,12 +93,6 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	}
 
 	@Override
-	public T demote() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void initialize() throws ThinklabException {
 
 		super.initialize();

@@ -78,17 +78,12 @@ public class ModelResolver {
 	}
 	
 	DefaultDirectedGraph<ModelRef, DependencyEdge> _modelstruc = null;
-	ModelRef _root = null;
+	IModel _root = null;
 	private HashMap<String, IModel> _modHash;
 	
-	public void buildModelGraph(IModel rootModel) {
+	public void buildModelGraph(ISemanticObject<?> rootModel, IContext context) {
 		
-		_root = new ModelRef(rootModel);
-		
-		/*
-		 * TODO
-		 * recurse dependencies checking the graph and the coverage as we go
-		 */
+		_root = resolve(rootModel, context);
 	}
 	
 	/**
@@ -141,6 +136,7 @@ public class ModelResolver {
 			
 			IContext coverage = new Context();
 			ArrayList<IModel> models = new ArrayList<IModel>();
+
 			/*
 			 * scan models in order of decreasing quality.
 			 * loop until we get the best coverage; stop if/when we get to 100%
@@ -217,6 +213,8 @@ public class ModelResolver {
 		 * provider, ask its metadata and find the (single) property that points to a topologically
 		 * comparable literal if any. If found, use that in a Queries.covers(..) query - or
 		 * something like that.
+		 * 
+		 * START WITH DATA ONLY, WHEN IT WORKS GRADUATE TO OTHERS.
 		 */
 		
 		/*

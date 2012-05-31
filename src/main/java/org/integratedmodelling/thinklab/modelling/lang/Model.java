@@ -1,7 +1,9 @@
 package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
@@ -15,6 +17,7 @@ import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
+import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IExpressionDefinition;
@@ -101,6 +104,10 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		 */
 		
 		return observer.getAccessor();
+	}
+	
+	public List<Triple<IModel, String, Boolean>> getObserverDependencies() {
+		return _observer.getDependencies();
 	}
 	
 	/* ------------------------------------------------------------------------------

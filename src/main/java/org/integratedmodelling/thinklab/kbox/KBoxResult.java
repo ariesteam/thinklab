@@ -48,8 +48,7 @@ public class KBoxResult extends ImmutableList<ISemanticObject<?>> {
 
 	@Override
 	public boolean contains(Object arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return arg0 instanceof Long ? _results.contains(arg0) : false;
 	}
 
 	@Override

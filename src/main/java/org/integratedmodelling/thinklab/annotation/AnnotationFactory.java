@@ -234,15 +234,14 @@ public class AnnotationFactory {
 		 * add references to objects upstream.
 		 */
 		if (o instanceof IConceptualizable) {
-			return (IReferenceList) ref.resolve(((IConceptualizable) o).conceptualize());
+			return (IReferenceList) ref.resolve(list.internalize(((IConceptualizable) o).conceptualize()));
 		}
 		
 		/*
 		 * if semantic object not currently being conceptualized, just use its semantics
 		 */
 		if (o instanceof SemanticObject<?> && !((SemanticObject<?>)o).beingConceptualized()) {
-			IList ls = internalize(((ISemanticObject<?>) o).getSemantics(), list);
-			return (IReferenceList) ref.resolve(list.newList(ls.toArray()));	
+			return (IReferenceList) ref.resolve(list.internalize(((ISemanticObject<?>) o).getSemantics()));	
 		}
 		
 		/*
@@ -293,28 +292,6 @@ public class AnnotationFactory {
 		return (IReferenceList) ref.resolve(list.newList(sa.toArray()));
 	}
 	
-	/*
-	 * take the passed list and internalize its references to the second
-	 * argument if it has any. It probably only works properly with 
-	 * non-cyclic lists - TODO/FIXME must check.
-	 * 
-	 * SHOULD BE MOVED TO ReferenceList and properly handle refs - if
-	 * I only can get my mind to work again on this problem.
-	 */
-	private IList internalize(IList semantics, IReferenceList list) {
-
-		ArrayList<Object> objs = new ArrayList<Object>();
-		
-		for (Object o : semantics.toArray()) {
-			if (o instanceof IList) {
-				o = internalize((IList)o, list);
-			}
-			objs.add(o);
-		}
-		
-		return list.newList(objs.toArray());
-	}
-
 	private Collection<Object> getAllInstances(Object value) {
 
 		Collection<Object> ret = null;
