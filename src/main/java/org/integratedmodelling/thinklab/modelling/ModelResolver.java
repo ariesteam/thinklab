@@ -60,11 +60,21 @@ public class ModelResolver {
 	}
 	
 	class DependencyEdge extends DefaultEdge {
+		
 		public DependencyEdge(boolean b) {
 			isMediation = b;
 		}
 		private static final long serialVersionUID = 2366743581134478147L;
 		boolean isMediation = false;
+
+		@Override
+		public boolean equals(Object edge) {
+			return 
+				edge instanceof DependencyEdge &&
+				this.getSource().equals(((DependencyEdge)edge).getSource()) &&
+				this.getTarget().equals(((DependencyEdge)edge).getTarget()) &&
+				isMediation == ((DependencyEdge)edge).isMediation;
+		}
 	}
 
 	DefaultDirectedGraph<IModel, DependencyEdge> _modelstruc = null;
