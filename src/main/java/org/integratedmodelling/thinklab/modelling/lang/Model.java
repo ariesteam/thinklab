@@ -151,6 +151,11 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	}
 
 	@Override
+	public List<ISemanticObject<?>> getObservables() {
+		return _observables;
+	}
+	
+	@Override
 	public ISemanticObject<?> getObservable() {
 		return getObservables().get(0);
 	}
@@ -224,7 +229,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 				throw new ThinklabValidationException(
 						"invalid model without either an observable or an observer");
 			
-			_observables.addAll(_observer.getObservables());
+			_observables.add(((Observer<?>)_observer).getFinalObservable());
 		}
 		
 		_initialized = true;

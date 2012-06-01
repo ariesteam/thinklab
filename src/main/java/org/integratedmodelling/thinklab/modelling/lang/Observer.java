@@ -9,6 +9,7 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
@@ -62,8 +63,8 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 		}
 	}
 	
-	public IObserver getMediated() {
-		return _mediated;
+	public Object getObservedObject() {
+		return _mediated == null ? _observables.get(0) : _mediated;
 	}
 
 	@Override
@@ -97,6 +98,12 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 
 		super.initialize();
 
+		/*
+		 * define our mediated object if any - may be an observable to
+		 * mediate, or an explicitly mediated observer (which has its
+		 * own observer).
+		 */
+		
 		if (_accessorGenerator != null) {
 			
 			IExpression func = 
@@ -111,6 +118,12 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 			}
 			_accessor = (IAccessor)ds;
 		}
+	}
+
+	public ISemanticObject<?> getFinalObservable() {
+		return _mediated == null ? 
+					_observables.get(0) : 
+					((Observer<?>)_mediated).getFinalObservable();
 	}
 	
 }

@@ -47,11 +47,6 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	}
 
 	@Override
-	public List<ISemanticObject<?>> getObservables() {
-		return _observables;
-	}
-
-	@Override
 	public void addDependency(IModelDefinition cmodel, String formalName, boolean required) {
 		_dependencies.add(new Triple<IModel, String, Boolean>((IModel)cmodel, formalName, required));
 	}

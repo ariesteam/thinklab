@@ -154,7 +154,7 @@ public class CompiledContext extends Context {
 	public void compile(Model model) throws ThinklabException {
 
 		ModelResolver resolver = new ModelResolver(model.getNamespace());
-		resolver.buildModelGraph(model, this);
+		resolver.resolve(model, this);
 		
 //		_modelstruc = 
 //				new DefaultDirectedGraph<ModelRef, DependencyEdge>(DependencyEdge.class);

@@ -8,7 +8,6 @@ import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IConditionalObserverDefinition;
@@ -31,12 +30,6 @@ public class ConditionalObserver extends Observer<ConditionalObserver> implement
 	@Override
 	public ConditionalObserver demote() {
 		return this;
-	}
-
-	@Override
-	public List<ISemanticObject<?>> getObservables() {
-		// TODO Auto-generated method stub
-		return super.getObservables();
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
@@ -42,50 +43,51 @@ public class ModelResolver {
 		_namespace = namespace;
 	}
 	
-	class ModelRef {
-		
-		IModel _model = null;
-		int    _index = -1;
-		IState _state = null;
-		String _fname = null;
-		String _observableSig = null;
-		
-		public ModelRef(IModel model) {
-			_model = model;
-		}
-		
-		/*
-		 * can be compared with a semantic object (observable)
-		 * (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		@Override
-		public boolean equals(Object arg0) {
-
-			return (arg0 instanceof ModelRef && ((ModelRef)arg0)._observableSig.equals(_observableSig))
-					||
-					(arg0 instanceof SemanticObject<?> && ((SemanticObject<?>)arg0).getSignature().equals(_observableSig));
-		}
-		@Override
-		public int hashCode() {
-			return _observableSig.hashCode();
-		}	
-	}
-	
 	class DependencyEdge extends DefaultEdge {
 		private static final long serialVersionUID = 2366743581134478147L;
 		boolean isMediation = false;
 	}
 	
-	DefaultDirectedGraph<ModelRef, DependencyEdge> _modelstruc = null;
-	IModel _root = null;
-	private HashMap<String, IModel> _modHash;
 	
-	public void buildModelGraph(ISemanticObject<?> rootModel, IContext context) {
+	/**
+	 * We keep the "good" graph but clone it to experiment with dependency structures.
+	 * 
+	 * @param rootModel
+	 * @param context
+	 */
+	DefaultDirectedGraph<IModel, DependencyEdge> _modelstruc = null;
+	IModel _root = null;
+	ISemanticObject<?> _rootObservable = null;
+	
+	private HashMap<String, IModel> _modHash;
+
+	public void resolve(ISemanticObject<?> rootModel, IContext context) {
+
+		/*
+		 * store the top observable as a key to rebuild the model graph from the
+		 * accumulated resolvers.
+		 */
+		_rootObservable = 
+				rootModel instanceof IModel ? 
+						((IModel)rootModel).getObservables().get(0) : 
+						rootModel;
 		
-		_root = resolve(rootModel, context);
+		/*
+		 * go for it
+		 */
+		_root = resolveInternal(rootModel, context, false);
+		
+		/*
+		 * if we have no errors, build the final graph
+		 */
+		_modelstruc = buildModelGraph();
 	}
 	
+	private DefaultDirectedGraph<IModel, DependencyEdge> buildModelGraph() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/**
 	 * Get the best model for the semantic object passed. If the passed object
 	 * is a model, just file its observables and return it. Otherwise we assume the
@@ -97,7 +99,7 @@ public class ModelResolver {
 	 * @param toResolve
 	 * @return
 	 */
-	public IModel resolve(ISemanticObject<?> toResolve, IContext context) {
+	public IModel resolveInternal(ISemanticObject<?> toResolve, IContext context, boolean isOptional) {
 		
 		IModel ret = null;
 		
@@ -117,11 +119,28 @@ public class ModelResolver {
 		}
 		
 		if (toResolve instanceof Model) {
+			
 			ret =  (Model)toResolve;
-		} else {
 			
 			/*
-			 * observable
+			 * model dependencies are to contextualize its observer if it is conditional; they
+			 * don't exist otherwise
+			 */
+			for (Triple<IModel, String, Boolean> m : ((Model)toResolve).getDependencies()) {
+				boolean opt = m.getThird();
+				IModel resolved = resolveInternal((Model)(m.getFirst()), context, opt || isOptional);
+				if (resolved == null && isOptional && !opt) {
+					return null;
+				}
+			}
+			
+			
+		}  else {
+			
+			/*
+			 * observable: here is where we can get in trouble if we pick another
+			 * complex model to resolve the observable, and we don't check for all
+			 * problems that this may entail (e.g. circular dependencies).
 			 */
 			SemanticObject<?> observable = (SemanticObject<?>) toResolve;
 			String sig = observable.getSignature();

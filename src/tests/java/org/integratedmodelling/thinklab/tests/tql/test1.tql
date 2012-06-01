@@ -4,11 +4,11 @@ namespace org.integratedmodelling.test1
 	storage kbox test.models;
 
 defmodel rainfall-global of 
-		( concept Rainfall is habitat:Rainfall )
+		(concept Rainfall is habitat:Rainfall)
 	as measure habitat:Rainfall in m;
 
 defmodel rainfall-local of 
-		( concept RainfallLocal is habitat:Rainfall )
+		(concept RainfallLocal is habitat:Rainfall)
 	as measure habitat:Rainfall in m;
 	
 /**
