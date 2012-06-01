@@ -121,6 +121,7 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	}
 
 	public ISemanticObject<?> getFinalObservable() {
+
 		return _mediated == null ? 
 					_observables.get(0) : 
 					((Observer<?>)_mediated).getFinalObservable();

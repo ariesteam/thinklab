@@ -1,7 +1,8 @@
 namespace org.integratedmodelling.test1
 	covering 
 		shape(wkt="EPSG:4326 POLYGON((-21.2660 27.6363, -21.2660 61.0088, 39.8693 61.0088, 39.8693 27.6363, -21.2660 27.6363))")
-	storage kbox test.models;
+	storage kbox test.models
+	lookup kbox  test.models;
 
 defmodel rainfall-global of 
 		(concept Rainfall is habitat:Rainfall)

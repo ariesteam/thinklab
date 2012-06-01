@@ -8,6 +8,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
@@ -25,6 +26,7 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinitio
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
 import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.modelling.lang.datasources.ConstantDataSource;
 
 @Concept(NS.MODEL)
@@ -52,6 +54,16 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	 * ------------------------------------------------------------------------------
 	 */
 	
+	public Model() {}
+	
+	/*
+	 * specialized constructor that will build one new model with a conditional
+	 * composition of the passed observers. Used only after model resolution.
+	 */
+	public Model(SemanticObject<?> observable, ArrayList<IModel> models) {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * Ensure that we get stored if we have a non-trivial datasource and no 
 	 * dependencies, so we can be used to resolve dangling references.
@@ -116,6 +128,11 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	 */
 	
 	@Override
+	public IDataSource getDatasource() {
+		return _datasource;
+	}
+	
+	@Override
 	public void addObserver(IObserverDefinition odef, IExpressionDefinition edef) {
 		
 		IObserver observer = (IObserver)odef;
@@ -145,9 +162,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 			throws ThinklabException {
 		
 		CompiledContext cc = new CompiledContext(context);
-		cc.compile(this);
-		return cc.run();
-	
+		return cc.run(this);
 	}
 
 	@Override
@@ -155,11 +170,6 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		return _observables;
 	}
 	
-	@Override
-	public ISemanticObject<?> getObservable() {
-		return getObservables().get(0);
-	}
-
 	@Override
 	public Model demote() {
 		return this;
@@ -185,6 +195,10 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		
 		if (_initialized) 
 			return;
+		
+		if (_namespace == null && _namespaceId != null) {
+			_namespace = Thinklab.get().getNamespace(_namespaceId);
+		}
 		
 		/*
 		 * we only need it in models and contexts for now.

@@ -93,6 +93,11 @@ public class ModelManager implements IModelManager {
 
 	private static ModelManager _this = null;
 
+	/*
+	 * we provide a default namespace for models that come right out of a kbox.
+	 */
+	static INamespace _defaultModelNamespace = null;
+	
 	private Hashtable<String, IModel> modelsById = new Hashtable<String, IModel>();
 	private Hashtable<String, IScenario> scenariosById = new Hashtable<String, IScenario>();
 	private Hashtable<String, IContext> contextsById = new Hashtable<String, IContext>();
@@ -544,6 +549,10 @@ public class ModelManager implements IModelManager {
 	public static String generateId(IModelObject o) {
 		return UUID.randomUUID().toString() + "___";
 	}
+
+	public static INamespace getDefaultModelNamespace() {
+		return _defaultModelNamespace;
+	}
 	
 	@Override
 	public IExpression resolveFunction(String functionId, Collection<String> parameterNames) {
@@ -583,6 +592,10 @@ public class ModelManager implements IModelManager {
 //	}
 
 	public ModelManager() {
+		if (_defaultModelNamespace == null) {
+			_defaultModelNamespace = new Namespace();
+			((Namespace)_defaultModelNamespace).setId("org.integratedmodelling.ks.models");
+		}
 	}
 
 	public IModel retrieveModel(String s) {
