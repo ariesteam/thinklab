@@ -63,6 +63,11 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 		}
 	}
 	
+	@Override
+	public IObserver getMediatedObserver() {
+		return _mediated;
+	}
+	
 	public Object getObservedObject() {
 		return _mediated == null ? _observables.get(0) : _mediated;
 	}

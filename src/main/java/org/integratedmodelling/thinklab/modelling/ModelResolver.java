@@ -20,9 +20,10 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
-import org.integratedmodelling.thinklab.api.modelling.IMediatingObserver;
+import org.integratedmodelling.thinklab.api.modelling.IMediatingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
@@ -172,13 +173,55 @@ public class ModelResolver {
 	}
 
 	
-	public void run() throws ThinklabException {
+	public IObservation run() throws ThinklabException {
 
 		DefaultDirectedGraph<CElem, DependencyEdge> accessorGraph = buildAccessorGraph(_root, _modelstruc, _context);
 		
+		for (CElem cel : getRoots(accessorGraph)) {
+			computeModel(cel, accessorGraph);
+		}
+
+		/*
+		 * find state to return as root, or build a new observation in this context if observables don't have
+		 * states associated
+		 */
 		
+		return null;
 	}
 	
+	private void computeModel(CElem cel,
+			DefaultDirectedGraph<CElem, DependencyEdge> accessorGraph) throws ThinklabException {
+
+		/*
+		 * first pass: notify all accessors of their dependencies and mediations, create
+		 * all states.
+		 */
+		
+		/*
+		 * main compute cycle
+		 */
+		
+		/*
+		 * compile dataset into context
+		 */
+		
+		
+	}
+
+
+	private Collection<CElem> getRoots(
+			DefaultDirectedGraph<CElem, DependencyEdge> accessorGraph) {
+		
+		ArrayList<CElem> ret = new ArrayList<ModelResolver.CElem>();
+		for (CElem r : accessorGraph.vertexSet()) {
+			if (accessorGraph.incomingEdgesOf(r).isEmpty()) {
+				ret.add(r);
+			}
+		}
+		return ret;
+	}
+
+
 	/**
 	 * Call after resolve() to retrieve the model graph for analysis or visualization.
 	 * 
@@ -206,11 +249,10 @@ public class ModelResolver {
 				new DefaultDirectedGraph<CElem, DependencyEdge>(DependencyEdge.class);
 
 		/*
-		 * start node may be null if the root model has no observer. In that case
-		 * we must find the nodes without incoming dependencies and model them
-		 * separately.
+		 * build the accessor graph. It may contain more than one disconnected graphs if the top model
+		 * is an identification with dependencies but no observer, so we don't store the top node.
 		 */
-		CElem start = buildAccessorGraphInternal(root, graph, modelGraph, context);
+		buildAccessorGraphInternal(root, graph, modelGraph, context);
 		
 		return graph;
 	}
@@ -222,34 +264,71 @@ public class ModelResolver {
 		CElem node = null;
 		
 		if (model.getDatasource() != null) {
+			
 			/*
-			 * get the accessor from the DS
+			 * get the accessor from the DS and chain it to ours
 			 */
-			node = new CElem(model.getDatasource().getAccessor(context), model);
+			node = new CElem(model.getObserver().getAccessor(), null);
+
+			if ( !(node.accessor instanceof IMediatingAccessor))
+				throw new ThinklabValidationException("trying to mediate to a non-mediating observer");
+			
+			CElem target = new CElem(model.getDatasource().getAccessor(context), model);
+			graph.addVertex(node);
+			graph.addVertex(target);
+			graph.addEdge(target, target, new DependencyEdge(true));
+			
 		} else if (model.getObserver() != null) {
+			
 			IAccessor accessor = model.getObserver().getAccessor();
 			if (accessor != null) {
 				node = new CElem(accessor, model);
+				graph.addVertex(node);
 			}
 		}
 		
-		if (node != null)
-			graph.addVertex(node);
 		
 		for (DependencyEdge edge : modelGraph.outgoingEdgesOf(model)) {
 			
 			if (edge.isMediation) {
 				
 				/*
-				 * reconstruct mediator chain from model, notifying all observers
+				 * get the accessor chain for the final observable
 				 */
-			} else {
+				CElem target = buildAccessorGraphInternal(modelGraph.getEdgeTarget(edge), graph, modelGraph, context);
 				
+				/*
+				 * loop along the chain of mediation until we find the final
+				 * observable; then get the model for it, get its CElem and
+				 * tie the last mediator to it.
+				 */
+				node = new CElem(model.getObserver().getAccessor(), model);
+				graph.addVertex(node);
+				
+				CElem start = node;
+				IObserver obs = model.getObserver();
+				
+				while (obs.getMediatedObserver() != null) {
+					CElem targ = new CElem(obs.getMediatedObserver().getAccessor(), null);
+					graph.addEdge(start, targ, new DependencyEdge(true));
+					obs = obs.getMediatedObserver();
+					start = targ;
+				}
+				
+				graph.addEdge(start, target, new DependencyEdge(true));
+				
+			} else {
+
 				/*
 				 * create accessor and notify dependency
 				 */
+				CElem target = buildAccessorGraphInternal(modelGraph.getEdgeTarget(edge), graph, modelGraph, context);
+				if (node != null) {
+					graph.addEdge(node, target, new DependencyEdge(false));
+				}
 			}
 		}
+		
 		return node;
 	}
 

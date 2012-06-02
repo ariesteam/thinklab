@@ -42,10 +42,5 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 		return this;
 	}
 
-	@Override
-	public IAccessor getMediator(IObserver observer) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

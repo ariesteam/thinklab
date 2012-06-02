@@ -29,10 +29,4 @@ public class Classification extends Observer<Classification> implements IClassif
 		return this;
 	}
 
-	@Override
-	public IAccessor getMediator(IObserver observer) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

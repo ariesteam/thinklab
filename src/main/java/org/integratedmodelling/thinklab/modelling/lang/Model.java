@@ -26,7 +26,6 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinitio
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
 import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
-import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.modelling.lang.datasources.ConstantDataSource;
 
 @Concept(NS.MODEL)
