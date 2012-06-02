@@ -7,7 +7,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor;
 import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
@@ -17,15 +19,18 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IState;
+import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IContextDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
+import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
 
 @Concept(NS.CONTEXT)
 public class Context extends ModelObject<Context> implements IContextDefinition {
@@ -70,10 +75,55 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		this._isNull = context._isNull;
 	}
 
-	public Context() {
-		// TODO Auto-generated constructor stub
-	}
+	public Context() {}
 
+	/**
+	 * Scan all extents and return the properties and values, if any, 
+	 * that describe their coverage for search and retrieval of
+	 * compatible extents. 
+	 * 
+	 * It works by asking each extent for its storage metadata and
+	 * returning any metadata that is indexed by a known property and
+	 * points to a topologically comparable object.
+	 * 
+	 * Relies on the fact that each extent has only one topologically
+	 * comparable storage metadata. Throws an unchecked exception if not so.
+	 * 
+	 * @return
+	 */
+	public List<Pair<IProperty, ITopologicallyComparable<?>>> getCoverageProperties() {
+		ArrayList<Pair<IProperty, ITopologicallyComparable<?>>> ret = 
+				new ArrayList<Pair<IProperty,ITopologicallyComparable<?>>>();
+		for (IExtent ext : getExtents()) {
+			int ncov = 0;
+			if (ext instanceof IStorageMetadataProvider) {
+				Metadata md = new Metadata();
+				((IStorageMetadataProvider)ext).addStorageMetadata(md);
+				for (String pid : md.getKeys()) {
+					if (Thinklab.get().getProperty(pid) != null &&
+						md.get(pid) instanceof ITopologicallyComparable<?>) {
+
+						if (ncov > 0) {
+							
+							/*
+							 * this is an obscure one for sure, but it should not really happen unless the
+							 * implementation is screwed up and untested.
+							 */
+							throw new ThinklabRuntimeException(
+									"internal: extent provides more than one topologically comparable storage metadata");
+						}
+						
+						ret.add(new Pair<IProperty, ITopologicallyComparable<?>>(
+								Thinklab.p(pid),
+								(ITopologicallyComparable<?>)md.get(pid)));
+						ncov++;
+					}
+				}
+			}
+		}
+		return ret;
+	}
+	
 	public void addObservation(IModel o) {
 		_models.add(o);
 	}

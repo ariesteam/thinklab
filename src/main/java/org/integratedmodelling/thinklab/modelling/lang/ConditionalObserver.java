@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.collections.Triple;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
@@ -17,6 +19,7 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinitio
 @Concept(NS.CONDITIONAL_OBSERVER)
 public class ConditionalObserver extends Observer<ConditionalObserver> implements IConditionalObserverDefinition {
 
+	@Property(NS.HAS_OBSERVER)
 	ArrayList<Pair<IObserver,IExpression>> _observers;
 	
 	public void addObserver(IExpressionDefinition expression, IObserverDefinition observer) {
@@ -43,5 +46,16 @@ public class ConditionalObserver extends Observer<ConditionalObserver> implement
 		return ret;
 	}
 	
+	@Override
+	public void initialize() throws ThinklabException {
+
+		if (_initialized)
+			return;
 	
+		for (Pair<IObserver, IExpression>  oo : _observers) {
+			((Observer<?>)oo.getSecond()).initialize();
+		}
+	
+		_initialized = true;
+	}
 }

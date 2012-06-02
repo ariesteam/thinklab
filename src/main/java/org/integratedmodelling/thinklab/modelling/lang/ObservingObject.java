@@ -34,7 +34,7 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	ArrayList<ISemanticObject<?>> _observables = 
 			new ArrayList<ISemanticObject<?>>();
 
-	private boolean _initialized = false;
+	protected boolean _initialized = false;
 	
 	/*
 	 * non-persistent fields

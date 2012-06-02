@@ -11,6 +11,7 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
@@ -44,6 +45,14 @@ public class PointValue extends ShapeValue {
 
 	public PointValue(Point geometry) {
 		super(geometry);
+	}
+
+	public PointValue(Geometry geometry, CoordinateReferenceSystem crs) {
+		
+		/*
+		 * TODO check that it's a point or multipoint 
+		 */
+		super(geometry, crs);
 	}
 
 	public PointValue(Point geometry, CoordinateReferenceSystem crs) {

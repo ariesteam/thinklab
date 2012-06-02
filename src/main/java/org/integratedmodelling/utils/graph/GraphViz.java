@@ -207,8 +207,8 @@ public class GraphViz
 				   graphvizProgram + ".path", 
 		   		   getDefaultDotPath(graphvizProgram));
 	   
-	   if (! (new File(DOT).exists()))
-		   throw new ThinklabResourceNotFoundException(DOT);
+//	   if (! (new File(DOT).exists()))
+//		   throw new ThinklabResourceNotFoundException(DOT);
 	   
    }
 
@@ -259,12 +259,17 @@ public class GraphViz
 		addln("\t\"" + vertexName + "\" -> \"" + vertexName2 + "\"");
    }
 		
+   public void loadGraph(DirectedGraph<?,?> graph, NodePropertiesProvider npp) {
+	   loadGraph(graph, npp, false);
+   }
+
    /**
     * Load a knowledge graph into graphviz representation. Do what you want after that.
+    * Use reverse if the relationship shows the inverse of the intended semantics.
     * 
     * @param graph
     */
-   public void loadGraph(DirectedGraph graph, NodePropertiesProvider npp) {
+   public void loadGraph(DirectedGraph graph, NodePropertiesProvider npp, boolean reverse) {
 	   
 	   addln(start_graph("fontsize=8", "fontname=\"sanserif\"", "overlap=\"scale\""));
 	   	   
@@ -277,7 +282,9 @@ public class GraphViz
 		   Object s = graph.getEdgeSource(e);
 		   Object t = graph.getEdgeTarget(e);
 		   
-		   addDirectedEdge(npp.getNodeId(s), npp.getNodeId(t));
+		   addDirectedEdge(
+				   (reverse ? npp.getNodeId(t) : npp.getNodeId(s)), 
+				   (reverse ? npp.getNodeId(s) : npp.getNodeId(t))); 
 	   }
 
 	   addln(end_graph());

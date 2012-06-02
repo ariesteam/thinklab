@@ -53,6 +53,7 @@ import org.w3c.dom.Node;
  * Turn a WFS capabilities document into an OPAL file for editing.
  * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
+ * @deprecated scheduled for removal, not necessary anymore. Here for code lifting only.
  */
 @ThinklabCommand(
 	name="wfs2opal",

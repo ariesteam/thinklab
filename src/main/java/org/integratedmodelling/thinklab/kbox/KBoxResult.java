@@ -8,6 +8,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 
 /**
  * List to return results of a NeoKBox query. Only stores object IDs, creating
@@ -59,6 +60,10 @@ public class KBoxResult extends ImmutableList<ISemanticObject<?>> {
 			throw new ThinklabRuntimeException(e);
 		}
 	}
+	
+	public IMetadata getMetadata(int arg0) {
+		return _kbox.getObjectMetadata(_results.get(arg0));
+	}
 
 	@Override
 	public Iterator<ISemanticObject<?>> iterator() {
@@ -76,9 +81,16 @@ public class KBoxResult extends ImmutableList<ISemanticObject<?>> {
 		return null;
 	}
 
+	/**
+	 * toArray - pass a long array to get the ids and a Metadata array to get the 
+	 * metadata. Quite obscure.
+	 */
 	@Override
 	public <T> T[] toArray(T[] arg0) {
-		// TODO Auto-generated method stub
+
+		if (arg0.getClass().getComponentType().equals(Long.TYPE))
+			return _results.toArray(arg0);
+
 		return null;
 	}
 

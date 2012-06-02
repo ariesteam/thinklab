@@ -11,6 +11,7 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -52,6 +53,14 @@ public class PolygonValue extends ShapeValue {
 
 	public PolygonValue(MultiPolygon geometry) {
 		super(geometry);
+	}
+
+	public PolygonValue(Geometry geometry, CoordinateReferenceSystem crs) {
+		
+		/*
+		 * TODO check that it's a polygon or multipolygon 
+		 */
+		super(geometry, crs);
 	}
 
 	public PolygonValue(MultiPolygon geometry, CoordinateReferenceSystem crs) {

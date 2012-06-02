@@ -41,6 +41,7 @@ import org.w3c.dom.Node;
  * Turn a WCS capabilities document into an OPAL file for editing.
  * 
  * @author Ferdinando Villa, Ecoinformatics Collaboratory, UVM
+ * @deprecated scheduled for removal - no need for it anymore. Just here to copy code from.
  */
 public class WCSToOPAL implements ICommandHandler {
 
@@ -144,7 +145,7 @@ public class WCSToOPAL implements ICommandHandler {
 					  continue;
 				  
 				  WCSCoverage coverage = new WCSCoverage(covId, p);
-				  coverage.addOpalDescriptor(out, out.root(), fenv);
+//				  coverage.addOpalDescriptor(out, out.root(), fenv);
 				  i++;
 			  }
 		  }

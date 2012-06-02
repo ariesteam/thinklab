@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
@@ -59,7 +60,6 @@ public class WCSGridDataSource extends RegularRasterGridDataSource implements IS
 		}
 			
 	}
-
 	
 	private void readData() throws ThinklabException {
 		
@@ -79,7 +79,7 @@ public class WCSGridDataSource extends RegularRasterGridDataSource implements IS
 		}
 		
 		((Metadata)metadata).put(
-				IMetadata.GEOSPACE_BOUNDING_BOX, 
+				NS.GEOSPACE_HAS_SHAPE, 
 				new PolygonValue(coverage.getEnvelope()));
 	}
 	

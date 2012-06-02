@@ -98,6 +98,9 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 
 		super.initialize();
 
+		if (_mediated != null)
+			((Observer<?>)_mediated).initialize();
+		
 		/*
 		 * define our mediated object if any - may be an observable to
 		 * mediate, or an explicitly mediated observer (which has its

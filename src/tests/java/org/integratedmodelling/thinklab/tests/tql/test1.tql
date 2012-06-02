@@ -6,7 +6,7 @@ namespace org.integratedmodelling.test1
 
 defmodel rainfall-global of 
 		(concept Rainfall is habitat:Rainfall)
-	as measure habitat:Rainfall in m;
+	as measure (measure habitat:Rainfall in m) in mm;
 
 defmodel rainfall-local of 
 		(concept RainfallLocal is habitat:Rainfall)

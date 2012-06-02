@@ -11,7 +11,7 @@ import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
  * Linked to a literal type to provide strategies for storage and indexing. 
  */
 public interface KboxTypeAdapter {
-	
+		
 	/*
 	 * set the given property for the object with the given id, using the
 	 * appropriate strategy to index the result so that it can be queried

@@ -11,8 +11,9 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
 
 @Literal(
 		concept="geospace:LineValue", 
@@ -47,6 +48,14 @@ public class LineValue extends ShapeValue {
 	}
 
 	public LineValue(LineString geometry, CoordinateReferenceSystem crs) {
+		super(geometry, crs);
+	}
+
+	public LineValue(Geometry geometry, CoordinateReferenceSystem crs) {
+
+		/*
+		 * TODO check that it's a linestring or multilinestring
+		 */
 		super(geometry, crs);
 	}
 

@@ -34,22 +34,26 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
-import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.geospace.Geospace;
+import org.integratedmodelling.thinklab.geospace.literals.LineValue;
+import org.integratedmodelling.thinklab.geospace.literals.PointValue;
+import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
 import org.integratedmodelling.thinklab.interfaces.storage.KboxTypeAdapter;
 import org.integratedmodelling.thinklab.kbox.KBoxResult;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.integratedmodelling.thinklab.query.Query;
 import org.neo4j.gis.spatial.DefaultLayer;
 import org.neo4j.gis.spatial.GeometryEncoder;
 import org.neo4j.gis.spatial.SpatialDatabaseRecord;
 import org.neo4j.gis.spatial.SpatialDatabaseService;
 import org.neo4j.gis.spatial.SpatialRecord;
+import org.neo4j.gis.spatial.pipes.GeoPipeFlow;
 import org.neo4j.gis.spatial.pipes.GeoPipeline;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
@@ -381,33 +385,12 @@ public class NeoKBox implements IKbox {
 		/*
 		 * literals
 		 */
-		for (String p : node.getPropertyKeys()) {
-			
-			// skip system properties
-			if (p.startsWith("_"))
-				continue;
-			
-			/*
-			* properties added by third-party plugins must be skipped too - if we're
-			* really unlucky, third-party plugins may have added properties that 
-			* translate to ontologies but let's be optimistic.
-			*/ 
-			if (!SemanticType.validate(fromId(p)))
-				continue;
-			/*
-			 * this should take care of any strangeness, but potentially allow some
-			 * subtle internal errors that silently skip previously valid properties (can
-			 * happen if the ontologies have changed and the kbox hasn't been
-			 * synchronized).
-			 */
-			if (Thinklab.get().getProperty(fromId(p)) == null)
-				continue;
-			
+		for (Pair<IProperty, Object> lp : getPropertyValues(node)) {
 			rl.add(root.newList(
-						Thinklab.p(fromId(p)), 
-						root.internalize(Thinklab.get().conceptualize(node.getProperty(p)))));
+					lp.getFirst(), 
+					root.internalize(Thinklab.get().conceptualize(lp.getSecond()))));
 		}
-
+		
 		/*
 		 * follow outgoing relationships to other objects
 		 */
@@ -417,14 +400,78 @@ public class NeoKBox implements IKbox {
 		
 		return  (IReferenceList) ref.resolve(root.newList(rl.toArray()));		
 	}
+
+	/*
+	 * get all literal properties of a node that have known semantic mappings to relationships.
+	 */
+	private Collection<Pair<IProperty, Object>> getPropertyValues(Node node) throws ThinklabException {
+
+		ArrayList<Pair<IProperty, Object>> ret = new ArrayList<Pair<IProperty,Object>>();
+		
+		for (String p : node.getPropertyKeys()) {
+			
+			// skip system properties
+			if (p.startsWith("_"))
+				continue;
+			
+			String pid = fromId(p);
+			Object pvalue = node.getProperty(p);
+			
+			if (pvalue instanceof String && pvalue.toString().startsWith(DecodingTypeAdapter.DECODE_PREFIX)) {
+
+				/*
+				 * object is a complex literal proxied by the properties in the
+				 * node. We use its type adapter (which must be a DecodingTypeAdapter)
+				 * to resolve those properties to the final value.			
+				 */
+				IConcept type = 
+						Thinklab.c(pvalue.toString().substring(DecodingTypeAdapter.DECODE_PREFIX.length()));
+				KboxTypeAdapter ta = _typeAdapters.get(type);
+			
+				ret.add(new Pair<IProperty, Object>(
+						Thinklab.p(pid), 
+						((DecodingTypeAdapter)ta).decode(Thinklab.p(pid), node)));
+				
+			} 
+			
+			/*
+			* properties added by third-party plugins must be skipped too - if we're
+			* really unlucky, third-party plugins may have added properties that 
+			* translate to ontologies but let's be optimistic.
+			*/ 
+			if (!SemanticType.validate(pid))
+				continue;
+			/*
+			 * this should take care of any strangeness, but potentially allow some
+			 * subtle internal errors that silently skip previously valid properties (can
+			 * happen if the ontologies have changed and the kbox hasn't been
+			 * synchronized).
+			 */
+			if (Thinklab.get().getProperty(pid) == null)
+				continue;
+			
+			/*
+			 * standard Neo4j node property pointing to an actual literal - just
+			 * conceptualize it, if it's there it must be conceptualizable.
+			 */
+			ret.add(new Pair<IProperty, Object>(
+					Thinklab.p(fromId(p)), pvalue));
+		}
+		
+		return ret;
+
+	}
 	
 	private List<Long> applySorting(Set<Long> results, SemanticQuery query) {
 
 		ArrayList<Long> ret = new ArrayList<Long>();
 		if (query instanceof IMetadataHolder && ((IMetadataHolder) query).getMetadataFieldAsString(IKbox.SORT_FIELD) != null) {
+			
 			/*
-			 * TODO sort if the query's metadata specify it
+			 * TODO sort if the query's metadata specify it. Use node metadata and a ComparatorChain from 
+			 * apache.commons.collections.
 			 */
+			
 		} else {
 			for (Long n : results) 
 				ret.add(n);
@@ -544,7 +591,8 @@ public class NeoKBox implements IKbox {
 				 * that relate to these through the restriction property.
 				 * 
 				 * TODO count the matches and insert node based on quantifier match 
-				 * instead of just inserting the node.
+				 * instead of just inserting the node. This one is just the implementation for
+				 * "any".
 				 * 
 				 */
 				if (pcontext != null && ncontext != null) {
@@ -630,11 +678,18 @@ public class NeoKBox implements IKbox {
 	}
 	
 
+	
+	/*
+	 * -----------------------------------------------------------------------------------------------------
+	 * type handling
+	 * -----------------------------------------------------------------------------------------------------
+	 */
+	
 	/*
 	 * class to simplify handling of base types. 
 	 */
 	public abstract class TypeAdapter implements KboxTypeAdapter {
-
+		
 		protected abstract void setAndIndex(Node node, IProperty property, Object value) throws ThinklabException;
 
 		@Override
@@ -646,12 +701,33 @@ public class NeoKBox implements IKbox {
 		}	
 	}
 	
-	/*
-	 * -----------------------------------------------------------------------------------------------------
-	 * type handling
-	 * -----------------------------------------------------------------------------------------------------
+	/**
+	 * Properties that store strange objects in multiple node properties leave
+	 * their mark as a "@decode:<concept>" string value in the properties. If
+	 * that is found,  the concept is parsed and used as key to find one of these
+	 * in the type adapters, and that is used to decode the object from the
+	 * entire node.
+	 * 
+	 * @author Ferd
+	 *
 	 */
+	interface DecodingTypeAdapter extends KboxTypeAdapter {
+
+		public static final String DECODE_PREFIX = "@decode#";
+		
+		/**
+		 * Turn the relevant node properties into the proper semantics for the
+		 * literal the property represents. 
+		 * 
+		 * @param property
+		 * @param node
+		 * @return
+		 * @throws ThinklabException
+		 */
+		public Object decode(IProperty property, Node node) throws ThinklabException;
+	}
 	
+
 	class NumberTypeAdapter extends TypeAdapter {
 		
 		@Override
@@ -707,8 +783,37 @@ public class NeoKBox implements IKbox {
 	}
 
 	
-	class ShapeTypeAdapter extends TypeAdapter {
+	class ShapeTypeAdapter extends TypeAdapter implements DecodingTypeAdapter {
 		
+		IConcept _concept;
+		
+		public ShapeTypeAdapter(IConcept c) {
+			_concept = c;
+		}
+
+		@Override
+		public Object decode(IProperty property, Node node) throws ThinklabException {
+
+			/*
+			 * create the appropriate literal and return its conceptualized
+			 * representation.
+			 */
+			String idName = toId(property);
+			DefaultLayer layer = getSpatialDB().getOrCreateDefaultLayer(idName);
+			GeometryEncoder encoder = layer.getGeometryEncoder();
+			Geometry g = encoder.decodeGeometry(node);
+			ShapeValue shape = null;
+			
+			if (_concept.equals(NS.POINT)) {
+				shape = new PointValue(g, Geospace.get().getDefaultCRS());
+			} else if (_concept.equals(NS.POLYGON)) {
+				shape = new PolygonValue(g, Geospace.get().getDefaultCRS());
+			} else if (_concept.equals(NS.LINE)) {
+				shape = new LineValue(g, Geospace.get().getDefaultCRS());				
+			}
+			return shape;
+		}
+
 		@Override
 		protected void setAndIndex(Node node, IProperty property, Object value) throws ThinklabException {
 
@@ -725,11 +830,11 @@ public class NeoKBox implements IKbox {
 			DefaultLayer layer = getSpatialDB().getOrCreateDefaultLayer(idName);
 			GeometryEncoder encoder = layer.getGeometryEncoder();
 			encoder.encodeGeometry(geometry, node);
-			layer.add(node);			
+			layer.add(node);
+			
+			node.setProperty(toId(property), DECODE_PREFIX + _concept);
 		}
 
-		
-		
 		@Override
 		public Set<Long> searchIndex(IKbox kbox,
 				IProperty property, IOperator operator)
@@ -767,7 +872,11 @@ public class NeoKBox implements IKbox {
 			
 			if (pipeline != null) {
 				for (SpatialRecord result : pipeline) {
-					ret.add(((SpatialDatabaseRecord)result).getNodeId());
+					/*
+					 * TODO check - this is found out experimentally, hope the API is stable
+					 */
+					for (SpatialDatabaseRecord record : ((GeoPipeFlow)result).getRecords()) 
+						ret.add(record.getNodeId());
 				}
 			}
 			
@@ -839,9 +948,9 @@ public class NeoKBox implements IKbox {
 		/*
 		 * shapes
 		 */
-		registerTypeAdapter(Thinklab.c(NS.POLYGON), new ShapeTypeAdapter());
-		registerTypeAdapter(Thinklab.c(NS.POINT), new ShapeTypeAdapter());
-		registerTypeAdapter(Thinklab.c(NS.LINE), new ShapeTypeAdapter());
+		registerTypeAdapter(Thinklab.c(NS.POLYGON), new ShapeTypeAdapter(Thinklab.c(NS.POLYGON)));
+		registerTypeAdapter(Thinklab.c(NS.POINT), new ShapeTypeAdapter(Thinklab.c(NS.POINT)));
+		registerTypeAdapter(Thinklab.c(NS.LINE), new ShapeTypeAdapter(Thinklab.c(NS.LINE)));
 
 		/*
 		 * TODO time values and periods
@@ -873,6 +982,26 @@ public class NeoKBox implements IKbox {
 			_db.shutdown();
 			_db = null;
 		} 
+	}
+
+	@Override
+	public IMetadata getObjectMetadata(long handle) {
+
+		Metadata ret = new Metadata();
+		Node node = _db.getNodeById(handle);
+		
+		if (node == null)
+			return ret;
+		
+		try {
+			for (Pair<IProperty, Object> lp : getPropertyValues(node)) {
+				ret.put(lp.getFirst().toString(), lp.getSecond());
+			}
+		} catch (ThinklabException e) {
+			// ignore, return what we have
+		}
+		
+		return ret;
 	}
 
 }

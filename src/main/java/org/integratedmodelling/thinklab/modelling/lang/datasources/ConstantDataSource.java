@@ -42,7 +42,8 @@ public class ConstantDataSource implements IDataSource {
 		}
 
 		@Override
-		public void notifyDependencyKey(String key, IConcept concept) {
+		public void notifyDependency(String key, IAccessor accessor) {
+			// should never happen
 		}
 
 		@Override

@@ -377,7 +377,9 @@
 
     <!-- http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasShape -->
 
-    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasShape"/>
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodelling.org/ks/geospace/geospace.owl#hasShape">
+        <rdfs:range rdf:resource="http://www.integratedmodelling.org/ks/geospace/geospace.owl#polygon"/>
+    </owl:DatatypeProperty>
     
 
 
