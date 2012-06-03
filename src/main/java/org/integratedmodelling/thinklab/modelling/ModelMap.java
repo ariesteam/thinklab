@@ -607,6 +607,11 @@ public class ModelMap {
 				// TODO Auto-generated method stub
 				return 32;
 			}
+
+			@Override
+			public String getNodeShape(Object o) {
+				return BOX;
+			}
 		});
 		
 		gviz.show();

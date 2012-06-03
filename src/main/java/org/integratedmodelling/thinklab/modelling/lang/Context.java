@@ -20,6 +20,7 @@ import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
@@ -30,7 +31,9 @@ import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IContextDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
+import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
+import org.integratedmodelling.thinklab.time.Time;
 
 @Concept(NS.CONTEXT)
 public class Context extends ModelObject<Context> implements IContextDefinition {
@@ -45,38 +48,42 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	
 	ArrayList<IExtent> _order = new ArrayList<IExtent>();
 	HashMap<IConcept, IExtent> _extents = new HashMap<IConcept, IExtent>();
-	HashMap<IConcept, IState> _states = new HashMap<IConcept, IState>();
+	HashMap<ISemanticObject<?>, IState> _states = new HashMap<ISemanticObject<?>, IState>();
 	
-	int _multiplicity = 0;
+	int     _multiplicity = 0;
 	boolean _isNull = false;
 	
 	private boolean _initialized = false;
-	
-	/*
-	 * just store them if we have them, for speed.
-	 */
-	IExtent _space = null;
-	IExtent _time = null;
 	
 	// only used for the isCovered op
 	MultidimensionalCursor _cursor = null;
 
 	/**
-	 * Shallow copy everything in the context passed.
+	 * Shallow copy everything in the context passed. Assumes we are
+	 * passed an INITIALIZED context.
+	 * 
 	 * @param context
+	 * @throws ThinklabException 
 	 */
-	public Context(Context context) {
+	public Context(Context context) throws ThinklabException {
+		
 		this._models.addAll(context._models);
 		this._observations.addAll(context._observations);
 		this._order.addAll(context._order);
 		this._states.putAll(context._states);
 		this._extents.putAll(context._extents);
-		this._multiplicity = context._multiplicity;
 		this._isNull = context._isNull;
+		this._namespaceId = context._namespaceId;
+		
+		initialize();
 	}
 
 	public Context() {}
-
+	
+	public void addStateUnchecked(IState state) {
+		_states.put(state.getObservable(), state);
+	}
+	
 	/**
 	 * Scan all extents and return the properties and values, if any, 
 	 * that describe their coverage for search and retrieval of
@@ -134,7 +141,11 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 
 	@Override
 	public int getMultiplicity() {
-		return _multiplicity;
+		
+		if (_cursor == null) {
+			sort();
+		}
+		return _cursor.getMultiplicity();
 	}
 
 	@Override
@@ -196,12 +207,6 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	@Override
 	public boolean isCovered(int index) {
 
-		if (_cursor == null) {
-			_cursor = 	
-				new MultidimensionalCursor(StorageOrdering.ROW_FIRST);
-			_cursor.defineDimensions(getDimensionSizes());
-		}
-
 		int i = 0;
 		for (IExtent e : getExtents())
 			if (!e.isCovered(_cursor.getElementIndexes(index)[i++]))
@@ -219,15 +224,13 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	@Override
 	public void merge(IObservation observation) throws ThinklabException {
 
-		_cursor = null;
-		
 		if (observation instanceof IExtent) {
 			mergeExtent((IExtent)observation);
 		} else {
 			/*
 			 * TODO must be a state with a datasource that we can redefine
 			 * for this context, or a model we can recompute in this context.
-			 */		
+			 */
 		}
 		
 		sort();
@@ -237,27 +240,24 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	@Override
 	public void merge(IContext context) throws ThinklabException {
 
-		_cursor = null;
 		_order.clear(); // in case we have nothing in the context
 
 		for (IExtent e : context.getExtents()) {
 			merge(e);
 		}
-		
 		for (IState s : context.getStates()) {
 			merge(s);
 		}
-		
 	}
 
 	@Override
 	public IExtent getTime() {
-		return _time;
+		return _extents.get(Time.get().TimeDomain());
 	}
 
 	@Override
 	public IExtent getSpace() {
-		return _space;
+		return _extents.get(Geospace.get().SpatialDomain());
 	}
 
 	@Override
@@ -286,6 +286,10 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 
 		if (_initialized)
 			return;
+		
+		if (_namespace == null && _namespaceId != null) {
+			_namespace = Thinklab.get().getNamespace(_namespaceId);
+		}
 		
 		/*
 		 * we only need it in models and contexts for now.
@@ -330,8 +334,6 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 				merge(o);
 		}
 		
-		sort();
-
 		for (IModel m : _models) {
 			merge(m.observe(this));
 		}
@@ -370,6 +372,9 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 				return 0;
 			}
 		});
+		
+		_cursor = new MultidimensionalCursor(StorageOrdering.ROW_FIRST);
+		_cursor.defineDimensions(getDimensionSizes());
 	}
 	
 	private void mergeExtent(IExtent itsExtent) throws ThinklabException {
@@ -390,7 +395,7 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 			} else {
 				_extents.put(dimension, merged);
 			}
-		}		
+		}
 	}
 
 	private int[] getDimensionSizes() {

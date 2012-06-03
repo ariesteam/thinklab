@@ -4,13 +4,13 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.modelling.IAccessor;
-import org.integratedmodelling.thinklab.api.modelling.IMediatingObserver;
-import org.integratedmodelling.thinklab.api.modelling.IObserver;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IClassifyingObserverDefinition;
 
 @Concept(NS.CLASSIFYING_OBSERVER)
-public class Classification extends Observer<Classification> implements IClassifyingObserverDefinition, IMediatingObserver {
+public class Classification extends Observer<Classification> implements IClassifyingObserverDefinition {
 
 	IConcept _conceptSpace;
 	
@@ -27,6 +27,12 @@ public class Classification extends Observer<Classification> implements IClassif
 	@Override
 	public Classification demote() {
 		return this;
+	}
+
+	@Override
+	public IState createState(ISemanticObject<?> observable, IContext context) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

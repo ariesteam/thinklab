@@ -110,7 +110,24 @@ public class GraphViz
 	int height;
 
 	public static interface NodePropertiesProvider {
+
+		/*
+		 * node shapes
+		 */
+		public final static String BOX = "box";
+		public final static String ELLIPSE = "ellipse";
+		public final static String HEXAGON = "hexagon";
+		public final static String OCTAGON = "octagon";
+		public final static String RECTANGLE = "rectangle";
+		public final static String COMPONENT = "component";
+		public final static String PARALLELOGRAM = "parallelogram";
+		public final static String BOX3D = "box3d";
+		public final static String FOLDER = "folder";
+		public final static String TAB = "tab";
+		public final static String DIAMOND = "diamond";
+
 		public String getNodeId(Object o);
+		public String getNodeShape(Object o);
 		public int getNodeWidth(Object o);
 		public int getNodeHeight(Object o);
 	}
@@ -122,6 +139,7 @@ public class GraphViz
 		int h;
 		String node;
 	}
+	
 	Hashtable<String, NodeLayout> nodes = new Hashtable<String, NodeLayout>();
 	
 	/**
@@ -274,7 +292,7 @@ public class GraphViz
 	   addln(start_graph("fontsize=8", "fontname=\"sanserif\"", "overlap=\"scale\""));
 	   	   
 	   for (Object s : graph.vertexSet()) {
-		   addNode(npp.getNodeId(s), "shape=box, fontname=sanserif, fontsize=8, margin=\"0.055\"");
+		   addNode(npp.getNodeId(s), "shape=" + npp.getNodeShape(s) + ", fontname=sanserif, fontsize=8, margin=\"0.055\"");
 	   }
 	   
 	   for (Object e : graph.edgeSet()) {

@@ -38,6 +38,7 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
+import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
@@ -415,6 +416,12 @@ public class TemporalLocation extends Observation implements IExtent {
 	@Override
 	public IConcept getDomainConcept() {
 		return Time.get().TimeDomain();
+	}
+
+	@Override
+	public IConcept getStateType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -18,11 +18,13 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 
 /**
- * Base class for a general non-literal semantic object.
+ * Base class for a general non-literal semantic object. Should be treated
+ * as immutable after definition, or things may go badly hayward. Wish Java 
+ * could enforce that.
  * 
- * ALL semantic objects are properly hashed with a thread-unique ID and can be
- * used as keys in hashes. Their default equals() method checks for identity -
- * only the same objects will respond true.
+ * All semantic objects are hashable WITHIN A THREAD using REFERENCE equality.
+ * If VALUE equality is desired, reimplement hashCode and equals to use
+ * getSignature().
  * 
  * @author Ferd
  * 
@@ -252,7 +254,7 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 	public int hashCode() {
 		return new Long(_id).hashCode();
 	}
-	
+
 	/**
 	 * A signature is a packed representation of the semantics that will be
 	 * identical for objects that are semantically equivalent, regardless of the
@@ -307,6 +309,7 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 
 		return _signature;
 	}
+
 	/*
 	 * --------------------------------------------------------------------------
 	 * ---------------- next methods are only for AnnotationManager and they
@@ -330,7 +333,5 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 	public boolean beingConceptualized() {
 		return _beingConceptualized;
 	}
-
-
 
 }

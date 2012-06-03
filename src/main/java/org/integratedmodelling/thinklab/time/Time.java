@@ -141,6 +141,13 @@ public class Time  {
 		return absoluteTimeInstance;
 	}
 
+	/**
+	 * Get the concept that will identify the domain of all spatial extents in this implementation.
+	 * This type should be returned by IExtent.getDomainConcept() in all spatial extents capable of
+	 * mediating to each other.
+	 * 
+	 * @return
+	 */
 	public IConcept TimeDomain() {
 		return timeDomain;
 	}

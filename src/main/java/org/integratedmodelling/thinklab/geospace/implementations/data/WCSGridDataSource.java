@@ -23,21 +23,22 @@ import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.geospace.coverage.AbstractRasterCoverage;
+import org.integratedmodelling.thinklab.geospace.coverage.ICoverage;
 import org.integratedmodelling.thinklab.geospace.coverage.WCSCoverage;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
 import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 
-@Concept("geospace:WCSDataSource")
 public class WCSGridDataSource extends RegularRasterGridDataSource implements IStorageMetadataProvider {
 
-	private GridExtent finalExtent = null;
 	private Properties _properties = new Properties();
 	private String _service;
 	private String _id;
@@ -57,16 +58,17 @@ public class WCSGridDataSource extends RegularRasterGridDataSource implements IS
 				s += d;
 				_properties.put(AbstractRasterCoverage.NODATA_PROPERTY, s);
 			}
-		}
-			
+		}	
 	}
 	
-	private void readData() throws ThinklabException {
-		
-		if (this.coverage == null) {
+	@Override
+	protected ICoverage readData() throws ThinklabException {
+
+		if (this._coverage == null) {
 			Thinklab.get().logger().info("reading WCS source " + _service + "#" + _id);
-			this.coverage = new WCSCoverage(_id, _properties);
+			this._coverage = new WCSCoverage(_id, _properties);
 		}
+		return this._coverage;
 	}
 
 
@@ -80,42 +82,25 @@ public class WCSGridDataSource extends RegularRasterGridDataSource implements IS
 		
 		((Metadata)metadata).put(
 				NS.GEOSPACE_HAS_SHAPE, 
-				new PolygonValue(coverage.getEnvelope()));
+				new PolygonValue(_coverage.getEnvelope()));
+	}
+
+	@Override
+	protected GridExtent getFinalExtent(IContext context)
+			throws ThinklabException {
+
+		IExtent space = context.getSpace();
+		
+		if ( !(space instanceof GridExtent)) {
+			throw new ThinklabValidationException("cannot compute a WCS datasource in a non-grid context");
+		}
+
+		if (space.getMultiplicity() != context.getMultiplicity()) {
+			throw new ThinklabValidationException("extents requested to WCS datasource span more domains than space");			
+		}
+		
+		return (GridExtent)space;
 	}
 	
 	
-	
-//	@Override
-//	public IDataSource<?> transform(IDatasourceTransformation transformation)
-//			throws ThinklabException {
-//		
-//		if (transformation instanceof Resample) {
-//			// just set the extent
-//			finalExtent = ((Resample)transformation).getExtent();
-//		} else {
-//			throw new ThinklabValidationException(
-//					"WCS datasource: cannot process transformation of class " + transformation.getClass());
-//		}
-//		return this;
-//	}
-//
-//	@Override
-//	public void postProcess(IObservationContext context)
-//			throws ThinklabException {
-//		
-//		if (finalExtent == null) {
-//			throw new ThinklabValidationException(
-//					"WCS datasource: no subsetting of data, probably being used without a spatial extent");
-//		}
-//		coverage.requireMatch(finalExtent, false);
-//		coverage.loadData();
-//		finalExtent.requireActivationLayer(true);
-//		setGridExtent(finalExtent);
-//	}
-//
-//	@Override
-//	public void preProcess(IObservationContext context)
-//			throws ThinklabException {
-//	}
-
 }

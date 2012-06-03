@@ -32,8 +32,11 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.list.PolyList;
+import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -526,7 +529,7 @@ public class RasterGrid extends Observation implements IExtent {
 
 	@Override
 	public IConcept getDomainConcept() {
-		return Geospace.get().SpatialCoverage();
+		return Geospace.get().SpatialDomain();
 	}
 
 //	@Override
@@ -547,5 +550,9 @@ public class RasterGrid extends Observation implements IExtent {
 //		}
 //	}
 
+	@Override
+	public IConcept getStateType() {
+		return Thinklab.c(NS.POLYGON);
+	}
 	
 }

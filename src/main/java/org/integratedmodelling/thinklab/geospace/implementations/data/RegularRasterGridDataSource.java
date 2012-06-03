@@ -19,117 +19,43 @@
  */
 package org.integratedmodelling.thinklab.geospace.implementations.data;
 
-import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
+import org.integratedmodelling.thinklab.api.modelling.ISerialAccessor;
+import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.coverage.ICoverage;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 
-public class RegularRasterGridDataSource implements IDataSource {
+public abstract class RegularRasterGridDataSource implements IDataSource {
 
-	protected ICoverage coverage = null;
-
-	/* same here - these are overall extents that we need to conform to */
-	private GridExtent gridExtent;
-	/* any expression to transform with gets compiled into this */
-	protected MVELExpression transformation = null;
+	protected ICoverage _coverage = null;
+	private GridExtent _originalExtent;
+	private GridExtent _finalExtent = null;
 	
 	public RegularRasterGridDataSource() {
 	}
 	
 	public RegularRasterGridDataSource(ICoverage coverage,
 			GridExtent gridExtent) {
-		this.coverage = coverage;
-		this.gridExtent = gridExtent;
+		this._coverage = coverage;
 	}
 
-	/**
-	 * This one is used when we want to transform the values with an expression as
-	 * they are accessed. 
-	 * 
-	 * @param coverage
-	 * @param gridExtent
-	 * @param transformation
-	 */
-	public RegularRasterGridDataSource(ICoverage coverage,
-			GridExtent gridExtent, MVELExpression transformation) {
-		this.coverage = coverage;
-		this.gridExtent = gridExtent;
-		this.transformation = transformation;
-	}
-//
-//	@Override
-//	public void initialize(IInstance i) throws ThinklabException {
-//
-//		String sourceURL = null;
-//		String valueAttr = null;
-//		
-//		// read requested parameters from properties
-//		// TODO read class mappings if any - could be to concepts or to instances
-//		for (IRelationship r : i.getRelationships()) {
-//			
-//			if (r.isLiteral()) {
-//				
-//				if (r.getProperty().equals(Geospace.COVERAGE_SOURCE_URL)) {
-//					
-//					/*
-//					 * this can also point to a vector source, as long as the value attribute is
-//					 * provided.
-//					 */
-//					sourceURL = URLUtils.resolveUrl(
-//							r.getValue().toString(),
-//							Geospace.get().getProperties());
-//					
-//				} else if (r.getProperty().equals(Geospace.HAS_VALUE_ATTRIBUTE)) {
-//					valueAttr = r.getValue().toString();
-//				} else if (r.getProperty().equals(Geospace.HAS_TRANSFORMATION_EXPRESSION)) {
-//					this.transformation = new MVELExpression(r.getValue().toString());
-//				}
-//			} 
-//		}
-//
-//		try {
-//			
-//			Properties p = new Properties();
-//			if (valueAttr != null)	
-//				p.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
-//			this.coverage = CoverageFactory.requireCoverage(new URL(sourceURL), p);
-//			
-//		} catch (MalformedURLException e) {
-//			throw new ThinklabIOException(e);
-//		}
-//
-//		
-//	}
-//
-//	@Override
-//	public void validate(IInstance i) throws ThinklabException {
-//
-//		if (coverage != null) {
-//			
-//		} else {
-//			
-//			// TODO we should support inline data
-//			throw new ThinklabValidationException("raster datasource: no coverage specified");		
-//		}
-//		
-//	}
+	public Object getValue(int index) {
 
-
-//	@Override
-	public Object getValue(int index, Object[] parameters) {
-		
-		/*
-		 * TODO reinterpret through classification lookup table if any is provided
-		 */
 		try {
-			Object ret = coverage.getSubdivisionValue(index, gridExtent);
-			double[] nd = coverage.getNodataValue();
+			
+			Object ret = _coverage.getSubdivisionValue(index, _originalExtent);
+			if (! (ret instanceof Number))
+				return Double.NaN;
+			ret = ((Number)ret).doubleValue();
+			
+			double[] nd = _coverage.getNodataValue();
 			if (nd != null && ret != null && (ret instanceof Double) && !Double.isNaN((Double)ret)) {
 				for (double d : nd) {
 					if  (((Double)ret).equals(d)) {
@@ -138,27 +64,80 @@ public class RegularRasterGridDataSource implements IDataSource {
 					}
 				}
 			}
-			if (this.transformation != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
-				HashMap<String, Object> parms = new HashMap<String, Object>();
-				parms.put("self", ret);
-				ret = this.transformation.eval(parms);
-			}
 			return ret;
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}
 	}
 
-	protected void setGridExtent(GridExtent extent) {
-		this.gridExtent = extent;
-	}
-
 	@Override
 	public IAccessor getAccessor(IContext context) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		if (_coverage == null) {
+			_coverage = readData();
+		}
+		_finalExtent = getFinalExtent(context);	
+		return new RasterGridAccessor();
 	}
 
+	/*
+	 * -------------------------------------------------------------------------------------------
+	 * read the coverage
+	 * -------------------------------------------------------------------------------------------
+	 */
+
+	/**
+	 * Do whatever is needed to instantiate _coverage.
+	 * @throws ThinklabException
+	 */
+	protected abstract ICoverage readData() throws ThinklabException; 
+
+	
+	/**
+	 * Return the final grid extent implied by the context. It should also validate
+	 * the context, ensuring we don't want multiplicity in domains where we cannot
+	 * provide it.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	protected abstract GridExtent getFinalExtent(IContext context) throws ThinklabException;
 
 
+	/*
+	 * -------------------------------------------------------------------------------------------------
+	 * simple accessor
+	 * -------------------------------------------------------------------------------------------------
+	 */
+	class RasterGridAccessor implements ISerialAccessor {
+
+		boolean isFirst = true;
+		
+		@Override
+		public IConcept getStateType() {
+			return Thinklab.DOUBLE;
+		}
+
+		@Override
+		public Object getValue(int overallContextIndex) {
+			
+			if (isFirst) {
+				try {
+					_coverage = _coverage.requireMatch(_finalExtent, false);
+				} catch (ThinklabException e) {
+					throw new ThinklabRuntimeException(e);
+				}
+				isFirst = false;
+			}
+			
+			return RegularRasterGridDataSource.this.getValue(overallContextIndex);
+		}
+		
+		@Override
+		public String toString() {
+			return "[raster grid accessor]";
+		}
+		
+	}
+		
 }

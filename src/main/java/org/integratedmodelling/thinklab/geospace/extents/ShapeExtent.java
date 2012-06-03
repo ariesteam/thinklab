@@ -28,9 +28,11 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
+import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IEntifiable;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
@@ -507,7 +509,12 @@ public class ShapeExtent extends ArealExtent implements IEntifiable, /* IConcept
 
 	@Override
 	public IConcept getDomainConcept() {
-		return Geospace.get().SpatialCoverage();
+		return Geospace.get().SpatialDomain();
+	}
+	
+	@Override
+	public IConcept getStateType() {
+		return Thinklab.c(NS.POLYGON);
 	}
 
 }

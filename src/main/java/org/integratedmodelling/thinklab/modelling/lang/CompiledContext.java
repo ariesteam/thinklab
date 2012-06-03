@@ -16,7 +16,7 @@ import org.integratedmodelling.thinklab.modelling.ModelResolver;
  */
 public class CompiledContext extends Context {
 	
-	public CompiledContext(IContext context) {
+	public CompiledContext(IContext context) throws ThinklabException {
 		super((Context) context);
 	}
 

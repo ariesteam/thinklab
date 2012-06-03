@@ -15,24 +15,29 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
+import org.integratedmodelling.thinklab.api.modelling.IComputingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IMediatingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
+import org.integratedmodelling.thinklab.api.modelling.ISerialAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
+import org.integratedmodelling.thinklab.modelling.interfaces.IModifiableState;
 import org.integratedmodelling.thinklab.modelling.lang.Context;
 import org.integratedmodelling.thinklab.modelling.lang.Model;
 import org.integratedmodelling.thinklab.modelling.lang.Observer;
 import org.integratedmodelling.thinklab.query.Queries;
 import org.integratedmodelling.utils.graph.GraphViz;
 import org.integratedmodelling.utils.graph.GraphViz.NodePropertiesProvider;
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -61,14 +66,52 @@ public class ModelResolver {
 	INamespace _namespace;
 	IContext   _context;
 	
+	class ProbingAccessor implements ISerialAccessor {
+
+		CElem _node;
+		
+		public ProbingAccessor(CElem node) {
+			_node = node;
+		}
+		
+		@Override
+		public IConcept getStateType() {
+			return _node.accessor.getStateType();
+		}
+
+		@Override
+		public Object getValue(int index) {
+			Object ret = ((ISerialAccessor)(_node.accessor)).getValue(index);
+			if (_node.state != null) 
+				((IModifiableState)(_node.state)).setValue(index, ret);
+			return ret;
+		}
+
+		public void computeState(int index) {
+			/*
+			 *  just compute the value and not return it. Not necessary,
+			 *  but I hate to call getValue() without assigning it.
+			 */
+			Object ret = ((ISerialAccessor)(_node.accessor)).getValue(index);
+			if (_node.state != null) 
+				((IModifiableState)(_node.state)).setValue(index, ret);			
+		}
+		
+	}
+	
+	
 	/*
 	 * compilation element - the accessor graph is made of these.
+	 * TODO we need a strategy for multiple observables - must notify
+	 * them all to the accessor, then have a way to obtain them - a 
+	 * getValue(observable, index)?
 	 */
 	class CElem extends HashableObject {
 		
-		public CElem(IAccessor accessor2, IModel model2) {
-			this.accessor = accessor2;
-			this.model = model2;
+		public CElem(IAccessor accessor, IContext context, IModel model) {
+			this.accessor = accessor;
+			this.model = model;
+			this.context = context;
 		}
 
 		/*
@@ -86,9 +129,15 @@ public class ModelResolver {
 		 * always not null.
 		 */
 		IAccessor accessor;
-
+		
+		/*
+		 * CONTEXT - may be different from node to node, either because only
+		 * initializers are needed, or because a context transformer has been 
+		 * processed.
+		 */
+		IContext context;
+		
 	}
-	
 	
 	/**
 	 * Create a model resolver using the model resolution strategy defined for the passed
@@ -102,11 +151,13 @@ public class ModelResolver {
 	
 	class DependencyEdge extends DefaultEdge {
 		
-		public DependencyEdge(boolean b) {
+		public DependencyEdge(boolean b, String formalName) {
 			isMediation = b;
+			this.formalName = formalName;
 		}
 		private static final long serialVersionUID = 2366743581134478147L;
 		boolean isMediation = false;
+		String formalName = null;
 
 		@Override
 		public boolean equals(Object edge) {
@@ -165,17 +216,22 @@ public class ModelResolver {
 		 */
 		_modelstruc = buildModelGraph();
 
-		// REMOVE - debug
-		dumpModelGraph();
+		// TODO REMOVE - debug
+		dumpGraph(_modelstruc);
 
-		
 		return true;
 	}
 
 	
 	public IObservation run() throws ThinklabException {
 
-		DefaultDirectedGraph<CElem, DependencyEdge> accessorGraph = buildAccessorGraph(_root, _modelstruc, _context);
+		DefaultDirectedGraph<CElem, DependencyEdge> accessorGraph = 
+				buildAccessorGraph(_root, _modelstruc, _context);
+		
+		/*
+		 * TODO remove --debug
+		 */
+		dumpGraph(accessorGraph);
 		
 		for (CElem cel : getRoots(accessorGraph)) {
 			computeModel(cel, accessorGraph);
@@ -189,24 +245,87 @@ public class ModelResolver {
 		return null;
 	}
 	
+	/**
+	 * This one only computes a graph of serial accessors, as the parallel and transforming ones invoke
+	 * this recursively. So it doesn't have to worry about that at all.
+	 * 
+	 * @param cel
+	 * @param accessorGraph
+	 * @throws ThinklabException
+	 */
 	private void computeModel(CElem cel,
-			DefaultDirectedGraph<CElem, DependencyEdge> accessorGraph) throws ThinklabException {
+			DefaultDirectedGraph<CElem, DependencyEdge> graph) throws ThinklabException {
 
 		/*
 		 * first pass: notify all accessors of their dependencies and mediations, create
-		 * all states.
+		 * all states, add needed context mappers to edges. 
 		 */
+		initializeAccessors(cel, graph);
 		
 		/*
 		 * main compute cycle
 		 */
+		ProbingAccessor main = new ProbingAccessor(cel);
+		for (int i = 0; i < cel.context.getMultiplicity(); i++) {
+			
+			/*
+			 * TODO honor listeners in context, stop if requested etc.
+			 */
+			
+			main.computeState(i);
+		}
 		
 		/*
 		 * compile dataset into context
 		 */
-		
+		collectStates(cel, graph);
 		
 	}
+
+	/**
+	 * Each accessor is wrapped in a probing other that sets the data in the state and returns it
+	 * appropriately. The probe is passed to the upstream accessor instead of the original one.
+	 * 
+	 * @param cel
+	 * @param graph
+	 * @throws ThinklabException
+	 */
+	private void initializeAccessors(CElem cel, DefaultDirectedGraph<CElem, DependencyEdge> graph) 
+			throws ThinklabException {
+
+		for (DependencyEdge edge : graph.outgoingEdgesOf(cel)) {
+			
+			CElem target = graph.getEdgeTarget(edge);
+			
+			initializeAccessors(target, graph);
+			
+			if (edge.isMediation)
+				((IMediatingAccessor)(cel.accessor)).addMediatedAccessor(new ProbingAccessor(target));
+			else if (cel.accessor instanceof IComputingAccessor)
+				((IComputingAccessor)(cel.accessor)).notifyDependency(edge.formalName, new ProbingAccessor(target));
+			else
+				throw new ThinklabValidationException("non-computing observer being given unexpected dependencies");
+		}
+		
+		if (cel.model != null) {
+			/*
+			 * TODO which observable? If this is only for serial accessors, we should
+			 * have only one state per node. But that's NOT TRUE - needs work.
+			 */
+			cel.state = cel.model.getObserver().createState(null, cel.context);
+		}
+	}
+
+	private void collectStates(CElem cel,
+			DefaultDirectedGraph<CElem, DependencyEdge> graph) {
+		
+		for (DependencyEdge edge : graph.outgoingEdgesOf(cel)) {
+			collectStates(graph.getEdgeTarget(edge), graph);
+		}
+		
+		if (cel.state != null)
+			((Context)(cel.context)).addStateUnchecked(cel.state);
+		}
 
 
 	private Collection<CElem> getRoots(
@@ -257,6 +376,26 @@ public class ModelResolver {
 		return graph;
 	}
 	
+	
+	/**
+	 * TODO to deal with parallel and transforming accessors: 
+	 * 
+	 * 	keep a hash of observable sig -> state
+	 *  when parallel accessor encountered, run it and put its process() result in hash
+	 *  else at each dependency, look first if it's in the hash and use that state as accessor if so.
+	 *  IN order to do so, the observable of the target must be in the edge
+	 *  
+	 *  If context is transformed, get the context from the accessor and this must become the new
+	 *  context - to be floated up to return value. CElem must also contain the context for the final 
+	 *  node.
+	 *  
+	 * @param model
+	 * @param graph
+	 * @param modelGraph
+	 * @param context
+	 * @return
+	 * @throws ThinklabException
+	 */
 	private CElem buildAccessorGraphInternal(
 			IModel model, DefaultDirectedGraph<CElem, DependencyEdge> graph, DefaultDirectedGraph<IModel, 
 			DependencyEdge> modelGraph, IContext context) throws ThinklabException {
@@ -268,54 +407,57 @@ public class ModelResolver {
 			/*
 			 * get the accessor from the DS and chain it to ours
 			 */
-			node = new CElem(model.getObserver().getAccessor(), null);
+			node = new CElem(model.getObserver().getAccessor(), context, null);
 
 			if ( !(node.accessor instanceof IMediatingAccessor))
 				throw new ThinklabValidationException("trying to mediate to a non-mediating observer");
 			
-			CElem target = new CElem(model.getDatasource().getAccessor(context), model);
+			CElem target = new CElem(model.getDatasource().getAccessor(context), context, model);
 			graph.addVertex(node);
 			graph.addVertex(target);
-			graph.addEdge(target, target, new DependencyEdge(true));
+			graph.addEdge(node, target, new DependencyEdge(true, null));
 			
 		} else if (model.getObserver() != null) {
 			
 			IAccessor accessor = model.getObserver().getAccessor();
 			if (accessor != null) {
-				node = new CElem(accessor, model);
+				node = new CElem(accessor, context, model);
 				graph.addVertex(node);
 			}
 		}
-		
 		
 		for (DependencyEdge edge : modelGraph.outgoingEdgesOf(model)) {
 			
 			if (edge.isMediation) {
 				
 				/*
+				 * if we get here, the node must have had an observer, so node can't be null.
+				 */
+				
+				/*
 				 * get the accessor chain for the final observable
 				 */
-				CElem target = buildAccessorGraphInternal(modelGraph.getEdgeTarget(edge), graph, modelGraph, context);
+				CElem target = 
+						buildAccessorGraphInternal(
+								modelGraph.getEdgeTarget(edge), graph, modelGraph, context);
 				
 				/*
 				 * loop along the chain of mediation until we find the final
 				 * observable; then get the model for it, get its CElem and
 				 * tie the last mediator to it.
-				 */
-				node = new CElem(model.getObserver().getAccessor(), model);
-				graph.addVertex(node);
-				
+				 */				
 				CElem start = node;
 				IObserver obs = model.getObserver();
 				
 				while (obs.getMediatedObserver() != null) {
-					CElem targ = new CElem(obs.getMediatedObserver().getAccessor(), null);
-					graph.addEdge(start, targ, new DependencyEdge(true));
+					CElem targ = new CElem(obs.getMediatedObserver().getAccessor(), context, null);
+					graph.addVertex(targ);
+					graph.addEdge(start, targ, new DependencyEdge(true, null));
 					obs = obs.getMediatedObserver();
 					start = targ;
 				}
 				
-				graph.addEdge(start, target, new DependencyEdge(true));
+				graph.addEdge(start, target, new DependencyEdge(true, null));
 				
 			} else {
 
@@ -324,11 +466,11 @@ public class ModelResolver {
 				 */
 				CElem target = buildAccessorGraphInternal(modelGraph.getEdgeTarget(edge), graph, modelGraph, context);
 				if (node != null) {
-					graph.addEdge(node, target, new DependencyEdge(false));
+					graph.addEdge(node, target, new DependencyEdge(false, edge.formalName));
 				}
 			}
 		}
-		
+				
 		return node;
 	}
 
@@ -554,8 +696,47 @@ public class ModelResolver {
 	 * an accessor and throw away the model.
 	 */
 	private IModel promoteStateToModel(IState state) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		/**
+		 * A dumb model that simply publishes a state, meant to facilitate using a
+		 * precomputed state in a model graph.
+		 * 
+		 * @author Ferd
+		 */
+		class StateModel extends Model {
+
+			class StateObserver extends Observer<StateObserver> {
+
+				IState _state;
+
+				public StateObserver(IState state) {
+					_state = state;
+				}
+				
+				@Override
+				public IAccessor getAccessor() {
+					return _state;
+				}
+
+				@Override
+				public IState createState(ISemanticObject<?> observable, IContext context)	
+						throws ThinklabException {
+					return _state;
+				}
+
+				@Override
+				public StateObserver demote() {
+					return this;
+				}
+			}
+			
+			public StateModel(IState state) {
+				addObserver(new StateObserver(state), null);
+			}
+			
+		}
+		
+		return new StateModel(state);
 	}
 
 	private List<ISemanticObject<?>> getSuitableModels(SemanticObject<?> observable,
@@ -646,7 +827,7 @@ public class ModelResolver {
 				IModel dep = _modHash.get(((SemanticObject<?>)obs).getSignature());
 				if (dep != null) {
 					buildModelGraphInternal(dep, models, graph);
-					graph.addEdge(model, dep, new DependencyEdge(false));
+					graph.addEdge(model, dep, new DependencyEdge(false, m.getSecond()));
 				}
 			}
 		}
@@ -657,7 +838,7 @@ public class ModelResolver {
 				IModel dep = _modHash.get(((SemanticObject<?>)obs).getSignature());
 				if (dep != null) {
 					buildModelGraphInternal(dep, models, graph);
-					graph.addEdge(model, dep, new DependencyEdge(false));
+					graph.addEdge(model, dep, new DependencyEdge(false, m.getSecond()));
 				}
 			}
 		}
@@ -667,16 +848,16 @@ public class ModelResolver {
 			IModel dep = _modHash.get(((SemanticObject<?>)obs).getSignature());
 			if (dep != null) {
 				buildModelGraphInternal(dep, models, graph);
-				graph.addEdge(model, dep, new DependencyEdge(true));
+				graph.addEdge(model, dep, new DependencyEdge(true, null));
 			}
 		}
 		
 	}
 	
-	private void dumpModelGraph() throws ThinklabResourceNotFoundException {
+	private void dumpGraph(DirectedGraph<?, ?> graph) throws ThinklabResourceNotFoundException {
 		
 		GraphViz ziz = new GraphViz();
-		ziz.loadGraph(_modelstruc, new NodePropertiesProvider() {
+		ziz.loadGraph(graph, new NodePropertiesProvider() {
 			
 			@Override
 			public int getNodeWidth(Object o) {
@@ -685,9 +866,24 @@ public class ModelResolver {
 			
 			@Override
 			public String getNodeId(Object o) {
-				String id = ((IModel)o).getId();
-				if (ModelManager.isGeneratedId(id))
-					id = "[" + ((IModel)o).getObservables().get(0).getDirectType() + "]";
+				
+				String id = "?";
+				
+				if (o instanceof IModel) {
+				
+					id = ((IModel)o).getId();
+					if (ModelManager.isGeneratedId(id))
+						id = "[" + ((IModel)o).getObservables().get(0).getDirectType() + "]";
+				} else if (o instanceof IAccessor) {
+					id = "Accessor (?)";
+				} else if (o instanceof CElem) {
+					id = 
+						((CElem)o).accessor.toString() +
+						(((CElem)o).model == null ? "" : " " + (((CElem)o).model.getObservables().get(0).getDirectType())) +
+						" (" + ((CElem)o).hashCode() +
+						")";
+				}
+				
 				return id;
 			}
 			
@@ -695,6 +891,20 @@ public class ModelResolver {
 			public int getNodeHeight(Object o) {
 				return 20;
 			}
+
+			@Override
+			public String getNodeShape(Object o) {
+
+				if (o instanceof IAccessor) {
+					return HEXAGON;
+				} else if (o instanceof CElem) {
+					return ((CElem)o).accessor instanceof ISerialAccessor ? ELLIPSE : HEXAGON;
+				} else if (o instanceof IModel) {
+					return BOX3D;
+				} 
+				return BOX;
+			}
+			
 		}, true);
 		
 		System.out.println(ziz.getDotSource());

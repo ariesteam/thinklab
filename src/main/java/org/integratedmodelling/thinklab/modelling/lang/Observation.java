@@ -48,5 +48,18 @@ public class Observation extends ModelObject<Observation> implements IObservatio
 	public IContext getContext() {
 		return _context;
 	}
+	
+	/*
+	 * ---------------------------------------------------------------------------------------------------
+	 * for derived and internal purposes
+	 * ---------------------------------------------------------------------------------------------------
+	 */
 
+	protected void setObservable(ISemanticObject<?> o) {
+		_observable = o;
+	}
+	
+	protected void setContext(IContext c) {
+		_context = c;
+	}
 }
