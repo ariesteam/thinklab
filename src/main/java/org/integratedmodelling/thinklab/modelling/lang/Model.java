@@ -117,7 +117,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		return observer.getAccessor();
 	}
 	
-	public List<Triple<IModel, String, Boolean>> getObserverDependencies() {
+	public List<Triple<Object, String, Boolean>> getObserverDependencies() {
 		return _observer.getDependencies();
 	}
 	

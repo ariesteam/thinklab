@@ -2,6 +2,7 @@ package org.integratedmodelling.thinklab.modelling;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -538,9 +539,9 @@ public class ModelResolver {
 			/*
 			 * resolve all model dependencies and behave according to their optional status.
 			 */
-			for (Triple<IModel, String, Boolean> m : model.getDependencies()) {
+			for (Triple<Object, String, Boolean> m : model.getDependencies()) {
 				boolean opt = m.getThird();
-				IModel resolved = resolveInternal((Model)(m.getFirst()), context, opt || isOptional);
+				IModel resolved = resolveInternal((ISemanticObject<?>)(m.getFirst()), context, opt || isOptional);
 				if (resolved == null && isOptional && !opt) {
 					return null;
 				} else {
@@ -554,9 +555,9 @@ public class ModelResolver {
 			 * resolve the dependencies of the observer. We inherit the coverage from theirs.
 			 */
 			IObserver observer = model.getObserver();
-			for (Triple<IModel, String, Boolean> m : observer.getDependencies()) {
+			for (Triple<Object, String, Boolean> m : observer.getDependencies()) {
 				boolean opt = m.getThird();
-				IModel resolved = resolveInternal((Model)(m.getFirst()), context, opt || isOptional);
+				IModel resolved = resolveInternal((ISemanticObject<?>)(m.getFirst()), context, opt || isOptional);
 				if (resolved == null && isOptional && !opt) {
 					return null;
 				} else {
@@ -830,9 +831,9 @@ public class ModelResolver {
 		
 		graph.addVertex(model);
 		
-		for (Triple<IModel, String, Boolean> m : model.getDependencies()) {
+		for (Triple<Object, String, Boolean> m : model.getDependencies()) {
 
-			for (ISemanticObject<?> obs : m.getFirst().getObservables()) {
+			for (ISemanticObject<?> obs : getObservables(m.getFirst())) {
 				IModel dep = _modHash.get(((SemanticObject<?>)obs).getSignature());
 				if (dep != null) {
 					buildModelGraphInternal(dep, models, graph);
@@ -842,8 +843,8 @@ public class ModelResolver {
 		}
 		
 		IObserver observer = model.getObserver();
-		for (Triple<IModel, String, Boolean> m : observer.getDependencies()) {
-			for (ISemanticObject<?> obs : m.getFirst().getObservables()) {
+		for (Triple<Object, String, Boolean> m : observer.getDependencies()) {
+			for (ISemanticObject<?> obs : getObservables(m.getFirst())) {
 				IModel dep = _modHash.get(((SemanticObject<?>)obs).getSignature());
 				if (dep != null) {
 					buildModelGraphInternal(dep, models, graph);
@@ -863,6 +864,17 @@ public class ModelResolver {
 		
 	}
 	
+	private Collection<ISemanticObject<?>> getObservables(Object obj) {
+
+		if (obj instanceof IModel)
+			return ((IModel)obj).getObservables();
+		if (obj instanceof ISemanticObject<?>) {
+			return new ArrayList<ISemanticObject<?>>(Collections.singleton((ISemanticObject<?>)obj));
+		}
+		return new ArrayList<ISemanticObject<?>>();
+	}
+
+
 	private void dumpGraph(DirectedGraph<?, ?> graph) throws ThinklabResourceNotFoundException {
 		
 		GraphViz ziz = new GraphViz();

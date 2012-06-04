@@ -12,7 +12,6 @@ import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
-import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IConditionalObserverDefinition;
@@ -39,9 +38,9 @@ public class ConditionalObserver extends Observer<ConditionalObserver> implement
 	}
 
 	@Override
-	public List<Triple<IModel, String, Boolean>> getDependencies() {
-		ArrayList<Triple<IModel, String, Boolean>> ret = 
-				new ArrayList<Triple<IModel,String,Boolean>>();
+	public List<Triple<Object, String, Boolean>> getDependencies() {
+		ArrayList<Triple<Object, String, Boolean>> ret = 
+				new ArrayList<Triple<Object,String,Boolean>>();
 
 		for (Pair<IObserver, IExpression> o : _observers)
 			ret.addAll(o.getFirst().getDependencies());

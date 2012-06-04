@@ -27,8 +27,8 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IObservingObjectDe
 public abstract class ObservingObject<T> extends ModelObject<T> implements IObservingObject, IObservingObjectDefinition {
 	
 	@Property(NS.HAS_DEPENDENCY)
-	ArrayList<Triple<IModel, String, Boolean>> _dependencies = 
-			new ArrayList<Triple<IModel,String, Boolean>>();
+	ArrayList<Triple<Object, String, Boolean>> _dependencies = 
+			new ArrayList<Triple<Object,String, Boolean>>();
 
 	@Property(NS.HAS_OBSERVABLE)
 	ArrayList<ISemanticObject<?>> _observables = 
@@ -47,12 +47,17 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	}
 
 	@Override
-	public void addDependency(IModelDefinition cmodel, String formalName, boolean required) {
-		_dependencies.add(new Triple<IModel, String, Boolean>((IModel)cmodel, formalName, required));
+	public void addDependency(Object cmodel, String formalName, boolean required) {
+		
+		/*
+		 * TODO ensure semantic object; if list for observable definition, entify it first.
+		 */
+		
+		_dependencies.add(new Triple<Object, String, Boolean>(cmodel, formalName, required));
 	}
 
 	@Override
-	public List<Triple<IModel, String, Boolean>> getDependencies() {
+	public List<Triple<Object, String, Boolean>> getDependencies() {
 		return _dependencies;
 	}
 	

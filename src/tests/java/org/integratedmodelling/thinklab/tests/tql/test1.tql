@@ -1,28 +1,56 @@
 namespace org.integratedmodelling.test1
 	covering 
 		shape(wkt="EPSG:4326 POLYGON((-21.2660 27.6363, -21.2660 61.0088, 39.8693 61.0088, 39.8693 27.6363, -21.2660 27.6363))")
-	store to test.models
-	resolve from  test.models;
+	resolve from test.models 
+		with {                    // redefine ranking criteria to resolve these models
+			qa:evidence 100
+			qa:open 50
+			qa:quality 80
+			qa:timeliness 40
+		}
+	store to test.models;
+
+/*
+ * ---------------------------------------------------------------------------------------------
+ * example models
+ * ---------------------------------------------------------------------------------------------
+ */
 
 define model rainfall-global of 
 		(concept Rainfall is habitat:Rainfall)
-	as measure (measure habitat:Rainfall in m) in mm;
+	as measure (measure habitat:Rainfall in m) in mm 
+		using geospace.physics:GroundElevation;
 
 define model rainfall-local of 
 		(concept RainfallLocal is habitat:Rainfall)
 	as measure habitat:Rainfall in m;
 	
-/**
- * this uses a datasource so it is stored with its computed extents to resolve 
- * observables later. 
- */	
+/*
+ * ---------------------------------------------------------------------------------------------
+ * example annotations of datasources
+ * These are stored in the 'store to' kbox and used for resolution, no need to name them
+ * ---------------------------------------------------------------------------------------------
+ */
+	
 model wcs(service="http://ecoinformatics.uvm.edu/geoserver/wcs", id="global:annual_precip_global")
-     as measure habitat:Rainfall in mm
+     as measure habitat:Rainfall in mm;
+
+model wcs(service="http://ecoinformatics.uvm.edu/geoserver/wcs", id="global:dem90m")
+     as measure geospace.physics:GroundElevation in m
      with metadata {
-              dc:comment ""
-              dc:originator ""
+              dc:comment "SRTM DEM 90m resolution, hydrologically adjusted"
+              dc:originator "NASA"
               dc:rights "cc-attr-nomod"
+              qa:open 100
+              qa.quality 80
+              qa.review 75
        };
+	
+/*
+ * ---------------------------------------------------------------------------------------------
+ * example contexts
+ * ---------------------------------------------------------------------------------------------
+ */	
 	
 define context puget as
      grid(resolution="10 km", 
