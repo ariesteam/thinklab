@@ -233,9 +233,7 @@ public class ModelResolver {
 		 */
 		dumpGraph(accessorGraph);
 		
-		for (CElem cel : getRoots(accessorGraph)) {
-			computeModel(cel, accessorGraph);
-		}
+		computeModel(accessorGraph);
 
 		/*
 		 * find state to return as root, or build a new observation in this context if observables don't have
@@ -253,33 +251,36 @@ public class ModelResolver {
 	 * @param accessorGraph
 	 * @throws ThinklabException
 	 */
-	private void computeModel(CElem cel,
-			DefaultDirectedGraph<CElem, DependencyEdge> graph) throws ThinklabException {
+	private void computeModel(DefaultDirectedGraph<CElem, DependencyEdge> graph) throws ThinklabException {
 
+		/*
+		 * TODO topological sorting of accessors, then loop
+		 */
+		
 		/*
 		 * first pass: notify all accessors of their dependencies and mediations, create
 		 * all states, add needed context mappers to edges. 
-		 */
-		initializeAccessors(cel, graph);
-		
-		/*
-		 * main compute cycle
-		 */
-		ProbingAccessor main = new ProbingAccessor(cel);
-		for (int i = 0; i < cel.context.getMultiplicity(); i++) {
-			
-			/*
-			 * TODO honor listeners in context, stop if requested etc.
-			 */
-			
-			main.computeState(i);
-		}
-		
-		/*
-		 * compile dataset into context
-		 */
-		collectStates(cel, graph);
-		
+//		 */
+//		initializeAccessors(cel, graph);
+//		
+//		/*
+//		 * main compute cycle
+//		 */
+//		ProbingAccessor main = new ProbingAccessor(cel);
+//		for (int i = 0; i < cel.context.getMultiplicity(); i++) {
+//			
+//			/*
+//			 * TODO honor listeners in context, stop if requested etc.
+//			 */
+//			
+//			main.computeState(i);
+//		}
+//		
+//		/*
+//		 * compile dataset into context
+//		 */
+//		collectStates(cel, graph);
+//		
 	}
 
 	/**
@@ -432,6 +433,14 @@ public class ModelResolver {
 				
 				/*
 				 * if we get here, the node must have had an observer, so node can't be null.
+				 */
+				
+				/*
+				 * NOTE: there may be more dep edges to the same model - which must
+				 * result in ONE accessor being created but repeated in each CElem,
+				 * and the edge must carry the observable - to later be called as
+				 * getValue(observable, index). Mediated nodes should be invoked as
+				 * getMediatedValue(index).
 				 */
 				
 				/*
