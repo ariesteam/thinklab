@@ -465,7 +465,7 @@ public class NeoKBox implements IKbox {
 	private List<Long> applySorting(Set<Long> results, SemanticQuery query) {
 
 		ArrayList<Long> ret = new ArrayList<Long>();
-		if (query instanceof IMetadataHolder && ((IMetadataHolder) query).getMetadataFieldAsString(IKbox.SORT_FIELD) != null) {
+		if (query instanceof IMetadataHolder && ((IMetadataHolder) query).getMetadata().getString(IKbox.SORT_FIELD) != null) {
 			
 			/*
 			 * TODO sort if the query's metadata specify it. Use node metadata and a ComparatorChain from 

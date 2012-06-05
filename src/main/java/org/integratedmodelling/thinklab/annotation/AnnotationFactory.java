@@ -180,16 +180,19 @@ public class AnnotationFactory {
 	 */
 	public IReferenceList conceptualize(Object o) throws ThinklabException {
 		
-		return conceptualizeInternal(o,
+		IReferenceList ret = conceptualizeInternal(o,
 				Collections.synchronizedMap(new WeakHashMap<Object, IReferenceList>()), 
 				null);
+		
+		System.out.println(ret.prettyPrint());
+		return ret;
 	}
 
-	private IReferenceList conceptualizeInternal(Object o, Map<Object, IReferenceList> objectHash, IReferenceList list) 
+	private IReferenceList conceptualizeInternal(Object o, Map<Object, IReferenceList> objectHash, IReferenceList root) 
 			throws ThinklabException {
 
-		if (list == null)
-			list = new ReferenceList();
+		if (root == null)
+			root = new ReferenceList();
 		
 		/*
 		 * If literal, we always create a full list unless the literal is a 
@@ -198,7 +201,7 @@ public class AnnotationFactory {
 		Class<?> cls = o.getClass();
 		IConcept literalType = _class2literal.get(cls);
 		if (literalType != null && !(o instanceof IConceptualizable)) {
-			return list.newList(literalType, o);
+			return root.newList(literalType, o);
 		} 	
 		
 		/*
@@ -214,7 +217,7 @@ public class AnnotationFactory {
 									((Map.Entry<?,?>)o).getKey(),
 									((Map.Entry<?,?>)o).getValue()),
 							objectHash,
-							list);
+							root);
 		}
 
 		/*
@@ -225,7 +228,7 @@ public class AnnotationFactory {
 		if (objectHash.containsKey(o)) {
 			return objectHash.get(o);
 		} else {
-			ref = list.getForwardReference();
+			ref = root.getForwardReference();
 			objectHash.put(o, ref);
 		}
 		
@@ -234,14 +237,14 @@ public class AnnotationFactory {
 		 * add references to objects upstream.
 		 */
 		if (o instanceof IConceptualizable) {
-			return (IReferenceList) ref.resolve(list.internalize(((IConceptualizable) o).conceptualize()));
+			return (IReferenceList) ref.resolve(root.internalize(((IConceptualizable) o).conceptualize()));
 		}
 		
 		/*
 		 * if semantic object not currently being conceptualized, just use its semantics
 		 */
 		if (o instanceof SemanticObject<?> && !((SemanticObject<?>)o).beingConceptualized()) {
-			return (IReferenceList) ref.resolve(list.internalize(((ISemanticObject<?>) o).getSemantics()));	
+			return (IReferenceList) ref.resolve(root.internalize(((ISemanticObject<?>) o).getSemantics()));	
 		}
 		
 		/*
@@ -279,17 +282,17 @@ public class AnnotationFactory {
 				if (value != null) {
 					for (Object v : getAllInstances(value)) {
 					
-						IList semantics = conceptualizeInternal(v, objectHash, list);
+						IList semantics = conceptualizeInternal(v, objectHash, root);
 						if (semantics == null) {
 							throw new ThinklabValidationException("cannot conceptualize field " + f.getName() + " of object " + o);
 						}
-						sa.add(list.newList(p, semantics));
+						sa.add(root.newList(p, semantics));
 					}
 				}
 			}
 		}
 		
-		return (IReferenceList) ref.resolve(list.newList(sa.toArray()));
+		return (IReferenceList) ref.resolve(root.newList(sa.toArray()));
 	}
 	
 	private Collection<Object> getAllInstances(Object value) {

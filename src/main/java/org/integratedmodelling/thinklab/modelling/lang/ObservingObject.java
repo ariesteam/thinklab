@@ -11,9 +11,7 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservingObject;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IObservingObjectDefinition;
 
 /**
@@ -35,7 +33,8 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 			new ArrayList<ISemanticObject<?>>();
 
 	protected boolean _initialized = false;
-	
+	String _observableCName;
+
 	/*
 	 * non-persistent fields
 	 */
@@ -43,15 +42,18 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	
 	@Override
 	public void addObservable(IList instance) {
+		_observableCName = instance.first().toString();
 		_observableDefs.add(instance);
+	}
+	
+	
+	@Override
+	public String getObservableConceptName() {
+		return _observableCName;
 	}
 
 	@Override
 	public void addDependency(Object cmodel, String formalName, boolean required) {
-		
-		/*
-		 * TODO ensure semantic object; if list for observable definition, entify it first.
-		 */
 		
 		_dependencies.add(new Triple<Object, String, Boolean>(cmodel, formalName, required));
 	}
@@ -65,11 +67,31 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 		
 		if (_initialized)
 			return;
+
+		_initialized = true;
 		
 		for (IList list : _observableDefs) {
 			_observables.add(Thinklab.get().entify(list));
 		}
 		
-		_initialized = true;
+		/*
+		 * create or initialize any object we depend on
+		 */
+		ArrayList<Triple<Object, String, Boolean>> deps = 
+				new ArrayList<Triple<Object,String, Boolean>>();
+		
+		for (Triple<Object, String, Boolean>  dp : _dependencies) {
+			if (dp.getFirst() instanceof IList) {
+				deps.add(new Triple<Object, String, Boolean>(
+							Thinklab.get().entify((IList)(dp.getFirst())), 
+							dp.getSecond(), dp.getThird()));
+			} else {
+				((Model)(dp.getFirst())).initialize();
+				deps.add(dp);
+			}
+		}
+		
+		_dependencies = deps;
+		
 	}
 }

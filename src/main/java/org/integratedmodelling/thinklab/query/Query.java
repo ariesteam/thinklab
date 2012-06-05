@@ -37,6 +37,7 @@ import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 
 public class Query implements IQuery, IParseable, SemanticQuery, IMetadataHolder {
 
@@ -246,92 +247,8 @@ public class Query implements IQuery, IParseable, SemanticQuery, IMetadataHolder
 
 	@Override
 	public IMetadata getMetadata() {
+		if (_metadata == null)
+			_metadata = new Metadata();
 		return _metadata;
 	}
-
-	@Override
-	public String getMetadataFieldAsString(String field) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer getMetadataFieldAsInt(String field) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Long getMetadataFieldAsLong(String field) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Double getMetadataFieldAsDouble(String field) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Float getMetadataFieldAsFloat(String field) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Boolean getMetadataFieldAsBoolean(String field) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IConcept getMetadataFieldAsConcept(String field) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getMetadataFieldAsString(String field, String def) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getMetadataFieldAsInt(String field, int def) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long getMetadataFieldAsLong(String field, long def) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public double getMetadataFieldAsDouble(String field, double def) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float getMetadataFieldAsFloat(String field, float def) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean getMetadataFieldAsBoolean(String field, boolean def) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public IConcept getMetadataFieldAsConcept(String field, IConcept def) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 }

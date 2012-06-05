@@ -32,9 +32,12 @@ import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IConceptualizable;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IMetadataHolder;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.geospace.Geospace;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
@@ -62,10 +65,11 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
  */
 @Literal(concept="geospace:SpatialRecord", datatype="http://www.integratedmodelling.org/ks/geospace/geospace.owl#geometry", javaClass=Geometry.class)
 public class ShapeValue extends SemanticLiteral<Geometry> 
-	implements IParseable, IConceptualizable, ITopologicallyComparable<ShapeValue> {
+	implements IParseable, IConceptualizable, ITopologicallyComparable<ShapeValue>, IMetadataHolder {
 
 	PrecisionModel precisionModel = null;
 	CoordinateReferenceSystem crs = null;
+	IMetadata metadata = null;
 	
 	public ShapeValue(IConcept c, Geometry value) {
 		super(c, value);
@@ -549,6 +553,13 @@ public class ShapeValue extends SemanticLiteral<Geometry>
 		 */
 		setConceptWithoutValidation(null);
 		
+	}
+
+	@Override
+	public IMetadata getMetadata() {
+		if (metadata == null)
+			metadata = new Metadata();
+		return metadata;
 	}
 
 }
