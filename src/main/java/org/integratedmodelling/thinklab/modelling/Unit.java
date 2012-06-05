@@ -39,6 +39,15 @@ public class Unit implements IUnit {
 	String _modifier = null;
 	
 	@Override
+	public boolean equals(Object o) {
+		return 
+			o instanceof Unit &&
+			((_modifier == null && ((Unit)o)._modifier == null) || 
+			 (_modifier != null && ((Unit)o)._modifier != null && ((Unit)o)._modifier.equals(_modifier))) &&
+			 _unit.equals(((Unit)o)._unit);
+	}	
+	
+	@Override
 	public void parse(String string) throws ThinklabException {
 		
 		Pair<Double, String> pd = MiscUtilities.splitNumberFromString(string);
@@ -95,7 +104,6 @@ public class Unit implements IUnit {
 		}
 
 	}
-
 	
 	public Unit(javax.measure.unit.Unit<?> unit) {
 		_unit = unit;
@@ -348,7 +356,6 @@ public class Unit implements IUnit {
 			}
 		}
 		return ret;
-		
 	}
 
 	public void dump(PrintStream out) {
@@ -364,7 +371,6 @@ public class Unit implements IUnit {
 		out.println("is" + (isArealDensity() ? " " : " not ") +  "an areal density");
 		out.println("is" + (isVolumeDensity() ? " " : " not ") +  "a volumetric density");
 	}
-
 
 	@Override
 	public String asText() {

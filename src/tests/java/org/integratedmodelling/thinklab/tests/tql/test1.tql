@@ -42,8 +42,8 @@ model wcs(service="http://ecoinformatics.uvm.edu/geoserver/wcs", id="global:dem9
               dc:originator "NASA"
               dc:rights "cc-attr-nomod"
               qa:open 100
-              qa.quality 80
-              qa.review 75
+              qa:quality 80
+              qa:review 75
        };
 	
 /*

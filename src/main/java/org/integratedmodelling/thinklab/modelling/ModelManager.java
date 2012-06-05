@@ -90,9 +90,6 @@ import com.google.inject.Injector;
  */
 public class ModelManager implements IModelManager {
 
-
-	private static ModelManager _this = null;
-
 	/*
 	 * we provide a default namespace for models that come right out of a kbox.
 	 */
@@ -295,6 +292,10 @@ public class ModelManager implements IModelManager {
 		@Override
 		public void onNamespaceDeclared(String namespaceId, INamespace namespace) {
 			
+			if (errors.size() > 0) {
+				return;
+			}
+			
 			/*
 			 * if we have stored this namespace previously, retrieve its record and set the
 			 * previous modification date.
@@ -342,6 +343,10 @@ public class ModelManager implements IModelManager {
 		@Override
 		public void onNamespaceDefined(INamespace namespace) throws ThinklabException {
 
+			if (errors.size() > 0) {
+				return;
+			}
+			
 			/*
 			 * at this point, this should be moot as we define everything incrementally, 
 			 * but leave it here for any final tasks we may want to implement.
@@ -438,6 +443,10 @@ public class ModelManager implements IModelManager {
 
 		@Override
 		public void onModelObjectDefined(INamespace namespace, IModelObject ret) throws ThinklabException {
+
+			if (errors.size() > 0) {
+				return;
+			}
 
 			/*
 			 * actualize all knowledge so that the object is complete and we can create observables

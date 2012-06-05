@@ -42,6 +42,7 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
 /**
  * A resolver for models in a namespace. Will apply heuristics and configured rules to determine
@@ -218,7 +219,7 @@ public class ModelResolver {
 		_modelstruc = buildModelGraph();
 
 		// TODO REMOVE - debug
-		dumpGraph(_modelstruc);
+		dumpGraph(_modelstruc, true);
 
 		return true;
 	}
@@ -232,7 +233,7 @@ public class ModelResolver {
 		/*
 		 * TODO remove --debug
 		 */
-		dumpGraph(accessorGraph);
+		dumpGraph(accessorGraph, false);
 		
 		computeModel(accessorGraph);
 
@@ -257,6 +258,20 @@ public class ModelResolver {
 		/*
 		 * TODO topological sorting of accessors, then loop
 		 */
+		TopologicalOrderIterator<CElem, DependencyEdge> order =
+				new TopologicalOrderIterator<ModelResolver.CElem, ModelResolver.DependencyEdge>(graph);
+		
+		while (order.hasNext()) {
+			
+			CElem acc = order.next();
+			
+			System.out.println(acc);
+			
+			/*
+			 * build a state per used observable
+			 */
+			
+		}
 		
 		/*
 		 * first pass: notify all accessors of their dependencies and mediations, create
@@ -417,7 +432,7 @@ public class ModelResolver {
 			CElem target = new CElem(model.getDatasource().getAccessor(context), context, model);
 			graph.addVertex(node);
 			graph.addVertex(target);
-			graph.addEdge(node, target, new DependencyEdge(true, null));
+			graph.addEdge(target, node, new DependencyEdge(true, null));
 			
 		} else if (model.getObserver() != null) {
 			
@@ -462,12 +477,12 @@ public class ModelResolver {
 				while (obs.getMediatedObserver() != null) {
 					CElem targ = new CElem(obs.getMediatedObserver().getAccessor(), context, null);
 					graph.addVertex(targ);
-					graph.addEdge(start, targ, new DependencyEdge(true, null));
+					graph.addEdge(targ, start, new DependencyEdge(true, null));
 					obs = obs.getMediatedObserver();
 					start = targ;
 				}
 				
-				graph.addEdge(start, target, new DependencyEdge(true, null));
+				graph.addEdge(target, start, new DependencyEdge(true, null));
 				
 			} else {
 
@@ -476,7 +491,7 @@ public class ModelResolver {
 				 */
 				CElem target = buildAccessorGraphInternal(modelGraph.getEdgeTarget(edge), graph, modelGraph, context);
 				if (node != null) {
-					graph.addEdge(node, target, new DependencyEdge(false, edge.formalName));
+					graph.addEdge(target, node, new DependencyEdge(false, edge.formalName));
 				}
 			}
 		}
@@ -875,7 +890,7 @@ public class ModelResolver {
 	}
 
 
-	private void dumpGraph(DirectedGraph<?, ?> graph) throws ThinklabResourceNotFoundException {
+	private void dumpGraph(DirectedGraph<?, ?> graph, boolean reverse) throws ThinklabResourceNotFoundException {
 		
 		GraphViz ziz = new GraphViz();
 		ziz.loadGraph(graph, new NodePropertiesProvider() {
@@ -921,12 +936,12 @@ public class ModelResolver {
 				} else if (o instanceof CElem) {
 					return ((CElem)o).accessor instanceof ISerialAccessor ? ELLIPSE : HEXAGON;
 				} else if (o instanceof IModel) {
-					return BOX3D;
+					return ((IModel)o).getDatasource() == null ? BOX : BOX3D;
 				} 
 				return BOX;
 			}
 			
-		}, true);
+		}, reverse);
 		
 		System.out.println(ziz.getDotSource());
 	}
