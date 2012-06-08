@@ -8,11 +8,6 @@ import org.integratedmodelling.thinklab.modelling.lang.Observation;
 
 public class ObjectState extends Observation implements IModifiableState {
 
-	@Override
-	public Object getValue(int overallContextIndex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public IConcept getStateType() {
@@ -66,6 +61,13 @@ public class ObjectState extends Observation implements IModifiableState {
 	public void setValue(int index, Object value) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public Object getValue(int contextIndex) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

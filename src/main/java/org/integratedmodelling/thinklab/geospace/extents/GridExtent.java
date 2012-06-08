@@ -35,7 +35,6 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
-import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -88,6 +87,7 @@ public class GridExtent extends ArealExtent
 	private CoordinateReferenceSystem metersCRS = null;
 	Geometry boundary = null;
 	public PolygonValue shape;
+	private int currentIdx;
 	
 	public GridExtent() {
 		/*
@@ -456,13 +456,13 @@ public class GridExtent extends ArealExtent
 	}
 
 	@Override
-	public Object getValue(int granule) {
+	public Object getValue(int index) {
 
 		/* 
 		 * determine coordinates of granule. This should not get called if the activation layer
 		 * is null, so no check for now. 
 		 */
-		Pair<Integer, Integer> xy = requireActivationLayer(true).getCell(granule);
+		Pair<Integer, Integer> xy = requireActivationLayer(true).getCell(index);
 		
 		/*
 		 * TODO reimplement to use nextCell on activation layer. Must enforce sequential access
@@ -1132,6 +1132,5 @@ public class GridExtent extends ArealExtent
 	public IConcept getStateType() {
 		return Thinklab.c(NS.POLYGON);
 	}
-
 
 }

@@ -28,13 +28,14 @@ public class ConstantDataSource implements IDataSource {
 		}
 
 		@Override
-		public Object getValue(int overallContextIndex) {
+		public Object getValue(int key) {
 			return _state;
 		}
 		
 		public String toString() {
 			return "[constant: " + _state + "]";
 		}
+
 	}
 	
 	public ConstantDataSource(Object state) {

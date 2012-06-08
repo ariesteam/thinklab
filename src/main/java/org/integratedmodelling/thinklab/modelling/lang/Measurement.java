@@ -58,7 +58,7 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 	public class MeasurementAccessor 
 		implements ISerialAccessor, IMediatingAccessor {
 
-		ISerialAccessor _mediated;
+		MeasurementAccessor _mediated;
 		
 		@Override
 		public IConcept getStateType() {
@@ -66,13 +66,8 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 		}
 
 		@Override
-		public void addMediatedAccessor(IAccessor accessor)
+		public void notifyMediatedAccessor(IAccessor accessor)
 				throws ThinklabException {
-
-			if ( !(accessor instanceof ISerialAccessor)) {
-				// huh?
-				throw new ThinklabValidationException("measurement cannot mediate a non-serial accessor");
-			}
 			
 			/*
 			 * must be another measurement accessor, or a direct datasource.
@@ -80,38 +75,43 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 			if (accessor instanceof MeasurementAccessor) {
 
 				/*
+				 * TODO
 				 * check unit compatibility
 				 */
 				
-				/*
-				 * create converter if needed
-				 */
+				_mediated = (MeasurementAccessor) accessor;
 			}
 			
-			_mediated = (ISerialAccessor) accessor;
 		}
 		
 		@Override
 		public String toString() {
 			return "[measurement: " + _unit + "]";
 		}
+		
+		public IUnit getUnit() {
+			return _unit;
+		}
 
 		@Override
-		public Object getValue(int overallContextIndex) {
+		public Object mediate(Object object) throws ThinklabException {
 			
+			if (object == null || (object instanceof Number && Double.isNaN(((Number)object).doubleValue())))
+				return Double.NaN;
+			
+			return _mediated == null ?
+					object :
+					_unit.convert(((Number)object).doubleValue(), _mediated.getUnit());
+		}
+
+		@Override
+		public Object getValue(int idx) {
+			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
 	}
 	
-	public class ComputingMeasurementAccessor extends MeasurementAccessor implements IComputingAccessor {
-
-		@Override
-		public void notifyDependency(String key, IAccessor accessor) {
-		}
-		
-	}
-
 
 	@Override
 	public IAccessor getAccessor() {

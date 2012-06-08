@@ -76,12 +76,6 @@ public class ArealLocation extends Observation implements IExtent, IConceptualiz
 	}
 
 	@Override
-	public Object getValue(int offset) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Object getRawData() {
 		// TODO Auto-generated method stub
 		return null;
@@ -214,6 +208,12 @@ public class ArealLocation extends Observation implements IExtent, IConceptualiz
 	@Override
 	public IConcept getStateType() {
 		return Thinklab.c(NS.POLYGON);
+	}
+
+	@Override
+	public Object getValue(int contextIndex) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

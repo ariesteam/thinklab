@@ -505,8 +505,7 @@ public class Classification implements IClassification {
 		}		
 
 		return ret;
-}
-
+	}
 
 	public static void loadPredefinedOrderings(Properties properties) throws ThinklabException {
 		

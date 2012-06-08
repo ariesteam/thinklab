@@ -130,6 +130,8 @@ public class GraphViz
 		public String getNodeShape(Object o);
 		public int getNodeWidth(Object o);
 		public int getNodeHeight(Object o);
+		public String getEdgeColor();
+		public String getEdgeLabel(Object e);
 	}
 	
 	public class NodeLayout {
@@ -273,8 +275,9 @@ public class GraphViz
     * @param vertexName
     * @param vertexName2
     */
-   public void addDirectedEdge(String vertexName, String vertexName2) {
-		addln("\t\"" + vertexName + "\" -> \"" + vertexName2 + "\"");
+   public void addDirectedEdge(String vertexName, String vertexName2, String options) {
+		addln("\t\"" + vertexName + "\" -> \"" + vertexName2 + "\"" +
+				(options == null ? "" : ("[" + options + "]")));
    }
 		
    public void loadGraph(DirectedGraph<?,?> graph, NodePropertiesProvider npp) {
@@ -302,7 +305,8 @@ public class GraphViz
 		   
 		   addDirectedEdge(
 				   (reverse ? npp.getNodeId(t) : npp.getNodeId(s)), 
-				   (reverse ? npp.getNodeId(s) : npp.getNodeId(t))); 
+				   (reverse ? npp.getNodeId(s) : npp.getNodeId(t)),
+				   ("label=\"" + npp.getEdgeLabel(e) + "\", color=\"" + npp.getEdgeColor() + "\", fontname=sanserif, fontsize=8")); 
 	   }
 
 	   addln(end_graph());

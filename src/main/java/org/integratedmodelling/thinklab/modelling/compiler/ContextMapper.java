@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.modelling;
+package org.integratedmodelling.thinklab.modelling.compiler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,6 +82,11 @@ public class ContextMapper  {
 	}
 	
 	public ContextMapper(IContext from, IContext to) throws ThinklabException {
+		
+		if (from.equals(to)) {
+			identical = true;
+			return;
+		}
 		
 		this._from = from;
 		this._to = to;
@@ -156,6 +161,15 @@ public class ContextMapper  {
 
 	public int current() {
 		return current;
+	}
+	
+	/**
+	 * If this returns true, we can just use the unmapped context index of the
+	 * original context.
+	 * @return
+	 */
+	public boolean isTrivial() {
+		return identical;
 	}
 
 }

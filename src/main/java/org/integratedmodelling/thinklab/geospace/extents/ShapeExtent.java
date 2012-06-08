@@ -118,12 +118,6 @@ public class ShapeExtent extends ArealExtent implements IEntifiable, /* IConcept
 	}
 
 	@Override
-	public Object getValue(int granule) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public int getValueCount() {
 		return features == null ? 1 : features.size();
 	}
@@ -515,6 +509,12 @@ public class ShapeExtent extends ArealExtent implements IEntifiable, /* IConcept
 	@Override
 	public IConcept getStateType() {
 		return Thinklab.c(NS.POLYGON);
+	}
+
+	@Override
+	public Object getValue(int contextIndex) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

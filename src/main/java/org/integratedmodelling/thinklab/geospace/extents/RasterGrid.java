@@ -36,7 +36,6 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IList;
-import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -400,12 +399,6 @@ public class RasterGrid extends Observation implements IExtent {
 	public IGridMask getMask() {
 		return this.mask;
 	}
-	
-	@Override
-	public Object getValue(int offset) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Object getRawData() {
@@ -554,5 +547,12 @@ public class RasterGrid extends Observation implements IExtent {
 	public IConcept getStateType() {
 		return Thinklab.c(NS.POLYGON);
 	}
+
+	@Override
+	public Object getValue(int contextIndex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

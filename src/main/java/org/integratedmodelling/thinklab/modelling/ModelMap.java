@@ -612,6 +612,16 @@ public class ModelMap {
 			public String getNodeShape(Object o) {
 				return BOX;
 			}
+
+			@Override
+			public String getEdgeColor() {
+				return "black";
+			}
+
+			@Override
+			public String getEdgeLabel(Object e) {
+				return "";
+			}
 		});
 		
 		gviz.show();

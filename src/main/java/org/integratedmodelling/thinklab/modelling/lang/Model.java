@@ -26,6 +26,8 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinitio
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
 import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
+import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer;
+import org.integratedmodelling.thinklab.modelling.compiler.ModelResolver;
 import org.integratedmodelling.thinklab.modelling.lang.datasources.ConstantDataSource;
 
 @Concept(NS.MODEL)
@@ -160,8 +162,15 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	public IObservation observe(IContext context)
 			throws ThinklabException {
 		
-		CompiledContext cc = new CompiledContext(context);
-		return cc.run(this);
+		IObservation ret = null;
+		IContext ctx = new Context((Context) context);
+		ModelResolver resolver = new ModelResolver(this.getNamespace(), ctx);
+		IModel root = resolver.resolve(this);
+		if (root != null) {
+			Contextualizer ctxer = new Contextualizer(resolver.getModelStructure());
+			ret = ctxer.run(root, ctx);
+		}
+		return ret;
 	}
 
 	@Override
