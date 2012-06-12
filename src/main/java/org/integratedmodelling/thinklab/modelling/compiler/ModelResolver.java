@@ -87,6 +87,7 @@ public class ModelResolver {
 		private static final long serialVersionUID = 2366743581134478147L;
 		public boolean isMediation = false;
 		public String formalName = null;
+		public ISemanticObject<?> observable = null;
 
 		@Override
 		public boolean equals(Object edge) {
@@ -490,7 +491,9 @@ public class ModelResolver {
 				IModel dep = models.get(((SemanticObject<?>)obs).getSignature());
 				if (dep != null) {
 					buildModelGraphInternal(dep, models, graph);
-					graph.addEdge(model, dep, new DependencyEdge(false, m.getSecond()));
+					DependencyEdge edge = new DependencyEdge(false, m.getSecond());
+					edge.observable = obs;
+					graph.addEdge(model, dep, edge);
 				}
 			}
 		}
@@ -501,7 +504,9 @@ public class ModelResolver {
 				IModel dep = models.get(((SemanticObject<?>)obs).getSignature());
 				if (dep != null) {
 					buildModelGraphInternal(dep, models, graph);
-					graph.addEdge(model, dep, new DependencyEdge(false, m.getSecond()));
+					DependencyEdge edge = new DependencyEdge(false, m.getSecond());
+					edge.observable = obs;
+					graph.addEdge(model, dep, edge);
 				}
 			}
 		}

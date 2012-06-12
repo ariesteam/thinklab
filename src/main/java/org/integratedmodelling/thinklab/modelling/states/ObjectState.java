@@ -60,9 +60,7 @@ public class ObjectState extends Observation implements IModifiableState {
 	@Override
 	public void setValue(int index, Object value) {
 		// TODO Auto-generated method stub
-		
 	}
-
 
 	@Override
 	public Object getValue(int contextIndex) {

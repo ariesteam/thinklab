@@ -3,12 +3,15 @@ package org.integratedmodelling.thinklab.modelling.compiler;
 import java.util.ArrayList;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IComputingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IMediatingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
+import org.integratedmodelling.thinklab.api.modelling.ISerialAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer.CElem;
 import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer.Dependency;
@@ -81,44 +84,61 @@ public class CompiledModel {
 			
 			/*
 			 * TODO
-			 * start compiling in end condition checks only if the context has listeners worth
+			 * compile in end condition checks only if the context has listeners worth
 			 * checking.
 			 */
 			
 			for (Dependency d : graph.incomingEdgesOf(ae)) {
+				
 				CElem src = graph.getEdgeSource(d);
-				if (d.isMediation)
+				CElem trg = graph.getEdgeTarget(d);
+				if (d.isMediation) {
+				
 					mediates = true;
 				
-				/*
-				 * notify dependency to accessor
-				 */
+					if (! (trg.accessor instanceof IMediatingAccessor))
+						throw new ThinklabInternalErrorException("internal: mediating to non-mediator");
+					
+					((IMediatingAccessor)trg.accessor).notifyMediatedAccessor(src.accessor);
+					
+					/*
+					 * notify dependency to accessor or mediation. If mediation,
+					 * must be mediator; if deps, must be computing
+					 */
+				} else {
+
+					if (! (trg.accessor instanceof IComputingAccessor))
+						throw new ThinklabInternalErrorException("internal: dependencies going to non-computing accessor");
+					
+					/*
+					 * compile in all dependency setting with their name in the model
+					 * and previously stored register
+					 */
+					((IComputingAccessor)trg.accessor).notifyDependency(d.observable, d.formalName);
+
+					if (src.accessor instanceof IComputingAccessor)
+						((IComputingAccessor)src.accessor).notifyExpectedOutput(d.observable, d.formalName);
+
+					/*
+					 * create state and a register for each observable
+					 * DO IT WHEN YOU ARE THINKING
+					 */
+					IState state =	
+							src.model.getObserver().createState(d.observable, context);
+			
+					/*
+					 * generate store op
+					 */
 				
-				/*
-				 * compile in all dependency setting with their name in the model
-				 * and previously stored register
-				 */
+				}
+				
 			}
 			
 			if (model != null) {
 				
 				for (ISemanticObject<?> o : model.getObservables()) {
 					
-					/*
-					 * create state and a register for each observable
-					 */
-					IState state = model.getObserver().createState(o, context);
-					
-					/*
-					 * inform the accessor that it will have to compute it and hope
-					 * it doesn't throw a fit. Pass the name that we will use as a key
-					 * for retrieval. 
-					 */
-			
-					/*
-					 * give each observable a register and store it for the dependent
-					 * models.
-					 */
+
 				}
 			}
 			if (mediates) {
@@ -132,10 +152,17 @@ public class CompiledModel {
 				 * if stored, compile op to store from register to state
 				 */
 					
-			} else {
+			} 
+			
+			if (acc instanceof IComputingAccessor)  {
+				
 				
 				/*
 				 * compile the op to compute results
+				 */
+				
+				/*
+				 * if accessor is a simple serial accessor, 
 				 */
 				
 				/*
@@ -143,19 +170,31 @@ public class CompiledModel {
 				 * of the observable, which should not be compared at every step. It will
 				 * also avoid observables that are computed but not used.
 				 */
-				for (ISemanticObject<?> observable : model.getObservables()) {
-						
+				for (Dependency d : graph.outgoingEdgesOf(ae)) {
+					
 					/*
-					 * compile call to extract value to register
+					 * create ID for output
+					 * notify accessor of expected output with that ID;
+					 */
+					
+					/*
+					 * compile call to extract value to register using computed 
+					 * ID
 					 */
 						
 					/* 
 					 * compile call to store register to state
 					 */
-						
+					
 				}
 					
-			}		
+			}	else {
+				
+				/*
+				 * simple accessor, just compile call to getValue passing
+				 * only the index context, then store as usual.
+				 */
+			}
 			
 			if (cm != null) {
 				
@@ -231,7 +270,7 @@ public class CompiledModel {
 		RET       // stop
 	}
 	
-	class Op {
+	static class Op {
 		
 		OPCODE _op; // Op OP op
 		String _name;  // formal name if it applies
@@ -242,8 +281,19 @@ public class CompiledModel {
 		int _model;
 		int _mapper;
 		
+		protected Op(OPCODE o) {
+			_op = o;
+		}
+		
 		public String toString() {
 			return _op.name();
+		}
+		
+		public static Op STORE(int reg, int state) {
+			Op ret = new Op(OPCODE.STORE);
+			ret._sreg = reg;
+			ret._state = state;
+			return ret;
 		}
 	}
 

@@ -3,6 +3,7 @@ package org.integratedmodelling.thinklab.modelling.compiler;
 import org.integratedmodelling.common.HashableObject;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IMediatingAccessor;
@@ -14,7 +15,6 @@ import org.integratedmodelling.thinklab.modelling.debug.ModelGraph;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.traverse.TopologicalOrderIterator;
 
 /**
  * Handles the contextualization of a model tree using a graph of connections between observations and
@@ -36,9 +36,16 @@ public class Contextualizer  {
 			isMediation = b;
 			this.formalName = formalName;
 		}
+		public Dependency(boolean b, String formalName,
+				ISemanticObject<?> observable) {
+			this(b, formalName);
+			this.observable = observable;
+		}
+		
 		private static final long serialVersionUID = 2366743581134478147L;
 		public boolean isMediation = false;
 		public String formalName = null;
+		public ISemanticObject<?> observable = null;
 
 		@Override
 		public boolean equals(Object edge) {
@@ -204,7 +211,7 @@ public class Contextualizer  {
 				 */
 				CElem target = buildAccessorGraphInternal(modelGraph.getEdgeTarget(edge), graph, modelGraph, context);
 				if (node != null) {
-					graph.addEdge(target, node, new Dependency(false, edge.formalName));
+					graph.addEdge(target, node, new Dependency(false, edge.formalName, edge.observable));
 				}
 			}
 		}

@@ -87,10 +87,10 @@ public class ModelGraph {
 			public String getEdgeLabel(Object e) {
 				if (e instanceof Dependency) {
 					return ((Dependency)e).isMediation ?
-							"(m)" : ((Dependency)e).formalName;
+							("(m) " + ((Dependency)e).formalName) : ((Dependency)e).formalName;
 				} else 	if (e instanceof DependencyEdge) {
 					return ((DependencyEdge)e).isMediation ?
-							"(m)" : ((DependencyEdge)e).formalName;
+							("(m) " + ((DependencyEdge)e).formalName): ((DependencyEdge)e).formalName;
 				}
 				return "";
 			}
