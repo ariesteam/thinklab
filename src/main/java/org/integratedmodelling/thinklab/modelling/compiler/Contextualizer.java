@@ -46,6 +46,8 @@ public class Contextualizer  {
 		public boolean isMediation = false;
 		public String formalName = null;
 		public ISemanticObject<?> observable = null;
+		// will be filled in by compiler
+		public int register = -1;
 
 		@Override
 		public boolean equals(Object edge) {
