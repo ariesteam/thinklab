@@ -1,8 +1,11 @@
 package org.integratedmodelling.thinklab.modelling.compiler;
 
+import java.util.HashMap;
+
 import org.integratedmodelling.common.HashableObject;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
@@ -25,6 +28,7 @@ import org.jgrapht.graph.DefaultEdge;
 public class Contextualizer  {
 
 	private DirectedGraph<IModel, DependencyEdge> _structure;
+	private int lastRegister = 0;
 
 	public Contextualizer(DirectedGraph<IModel, DependencyEdge> structure) {
 		_structure = structure;
@@ -46,7 +50,10 @@ public class Contextualizer  {
 		public boolean isMediation = false;
 		public String formalName = null;
 		public ISemanticObject<?> observable = null;
-		// will be filled in by compiler
+
+		/*
+		 * each dependency gets its own register automatically
+		 */
 		public int register = -1;
 
 		@Override
@@ -83,6 +90,9 @@ public class Contextualizer  {
 		 * processed.
 		 */
 		public IContext context;
+		
+		// topological order, only for debugging
+		public int order = -1;
 	}
 	
 	/**
@@ -110,6 +120,30 @@ public class Contextualizer  {
 		 */
 		buildAccessorGraphInternal(root, graph, modelGraph, context);
 		
+		/*
+		 * assign registers to move values around, ensuring same observable uses same register. 
+		 * Mediation chains for now happens across different registers for simplicity, we can reuse
+		 * if necessary.
+		 */
+		lastRegister = 0;
+		for (CElem cc : graph.vertexSet()) {
+			
+			HashMap<String, Integer> hs = new HashMap<String, Integer>();
+			for (Dependency d : graph.outgoingEdgesOf(cc)) {
+				/*
+				 * observables are repeated from the source model along the chain 
+				 * of mediation so that we can assign the same register.
+				 */
+				String sig = ((SemanticObject<?>)(d.observable)).getSignature();
+				if (hs.get(sig) != null) {
+					d.register = hs.get(sig);
+				} else {
+					d.register = lastRegister++;
+					hs.put(sig, d.register);
+				}
+			}
+		}
+				
 		return graph;
 	}
 	
@@ -153,7 +187,7 @@ public class Contextualizer  {
 			CElem target = new CElem(model.getDatasource().getAccessor(context), context, model);
 			graph.addVertex(node);
 			graph.addVertex(target);
-			graph.addEdge(target, node, new Dependency(true, null));
+			graph.addEdge(target, node, new Dependency(true, null, model.getObservables().get(0)));
 			
 		} else if (model.getObserver() != null) {
 			
@@ -199,12 +233,12 @@ public class Contextualizer  {
 					CElem targ = new CElem(obs.getMediatedObserver().getAccessor(), context, null);
 					graph.addVertex(targ);
 					graph.addEdge(targ, start, 
-							new Dependency(true, null));
+							new Dependency(true, null, model.getObservables().get(0)));
 					obs = obs.getMediatedObserver();
 					start = targ;
 				}
 				
-				graph.addEdge(target, start, new Dependency(true, null));
+				graph.addEdge(target, start, new Dependency(true, null, model.getObservables().get(0)));
 				
 			} else {
 
@@ -225,13 +259,8 @@ public class Contextualizer  {
 
 		DirectedGraph<CElem, Dependency> accessorGraph = 
 				buildAccessorGraph(model, _structure, context);
-		
-		/*
-		 * TODO remove --debug
-		 */
-		new ModelGraph(accessorGraph).dump(false);
-		
-		CompiledModel compiled = new CompiledModel(model, accessorGraph, context);
+				
+		CompiledModel compiled = new CompiledModel(model, accessorGraph, context, lastRegister);
 
 		/*
 		 * find state to return as root, or build a new observation in this context if observables don't have

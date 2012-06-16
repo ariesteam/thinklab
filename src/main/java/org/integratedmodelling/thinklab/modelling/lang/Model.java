@@ -89,35 +89,6 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		
 		return ret;
 	}
-
-	/*
-	 * Return the observer's accessor after publishing our dependencies, datasource etc.
-	 * This function takes a CompiledContext reflecting the same info in the context
-	 * passed to observe(), and modifies it by adding the accessor tree and the resolver
-	 * for any unresolved dependencies along the model structure. 
-	 */
-	IAccessor getAccessor(CompiledContext context) throws ThinklabException {
-		
-		Observer<?> observer = (Observer<?>) _observer;
-
-		/*
-		 * see if we have a datasource and if so, have it return the accessor and
-		 * be done with it.
-		 */
-		if (_datasource != null)
-			return _datasource.getAccessor(context);
-
-		/*
-		 * if we have dependencies, they're actually for a switching observer
-		 * so give them to it.
-		 */
-		
-		/*
-		 * 
-		 */
-		
-		return observer.getAccessor();
-	}
 	
 	public List<Triple<Object, String, Boolean>> getObserverDependencies() {
 		return _observer.getDependencies();

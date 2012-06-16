@@ -2,7 +2,6 @@ package org.integratedmodelling.thinklab.modelling.lang;
 
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
@@ -56,7 +55,7 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 	 * -----------------------------------------------------------------------------------
 	 */
 	public class MeasurementAccessor 
-		implements ISerialAccessor, IMediatingAccessor {
+		implements ISerialAccessor, IMediatingAccessor, IComputingAccessor {
 
 		MeasurementAccessor _mediated;
 		
@@ -110,6 +109,37 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 			return null;
 		}
 
+		@Override
+		public void notifyDependency(ISemanticObject<?> observable, String key) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void notifyExpectedOutput(ISemanticObject<?> observable,
+				String key) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void process(int stateIndex) throws ThinklabException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setValue(String inputKey, Object value) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Object getValue(String outputKey) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	}
 	
 
@@ -124,7 +154,7 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 
 	@Override
 	public IState createState(ISemanticObject<?> observable, IContext context) throws ThinklabException {
-		return new NumberState(null, context);
+		return new NumberState(observable, context);
 	}
 	
 	

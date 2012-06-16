@@ -53,8 +53,7 @@ public class ModelGraph {
 					id = 
 						((CElem)o).accessor.toString() +
 						(((CElem)o).model == null ? "" : " " + (((CElem)o).model.getObservables().get(0).getDirectType())) +
-						" (" + ((CElem)o).hashCode() +
-						")";
+						" #" + ((CElem)o).order + "";
 				}
 				
 				return id;
@@ -86,8 +85,9 @@ public class ModelGraph {
 			@Override
 			public String getEdgeLabel(Object e) {
 				if (e instanceof Dependency) {
-					return ((Dependency)e).isMediation ?
-							("(m) " + ((Dependency)e).formalName) : ((Dependency)e).formalName;
+					return (((Dependency)e).isMediation ?
+							("(m) " + ((Dependency)e).formalName) : ((Dependency)e).formalName) + 
+							" [reg #" + ((Dependency)e).register + "]";
 				} else 	if (e instanceof DependencyEdge) {
 					return ((DependencyEdge)e).isMediation ?
 							("(m) " + ((DependencyEdge)e).formalName): ((DependencyEdge)e).formalName;

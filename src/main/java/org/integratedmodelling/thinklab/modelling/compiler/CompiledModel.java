@@ -1,9 +1,14 @@
 package org.integratedmodelling.thinklab.modelling.compiler;
 
+import java.io.PrintStream;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
+import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IComputingAccessor;
@@ -15,32 +20,50 @@ import org.integratedmodelling.thinklab.api.modelling.ISerialAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer.CElem;
 import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer.Dependency;
+import org.integratedmodelling.thinklab.modelling.debug.ModelGraph;
+import org.integratedmodelling.thinklab.modelling.interfaces.IModifiableState;
+import org.integratedmodelling.utils.NameGenerator;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
 public class CompiledModel {
 
 	private ArrayList<ContextMapper> _mappers = new ArrayList<ContextMapper>();
-	private ArrayList<Object>        _registers = new ArrayList<Object>();
 	private ArrayList<IState>        _states = new ArrayList<IState>();
-	private ArrayList<IState>        _observables = new ArrayList<IState>();
 	private ArrayList<IAccessor>     _accessors = new ArrayList<IAccessor>();
 	
 	private ArrayList<Op> _code = new ArrayList<Op>();
 	
 	private IContext _context;
 	private IModel _model;
+	private int _nRegisters;
+	
+	private Object[] _registers;
 	
 	public CompiledModel(IModel model,
 			DirectedGraph<CElem, Dependency> graph, 
-			IContext context) throws ThinklabException {
+			IContext context, int nRegisters) throws ThinklabException {
 		
 		_context = context;
 		_model = model;
+		_nRegisters = nRegisters;
 		
+		/*
+		 * compilation may add registers
+		 */
 		compile(model, graph, context);
+		
+		/*
+		 * TODO remove --debug
+		 */
+		new ModelGraph(graph).dump(false);
+
 	}
 
+	/*
+	 * notify all accessors, create state and compile model workflow into code
+	 * for a simple stackless FSM.
+	 */
 	private void compile(IModel model, DirectedGraph<CElem, Dependency> graph,
 			IContext context) throws ThinklabException {
 		
@@ -49,37 +72,31 @@ public class CompiledModel {
 		 */
 		TopologicalOrderIterator<CElem, Dependency> order = 
 				new TopologicalOrderIterator<CElem, Dependency>(graph);
-		int mapperIdx = -1,
-				accessorIdx = -1,
-				modelIdx = -1,
-				register = -1,
-				stateIdx = -1;
+		
+		int accessorIdx = 0;
 		
 		while (order.hasNext()) {
 				
 			CElem ae = order.next();
 			IAccessor acc = ae.accessor;
-			IModel mod = ae.model;
 			IContext ctx = ae.context;
+			Op checkCtx = null;
+			
+			ae.order = accessorIdx;
 			
 			ContextMapper cm = null;
 			if (ctx != null) {
 				cm =  new ContextMapper(context, ctx);
 				if (!cm.isTrivial()) {
 					_mappers.add(cm);
-					mapperIdx = _mappers.size() - 1;
+					_code.add(checkCtx = Op.CJMP(_mappers.size() - 1));
 				} else {
 					cm = null;
 				}
 			}
 			
-			// if true, we need a context mediation at each step and 
-			// a jump address to skip update if the overall state is invisible to
-			// this accessor.
-			boolean checkCtx = !(cm == null);
 			boolean mediates = false;
-			boolean isComputing = acc instanceof IComputingAccessor;
-							
+			
 			_accessors.add(acc);
 			
 			/*
@@ -88,154 +105,219 @@ public class CompiledModel {
 			 * checking.
 			 */
 			
+			/*
+			 * set all actual dependencies (may be used by mediators too) ignoring
+			 * any mediation input.
+			 */
 			for (Dependency d : graph.incomingEdgesOf(ae)) {
-				
-				CElem src = graph.getEdgeSource(d);
-				CElem trg = graph.getEdgeTarget(d);
+				if (!d.isMediation) {
+
+					CElem trg = graph.getEdgeTarget(d);
+					((IComputingAccessor)(trg.accessor)).notifyDependency(d.observable, d.formalName);
+
+					_code.add(Op.OBSET(accessorIdx, d.register, d.formalName));
+				}
+			}
+			
+			/*
+			 * sourceReg will be >= 0 iif there is an incoming object to be mediated.
+			 * 
+			 * If so notify and ensure that we know the source register for the mediation.
+			 */
+			int sourceReg = -1;
+			for (Dependency d : graph.incomingEdgesOf(ae)) {
 				if (d.isMediation) {
-				
-					mediates = true;
-				
-					if (! (trg.accessor instanceof IMediatingAccessor))
-						throw new ThinklabInternalErrorException("internal: mediating to non-mediator");
 					
-					((IMediatingAccessor)trg.accessor).notifyMediatedAccessor(src.accessor);
+					CElem src = graph.getEdgeSource(d);
+					CElem trg = graph.getEdgeTarget(d);
+					((IMediatingAccessor)(trg.accessor)).notifyMediatedAccessor(src.accessor);
+					sourceReg = d.register;
+				}
+			}
+			
+			/*
+			 * mediate from register to other register
+			 */
+			if (sourceReg >= 0) {
+				
+				/*
+				 * determine target register: if anything uses our value, it's that register (can only be
+				 * one unless Ken has been really creative). Otherwise, we add a register so we can store 
+				 * the state.
+				 * 
+				 * at the same time, set mediates = true if we are a mediator that gets mediated in turn,
+				 * so that we don't store the intermediate state later.
+				 */
+				int targetReg = -1;
+				for (Dependency d : graph.outgoingEdgesOf(ae)) {
+					targetReg = d.register;
+					if (d.isMediation)
+						mediates = true;
+				}
+				if (targetReg /* still */ < 0) {
+					targetReg = _nRegisters ++;
+				}
 					
+				if (acc instanceof IComputingAccessor) {
 					/*
-					 * notify dependency to accessor or mediation. If mediation,
-					 * must be mediator; if deps, must be computing
+					 * mediate and process object
 					 */
+					_code.add(Op.MCALL(accessorIdx, sourceReg, targetReg));
+
 				} else {
-
-					if (! (trg.accessor instanceof IComputingAccessor))
-						throw new ThinklabInternalErrorException("internal: dependencies going to non-computing accessor");
-					
 					/*
-					 * compile in all dependency setting with their name in the model
-					 * and previously stored register
+					 * just mediate
 					 */
-					((IComputingAccessor)trg.accessor).notifyDependency(d.observable, d.formalName);
-
-					if (src.accessor instanceof IComputingAccessor)
-						((IComputingAccessor)src.accessor).notifyExpectedOutput(d.observable, d.formalName);
-
-					/*
-					 * create state and a register for each observable
-					 * DO IT WHEN YOU ARE THINKING
-					 */
-					IState state =	
-							src.model.getObserver().createState(d.observable, context);
-			
-					/*
-					 * generate store op
-					 */
-				
+					_code.add(Op.MEDIATE(accessorIdx, sourceReg, targetReg));
 				}
 				
-			}
-			
-			if (model != null) {
-				
-				for (ISemanticObject<?> o : model.getObservables()) {
-					
-
+				/*
+				 * we don't store the state if we are middlemen in a mediation
+				 * chain.
+				 */
+				if (!mediates && ae.model != null) {
+					_states.add(ae.model.getObserver().createState(ae.model.getObservables().get(0), context));
+					_code.add(Op.STORE(targetReg, _states.size() - 1));
 				}
-			}
-			if (mediates) {
 				
+			} else {
+
 				/*
-				 * find the register for the mediated accessor and compile in 
-				 * the mediation call; put the result in the same slot 
+				 * if have code, compute it and set output observables. 
 				 */
+				if (acc instanceof IComputingAccessor) 
+					_code.add(Op.CALL(accessorIdx));
+
+				HashSet<Integer> rcomputed  = new HashSet<Integer>();
+				HashSet<String> osigs  = new HashSet<String>();
 				
-				/*
-				 * if stored, compile op to store from register to state
-				 */
-					
-			} 
-			
-			if (acc instanceof IComputingAccessor)  {
-				
-				
-				/*
-				 * compile the op to compute results
-				 */
-				
-				/*
-				 * if accessor is a simple serial accessor, 
-				 */
-				
-				/*
-				 * TODO this should use the outgoing nodes and the ID set into them before instead
-				 * of the observable, which should not be compared at every step. It will
-				 * also avoid observables that are computed but not used.
-				 */
 				for (Dependency d : graph.outgoingEdgesOf(ae)) {
 					
+					if (rcomputed.contains(d.register))
+						continue;
+				
 					/*
-					 * create ID for output
-					 * notify accessor of expected output with that ID;
+					 * remember seen observable to avoid storing it later
 					 */
+					osigs.add(((SemanticObject<?>)(d.observable)).getSignature());
 					
 					/*
-					 * compile call to extract value to register using computed 
-					 * ID
+					 * extract to register and store each observable. If not a computing
+					 * accessor, should be just a serial accessor with no name, use
+					 * simple extract opcode.
 					 */
-						
-					/* 
-					 * compile call to store register to state
-					 */
+					if (acc instanceof IComputingAccessor) {
+						_code.add(Op.OBGET(accessorIdx, d.formalName, d.register));
+					} else {
+						_code.add(Op.VLGET(accessorIdx, d.register));						
+					}
 					
+					if (ae.model != null) {
+						_states.add(ae.model.getObserver().createState(d.observable, context));
+						_code.add(Op.STORE(d.register, _states.size() - 1));
+					}
+					
+					rcomputed.add(d.register);
 				}
-					
-			}	else {
 				
 				/*
-				 * simple accessor, just compile call to getValue passing
-				 * only the index context, then store as usual.
+				 * extract and store any explicit observables that we haven't already used as part of
+				 * the model dataflow. This can only happen if the accessor is a computing one.
 				 */
+				if (ae.model != null && ae.accessor instanceof IComputingAccessor) {
+					for (ISemanticObject<?> o : ae.model.getObservables()) {
+				
+						if (osigs.contains(((SemanticObject<?>)o).getSignature()))
+							continue;
+						
+						int targetReg = _nRegisters ++;
+						
+						/*
+						 * give a unique name to the observable, notify to the accessor,
+						 * and use that for retrieval of the value.
+						 */
+						String name = NameGenerator.newName();
+						((IComputingAccessor)(ae.accessor)).notifyDependency(o, name);
+						_code.add(Op.OBGET(accessorIdx, name, targetReg));
+						
+						_states.add(ae.model.getObserver().createState(o, context));
+						_code.add(Op.STORE(targetReg, _states.size() - 1));
+					}
+				}
+
 			}
+
 			
-			if (cm != null) {
+			if (checkCtx != null) {
 				
 				/*
-				 * resolve jump address for context mediator
+				 * resolve jump address for context mediator if context needs checking.
 				 */
+				checkCtx._jmpAddr = _code.size();
 			}
-			
+		
+			accessorIdx ++;
 		}
 		
 		/*
-		 * compile in END op in case we need to jump to it.
+		 * compile in RET op in case we need to jump to it. It just means "go to the next
+		 * context state".
 		 */
+		_code.add(Op.NEXT());
 		
 	}
 	
 	/**
 	 * return true if ran to completion
 	 * @return
+	 * @throws ThinklabException 
 	 */
-	public boolean runCode() {
+	public boolean runCode() throws ThinklabException {
 
-		for (int st = 0; st < _context.getMultiplicity(); st++) {
+		_registers = new Object[_nRegisters];
+		
+		for (int idx = 0; idx < _context.getMultiplicity(); idx++) {
 			
 			for (int ip = 0; ip < _code.size(); ip++) {
-				switch (_code.get(ip)._op) {
+				
+				Op op = _code.get(ip);
+				
+				switch (op._op) {
 				case STORE:
+					((IModifiableState)(_states.get(op._state))).setValue(idx, _registers[op._sreg]);
 					break;
 				case MEDIATE:
+					_registers[op._treg] = ((IMediatingAccessor)(_accessors.get(op._accessor))).mediate(_registers[op._sreg]);
+					break;
+				case MCALL:
+					/*
+					 * for now just call mediate() - assume mediators know what to do
+					 */
+					_registers[op._treg] = ((IMediatingAccessor)(_accessors.get(op._accessor))).mediate(_registers[op._sreg]);
 					break;
 				case OBSET:
+					((IComputingAccessor)(_accessors.get(op._accessor))).setValue(op._name, _registers[op._treg]);
 					break;
 				case OBGET:
+					_registers[op._sreg] = ((IComputingAccessor)(_accessors.get(op._accessor))).getValue(op._name);
+					break;
+				case VLGET:
+					_registers[op._sreg] = ((ISerialAccessor)(_accessors.get(op._accessor))).getValue(op.getMediatedIndex(idx, _mappers));
 					break;
 				case CALL:
+					((IComputingAccessor)(_accessors.get(op._accessor))).process(op.getMediatedIndex(idx, _mappers));
 					break;
 				case CJMP:
+					/*
+					 * TODO
+					 */
 					break;
 				case CHKEND:
+					/*
+					 * TODO
+					 */
 					break;
-				case RET:
+				case NEXT:
 					return ip == (_code.size() - 1);
 				}
 			}				
@@ -244,10 +326,67 @@ public class CompiledModel {
 		return true;
 	}
 
-	
-	public IObservation run() {
+	public void dumpCode(PrintStream out) {
+					
+		NumberFormat nf = new DecimalFormat("#000");
+		
+		int n = 0;
+		out.println("ACCESSORS:");
+		for (IAccessor acc : _accessors) {
+			out.println(nf.format(n++) + " " + acc);
+		}
+		
+		n = 0;
+		out.println("\nSTATES:");
+		for (IState state : _states) {
+			out.println(nf.format(n++) + " " + state);			
+		}
+
+		out.println("\nBYTECODE:");
+		for (int ip = 0; ip < _code.size(); ip++) {
+			
+			Op op = _code.get(ip);
+			
+			switch (op._op) {
+			case STORE:
+				out.println(nf.format(ip) + ". STORE r" + op._sreg + " -> s" + op._state);
+				break;
+			case MEDIATE:
+				out.println(nf.format(ip) + ". MEDIATE a" + op._accessor + " r" + op._sreg + " -> r" + op._treg);
+				break;
+			case MCALL:
+				out.println(nf.format(ip) + ". MCALL a" + op._accessor + " r" + op._sreg + " -> r" + op._treg);
+				break;
+			case OBSET:
+				out.println(nf.format(ip) + ". OBSET a" + op._accessor + " r" + op._treg + " -> " + op._name);
+				break;
+			case OBGET:
+				out.println(nf.format(ip) + ". OBGET a" + op._accessor + "  " + op._name + " -> r" + op._sreg );
+				break;
+			case VLGET:
+				out.println(nf.format(ip) + ". VLGET a" + op._accessor + "  " + " -> r" + op._sreg );
+				break;
+			case CALL:
+				out.println(nf.format(ip) + ". CALL a" + op._accessor);
+				break;
+			case CJMP:
+				out.println(nf.format(ip) + ". CJUMP m" + op._mapper + " " + op._jmpAddr);
+				break;
+			case CHKEND:
+				out.println(nf.format(ip) + ". CHKEND ");
+				break;
+			case NEXT:
+				out.println(nf.format(ip) + ". NEXT ");
+				break;
+			}
+		}				
+	}
+
+	public IObservation run() throws ThinklabException {
 		
 		IObservation ret = null;
+		
+		dumpCode(System.out);
 		
 		if (runCode()) {
 			
@@ -261,17 +400,20 @@ public class CompiledModel {
 	
 	enum OPCODE {
 		STORE,    // store register to indexed state
-		MEDIATE,  // mediate register with accessor and set into same register
+		MEDIATE,  // mediate register with accessor and set into other register
 		OBSET,    // set dependency for observable from register to accessor into named slot
 		OBGET,    // get computed observable state from accessor and set into register
-		CALL,     // call compute method
+		VLGET,    // get computed observable state from simple serial accessor
+		CALL,     // call compute method; prepare outputs for retrieval
 		CJMP,     // check indexed context mapper and jump to named IP if not visible
 		CHKEND,   // check external stop condition, update any progress monitors
-		RET       // stop
+		MCALL,    // mediate register and call any code we have to process it; return output to register
+		NEXT      // stop
 	}
 	
 	static class Op {
 		
+		public int _jmpAddr;
 		OPCODE _op; // Op OP op
 		String _name;  // formal name if it applies
 		int _state;
@@ -279,12 +421,18 @@ public class CompiledModel {
 		int _sreg;
 		int _treg;
 		int _model;
-		int _mapper;
+		int _mapper = -1;
 		
 		protected Op(OPCODE o) {
 			_op = o;
 		}
 		
+		public int getMediatedIndex(int idx, List<ContextMapper> mappers) {
+			return _mapper < 0 ? 
+					idx :
+					mappers.get(_mapper).map(idx);
+		}
+
 		public String toString() {
 			return _op.name();
 		}
@@ -295,6 +443,69 @@ public class CompiledModel {
 			ret._state = state;
 			return ret;
 		}
+		
+		public static Op MEDIATE(int accessor, int sourceRegister, int targetRegister) {
+			Op ret = new Op(OPCODE.MEDIATE);
+			ret._accessor = accessor;
+			ret._sreg = sourceRegister;
+			ret._treg = targetRegister;
+			return ret;
+		}
+
+		public static Op MCALL(int accessor, int sourceRegister, int targetRegister) {
+			Op ret = new Op(OPCODE.MCALL);
+			ret._accessor = accessor;
+			ret._sreg = sourceRegister;
+			ret._treg = targetRegister;
+			return ret;
+		}
+		
+		public static Op OBSET(int accessor, int register, String formalName) {
+			Op ret = new Op(OPCODE.OBSET);
+			ret._accessor = accessor;
+			ret._treg = register;
+			ret._name = formalName;
+			return ret;
+		}
+		
+		public static Op OBGET(int accessor, String formalName, int register) {
+			Op ret = new Op(OPCODE.OBGET);
+			ret._accessor = accessor;
+			ret._sreg = register;
+			ret._name = formalName;
+			return ret;
+		}
+		
+		public static Op VLGET(int accessor, int register) {
+			Op ret = new Op(OPCODE.VLGET);
+			ret._accessor = accessor;
+			ret._sreg = register;
+			return ret;
+		}
+		
+		public static Op CALL(int accessor) {
+			Op ret = new Op(OPCODE.CALL);
+			ret._accessor = accessor;
+			return ret;
+		}
+		
+//		public static Op () {
+//			Op ret = new Op(OPCODE.CHKEND);
+//			return ret;
+//		}
+		
+		public static Op CJMP(int mapper) {
+			Op ret = new Op(OPCODE.CJMP);
+			ret._mapper = mapper;
+			return ret;
+		}
+		
+		public static Op NEXT() {
+			Op ret = new Op(OPCODE.NEXT);
+			return ret;
+		}
+
+	
 	}
 
 

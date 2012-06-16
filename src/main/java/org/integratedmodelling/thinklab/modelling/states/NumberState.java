@@ -73,4 +73,9 @@ public class NumberState extends Observation implements IModifiableState {
 			_data[index] = Double.NaN;
 	}
 
+	@Override
+	public String toString() {
+		return "[" + getObservable().getDirectType() + ": numeric(size = " + _data.length + ")]";
+	}
+	
 }
