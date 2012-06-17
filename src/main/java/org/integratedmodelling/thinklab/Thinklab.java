@@ -62,6 +62,7 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
@@ -873,6 +874,12 @@ public class Thinklab implements
 	public Collection<INamespace> loadSourceDirectory(File sourcedir)
 			throws ThinklabException {
 		return _modelManager.loadSourceDirectory(sourcedir);
+	}
+
+	@Override
+	public IObservation observe(Object object, IContext context)
+			throws ThinklabException {
+		return _modelManager.observe(object, context);
 	}
 
 }

@@ -16,6 +16,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
+import org.integratedmodelling.thinklab.api.modelling.INamespace;
 
 /**
  * Base class for a general non-literal semantic object. Should be treated
@@ -65,6 +66,11 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 			_id = semantics.getId();
 	}
 
+	@Override
+	public INamespace getNamespace() {
+		return Thinklab.get().getNamespace(getDirectType().getConceptSpace());
+	}
+	
 	@Override
 	public IReferenceList getSemantics() {
 		if (_semantics == null)

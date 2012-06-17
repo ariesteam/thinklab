@@ -21,6 +21,7 @@ package org.integratedmodelling.thinklab.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
@@ -74,6 +75,15 @@ public class Query implements IQuery, IParseable, SemanticQuery, IMetadataHolder
 		_quantifier = q;
 		_restrictions = Arrays.asList(queries);
 	}
+
+	protected Query(IConcept c, Collection<IConcept> propertyRange) {
+		// TODO Auto-generated constructor stub -
+		// select only the concepts in propertyRange that classify as
+		// c. With ontologies that are guaranteed consistent, passing
+		// c should be unnecessary. Obviously we can't make that
+		// assumption.
+	}
+	
 
 	public boolean isRestriction() {
 		return _subject instanceof IProperty;

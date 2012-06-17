@@ -109,7 +109,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			  throw new ThinklabValidationException("WCS server exception: " + em);
 		  }
 
-		  desc.dump(System.out);
+		  // desc.dump(System.out);
 
 		  Thinklab.get().logger().info("parsing descriptor for " + layerName);
 		  
@@ -167,7 +167,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			  this.crs = Geospace.getCRSFromID(srs);
 			} catch (Exception e) {
 				Thinklab.get().logger().error(layerName + ": " + e.getMessage());
-			};
+			}
 
 
 		  /* read no data values. 

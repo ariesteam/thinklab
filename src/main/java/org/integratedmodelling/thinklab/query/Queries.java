@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.lang.Quantifier;
 import org.integratedmodelling.thinklab.NS;
@@ -56,6 +57,21 @@ public class Queries {
 		return new Query(c);
 	}
 
+	/**
+	 * Produce a query that will select objects that incarnate the passed concept and 
+	 * are in the range of passed property within targetConcept - i.e., suitable 
+	 * objects to serve in that role.
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public static Query select(IConcept c, IProperty restricting, IConcept targetConcept) {
+		try {
+			return new Query(c, targetConcept.getPropertyRange(restricting));
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	}
 	/**
 	 * Produce a query that will select objects that incarnate the passed concept, using a
 	 * string for the concept.

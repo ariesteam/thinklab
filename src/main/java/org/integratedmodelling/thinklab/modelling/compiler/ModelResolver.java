@@ -378,7 +378,7 @@ public class ModelResolver {
 				}
 				
 				@Override
-				public IAccessor getAccessor() {
+				public IAccessor getNaturalAccessor() {
 					return _state;
 				}
 

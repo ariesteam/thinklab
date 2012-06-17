@@ -1,6 +1,5 @@
 package org.integratedmodelling.thinklab.modelling.lang.datasources;
 
-
 import org.integratedmodelling.common.HashableObject;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;

@@ -146,8 +146,6 @@
 	<classpathentry kind="lib" path="lib/imageio-ext-gdalnitf-1.0.6-1.jar"/>
 	<classpathentry kind="lib" path="lib/imageio-ext-geocore-1.0.6-1.jar"/>
 	<classpathentry kind="lib" path="lib/imageio-ext-imagereadmt-1.0.6-1.jar"/>
-	<classpathentry kind="lib" path="lib/imageio-ext-kakadu-1.0.6-1.jar"/>
-	<classpathentry kind="lib" path="lib/imageio-ext-kakadujni-5.2.6.jar"/>
 	<classpathentry kind="lib" path="lib/imageio-ext-tiff-1.0.6-1.jar"/>
 	<classpathentry kind="lib" path="lib/imageio-ext-utilities-1.0.6-1.jar"/>
 	<classpathentry kind="lib" path="lib/iri.jar"/>

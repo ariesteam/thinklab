@@ -11,6 +11,7 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
@@ -63,6 +64,12 @@ public class ConditionalObserver extends Observer<ConditionalObserver> implement
 
 	@Override
 	public IState createState(ISemanticObject<?> observable, IContext context) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IAccessor getNaturalAccessor() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -31,6 +31,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticLiteral;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.modelling.INamespace;
 
 /**
  * Base class for a general literal object.
@@ -56,6 +57,11 @@ public abstract class SemanticLiteral<T> implements ISemanticLiteral<T> {
     public T demote() {
     	return value;
     }
+    
+	@Override
+	public INamespace getNamespace() {
+		return Thinklab.get().getNamespace(concept.getConceptSpace());
+	}
     
     /* (non-Javadoc)
      * @see org.integratedmodelling.ima.core.value.IValue#toString()
@@ -132,7 +138,7 @@ public abstract class SemanticLiteral<T> implements ISemanticLiteral<T> {
 	public long asLong() {
 		return value instanceof Number ?
 				((Number)value).longValue() :
-				0l;
+				0L;
 	}
 
 	@Override

@@ -441,7 +441,7 @@ public class Concept extends Knowledge implements IConcept {
 		
 		while (conc != null && !conc.toString().equals("owl:Thing")) {
 			
-			for (OWLRestriction r : OWLAPI.getRestrictions((Concept)conc, true)) {
+			for (OWLRestriction<?> r : OWLAPI.getRestrictions((Concept)conc, true)) {
 			
 				if (r instanceof OWLObjectAllRestriction &&
 						r.getProperty().equals(((Property)property).entity)) {

@@ -18,6 +18,7 @@ import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IExpressionDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
+import org.integratedmodelling.thinklab.modelling.interfaces.IChainingAccessor;
 
 @Concept(NS.OBSERVER)
 public abstract class Observer<T> extends ObservingObject<T> implements IObserverDefinition {
@@ -28,7 +29,20 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	@Property(NS.HAS_ACCESSOR_FUNCTION)
 	IFunctionDefinition _accessorGenerator = null;
 	
+	
+	
 	IAccessor _accessor = null;
+	
+	
+	/**
+	 * This one needs to be implemented by all derived observers. The result will be the
+	 * accessor returned by (final) getAccessor, unless a 'with' spec has created another
+	 * one. In this case, the 'with' accessor will be chained to the natural one if it is
+	 * a IChainingAccessor so it will be able to use it.
+	 * 
+	 * @return
+	 */
+	public abstract IAccessor getNaturalAccessor();
 	
 	@Override
 	public IContext getUnresolvedContext(IContext totalContext)  {
@@ -73,9 +87,23 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	}
 
 	@Override
-	public IAccessor getAccessor() {
-		return _accessor;
+	public final IAccessor getAccessor() {
+		
+		IAccessor ret = _accessor;
+		
+		if (ret instanceof IChainingAccessor) {
+			
+			IAccessor na = getNaturalAccessor();
+			if (na != null)
+				((IChainingAccessor)ret).chain(na);
+			
+		} else if (ret == null) {
+			ret = getNaturalAccessor();
+		}
+			
+		return ret;
 	}
+	
 
 	@Override
 	public List<IObservation> observe(IContext context)

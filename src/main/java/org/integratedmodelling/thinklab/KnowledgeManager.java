@@ -58,8 +58,7 @@ public class KnowledgeManager implements IKnowledgeManager {
 	
 	private HashMap<String, IKbox> _kboxes = new HashMap<String, IKbox>();
 
-	protected KnowledgeManager() throws ThinklabException {
-
+	protected KnowledgeManager()  {
 	}
 
 	@Override
@@ -260,7 +259,6 @@ public class KnowledgeManager implements IKnowledgeManager {
 			String datatype, Class<?> javaClass) throws ThinklabException {
 		_annotationFactory.registerLiteralAnnotation(clls, requireConcept(concept), datatype, javaClass);
 	}
-
 
 	@Override
 	public void registerAnnotatedClass(Class<?> cls, IConcept concept) {

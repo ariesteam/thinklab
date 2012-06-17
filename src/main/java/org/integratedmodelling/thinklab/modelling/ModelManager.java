@@ -55,6 +55,8 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefiniti
 import org.integratedmodelling.thinklab.api.modelling.parsing.IPropertyDefinition;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer;
+import org.integratedmodelling.thinklab.modelling.compiler.ModelResolver;
 import org.integratedmodelling.thinklab.modelling.lang.AgentModel;
 import org.integratedmodelling.thinklab.modelling.lang.Categorization;
 import org.integratedmodelling.thinklab.modelling.lang.Classification;
@@ -586,20 +588,6 @@ public class ModelManager implements IModelManager {
 	 */
 	ISession _session = null;
 
-	/**
-	 * Return the singleton model manager. Use injection to modularize the
-	 * parser/interpreter.
-	 * 
-	 * @return
-	 */
-//	public static ModelManager get() {
-//
-//		if (_this == null) {
-//			_this = new ModelManager();
-//		}
-//		return _this;
-//	}
-
 	public ModelManager() {
 		if (_defaultModelNamespace == null) {
 			_defaultModelNamespace = new Namespace();
@@ -853,6 +841,23 @@ public class ModelManager implements IModelManager {
 	public void registerFunction(String id, String[] parameterNames,
 			Class<?> cls) {
 		_functions.put(id, new FunctionDescriptor(id, parameterNames, cls));
+	}
+
+	@Override
+	public IObservation observe(Object object, IContext context)
+			throws ThinklabException {
+		
+		ISemanticObject<?> so = Thinklab.get().annotate(object);
+		
+		IObservation ret = null;
+		IContext ctx = new Context((Context) context);
+		ModelResolver resolver = new ModelResolver(so.getNamespace(), ctx);
+		IModel root = resolver.resolve(so);
+		if (root != null) {
+			Contextualizer ctxer = new Contextualizer(resolver.getModelStructure());
+			ret = ctxer.run(root, ctx);
+		}
+		return ret;
 	}
 
 }

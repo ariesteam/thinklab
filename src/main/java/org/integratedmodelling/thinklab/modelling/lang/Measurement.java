@@ -55,7 +55,7 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 	 * -----------------------------------------------------------------------------------
 	 */
 	public class MeasurementAccessor 
-		implements ISerialAccessor, IMediatingAccessor, IComputingAccessor {
+		implements ISerialAccessor, IMediatingAccessor {
 
 		MeasurementAccessor _mediated;
 		
@@ -106,30 +106,25 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 			// TODO Auto-generated method stub
 			return null;
 		}
+	}
+	
+	class ComputingMeasurementAccessor extends MeasurementAccessor implements IComputingAccessor {
 
 		@Override
 		public void notifyDependency(ISemanticObject<?> observable, String key) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void notifyExpectedOutput(ISemanticObject<?> observable,
 				String key) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void process(int stateIndex) throws ThinklabException {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void setValue(String inputKey, Object value) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
@@ -137,15 +132,15 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 			// TODO Auto-generated method stub
 			return null;
 		}
+		
 	}
-	
 
 	@Override
-	public IAccessor getAccessor() {
-		/*
-		 * TODO should produce a subclassed ComputingMeasurementAccessor if there are
-		 * expressions. This way the compiler will catch misplaced dependencies.
-		 */
+	public IAccessor getNaturalAccessor() {
+		
+		if (getDependencies().size() > 0 || /* TODO check if expressions have been defined */ false)
+			return new ComputingMeasurementAccessor();
+		
 		return new MeasurementAccessor();
 	}
 

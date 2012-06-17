@@ -486,28 +486,17 @@ public class ShapeValue extends SemanticLiteral<Geometry>
 
 	@Override
 	public boolean contains(ShapeValue o) throws ThinklabException {
-		if (! (o instanceof ShapeValue))
-			throw new ThinklabValidationException(
-					"shapes can only be topologically compared with other shapes");
-		
-		return value.contains(((ShapeValue)o).transform(crs).value);
+		return value.contains(o.transform(crs).value);
 	}
 
 	@Override
 	public boolean overlaps(ShapeValue o) throws ThinklabException {
-		if (! (o instanceof ShapeValue))
-			throw new ThinklabValidationException(
-					"shapes can only be topologically compared with other shapes");
-
-		return value.overlaps(((ShapeValue)o).transform(crs).value);
+		return value.overlaps(o.transform(crs).value);
 	}
 
 	@Override
 	public boolean intersects(ShapeValue o) throws ThinklabException {
-		if (! (o instanceof ShapeValue))
-			throw new ThinklabValidationException(
-					"shapes can only be topologically compared with other shapes");
-		return value.intersects(((ShapeValue)o).transform(crs).value);
+		return value.intersects(o.transform(crs).value);
 	}
 
 	public void wrap(Object o) {

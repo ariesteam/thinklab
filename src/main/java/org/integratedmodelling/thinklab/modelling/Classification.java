@@ -521,5 +521,10 @@ public class Classification implements IClassification {
 		}
 	}
 
+	@Override
+	public IConcept getConceptSpace() {
+		return _cSpace;
+	}
+
 
 }

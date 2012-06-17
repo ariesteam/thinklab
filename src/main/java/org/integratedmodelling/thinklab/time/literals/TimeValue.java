@@ -175,9 +175,8 @@ public class TimeValue extends SemanticLiteral<DateTime> implements IParseable {
 	public boolean isIdentical(TimeValue obj) {
 		
 		return
-			(obj instanceof TimeValue) &&
-			(precision == ((TimeValue)obj).precision) &&
-			value.equals(((TimeValue)obj).value);
+			(precision == obj.precision) &&
+			value.equals(obj.value);
 		
 	}
 
