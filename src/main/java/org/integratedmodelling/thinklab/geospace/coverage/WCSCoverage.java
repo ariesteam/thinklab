@@ -37,7 +37,6 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
@@ -110,7 +109,7 @@ public class WCSCoverage extends AbstractRasterCoverage {
 			  throw new ThinklabValidationException("WCS server exception: " + em);
 		  }
 
-		  // desc.dump(System.out);
+		  desc.dump(System.out);
 
 		  Thinklab.get().logger().info("parsing descriptor for " + layerName);
 		  

@@ -63,6 +63,10 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	protected double yCellSize;
 	protected RandomIter itera;
 	protected RenderedImage image = null;
+	/*
+	 * allows lazy loading of raster image and JAI iterator
+	 */
+	protected boolean _loaded = false;
 	
 	public GridCoverage2D getCoverage() {
 		return coverage;
@@ -310,5 +314,11 @@ public abstract class AbstractRasterCoverage implements ICoverage {
 	public void setName(String covId) {
 		layerName = covId;
 	}
+	
+
+	public boolean isLoaded() {
+		return _loaded;
+	}
+
 
 }

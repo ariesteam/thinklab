@@ -52,6 +52,8 @@ public class ModelReadWrite {
 		
 		IObservation result = model.observe(ctx);
 		
+		System.out.println(result);
+		
 	}
 
 }

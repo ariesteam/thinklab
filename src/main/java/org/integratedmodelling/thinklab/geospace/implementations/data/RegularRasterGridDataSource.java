@@ -28,13 +28,13 @@ import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
 import org.integratedmodelling.thinklab.api.modelling.ISerialAccessor;
+import org.integratedmodelling.thinklab.geospace.coverage.AbstractRasterCoverage;
 import org.integratedmodelling.thinklab.geospace.coverage.ICoverage;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 
 public abstract class RegularRasterGridDataSource implements IDataSource {
 
 	protected ICoverage _coverage = null;
-	private GridExtent _originalExtent;
 	private GridExtent _finalExtent = null;
 	
 	public RegularRasterGridDataSource() {
@@ -47,13 +47,26 @@ public abstract class RegularRasterGridDataSource implements IDataSource {
 
 	public Object getValue(int index) {
 
+		if (!((AbstractRasterCoverage)_coverage).isLoaded()) {
+			try {
+				this._coverage.loadData();
+			} catch (ThinklabException e1) {
+				throw new ThinklabRuntimeException(e1);
+			}
+		}
+
 		try {
 			
-			Object ret = _coverage.getSubdivisionValue(index, _originalExtent);
+			Object ret = _coverage.getSubdivisionValue(index, _finalExtent);
 			if (! (ret instanceof Number))
 				return Double.NaN;
 			ret = ((Number)ret).doubleValue();
 			
+			/*
+			 * TODO/FIXME - this is already done in the coverage, although differently (just
+			 * comparing the value) - will never get here as it will be already a Double.NaN
+			 * if the same nodata values of the coverage are used.
+			 */
 			double[] nd = _coverage.getNodataValue();
 			if (nd != null && ret != null && (ret instanceof Double) && !Double.isNaN((Double)ret)) {
 				for (double d : nd) {
@@ -101,7 +114,6 @@ public abstract class RegularRasterGridDataSource implements IDataSource {
 	 * @return
 	 */
 	protected abstract GridExtent getFinalExtent(IContext context) throws ThinklabException;
-
 
 	/*
 	 * -------------------------------------------------------------------------------------------------

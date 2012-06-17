@@ -57,7 +57,6 @@ public class Classifier implements IClassifier {
 	 */
 	private boolean isNil = false;
 	
-	
 	public Classifier(String s) throws ThinklabException {
 		parse(s);
 	}

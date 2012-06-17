@@ -46,7 +46,6 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 		_observableDefs.add(instance);
 	}
 	
-	
 	@Override
 	public String getObservableConceptName() {
 		return _observableCName;

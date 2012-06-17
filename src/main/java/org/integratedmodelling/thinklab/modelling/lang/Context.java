@@ -50,7 +50,7 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	HashMap<IConcept, IExtent> _extents = new HashMap<IConcept, IExtent>();
 	HashMap<ISemanticObject<?>, IState> _states = new HashMap<ISemanticObject<?>, IState>();
 	
-	int     _multiplicity = 0;
+//	int     _multiplicity = 0;
 	boolean _isNull = false;
 	
 	private boolean _initialized = false;
@@ -196,7 +196,12 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 
 	@Override
 	public int getMultiplicity(IConcept concept) throws ThinklabException {
-		return _multiplicity;
+		for (int i = 0; i < _order.size(); i++) {
+			if (concept.is(_order.get(i).getDomainConcept())) {
+				return _cursor.getDimensionSize(i);
+			}
+		}
+		return 0;
 	}
 
 	@Override

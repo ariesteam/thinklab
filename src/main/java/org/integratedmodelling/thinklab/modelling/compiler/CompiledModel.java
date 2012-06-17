@@ -22,6 +22,8 @@ import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer.CElem;
 import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer.Dependency;
 import org.integratedmodelling.thinklab.modelling.debug.ModelGraph;
 import org.integratedmodelling.thinklab.modelling.interfaces.IModifiableState;
+import org.integratedmodelling.thinklab.modelling.lang.Context;
+import org.integratedmodelling.thinklab.modelling.lang.Observation;
 import org.integratedmodelling.utils.NameGenerator;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -37,9 +39,7 @@ public class CompiledModel {
 	private IContext _context;
 	private IModel _model;
 	private int _nRegisters;
-	
-	private Object[] _registers;
-	
+		
 	public CompiledModel(IModel model,
 			DirectedGraph<CElem, Dependency> graph, 
 			IContext context, int nRegisters) throws ThinklabException {
@@ -264,19 +264,24 @@ public class CompiledModel {
 		 * context state".
 		 */
 		_code.add(Op.NEXT());
-		
+				
 	}
 	
 	/**
-	 * return true if ran to completion
+	 * Run the code and return true if ran to completion, false if interrupted by user action or error.
+	 * 
+	 * TODO handle stop conditions and exceptions, which are the only situations when this returns false
+	 * 
 	 * @return
 	 * @throws ThinklabException 
 	 */
-	public boolean runCode() throws ThinklabException {
+	private boolean runCode() throws ThinklabException {
 
-		_registers = new Object[_nRegisters];
+		Object[] registers = new Object[_nRegisters];
+
+		int states = _context.getMultiplicity();
 		
-		for (int idx = 0; idx < _context.getMultiplicity(); idx++) {
+		for (int idx = 0; idx < states; idx++) {
 			
 			for (int ip = 0; ip < _code.size(); ip++) {
 				
@@ -284,25 +289,25 @@ public class CompiledModel {
 				
 				switch (op._op) {
 				case STORE:
-					((IModifiableState)(_states.get(op._state))).setValue(idx, _registers[op._sreg]);
+					((IModifiableState)(_states.get(op._state))).setValue(idx, registers[op._sreg]);
 					break;
 				case MEDIATE:
-					_registers[op._treg] = ((IMediatingAccessor)(_accessors.get(op._accessor))).mediate(_registers[op._sreg]);
+					registers[op._treg] = ((IMediatingAccessor)(_accessors.get(op._accessor))).mediate(registers[op._sreg]);
 					break;
 				case MCALL:
 					/*
 					 * for now just call mediate() - assume mediators know what to do
 					 */
-					_registers[op._treg] = ((IMediatingAccessor)(_accessors.get(op._accessor))).mediate(_registers[op._sreg]);
+					registers[op._treg] = ((IMediatingAccessor)(_accessors.get(op._accessor))).mediate(registers[op._sreg]);
 					break;
 				case OBSET:
-					((IComputingAccessor)(_accessors.get(op._accessor))).setValue(op._name, _registers[op._treg]);
+					((IComputingAccessor)(_accessors.get(op._accessor))).setValue(op._name, registers[op._treg]);
 					break;
 				case OBGET:
-					_registers[op._sreg] = ((IComputingAccessor)(_accessors.get(op._accessor))).getValue(op._name);
+					registers[op._sreg] = ((IComputingAccessor)(_accessors.get(op._accessor))).getValue(op._name);
 					break;
 				case VLGET:
-					_registers[op._sreg] = ((ISerialAccessor)(_accessors.get(op._accessor))).getValue(op.getMediatedIndex(idx, _mappers));
+					registers[op._sreg] = ((ISerialAccessor)(_accessors.get(op._accessor))).getValue(op.getMediatedIndex(idx, _mappers));
 					break;
 				case CALL:
 					((IComputingAccessor)(_accessors.get(op._accessor))).process(op.getMediatedIndex(idx, _mappers));
@@ -318,9 +323,9 @@ public class CompiledModel {
 					 */
 					break;
 				case NEXT:
-					return ip == (_code.size() - 1);
+					break;
 				}
-			}				
+			}
 		}
 		
 		return true;
@@ -383,20 +388,42 @@ public class CompiledModel {
 	}
 
 	public IObservation run() throws ThinklabException {
-		
-		IObservation ret = null;
-		
+
+		/*
+		 * TODO remove or condition to debug
+		 */
 		dumpCode(System.out);
 		
 		if (runCode()) {
 			
 			/*
+			 * add states to context
+			 */
+			for (IState s : _states)
+				((Context)_context).addStateUnchecked(s);
+			
+			/*
 			 * reconstruct final observation, assign to ret
 			 */
+			SemanticObject<?> obs = (SemanticObject<?>) _model.getObservables().get(0);
+			for (IState s : _states) {
+				SemanticObject<?> sobs = (SemanticObject<?>) s.getObservable();
+				if (sobs.getSignature().equals(obs.getSignature())) {
+					return s;
+				}
+			}
+			
+			return new Observation(obs, _context);
 			
 		}
-		return ret;
+		return null;
 	}
+	
+	/*
+	 * -------------------------------------------------------------------------------------------
+	 * opcodes
+	 * -------------------------------------------------------------------------------------------
+	 */
 	
 	enum OPCODE {
 		STORE,    // store register to indexed state

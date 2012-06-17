@@ -76,11 +76,9 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 				/*
 				 * TODO
 				 * check unit compatibility
-				 */
-				
+				 */				
 				_mediated = (MeasurementAccessor) accessor;
-			}
-			
+			}			
 		}
 		
 		@Override
@@ -139,7 +137,6 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 			// TODO Auto-generated method stub
 			return null;
 		}
-
 	}
 	
 
@@ -154,7 +151,7 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 
 	@Override
 	public IState createState(ISemanticObject<?> observable, IContext context) throws ThinklabException {
-		return new NumberState(observable, context);
+		return new NumberState(observable, context, this);
 	}
 	
 	

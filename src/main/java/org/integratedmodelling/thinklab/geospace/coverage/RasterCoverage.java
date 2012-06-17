@@ -48,6 +48,7 @@ public class RasterCoverage extends AbstractRasterCoverage {
 
 	static GridCoverageFactory rasterFactory = new GridCoverageFactory();
 	
+	
 	public RasterCoverage(IContext context, IState state) throws ThinklabException {
 		
 		double[] data = state.getDataAsDoubles();
@@ -237,6 +238,9 @@ public class RasterCoverage extends AbstractRasterCoverage {
 	@Override
 	public void loadData() throws ThinklabException {
 		
+		if (_loaded)
+			return;
+		
 		/*
 		 * get rid of old image if we had one
 		 */
@@ -246,6 +250,8 @@ public class RasterCoverage extends AbstractRasterCoverage {
 		
 		image = coverage.getRenderedImage();
 		itera = RandomIterFactory.create(image, null);
+		
+		_loaded = true;
 	}
 	
 

@@ -184,7 +184,6 @@ public class AnnotationFactory {
 				Collections.synchronizedMap(new WeakHashMap<Object, IReferenceList>()), 
 				null);
 		
-		System.out.println(ret.prettyPrint());
 		return ret;
 	}
 
