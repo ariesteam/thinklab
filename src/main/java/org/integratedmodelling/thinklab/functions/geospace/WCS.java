@@ -26,8 +26,8 @@ public class WCS implements IExpression {
 		/*
 		 * TODO support a list of nodata values
 		 */
-		if (parameters.containsKey("nodata")) {
-			noData = Double.parseDouble(parameters.get("nodata").toString());
+		if (parameters.containsKey("no-data")) {
+			noData = Double.parseDouble(parameters.get("no-data").toString());
 		}
 		
 		return new WCSGridDataSource(service, id, new double[]{noData});

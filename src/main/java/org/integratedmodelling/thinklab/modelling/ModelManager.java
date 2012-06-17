@@ -57,6 +57,7 @@ import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer;
 import org.integratedmodelling.thinklab.modelling.compiler.ModelResolver;
+import org.integratedmodelling.thinklab.modelling.interfaces.IExpressionContextManager;
 import org.integratedmodelling.thinklab.modelling.lang.AgentModel;
 import org.integratedmodelling.thinklab.modelling.lang.Categorization;
 import org.integratedmodelling.thinklab.modelling.lang.Classification;
@@ -75,6 +76,7 @@ import org.integratedmodelling.thinklab.modelling.lang.Scenario;
 import org.integratedmodelling.thinklab.modelling.lang.Storyline;
 import org.integratedmodelling.thinklab.modelling.lang.UnitDefinition;
 import org.integratedmodelling.thinklab.modelling.lang.Value;
+import org.integratedmodelling.thinklab.modelling.lang.expressions.GroovyExpressionManager;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.thinklab.query.Queries;
 import org.integratedmodelling.utils.CamelCase;
@@ -91,6 +93,8 @@ import com.google.inject.Injector;
  *
  */
 public class ModelManager implements IModelManager {
+
+	public static final String DEFAULT_EXPRESSION_LANGUAGE = "groovy";
 
 	/*
 	 * we provide a default namespace for models that come right out of a kbox.
@@ -837,7 +841,6 @@ public class ModelManager implements IModelManager {
 
 	}
 
-
 	public void registerFunction(String id, String[] parameterNames,
 			Class<?> cls) {
 		_functions.put(id, new FunctionDescriptor(id, parameterNames, cls));
@@ -858,6 +861,20 @@ public class ModelManager implements IModelManager {
 			ret = ctxer.run(root, ctx);
 		}
 		return ret;
+	}
+	
+	/**
+	 * TODO make this configurable - won't be needed for quite some time, if ever.
+	 * 
+	 * @param language
+	 * @return
+	 */
+	public IExpressionContextManager getExpressionManager(String language) {
+
+		if (language.equals("groovy"))
+			return new GroovyExpressionManager();
+		
+		throw new ThinklabRuntimeException("unknown expression language: " + language);
 	}
 
 }

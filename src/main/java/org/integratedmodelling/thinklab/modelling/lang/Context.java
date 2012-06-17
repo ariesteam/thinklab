@@ -50,7 +50,6 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	HashMap<IConcept, IExtent> _extents = new HashMap<IConcept, IExtent>();
 	HashMap<ISemanticObject<?>, IState> _states = new HashMap<ISemanticObject<?>, IState>();
 	
-//	int     _multiplicity = 0;
 	boolean _isNull = false;
 	
 	private boolean _initialized = false;
@@ -416,6 +415,12 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	public int hasEqualExtents(IContext second) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public IContext getParentContext() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

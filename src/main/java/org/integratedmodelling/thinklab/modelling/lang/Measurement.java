@@ -17,7 +17,9 @@ import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.IUnit;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IMeasuringObserverDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IUnitDefinition;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.modelling.Unit;
+import org.integratedmodelling.thinklab.modelling.interfaces.IExpressionContextManager;
 import org.integratedmodelling.thinklab.modelling.states.NumberState;
 
 @Concept(NS.MEASURING_OBSERVER)
@@ -110,6 +112,16 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 	
 	class ComputingMeasurementAccessor extends MeasurementAccessor implements IComputingAccessor {
 
+		IExpressionContextManager _emanager;
+		
+		public ComputingMeasurementAccessor(IContext context) {
+			
+//			_emanager = ((ModelManager)(Thinklab.get().getModelManager())).
+//					getExpressionManager(getNamespace().getExpressionLanguage());
+//			
+//			_emanager.setContext(Measurement.this, context);
+		}
+
 		@Override
 		public void notifyDependency(ISemanticObject<?> observable, String key) {
 		}
@@ -136,10 +148,10 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 	}
 
 	@Override
-	public IAccessor getNaturalAccessor() {
+	public IAccessor getNaturalAccessor(IContext context) {
 		
 		if (getDependencies().size() > 0 || /* TODO check if expressions have been defined */ false)
-			return new ComputingMeasurementAccessor();
+			return new ComputingMeasurementAccessor(context);
 		
 		return new MeasurementAccessor();
 	}

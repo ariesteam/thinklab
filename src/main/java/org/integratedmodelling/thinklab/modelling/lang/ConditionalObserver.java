@@ -69,7 +69,7 @@ public class ConditionalObserver extends Observer<ConditionalObserver> implement
 	}
 
 	@Override
-	public IAccessor getNaturalAccessor() {
+	public IAccessor getNaturalAccessor(IContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}

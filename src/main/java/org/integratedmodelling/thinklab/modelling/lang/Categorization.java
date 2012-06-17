@@ -38,7 +38,7 @@ public class Categorization extends Observer<Categorization> implements ICategor
 	}
 
 	@Override
-	public IAccessor getNaturalAccessor() {
+	public IAccessor getNaturalAccessor(IContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}

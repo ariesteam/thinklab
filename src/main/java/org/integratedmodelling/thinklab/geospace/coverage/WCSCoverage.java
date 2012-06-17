@@ -169,10 +169,8 @@ public class WCSCoverage extends AbstractRasterCoverage {
 				Thinklab.get().logger().error(layerName + ": " + e.getMessage());
 			}
 
-
-		  /* read no data values. 
-		   * TBC: only honor the nodata specs from WCS if there are no nodata specs in the annotation.
-		   * FIXME: limited to one SingleValue spec 
+		  /*
+		   *  read no data values unless they were overridden in initial specifications. 
 		   */
 		  n = desc.findNode("nullValues", "wcs");
 		  if (noData == null && n != null)  {

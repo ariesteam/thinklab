@@ -35,6 +35,7 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	String _trainingKbox = null;
 	String _storageKbox = null;
 	String _lookupKbox = null;
+	String _expressionLanguage = ModelManager.DEFAULT_EXPRESSION_LANGUAGE;
 	
 	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
 	ArrayList<IAxiom> _axioms = new ArrayList<IAxiom>();
@@ -60,7 +61,6 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	
 	public Namespace() {
 	}
-
 
 	/**
 	 * Exec all axioms accumulated so far to actualize gathered knowledge.
@@ -249,5 +249,14 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		return _lookupKbox;
 	}
 
+	@Override
+	public void setExpressionLanguage(String language) {
+		_expressionLanguage = language;
+	}
+
+	@Override
+	public String getExpressionLanguage() {
+		return _expressionLanguage;
+	}
 
 }

@@ -24,7 +24,7 @@ public class Value extends Observer<Value> implements IValuingObserverDefinition
 	}
 
 	@Override
-	public IAccessor getNaturalAccessor() {
+	public IAccessor getNaturalAccessor(IContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}

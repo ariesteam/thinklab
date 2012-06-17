@@ -14,7 +14,6 @@ import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.modelling.compiler.ModelResolver.DependencyEdge;
-import org.integratedmodelling.thinklab.modelling.debug.ModelGraph;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -179,7 +178,7 @@ public class Contextualizer  {
 			/*
 			 * get the accessor from the DS and chain it to ours
 			 */
-			node = new CElem(model.getObserver().getAccessor(), context, null);
+			node = new CElem(model.getObserver().getAccessor(context), context, null);
 
 			if ( !(node.accessor instanceof IMediatingAccessor))
 				throw new ThinklabValidationException("trying to mediate to a non-mediating observer");
@@ -191,7 +190,7 @@ public class Contextualizer  {
 			
 		} else if (model.getObserver() != null) {
 			
-			IAccessor accessor = model.getObserver().getAccessor();
+			IAccessor accessor = model.getObserver().getAccessor(context);
 			if (accessor != null) {
 				node = new CElem(accessor, context, model);
 				graph.addVertex(node);
@@ -230,7 +229,7 @@ public class Contextualizer  {
 				IObserver obs = model.getObserver();
 				
 				while (obs.getMediatedObserver() != null) {
-					CElem targ = new CElem(obs.getMediatedObserver().getAccessor(), context, null);
+					CElem targ = new CElem(obs.getMediatedObserver().getAccessor(context), context, null);
 					graph.addVertex(targ);
 					graph.addEdge(targ, start, 
 							new Dependency(true, null, model.getObservables().get(0)));

@@ -32,7 +32,7 @@ public class Classification extends Observer<Classification> implements IClassif
 	}
 
 	@Override
-	public IAccessor getNaturalAccessor() {
+	public IAccessor getNaturalAccessor(IContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -39,10 +39,11 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	 * accessor returned by (final) getAccessor, unless a 'with' spec has created another
 	 * one. In this case, the 'with' accessor will be chained to the natural one if it is
 	 * a IChainingAccessor so it will be able to use it.
+	 * @param context TODO
 	 * 
 	 * @return
 	 */
-	public abstract IAccessor getNaturalAccessor();
+	public abstract IAccessor getNaturalAccessor(IContext context);
 	
 	@Override
 	public IContext getUnresolvedContext(IContext totalContext)  {
@@ -87,30 +88,23 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	}
 
 	@Override
-	public final IAccessor getAccessor() {
+	public final IAccessor getAccessor(IContext context) {
 		
 		IAccessor ret = _accessor;
 		
 		if (ret instanceof IChainingAccessor) {
 			
-			IAccessor na = getNaturalAccessor();
+			IAccessor na = getNaturalAccessor(context);
 			if (na != null)
 				((IChainingAccessor)ret).chain(na);
 			
 		} else if (ret == null) {
-			ret = getNaturalAccessor();
+			ret = getNaturalAccessor(context);
 		}
 			
 		return ret;
 	}
 	
-
-	@Override
-	public List<IObservation> observe(IContext context)
-			throws ThinklabException {
-		return null;
-	}
-
 	@Override
 	public IObserver train(IContext context) throws ThinklabException {
 		return this;

@@ -33,7 +33,8 @@ define model rainfall-local of
  */
 
 model wcs(service="http://ecoinformatics.uvm.edu/geoserver/wcs", 
-			  id="global:annual_precip_global")
+			  id="global:annual_precip_global",
+			  no-data = -32768.0)
      as measure habitat:Rainfall in mm;
 
 model wcs(service="http://ecoinformatics.uvm.edu/geoserver/wcs", id="global:dem90m")

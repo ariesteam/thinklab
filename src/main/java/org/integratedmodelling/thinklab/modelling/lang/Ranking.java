@@ -57,7 +57,7 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 	}
 
 	@Override
-	public IAccessor getNaturalAccessor() {
+	public IAccessor getNaturalAccessor(IContext context) {
 		
 		if (getDependencies().size() > 0 || /* TODO check if expressions have been defined */ false)
 			return new ComputingRankingAccessor();

@@ -659,6 +659,10 @@ public class Thinklab implements
 		return _km.getCommandManager();
 	}
 
+	public IModelManager getModelManager() {
+		return _modelManager;
+	}
+	
 	@Override
 	public void registerPluginPath(File path) {
 		_pluginManager.registerPluginPath(path);
