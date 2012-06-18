@@ -50,7 +50,7 @@ public class ModelReadWrite {
 			System.out.println(o);
 		}
 		
-		IObservation result = model.observe(ctx);
+		IObservation result = Thinklab.get().observe(model, ctx);
 		
 		System.out.println(result);
 		

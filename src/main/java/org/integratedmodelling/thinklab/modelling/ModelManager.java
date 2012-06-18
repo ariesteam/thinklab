@@ -22,6 +22,7 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.interpreter.ModelGenerator;
+import org.integratedmodelling.list.PolyList;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.factories.IModelManager;
@@ -850,7 +851,13 @@ public class ModelManager implements IModelManager {
 	public IObservation observe(Object object, IContext context)
 			throws ThinklabException {
 		
-		ISemanticObject<?> so = Thinklab.get().annotate(object);
+		ISemanticObject<?> so = null;
+		
+		if (object instanceof IConcept) {
+			so = Thinklab.get().entify(PolyList.list(object));
+		} else {
+			so = Thinklab.get().annotate(object);
+		}
 		
 		IObservation ret = null;
 		IContext ctx = new Context((Context) context);
