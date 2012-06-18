@@ -11,6 +11,7 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
+import org.integratedmodelling.thinklab.modelling.datasets.NetCDFDataset;
 import org.integratedmodelling.thinklab.query.Queries;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -51,6 +52,10 @@ public class ModelReadWrite {
 		}
 		
 		IObservation result = Thinklab.get().observe(model, ctx);
+		
+		NetCDFDataset ncds = new NetCDFDataset();
+		ncds.setContext(result.getContext());
+		ncds.write("test1.nc");
 		
 		System.out.println(result);
 		

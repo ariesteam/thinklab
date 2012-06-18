@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.functions.geospace;
+package org.integratedmodelling.thinklab.geospace.functions;
 
 import java.util.Map;
 

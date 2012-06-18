@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.functions.time;
+package org.integratedmodelling.thinklab.time.functions;
 
 import java.util.Map;
 
