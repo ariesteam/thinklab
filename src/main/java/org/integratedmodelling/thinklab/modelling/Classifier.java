@@ -29,6 +29,7 @@ import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.modelling.IClassifier;
 
 /**
@@ -36,7 +37,7 @@ import org.integratedmodelling.thinklab.api.modelling.IClassifier;
  * Can be serialized to an ugly string so that observations can be built easily, but it is
  * not meant to be used outside of a model context.
  */
-public class Classifier implements IClassifier {
+public class Classifier implements IClassifier, IParseable {
 
 	Vector<Classifier> classifiers = null;
 	Double number = null;
@@ -283,6 +284,12 @@ public class Classifier implements IClassifier {
 	@Override
 	public String asText() {
 		return toString();
+	}
+
+	@Override
+	public void negate() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
