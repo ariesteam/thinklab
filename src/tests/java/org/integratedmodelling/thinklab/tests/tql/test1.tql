@@ -24,6 +24,12 @@ define model rainfall-global of
 define model rainfall-local of 
 		(concept RainfallLocal is habitat:Rainfall)
 	as measure habitat:Rainfall in m;
+
+define model elevation-class of ElevationClass 
+	as classify (measure geospace.physics:GroundElevation in m)
+		LowElevation when < 100,
+		MediumElevation when 100 to 500,
+		HighElevation when > 500;
 	
 /*
  * ---------------------------------------------------------------------------------------------

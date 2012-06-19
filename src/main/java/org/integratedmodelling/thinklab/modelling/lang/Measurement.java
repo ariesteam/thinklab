@@ -15,6 +15,7 @@ import org.integratedmodelling.thinklab.api.modelling.IMediatingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.ISerialAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.IUnit;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IClassificationDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IMeasuringObserverDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IUnitDefinition;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
@@ -159,6 +160,12 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 	@Override
 	public IState createState(ISemanticObject<?> observable, IContext context) throws ThinklabException {
 		return new NumberState(observable, context, this);
+	}
+
+	@Override
+	public void setDiscretization(IClassificationDefinition classification) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

@@ -82,7 +82,7 @@ public class ThinklabProject implements IProject {
 				for (IProject p : getPrerequisites()) {
 					p.load();
 				}
-				for (INamespace ns : Thinklab.get().loadSourceDirectory(getSourceDirectory())) {
+				for (INamespace ns : Thinklab.get().loadSourceDirectory(getSourceDirectory(), this)) {
 					_namespaces.add(ns);
 				}
 				_loaded = true;

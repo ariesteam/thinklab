@@ -49,11 +49,13 @@ import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.IStoryline;
 import org.integratedmodelling.thinklab.api.modelling.IUnit;
 import org.integratedmodelling.thinklab.api.modelling.IValuingObserver;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IClassificationDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.ILanguageDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IPropertyDefinition;
+import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer;
@@ -78,6 +80,7 @@ import org.integratedmodelling.thinklab.modelling.lang.Storyline;
 import org.integratedmodelling.thinklab.modelling.lang.UnitDefinition;
 import org.integratedmodelling.thinklab.modelling.lang.Value;
 import org.integratedmodelling.thinklab.modelling.lang.expressions.GroovyExpressionManager;
+import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.thinklab.query.Queries;
 import org.integratedmodelling.utils.CamelCase;
@@ -177,11 +180,6 @@ public class ModelManager implements IModelManager {
 		public InputStream resolveNamespace(String namespace, String reference)
 				throws ThinklabException {
 
-//			Plugin plugin = null;
-//			if (project instanceof ThinklabProject) {
-//				plugin = ((ThinklabProject)project).getPlugin();
-//			}
-
 			/*
 			 * TODO
 			 * if we have both namespace and reference, push a non-void resolver context so that next import can use
@@ -195,6 +193,7 @@ public class ModelManager implements IModelManager {
 			if (reference != null) {
 
 				try {
+					
 					File f = new File(reference);
 
 					if (f.exists() && f.isFile() && f.canRead()) {
@@ -212,56 +211,76 @@ public class ModelManager implements IModelManager {
 					/*
 					 * plugin resource has precedence even over local file with same path
 					 */
-//					if (plugin != null) {
-//						URL url = plugin.getManager().
-//								getPluginClassLoader(plugin.getDescriptor()).
-//								getResource(reference);
-//						if (url != null) {
-//							return url.openStream();
-//						}
-//					}
+					if (project != null) {
+
+						/*
+						 * find file in source folder, if found return open filestream
+						 */
+						f = project.findResource(reference);
+						if (f != null) {
+							return new FileInputStream(f);
+						}
+					}
+
+					f = new File(reference);
+					
+					if (f.exists() && f.isFile() && f.canRead()) {
+						return new FileInputStream(f);
+					} else if (reference.contains("://")) {
+						URL url = new URL(reference);						
+						return url.openStream();
+					}
+					
+					/*
+					 * if we get here we haven't found it, look it up in all DIRECTLY imported projects (non-recursively)
+					 */
+					if (project != null) {
+						for (IThinklabPlugin pr : project.getPrerequisites()) {
+							
+							ThinklabProject prj = (ThinklabProject)pr;
+							
+							/*
+							 * lookup file here, if found return open filestream
+							 */
+							f = prj.findResourceForNamespace(namespace, "tql");
+							if (f != null) {
+								try {
+									return new FileInputStream(f);
+								} catch (FileNotFoundException e) {
+									throw new ThinklabIOException(e);
+								}
+							}
+						}
+					}
+					
 
 				} catch (Exception e) {
 					throw new ThinklabIOException(e);
 				}
-
-				/*
-				 * if we get here we haven't found it, look it up in all DIRECTLY imported projects (non-recursively)
-				 */
-//				if (plugin != null) {
-//					for (PluginPrerequisite pr : plugin.getDescriptor().getPrerequisites()) {
-//						try {
-//							Plugin dpp = plugin.getManager().getPlugin(pr.getPluginId());
-//							URL url = dpp.getManager().
-//									getPluginClassLoader(dpp.getDescriptor()).
-//									getResource(reference);
-//							if (url != null) {
-//								return url.openStream();
-//							}
-//						} catch (Exception e) {
-//							throw new ThinklabIOException(e);
-//						}
-//					}
-//				}
+				
 			} else if (namespace != null) {
 
 				/*
 				 * find resource using path corresponding to namespace, either in plugin classpath or
 				 * relative filesystem.
 				 */
-				String fres = namespace.replace('.', '/');
-//				if (plugin != null) {
-//					URL url = plugin.getManager().
-//							getPluginClassLoader(plugin.getDescriptor()).
-//							getResource(reference);
-//					if (url != null) {
-//						try {
-//							return url.openStream();
-//						} catch (IOException e) {
-//							throw new ThinklabIOException(e);
-//						}
-//					}
-//				}
+
+				if (project != null) {
+					/*
+					 * find file in source folder, if found return open filestream
+					 * TODO must lookup any supported language
+					 */
+					File f = project.findResourceForNamespace(namespace, "tql");
+					if (f != null) {
+						try {
+							return new FileInputStream(f);
+						} catch (FileNotFoundException e) {
+							throw new ThinklabIOException(e);
+						}
+					}
+				}
+				
+				String fres = namespace.replace('.', '/');	
 
 				/*
 				 * TODO try with the (non-existent yet) pushed resolver context first
@@ -276,6 +295,28 @@ public class ModelManager implements IModelManager {
 						return new FileInputStream(f);
 					} catch (FileNotFoundException e) {
 						throw new ThinklabIOException(e);
+					}
+				}
+				
+				/*
+				 * if we get here we haven't found it, look it up in all DIRECTLY imported projects (non-recursively)
+				 */
+				if (project != null) {
+					for (IThinklabPlugin pr : project.getPrerequisites()) {
+						
+						ThinklabProject prj = (ThinklabProject)pr;
+						
+						/*
+						 * lookup file here, if found return open filestream
+						 */
+						f = prj.findResourceForNamespace(namespace, "tql");
+						if (f != null) {
+							try {
+								return new FileInputStream(f);
+							} catch (FileNotFoundException e) {
+								throw new ThinklabIOException(e);
+							}
+						}
 					}
 				}
 			}
@@ -520,6 +561,8 @@ public class ModelManager implements IModelManager {
 				return new Metadata();
 			} else if (cls.equals(IFunctionDefinition.class)) {
 				return new FunctionDefinition();
+			} else if (cls.equals(IClassificationDefinition.class)) {
+				return new org.integratedmodelling.thinklab.modelling.Classification();
 			}
 			
 			return null;
@@ -804,12 +847,12 @@ public class ModelManager implements IModelManager {
 	}
 
 	@Override
-	public Collection<INamespace> loadSourceDirectory(File sourcedir) throws ThinklabException {
+	public Collection<INamespace> loadSourceDirectory(File sourcedir, IProject project) throws ThinklabException {
 
 		ArrayList<INamespace> ret = new ArrayList<INamespace>();
 		HashSet<File> read = new HashSet<File>();
 
-		loadInternal(sourcedir, read, ret, null, null);
+		loadInternal(sourcedir, read, ret, null, project);
 
 		return ret;
 	}

@@ -33,10 +33,12 @@ import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.Classifier;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.modelling.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.IClassifier;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IClassificationDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
 
 /**
  * Reference implementation for IClassification. Also holds the global catalog of user-defined
@@ -46,12 +48,11 @@ import org.integratedmodelling.thinklab.api.modelling.IClassifier;
  * @author Ferd
  *
  */
-public class Classification implements IClassification {
+public class Classification implements IClassificationDefinition {
 
 	private IConcept _cSpace = null;
 	ArrayList<Pair<IClassifier, IConcept>> _classifiers = 
 		new ArrayList<Pair<IClassifier,IConcept>>();
-	private boolean _initialized = false;
 	private boolean _hasNilClassifier = false;
 	private boolean _hasZeroCategory = false;
 	private boolean _isBoolean;
@@ -59,6 +60,15 @@ public class Classification implements IClassification {
 	private Type    _typeHint = null;
 	private HashMap<IConcept, Integer> _ranks;
 	private Type    _type = null;
+	private int _startLine;
+	private int _endLine;
+	
+	/*
+	 * for definition before concept axioms are processed
+	 */
+	private IConceptDefinition _cSpaceDef;
+	private ArrayList<Pair<IConceptDefinition,IClassifier>> _cdefs =
+			new ArrayList<Pair<IConceptDefinition,IClassifier>>();
 	
 	private static HashMap<IConcept,String> orderMap =
 		new HashMap<IConcept, String>();
@@ -92,10 +102,97 @@ public class Classification implements IClassification {
 	
 
 	@Override
-	public void initialize(IConcept cSpace, Type typeHint)
-			throws ThinklabValidationException {
-		this._cSpace = cSpace;
-		this._typeHint = typeHint;
+	public void initialize() {
+
+		/*
+		 * process anything that was defined outside 
+		 */
+		if (_cSpaceDef != null) {
+			_cSpace = Thinklab.c(_cSpaceDef.getName());
+		}
+
+		for (Pair<IConceptDefinition, IClassifier>  cd : _cdefs) {
+			IConcept c = Thinklab.c(cd.getFirst().getName());
+			addClassifier(cd.getSecond(), c);
+		}
+		
+		/*
+		 * we have no guarantee that the universal classifier, if there,
+		 * will be last, given that it may come from an OWL multiproperty where
+		 * the orderding isn't guaranteed.
+		 * 
+		 * scan the classifiers and if we have a universal classifier make sure
+		 * it's the last one, to avoid problems.
+		 */
+		int unidx = -1; int iz = 0;
+		for (Pair<IClassifier, IConcept> cls : _classifiers) {
+			if (cls.getFirst().isUniversal()) {
+				unidx = iz;
+			}
+			iz++;
+		}
+		
+		if (unidx >= 0 && unidx < _classifiers.size() -1) { 
+			ArrayList<Pair<IClassifier, IConcept>> nc =
+				new ArrayList<Pair<IClassifier,IConcept>>();
+			for (iz = 0; iz < _classifiers.size(); iz++) {
+				if (iz != unidx)
+					nc.add(_classifiers.get(iz));
+			}
+			nc.add(_classifiers.get(unidx));
+			_classifiers = nc;
+		}
+		
+		/*
+		 * check if we have a nil classifier; if we don't we don't bother classifying
+		 * nulls and save some work.
+		 */
+		for (Pair<IClassifier, IConcept> cl : _classifiers) {
+			if (cl.getFirst().isNil()) {
+				this._hasNilClassifier = true;
+				break;
+			}
+		}
+			
+		IConcept[] rnk = null;
+		
+		/*
+		 * remap the values to ranks and determine how to rewire the input
+		 * if necessary, use classifiers instead of lexicographic order to
+		 * infer the appropriate concept order
+		 */
+		ArrayList<Classifier> cla = new ArrayList<Classifier>();
+		ArrayList<IConcept> con = new ArrayList<IConcept>();
+		for (Pair<IClassifier, IConcept> op : _classifiers) {
+			cla.add((Classifier) op.getFirst());
+			con.add(op.getSecond());
+		}
+
+		Pair<double[], IConcept[]> pd;
+		try {
+			pd = computeDistributionBreakpoints(_cSpace, cla, con);
+		} catch (ThinklabValidationException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+		if (pd != null) {
+			if (pd.getSecond()[0] != null) {
+				rnk = pd.getSecond();
+			}
+		}
+		
+		this._ranks = rankConcepts(_cSpace);
+		
+		if (rnk != null) {	
+			
+			/*
+			 * recompute ranks as requested and substitute
+			 */
+			int start = _hasZeroCategory ? 0 : 1;
+			HashMap<IConcept, Integer> ret = new HashMap<IConcept, Integer>();
+			for (IConcept r : rnk)
+				ret.put(r, new Integer(start++));
+			this._ranks = ret;
+		}
 	}
 	
 	public void addClassifier(IClassifier classifier, IConcept concept) {
@@ -104,9 +201,6 @@ public class Classification implements IClassification {
 
 	@Override
 	public IConcept classify(Object o) {
-		
-		if (!_initialized) 
-			analyzeClassification();
 		
 		if (o instanceof Number && Double.isNaN(((Number)o).doubleValue()))
 			o = null;
@@ -261,88 +355,6 @@ public class Classification implements IClassification {
 		return _typeHint != null && _typeHint.equals(type);
 	}
 
-	private void analyzeClassification()  {
-		
-		/*
-		 * we have no guarantee that the universal classifier, if there,
-		 * will be last, given that it may come from an OWL multiproperty where
-		 * the orderding isn't guaranteed.
-		 * 
-		 * scan the classifiers and if we have a universal classifier make sure
-		 * it's the last one, to avoid problems.
-		 */
-		int unidx = -1; int iz = 0;
-		for (Pair<IClassifier, IConcept> cls : _classifiers) {
-			if (cls.getFirst().isUniversal()) {
-				unidx = iz;
-			}
-			iz++;
-		}
-		
-		if (unidx >= 0 && unidx < _classifiers.size() -1) { 
-			ArrayList<Pair<IClassifier, IConcept>> nc =
-				new ArrayList<Pair<IClassifier,IConcept>>();
-			for (iz = 0; iz < _classifiers.size(); iz++) {
-				if (iz != unidx)
-					nc.add(_classifiers.get(iz));
-			}
-			nc.add(_classifiers.get(unidx));
-			_classifiers = nc;
-		}
-		
-		/*
-		 * check if we have a nil classifier; if we don't we don't bother classifying
-		 * nulls and save some work.
-		 */
-		for (Pair<IClassifier, IConcept> cl : _classifiers) {
-			if (cl.getFirst().isNil()) {
-				this._hasNilClassifier = true;
-				break;
-			}
-		}
-			
-		IConcept[] rnk = null;
-		
-		/*
-		 * remap the values to ranks and determine how to rewire the input
-		 * if necessary, use classifiers instead of lexicographic order to
-		 * infer the appropriate concept order
-		 */
-		ArrayList<Classifier> cla = new ArrayList<Classifier>();
-		ArrayList<IConcept> con = new ArrayList<IConcept>();
-		for (Pair<IClassifier, IConcept> op : _classifiers) {
-			cla.add((Classifier) op.getFirst());
-			con.add(op.getSecond());
-		}
-
-		Pair<double[], IConcept[]> pd;
-		try {
-			pd = computeDistributionBreakpoints(_cSpace, cla, con);
-		} catch (ThinklabValidationException e) {
-			throw new ThinklabRuntimeException(e);
-		}
-		if (pd != null) {
-			if (pd.getSecond()[0] != null) {
-				rnk = pd.getSecond();
-			}
-		}
-		
-		this._ranks = rankConcepts(_cSpace);
-		
-		if (rnk != null) {	
-			
-			/*
-			 * recompute ranks as requested and substitute
-			 */
-			int start = _hasZeroCategory ? 0 : 1;
-			HashMap<IConcept, Integer> ret = new HashMap<IConcept, Integer>();
-			for (IConcept r : rnk)
-				ret.put(r, new Integer(start++));
-			this._ranks = ret;
-		}
-	}
-
-
 	/**
 	 * Produce the lexical ranking of the concept passed, using a ranking method
 	 * that depends on the concept (or the type hint passed if any). If we are told
@@ -364,7 +376,6 @@ public class Classification implements IClassification {
 		boolean isRanking = false;
 
 		this._trueCategory = null;
-
 
 		/*
 		 * check if we have any predefined ordering; if so, use that and return
@@ -526,5 +537,36 @@ public class Classification implements IClassification {
 		return _cSpace;
 	}
 
+
+	@Override
+	public void setLineNumbers(int startLine, int endLine) {
+		_startLine = startLine;
+		_endLine = endLine;	
+	}
+
+
+	@Override
+	public int getFirstLineNumber() {
+		return _startLine;
+	}
+
+
+	@Override
+	public int getLastLineNumber() {
+		return _endLine;
+	}
+
+
+	@Override
+	public void addClassifier(IConceptDefinition concept, IClassifier classifier) {
+		this._cdefs .add(new Pair<IConceptDefinition, IClassifier>(concept, classifier));
+	}
+
+
+	@Override
+	public void setConceptSpace(IConceptDefinition concept, Type typeHint) {
+		this._cSpaceDef = concept;
+		this._typeHint = typeHint;
+	}
 
 }

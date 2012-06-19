@@ -19,26 +19,24 @@ import org.junit.Test;
 
 public class ModelReadWrite {
 
+	static INamespace _ns;
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Thinklab.boot();
+		URL test1 = ClassLoader.getSystemResource("org/integratedmodelling/thinklab/tests/tql/test1.tql");
+		_ns = Thinklab.get().loadFile(test1.toString(), null, null);
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		Thinklab.shutdown();
 	}
-
+	
 	@Test
-	public void test() throws Exception {
+	public void testKbox() throws Exception {
 
-		URL test1 = ClassLoader.getSystemResource("org/integratedmodelling/thinklab/tests/tql/test1.tql");
-		INamespace ns = Thinklab.get().loadFile(test1.toString(), null, null);
-		
-		IModel model = (IModel) ns.getModelObject("rainfall-global");
-		IContext ctx = (IContext)ns.getModelObject("puget");
-
-		IKbox kbox = Thinklab.get().getStorageKboxForNamespace(ns);
+		IKbox kbox = Thinklab.get().getStorageKboxForNamespace(_ns);
 		
 		/*
 		 * find models that observe rainfall
@@ -50,15 +48,48 @@ public class ModelReadWrite {
 		for (ISemanticObject<?> o : kbox.query(query)) {
 			System.out.println(o);
 		}
-		
-		IObservation result = Thinklab.get().observe(model, ctx);
-		
-		NetCDFDataset ncds = new NetCDFDataset();
-		ncds.setContext(result.getContext());
-		ncds.write("test1.nc");
-		
-		System.out.println(result);
-		
+	
+		/*
+		 * TODO assert something
+		 */
+
 	}
 
+	@Test
+	public void observe1() throws Exception {
+
+		
+		IModel model = (IModel) _ns.getModelObject("rainfall-global");
+		IContext ctx = (IContext)_ns.getModelObject("puget");
+
+		IObservation result = Thinklab.get().observe(model, ctx);
+		
+		NetCDFDataset ncds = new NetCDFDataset(result.getContext());
+		ncds.write("observe1.nc");
+		
+		System.out.println(result);
+
+		/*
+		 * TODO assert something or compare datasets
+		 */
+	}
+
+	@Test
+	public void observe2() throws Exception {
+
+		
+		IModel model = (IModel) _ns.getModelObject("elevation-class");
+		IContext ctx = (IContext)_ns.getModelObject("puget");
+
+		IObservation result = Thinklab.get().observe(model, ctx);
+		
+		NetCDFDataset ncds = new NetCDFDataset(result.getContext());
+		ncds.write("observe2.nc");
+		
+		System.out.println(result);
+
+		/*
+		 * TODO assert something or compare datasets
+		 */
+	}
 }

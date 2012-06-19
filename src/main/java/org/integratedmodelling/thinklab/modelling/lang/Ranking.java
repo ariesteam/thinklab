@@ -13,8 +13,8 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IMediatingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.ISerialAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IState;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IClassificationDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IRankingObserverDefinition;
-import org.integratedmodelling.thinklab.modelling.lang.Measurement.ComputingMeasurementAccessor;
 import org.integratedmodelling.thinklab.modelling.lang.Measurement.MeasurementAccessor;
 import org.integratedmodelling.thinklab.modelling.states.NumberState;
 
@@ -151,6 +151,13 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 			// TODO Auto-generated method stub
 			return null;
 		}
+		
+	}
+
+
+	@Override
+	public void setDiscretization(IClassificationDefinition classification) {
+		// TODO Auto-generated method stub
 		
 	}
 

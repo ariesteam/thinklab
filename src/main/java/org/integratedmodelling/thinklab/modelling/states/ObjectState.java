@@ -23,21 +23,41 @@ public class ObjectState extends Observation implements IModifiableState {
 	
 	@Override
 	public IConcept getStateType() {
-		// TODO Auto-generated method stub
+		
+		/*
+		 * TODO use prototypes
+		 */
 		return null;
 	}
 
 	@Override
 	public Object getRawData() {
-		// TODO Auto-generated method stub
-		return null;
+		return _data;
 	}
 
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		double[] ret = new double[_data.length];
+		for (int i = 0; i < _data.length; i++) {
+			ret[i] = toDouble(_data[i]);
+		}	
+		return ret;
 	}
+
+	private double toDouble(Object object) {
+
+		if (object == null)
+			return Double.NaN;
+		
+		if (object instanceof Number)
+			return ((Number)object).doubleValue();
+		
+		// TODO must use observer
+		
+		return 0;
+	}
+
 
 	@Override
 	public double getDoubleValue(int index) throws ThinklabException {
@@ -47,8 +67,7 @@ public class ObjectState extends Observation implements IModifiableState {
 
 	@Override
 	public int getValueCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _data.length;
 	}
 
 	@Override
@@ -59,25 +78,22 @@ public class ObjectState extends Observation implements IModifiableState {
 
 	@Override
 	public boolean isSpatiallyDistributed() {
-		// TODO Auto-generated method stub
-		return false;
+		return getContext().getSpace() != null && getContext().getSpace().getMultiplicity() > 1;
 	}
 
 	@Override
 	public boolean isTemporallyDistributed() {
-		// TODO Auto-generated method stub
-		return false;
+		return getContext().getTime() != null && getContext().getTime().getMultiplicity() > 1;
 	}
 
 	@Override
 	public void setValue(int index, Object value) {
-		// TODO Auto-generated method stub
+		_data[index] = value;
 	}
 
 	@Override
 	public Object getValue(int contextIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		return _data[contextIndex];
 	}
 
 }

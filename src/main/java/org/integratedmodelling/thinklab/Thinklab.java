@@ -219,7 +219,7 @@ public class Thinklab implements
 
 		File pth = _configuration.getWorkspace(SUBSPACE_KNOWLEDGE);
 		if (pth.exists()) {
-			_modelManager.loadSourceDirectory(pth);
+			_modelManager.loadSourceDirectory(pth, null);
 		}
 	}
 
@@ -875,9 +875,9 @@ public class Thinklab implements
 	}
 
 	@Override
-	public Collection<INamespace> loadSourceDirectory(File sourcedir)
+	public Collection<INamespace> loadSourceDirectory(File sourcedir, IProject project)
 			throws ThinklabException {
-		return _modelManager.loadSourceDirectory(sourcedir);
+		return _modelManager.loadSourceDirectory(sourcedir, project);
 	}
 
 	@Override
