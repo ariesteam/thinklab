@@ -30,9 +30,7 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	IFunctionDefinition _accessorGenerator = null;
 	
 	
-	
 	IAccessor _accessor = null;
-	
 	
 	/**
 	 * This one needs to be implemented by all derived observers. The result will be the

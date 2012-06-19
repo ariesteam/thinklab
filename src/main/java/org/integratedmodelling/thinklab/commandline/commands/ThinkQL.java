@@ -65,7 +65,6 @@ public class ThinkQL implements ICommandHandler {
 				REPL repl = new REPL();
 				repl.setInput(session.getInputStream());
 				repl.setOutput(session.getOutputStream());
-				repl.setSession(session);
 				repl.run(null);
 				
 			} 

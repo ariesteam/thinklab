@@ -25,21 +25,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.UUID;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.interpreter.ModelGenerator;
-import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
-import org.integratedmodelling.thinklab.api.modelling.parsing.ILanguageDefinition;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IPropertyDefinition;
-import org.integratedmodelling.thinklab.api.runtime.ISession;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 
 import com.google.inject.Guice;
@@ -50,107 +44,6 @@ public class REPL {
 	private static final String USER_DEFAULT_NAMESPACE = "user";
 	private InputStream input = System.in;
 	private OutputStream output = System.out;
-	private ISession session = null;
-
-//	private IContext context = new ContextImpl();
-	
-	class Resolver implements IResolver {
-
-		@Override
-		public boolean onException(Throwable e, int lineNumber)
-				throws ThinklabException {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean onWarning(String warning, int lineNumber) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean onInfo(String info, int lineNumber) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public InputStream resolveNamespace(String namespace, String reference)
-				throws ThinklabException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void onNamespaceDeclared(String namespaceId, INamespace namespace) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onNamespaceDefined(INamespace namespace) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void validateNamespaceForResource(String resource,
-				String namespace) throws ThinklabException {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public IConceptDefinition resolveExternalConcept(String id,
-				INamespace namespace, int line) throws ThinklabException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public IPropertyDefinition resolveExternalProperty(String id,
-				INamespace namespace, int line) throws ThinklabException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public IExpression resolveFunction(String functionId,
-				Collection<String> parameterNames) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void onModelObjectDefined(INamespace namespace, IModelObject ret) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public ILanguageDefinition newLanguageObject(Class<?> cls) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public boolean isGeneratedId(String id) {
-			return id.endsWith("___");
-		}
-
-		@Override
-		public String generateId(IModelObject o) {
-			return UUID.randomUUID().toString() + "___";
-		}
-
-		@Override
-		public Object runFunction(IFunctionDefinition function) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
-	
 	public void run(String[] args) throws Exception {
 
 		/*
@@ -164,8 +57,12 @@ public class REPL {
 
 		try {
 	
+			String prompt = "tql> ";
+			String curStat = "";
+			
 			for (;;) {
-				w.write("tql> ");
+				
+				w.write(prompt);
 				w.flush();
 				String statement = readStatement().trim();
 				
@@ -175,19 +72,38 @@ public class REPL {
 					break;
 				}
 				
-				if (statement.isEmpty())
+				if (statement.isEmpty()) {
+					prompt = "";
 					continue;
+				}
 
+				if (statement.startsWith("/")) {
+					/*
+					 * TODO exec regular command
+					 */
+					continue;
+				}
+
+				if (!statement.endsWith(";")) {
+					prompt = "> ";
+					curStat += statement;
+					continue;
+				} else {
+					curStat = statement;
+				}
+				
+				prompt = "tql>";
+				
 				/*
 				 * Exec; behave according to what is defined
 				 */
 				try {
-
-					InputStream is = new ByteArrayInputStream(statement.getBytes());
-					INamespace ns = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, new Resolver());
+					IResolver resolver = ((ModelManager)Thinklab.get().getModelManager()).getInteractiveResolver();
+					InputStream is = new ByteArrayInputStream(curStat.getBytes());
+					INamespace ns = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, resolver);
 					is.close();
 					
-					IModelObject obj = null; // new ModelAdapter().createModelObject(bean);
+					IModelObject obj = null; 
 
 					if (obj instanceof IModel) {
 						
@@ -210,9 +126,12 @@ public class REPL {
 					}
 					
 					w.println(obj + " returned");
+					
 				} catch (ThinklabException e) {
 					w.println("*** ThinkQL error: " + e.getMessage());
 				}
+				
+				curStat = "";
 			}
 		} catch (Exception e) {
 			w.println("*** ThinkQL error: " + e.getMessage());
@@ -246,9 +165,5 @@ public class REPL {
 
 	public void setOutput(OutputStream outputStream) {
 		this.output = outputStream;
-	}
-
-	public void setSession(ISession session) {
-		this.session = session;
 	}
 }

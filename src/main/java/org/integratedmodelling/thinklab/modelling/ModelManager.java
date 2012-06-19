@@ -144,6 +144,9 @@ public class ModelManager implements IModelManager {
 		 * storeable resource will be refreshed.
 		 */
 		long _timestamp = new Date().getTime();
+		
+		boolean _isInteractive = false;
+		
 		/*
 		 * timestamp of kbox-stored namespace, if this is < _timestamp and neither is 0 we
 		 * need to refresh the kbox with the contents of the namespace.
@@ -152,6 +155,13 @@ public class ModelManager implements IModelManager {
 
 		public Resolver(Object resource) {
 			this.resourceId = resource.toString();
+		}
+
+		/*
+		 * create a resolver for interactive use.
+		 */
+		public Resolver() {
+			_isInteractive = true;
 		}
 
 		@Override
@@ -593,12 +603,16 @@ public class ModelManager implements IModelManager {
 
 	private Resolver _resolver = null;
 
-	Resolver getResolver(IProject project, Object resource) {
+	private Resolver getResolver(IProject project, Object resource) {
 		if (_resolver  == null) {
 			_resolver = new Resolver(resource);
 		}
 		_resolver.setProject(project);
 		return _resolver;
+	}
+
+	public Resolver getInteractiveResolver() {
+		return new Resolver();
 	}
 
 	public static boolean isGeneratedId(String id) {
