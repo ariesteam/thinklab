@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
@@ -139,6 +141,8 @@ public class ModelManager implements IModelManager {
 		String resourceId = "(not set)";
 		IProject project;
 		
+		IContext currentContext = new Context();
+		
 		/* this will be set to the resource's timestamp if the namespace is read 
 		 * from a resource whose timestamp can be determined. Otherwise any
 		 * storeable resource will be refreshed.
@@ -146,12 +150,15 @@ public class ModelManager implements IModelManager {
 		long _timestamp = new Date().getTime();
 		
 		boolean _isInteractive = false;
+		IModelObject _lastProcessed = null;
 		
 		/*
 		 * timestamp of kbox-stored namespace, if this is < _timestamp and neither is 0 we
 		 * need to refresh the kbox with the contents of the namespace.
 		 */
 		long _storedTimestamp = 0l;
+		private InputStream _interactiveInput;
+		private PrintStream _interactiveOutput;
 
 		public Resolver(Object resource) {
 			this.resourceId = resource.toString();
@@ -160,8 +167,10 @@ public class ModelManager implements IModelManager {
 		/*
 		 * create a resolver for interactive use.
 		 */
-		public Resolver() {
+		public Resolver(InputStream input, PrintStream output) {
 			_isInteractive = true;
+			_interactiveInput = input;
+			_interactiveOutput = output;
 		}
 
 		@Override
@@ -169,13 +178,24 @@ public class ModelManager implements IModelManager {
 				throws ThinklabException {
 			errors.add(new Pair<String, Integer>(e.getMessage(), lineNumber));
 			Thinklab.get().logger().error(resourceId + ": " + lineNumber + ": " + e.getMessage());
+			if (_isInteractive) {
+				_interactiveOutput.println("error: " + e.getMessage());
+			}
 			return true;
 		}
-
+		
+		@Override
+		public boolean isInteractive() {
+			return _isInteractive;
+		}
+		
 		@Override
 		public boolean onWarning(String warning, int lineNumber) {
 			warnings.add(new Pair<String, Integer>(warning, lineNumber));
 			Thinklab.get().logger().warn(resourceId + ": " + lineNumber + ": " + warning);
+			if (_isInteractive) {
+				_interactiveOutput.println("warning: " + warning);
+			}
 			return true;
 		}
 
@@ -183,6 +203,9 @@ public class ModelManager implements IModelManager {
 		public boolean onInfo(String info, int lineNumber) {
 			infos.add(new Pair<String, Integer>(info, lineNumber));
 			Thinklab.get().logger().info(resourceId + ": " + lineNumber + ": " + info);
+			if (_isInteractive) {
+				_interactiveOutput.println("info: " + info);
+			}
 			return true;
 		}
 
@@ -433,24 +456,10 @@ public class ModelManager implements IModelManager {
 		@Override
 		public void validateNamespaceForResource(String resource,
 				String namespace) throws ThinklabException {
-
-//			Plugin plugin = null;
-//			if (project instanceof ThinklabProject) {
-//				plugin = ((ThinklabProject)project).getPlugin();
-//			}
-//
-//			if (plugin != null) {
-//				
-//				/*
-//				 * check that resource was read from same file path
-//				 */
-//			} else {
-//				
-//				/*
-//				 * check that filename path is same in namespace
-//				 */
-//			}
-//			
+			
+			/*
+			 * TODO
+			 */
 
 		}
 
@@ -532,6 +541,8 @@ public class ModelManager implements IModelManager {
 					}
 				}
 			}
+			
+			_lastProcessed = ret;
 		}
 
 		@Override
@@ -599,6 +610,77 @@ public class ModelManager implements IModelManager {
 			}
 			return null;
 		}
+
+		@Override
+		public IModelObject getLastProcessedObject() {
+			IModelObject ret = _lastProcessed;
+			_lastProcessed = null;
+			return ret;
+		}
+
+		@Override
+		public void handleObserveStatement(Object observable, INamespace namespace,  IContext ctx, boolean resetContext) throws ThinklabException {
+
+			/*
+			 * actualize all knowledge so that the object is complete and we can create observables
+			 * as required.
+			 */
+			((Namespace)namespace).flushKnowledge();
+			
+			/*
+			 * switch to another context or to a new one if requested.
+			 */
+			if (ctx != null) {
+				currentContext = new Context((Context)ctx);
+			} else	if (resetContext) {
+				currentContext = new Context();
+			}
+			
+			Object obs = null;
+			if (observable instanceof IModel)
+				obs = observable;
+			else if (observable instanceof IList) {
+				obs = Thinklab.get().entify((IList)observable);
+			} else if (observable instanceof IConceptDefinition) {
+				obs = Thinklab.get().entify(PolyList.list(Thinklab.c(((IConceptDefinition)observable).getName())));
+			} else if (observable instanceof IFunctionDefinition) {
+				
+				/*
+				 * must eval to extent, to be merged with current context directly.
+				 */
+				IFunctionDefinition function = (IFunctionDefinition)observable;
+				
+				// find function and validate parameters
+				IExpression func = Thinklab.get().resolveFunction(function.getId(), function.getParameters().keySet());
+				
+				if (func == null) {
+					throw new ThinklabValidationException("function " + function.getId() + " is unknown");
+				}
+				Observation o = null;
+				
+				// run function and store observation
+				try {
+					 o = (Observation) func.eval(function.getParameters());
+					 if (o == null)
+						 throw new ThinklabValidationException("function " + function.getId() + " does not return any value");
+					 
+				} catch (ThinklabException e) {
+					throw new ThinklabValidationException(e);
+				}
+				
+				currentContext.merge(o);
+				
+				return;
+			}
+			
+			if (obs != null) {
+				IObservation observation = Thinklab.get().observe(obs, currentContext);
+				if (observation != null) {
+					currentContext = observation.getContext();
+				}
+			}
+			
+		}
 	}
 
 	private Resolver _resolver = null;
@@ -611,8 +693,8 @@ public class ModelManager implements IModelManager {
 		return _resolver;
 	}
 
-	public Resolver getInteractiveResolver() {
-		return new Resolver();
+	public Resolver getInteractiveResolver(InputStream input, PrintStream output) {
+		return new Resolver(input, output);
 	}
 
 	public static boolean isGeneratedId(String id) {

@@ -1,14 +1,14 @@
 namespace org.integratedmodelling.test1
 	covering 
 		shape(wkt="EPSG:4326 POLYGON((-21.2660 27.6363, -21.2660 61.0088, 39.8693 61.0088, 39.8693 27.6363, -21.2660 27.6363))")
-	resolve from test.models 
+	resolve from thinklab 
 		using {                    // redefine ranking criteria to resolve these models
 			qa:evidence 100
 			qa:open 50
 			qa:quality 80
 			qa:timeliness 40
 		}
-	store to test.models;
+	store to thinklab;
 
 /*
  * ---------------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ define model elevation-class of ElevationClass
 		LowElevation when < 100,
 		MediumElevation when 100 to 500,
 		HighElevation when > 500;
-	
+		
 /*
  * ---------------------------------------------------------------------------------------------
  * example annotations of datasources

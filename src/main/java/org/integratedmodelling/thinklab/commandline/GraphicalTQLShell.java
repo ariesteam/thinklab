@@ -26,15 +26,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -57,11 +54,12 @@ import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
+import org.integratedmodelling.thinklab.session.InteractiveSession;
+
+import bsh.util.JConsole;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-
-import bsh.util.JConsole;
 
 /**
  * A simple command-line driven interface, using the graphical BeanShell console.
@@ -146,8 +144,10 @@ public class GraphicalTQLShell {
 		Injector injector = Guice.createInjector(new ModellingModule());
 		ModelGenerator mg = injector.getInstance(ModelGenerator.class);
 		
-		PrintWriter w = new PrintWriter(new OutputStreamWriter(console.getOut()));
+		PrintStream w = new PrintStream(console.getOut());
 
+		session = new InteractiveSession(console.getInputStream(), w);
+		
 		/*
 		 * read history if any
 		 */
@@ -164,6 +164,8 @@ public class GraphicalTQLShell {
 			}
 		}
 		
+		IResolver resolver = 
+				((ModelManager)Thinklab.get().getModelManager()).getInteractiveResolver(console.getInputStream(), w);
 		
 		/* greet user */
 		printStatusMessage();
@@ -174,18 +176,21 @@ public class GraphicalTQLShell {
 			
 			for (;;) {
 				
-				w.write(prompt);
+				w.print(prompt);
 				w.flush();
+				
 				String statement = readStatement(console.getInputStream()).trim();
 				
 				if (statement == null || statement.equals("/exit")) {
-					w.write("\n");
+					w.println();
 					w.flush();
 					break;
 				}
 				
-				if (statement.isEmpty()) {
-					prompt = "";
+				/*
+				 * I'll never understand why an empty return generates a semicolon.
+				 */
+				if (statement.isEmpty() || statement.equals("/") || statement.equals(";")) {
 					continue;
 				}
 
@@ -194,56 +199,57 @@ public class GraphicalTQLShell {
 					continue;
 				}
 				
-				prompt = "tql>";
+				InputStream is = new ByteArrayInputStream(statement.getBytes());
+				INamespace ns = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, resolver);
+				is.close();
+					
+				IModelObject obj = resolver.getLastProcessedObject(); 
 				
-				/*
-				 * Exec; behave according to what is defined
-				 */
-				try {
-					IResolver resolver = ((ModelManager)Thinklab.get().getModelManager()).getInteractiveResolver();
-					InputStream is = new ByteArrayInputStream(statement.getBytes());
-					INamespace ns = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, resolver);
-					is.close();
+				if (obj instanceof IModel) {
 					
-					IModelObject obj = null; 
-					
-					if (obj instanceof IModel) {
-						
-						/*
-						 * add to context, show it
-						 */
-					}
-					
-					w.println(obj + " returned");
-					
-				} catch (ThinklabException e) {
-					w.println("*** ThinkQL error: " + e.getMessage());
+					/*
+					 * add to context, show it
+					 */
 				}
+				
+				w.println(obj + " returned");
+					
 			}
 		} catch (Exception e) {
 			w.println("*** ThinkQL error: " + e.getMessage());
 		} finally {
-		}	}
+		}	
+	}
 
 	
 
 	public String readStatement(InputStream input) {
 
+		// gently flush stream from any leftover whitespace
+		try {
+			while (input.available() > 0)
+				input.read();
+		} catch (IOException e1) {
+		}
+		
 		StringBuffer buff = new StringBuffer();
-
+		Boolean escape = null;
+		
 		while (true) {
 			int ch;
 			try {
 				ch = input.read();
+				if (escape == null)
+					escape = ch == '/';
 			} catch (IOException e) {
 				return null;
 			}
 			buff.append((char)ch);
-			if (ch == ';') {
+
+			if (ch == (escape ? '\n' : ';')) {
 				break;
 			}
 		}
-		
 		return buff.toString();
 	}
 	private void execute(String input) {

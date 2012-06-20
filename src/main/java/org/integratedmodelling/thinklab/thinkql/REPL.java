@@ -23,8 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.interpreter.ModelGenerator;
@@ -52,7 +51,7 @@ public class REPL {
 		Injector injector = Guice.createInjector(new ModellingModule());
 		ModelGenerator mg = injector.getInstance(ModelGenerator.class);
 		
-		PrintWriter w = new PrintWriter(new OutputStreamWriter(output));
+		PrintStream w = new PrintStream(output);
 		w.println("*** Thinklab QL interpreter; enter expressions, 'exit' exits ***");
 
 		try {
@@ -62,13 +61,11 @@ public class REPL {
 			
 			for (;;) {
 				
-				w.write(prompt);
-				w.flush();
+				w.print(prompt);
 				String statement = readStatement().trim();
 				
 				if (statement == null || statement.equals("exit")) {
-					w.write("\n");
-					w.flush();
+					w.println();
 					break;
 				}
 				
@@ -98,7 +95,7 @@ public class REPL {
 				 * Exec; behave according to what is defined
 				 */
 				try {
-					IResolver resolver = ((ModelManager)Thinklab.get().getModelManager()).getInteractiveResolver();
+					IResolver resolver = ((ModelManager)Thinklab.get().getModelManager()).getInteractiveResolver(input, w);
 					InputStream is = new ByteArrayInputStream(curStat.getBytes());
 					INamespace ns = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, resolver);
 					is.close();

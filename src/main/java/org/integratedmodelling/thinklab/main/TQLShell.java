@@ -55,10 +55,7 @@ public class TQLShell  {
 		boolean hasScript = false;
 		ISession session = null;
 		for (String s : scriptFiles) {
-			
-			if (session == null)
-				session = new Session();
-			
+						
 			if (!hasScript && MiscUtilities.getFileName(s).startsWith("."))
 				hasScript = true;
 			
