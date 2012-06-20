@@ -70,7 +70,11 @@ public class GraphicalTQLShell {
 	
 	private static final String USER_DEFAULT_NAMESPACE = "user";
 	
+	static final String LANGUAGE_NAME = "k*";
+	
 	JConsole console = null;
+	
+	
 	
 	File historyFile = null;
 	
@@ -118,7 +122,7 @@ public class GraphicalTQLShell {
 		console.println("Workspace: " + Thinklab.get().getWorkspace());					
 		console.println();
 		
-		console.println("Enter \'/help\' for a list of commands; \'/exit\' quits");
+		console.println("Enter " + LANGUAGE_NAME + " statements or dot-commands; \'.help\' lists commands; \'.exit\' quits");
 		console.println();
 	}
 
@@ -172,7 +176,7 @@ public class GraphicalTQLShell {
 
 		try {
 	
-			String prompt = "tql> ";
+			String prompt = LANGUAGE_NAME + "> ";
 			
 			for (;;) {
 				
@@ -181,7 +185,7 @@ public class GraphicalTQLShell {
 				
 				String statement = readStatement(console.getInputStream()).trim();
 				
-				if (statement == null || statement.equals("/exit")) {
+				if (statement == null || statement.equals(".exit")) {
 					w.println();
 					w.flush();
 					break;
@@ -190,11 +194,11 @@ public class GraphicalTQLShell {
 				/*
 				 * I'll never understand why an empty return generates a semicolon.
 				 */
-				if (statement.isEmpty() || statement.equals("/") || statement.equals(";")) {
+				if (statement.isEmpty() || statement.equals(".") || statement.equals(";")) {
 					continue;
 				}
 
-				if (statement.startsWith("/")) {
+				if (statement.startsWith(".")) {
 					execute(statement.substring(1));
 					continue;
 				}
@@ -216,7 +220,7 @@ public class GraphicalTQLShell {
 					
 			}
 		} catch (Exception e) {
-			w.println("*** ThinkQL error: " + e.getMessage());
+			w.println("*** error: " + e.getMessage());
 		} finally {
 		}	
 	}
@@ -240,7 +244,7 @@ public class GraphicalTQLShell {
 			try {
 				ch = input.read();
 				if (escape == null)
-					escape = ch == '/';
+					escape = ch == '.';
 			} catch (IOException e) {
 				return null;
 			}

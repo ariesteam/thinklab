@@ -9,7 +9,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.commandline.GraphicalTQLShell;
 import org.integratedmodelling.thinklab.commandline.Shell;
 import org.integratedmodelling.thinklab.literals.BooleanValue;
-import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.utils.MiscUtilities;
 
 /**
