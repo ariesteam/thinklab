@@ -236,14 +236,14 @@ public class AnnotationFactory {
 		 * add references to objects upstream.
 		 */
 		if (o instanceof IConceptualizable) {
-			return (IReferenceList) ref.resolve(root.internalize(((IConceptualizable) o).conceptualize()));
+			return (IReferenceList) ref.resolve(((IConceptualizable) o).conceptualize());
 		}
 		
 		/*
 		 * if semantic object not currently being conceptualized, just use its semantics
 		 */
 		if (o instanceof SemanticObject<?> && !((SemanticObject<?>)o).beingConceptualized()) {
-			return (IReferenceList) ref.resolve(root.internalize(((ISemanticObject<?>) o).getSemantics()));	
+			return (IReferenceList) ref.resolve(((ISemanticObject<?>) o).getSemantics());	
 		}
 		
 		/*

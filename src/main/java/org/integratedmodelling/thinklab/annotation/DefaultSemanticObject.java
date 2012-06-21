@@ -4,6 +4,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
+import org.integratedmodelling.thinklab.modelling.lang.UnitDefinition;
 
 public class DefaultSemanticObject extends SemanticObject<Object> {
 
@@ -16,6 +17,7 @@ public class DefaultSemanticObject extends SemanticObject<Object> {
 	
 	@Override
 	public IReferenceList getSemantics() {
+
 		if (_semantics == null) {
 			try {
 				_semantics = Thinklab.get().conceptualize(_object);

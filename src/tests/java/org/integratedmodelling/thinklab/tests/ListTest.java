@@ -7,9 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 
-import org.integratedmodelling.list.RefList;
 import org.integratedmodelling.list.ReferenceList;
-import org.integratedmodelling.thinklab.api.lang.IRList;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.junit.Test;
 
@@ -37,21 +35,9 @@ public class ListTest {
 		assertTrue(refLst.nth(2).equals(dioCan));
 		assertTrue(set.contains(dioCul));
 	
-//		System.out.println(zioPio.prettyPrint());
-	}
-	
-	@Test
-	public void testRefList() throws Exception {
-		
-		IRList refLst = RefList.list("zio", "pio");
-		Object dioCan = refLst.getForwardReference();
-		refLst = (IRList) refLst.append(dioCan);
-		IRList dioCul = RefList.list("dio", "cul", refLst);
-		refLst.resolve(dioCan, dioCul);
-
 		System.out.println(refLst.prettyPrint());
 	}
-	
+		
 	
 	@Test
 	public void testInternalize() throws Exception {
@@ -68,7 +54,7 @@ public class ListTest {
 		System.out.println("1. " + zioPio1.prettyPrint());
 		System.out.println("2. " + refLst.prettyPrint());
 		
-		zioPio1.append(zioPio1.internalize(refLst));
+		zioPio1.append(refLst);
 		zioPio2.append(refLst);
 		
 		System.out.println("3. " + zioPio1.prettyPrint());

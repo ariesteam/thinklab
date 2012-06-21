@@ -147,6 +147,8 @@ public class NeoKBox implements IKbox {
 
 		Transaction tx = _db.beginTx();
 
+		System.out.println(instance.getSemantics().prettyPrint());
+		
 		try {
 			
 			Node node = storeInstanceInternal(instance, new HashMap<ISemanticObject<?>, Node>());
