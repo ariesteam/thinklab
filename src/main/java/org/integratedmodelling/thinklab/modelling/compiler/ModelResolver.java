@@ -86,6 +86,7 @@ public class ModelResolver {
 		}
 		private static final long serialVersionUID = 2366743581134478147L;
 		public boolean isMediation = false;
+		public boolean isInitialization = false;
 		public String formalName = null;
 		public ISemanticObject<?> observable = null;
 
@@ -516,7 +517,9 @@ public class ModelResolver {
 			IModel dep = models.get(((SemanticObject<?>)obs).getSignature());
 			if (dep != null) {
 				buildModelGraphInternal(dep, models, graph);
-				graph.addEdge(model, dep, new DependencyEdge(true, null));
+				DependencyEdge edge = new DependencyEdge(true, null);
+				edge.isInitialization = true;
+				graph.addEdge(model, dep, edge);
 			}
 		}
 		

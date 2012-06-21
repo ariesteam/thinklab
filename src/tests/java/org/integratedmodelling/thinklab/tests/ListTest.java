@@ -7,7 +7,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 
+import org.integratedmodelling.list.RefList;
 import org.integratedmodelling.list.ReferenceList;
+import org.integratedmodelling.thinklab.api.lang.IRList;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.junit.Test;
 
@@ -37,6 +39,19 @@ public class ListTest {
 	
 //		System.out.println(zioPio.prettyPrint());
 	}
+	
+	@Test
+	public void testRefList() throws Exception {
+		
+		IRList refLst = RefList.list("zio", "pio");
+		Object dioCan = refLst.getForwardReference();
+		refLst = (IRList) refLst.append(dioCan);
+		IRList dioCul = RefList.list("dio", "cul", refLst);
+		refLst.resolve(dioCan, dioCul);
+
+		System.out.println(refLst.prettyPrint());
+	}
+	
 	
 	@Test
 	public void testInternalize() throws Exception {

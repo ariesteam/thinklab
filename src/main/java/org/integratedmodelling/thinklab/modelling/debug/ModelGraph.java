@@ -90,7 +90,7 @@ public class ModelGraph {
 							" [reg #" + ((Dependency)e).register + "]";
 				} else 	if (e instanceof DependencyEdge) {
 					return ((DependencyEdge)e).isMediation ?
-							("(m) " + ((DependencyEdge)e).formalName): ((DependencyEdge)e).formalName;
+							(((DependencyEdge)e).isInitialization ? "(i)" : "(m)"): ((DependencyEdge)e).formalName;
 				}
 				return "";
 			}
