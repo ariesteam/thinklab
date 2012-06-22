@@ -52,8 +52,7 @@ model wcs(service="http://ecoinformatics.uvm.edu/geoserver/wcs", id="global:dem9
               qa:open 100
               qa:quality 80
               qa:review 75
-       };
-	
+       };	
 /*
  * ---------------------------------------------------------------------------------------------
  * example contexts

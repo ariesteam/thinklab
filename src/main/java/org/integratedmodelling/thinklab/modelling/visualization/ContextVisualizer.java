@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.modelling.visualization;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -10,13 +12,34 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.jface.viewers.TableViewer;
 
-public class StorylineVisualizer extends ApplicationWindow {
+public class ContextVisualizer extends ApplicationWindow {
 
+	/*
+	 * the object shown after show() has been called.
+	 */
+	ContextVisualizer _window;
+	
+	/**
+	 * The contexts we're visualizing
+	 */
+	ArrayList<IContext> _contexts = new ArrayList<IContext>();
+	private Table table;
+	
 	/**
 	 * Create the application window.
 	 */
-	public StorylineVisualizer() {
+	public ContextVisualizer() {
 		super(null);
 		createActions();
 		addToolBar(SWT.FLAT | SWT.WRAP);
@@ -31,6 +54,21 @@ public class StorylineVisualizer extends ApplicationWindow {
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
+		container.setLayout(new GridLayout(3, false));
+		{
+			TreeViewer treeViewer = new TreeViewer(container, SWT.BORDER);
+			Tree tree = treeViewer.getTree();
+			tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		}
+		{
+			Composite composite = new Composite(container, SWT.NONE);
+			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
+		}
+		{
+			TableViewer tableViewer = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
+			table = tableViewer.getTable();
+			table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		}
 
 		return container;
 	}
@@ -76,11 +114,11 @@ public class StorylineVisualizer extends ApplicationWindow {
 	 * Launch the application.
 	 * @param args
 	 */
-	public static void main(String args[]) {
+	public void show() {
 		try {
-			StorylineVisualizer window = new StorylineVisualizer();
-			window.setBlockOnOpen(true);
-			window.open();
+			_window = new ContextVisualizer();
+			_window.setBlockOnOpen(true);
+			_window.open();
 			Display.getCurrent().dispose();
 		} catch (Exception e) {
 			e.printStackTrace();

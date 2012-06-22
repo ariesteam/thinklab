@@ -47,12 +47,12 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
-import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
+import org.integratedmodelling.thinklab.modelling.visualization.ContextVisualizer;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.thinklab.session.InteractiveSession;
 
@@ -74,8 +74,8 @@ public class GraphicalTQLShell {
 	
 	JConsole console = null;
 	
-	
-	
+	private ContextVisualizer _visualizer;
+
 	File historyFile = null;
 	
 	Font inputFont = new Font("Courier", Font.BOLD, 12);
@@ -198,14 +198,24 @@ public class GraphicalTQLShell {
 					continue;
 				}
 
-				if (statement.startsWith(".")) {
-					execute(statement.substring(1));
-					continue;
-				}
+				try {
+					if (statement.startsWith(".")) {
+						execute(statement.substring(1));
+						continue;
+					}
+				} catch (Exception e) {
+					w.println("*** error: " + e.getMessage());
+				} finally {
+				}	
 				
-				InputStream is = new ByteArrayInputStream(statement.getBytes());
-				INamespace ns = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, resolver);
-				is.close();
+				try {
+					InputStream is = new ByteArrayInputStream(statement.getBytes());
+					mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, resolver);
+					is.close();
+				} catch (Exception e) {
+					w.println("*** error: " + e.getMessage());
+				} finally {
+				}	
 					
 				IModelObject obj = resolver.getLastProcessedObject(); 
 				
@@ -214,9 +224,14 @@ public class GraphicalTQLShell {
 					/*
 					 * add to context, show it
 					 */
+					
 				}
+
+//				if (_visualizer == null) {
+//					_visualizer = new ContextVisualizer();
+//					_visualizer.show();
+//				}
 				
-				w.println(obj + " returned");
 					
 			}
 		} catch (Exception e) {

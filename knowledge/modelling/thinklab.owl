@@ -50,6 +50,14 @@
     
 
 
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasClassifier -->
+
+    <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasClassifier">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Classification"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasContext -->
 
     <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasContext">
@@ -172,6 +180,15 @@
     
 
 
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasConceptSpace -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasConceptSpace">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Classification"/>
+        <rdfs:range rdf:resource="&rdfs;Literal"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasDirectData -->
 
     <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasDirectData">
@@ -257,6 +274,22 @@
 
     <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#CategorizingObserver">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observer"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Classification -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Classification">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Classifier -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Classifier">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements"/>
     </owl:Class>
     
 

@@ -34,7 +34,10 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.Classifier;
+import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IClassifier;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IClassificationDefinition;
@@ -48,11 +51,16 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition
  * @author Ferd
  *
  */
+@Concept(NS.CLASSIFICATION)
 public class Classification implements IClassificationDefinition {
 
+	@Property(NS.HAS_CONCEPT_SPACE)
 	private IConcept _cSpace = null;
+	
+	@Property(NS.HAS_CLASSIFIER)
 	ArrayList<Pair<IClassifier, IConcept>> _classifiers = 
 		new ArrayList<Pair<IClassifier,IConcept>>();
+	
 	private boolean _hasNilClassifier = false;
 	private boolean _hasZeroCategory = false;
 	private boolean _isBoolean;
