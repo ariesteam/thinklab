@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.common.HashableObject;
 import org.integratedmodelling.exceptions.ThinklabCircularDependencyException;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
@@ -31,24 +31,7 @@ import org.integratedmodelling.thinklab.modelling.lang.UnitDefinition;
  * @author Ferd
  * 
  */
-public abstract class SemanticObject<T> implements ISemanticObject<T> {
-
-	private static final AtomicLong nextId = new AtomicLong(0);
-	private static final ThreadLocal<Long> threadId = new ThreadLocal<Long>() {
-		@Override
-		protected Long initialValue() {
-			return nextId.getAndIncrement();
-		}
-	};
-
-	// Returns the current thread's unique ID, assigning it if necessary
-	private static long nextId() {
-		Long id = threadId.get();
-		threadId.set(new Long(id.longValue() + 1l));
-		return id;
-	}
-
-	long _id = nextId();
+public abstract class SemanticObject<T> extends HashableObject implements ISemanticObject<T> {
 
 	IReferenceList _semantics;
 	private HashMap<IProperty, List<ISemanticObject<?>>> _literals;
@@ -61,10 +44,7 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 	}
 
 	protected SemanticObject(IReferenceList semantics) {
-
 		this._semantics = semantics;
-		if (_semantics != null)
-			_id = semantics.getId();
 	}
 
 	@Override
@@ -74,11 +54,7 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 	
 	@Override
 	public IReferenceList getSemantics() {
-		
-		
-		if (this instanceof UnitDefinition)
-			System.out.println("IPIPIOPI");
-		
+
 		if (_semantics == null)
 			try {
 				/*
@@ -255,17 +231,17 @@ public abstract class SemanticObject<T> implements ISemanticObject<T> {
 		}
 		return n;
 	}
-
-	@Override
-	public boolean equals(Object arg0) {
-		return arg0 instanceof SemanticObject
-				&& ((SemanticObject<?>) arg0)._id == _id;
-	}
-
-	@Override
-	public int hashCode() {
-		return new Long(_id).hashCode();
-	}
+//
+//	@Override
+//	public boolean equals(Object arg0) {
+//		return arg0 instanceof SemanticObject
+//				&& ((SemanticObject<?>) arg0)._id == _id;
+//	}
+//
+//	@Override
+//	public int hashCode() {
+//		return new Long(_id).hashCode();
+//	}
 
 	/**
 	 * A signature is a packed representation of the semantics that will be

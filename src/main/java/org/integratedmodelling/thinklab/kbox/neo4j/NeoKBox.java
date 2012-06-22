@@ -147,7 +147,7 @@ public class NeoKBox implements IKbox {
 
 		Transaction tx = _db.beginTx();
 
-		System.out.println(instance.getSemantics().prettyPrint());
+		// System.out.println(instance.getSemantics().prettyPrint());
 		
 		try {
 			
@@ -324,7 +324,7 @@ public class NeoKBox implements IKbox {
 
 	@Override
 	public ISemanticObject<?> retrieve(long id) throws ThinklabException {
-		return Thinklab.get().entify(retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>(), null));
+		return Thinklab.get().entify(retrieveList(_db.getNodeById(id), new HashMap<Node, IReferenceList>()));
 	}
 	
 	@Override
@@ -367,16 +367,12 @@ public class NeoKBox implements IKbox {
 	/*
 	 * non-public
 	 */
-	private IReferenceList retrieveList(Node node, HashMap<Node, IReferenceList> refs, ReferenceList root) throws ThinklabException {
+	private IReferenceList retrieveList(Node node, HashMap<Node, IReferenceList> refs) throws ThinklabException {
 		
-		if (root == null)
-			root = new ReferenceList();
-		
-		IReferenceList ref = null;
+		IReferenceList ref = ReferenceList.list();
 		if (refs.containsKey(node)) {
 			return refs.get(node);
 		} else {
-			ref = root.getForwardReference();
 			refs.put(node, ref);
 		}
 		
@@ -388,19 +384,19 @@ public class NeoKBox implements IKbox {
 		 * literals
 		 */
 		for (Pair<IProperty, Object> lp : getPropertyValues(node)) {
-			rl.add(root.newList(
+			rl.add(ReferenceList.list(
 					lp.getFirst(), 
-					root.internalize(Thinklab.get().conceptualize(lp.getSecond()))));
+					Thinklab.get().conceptualize(lp.getSecond())));
 		}
 		
 		/*
 		 * follow outgoing relationships to other objects
 		 */
 		for (Relationship r : node.getRelationships(Direction.OUTGOING)) {
-			rl.add(root.newList(Thinklab.p(fromId(r.getType().name())), retrieveList(r.getEndNode(), refs, root)));
+			rl.add(ReferenceList.list(Thinklab.p(fromId(r.getType().name())), retrieveList(r.getEndNode(), refs)));
 		}
 		
-		return  (IReferenceList) ref.resolve(root.newList(rl.toArray()));		
+		return ref.assign(ReferenceList.list(rl.toArray()));		
 	}
 
 	/*
