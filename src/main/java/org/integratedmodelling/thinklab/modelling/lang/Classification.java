@@ -4,6 +4,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
@@ -20,6 +21,7 @@ import org.integratedmodelling.thinklab.modelling.states.ObjectState;
 @Concept(NS.CLASSIFYING_OBSERVER)
 public class Classification extends Observer<Classification> implements IClassifyingObserverDefinition {
 
+	@Property(NS.HAS_CLASSIFICATION)
 	IClassification _classification;
 	
 	@Override

@@ -315,7 +315,7 @@ public class ThinklabOWLManager {
 	/** 
 	 * Return whether the passed resource has an annotation specifying that it is 
 	 * abstract. 
-	 * @param concept the resource to check
+	 * @param conceptMatch the resource to check
 	 * @param annotation the RDFProperty that specifies abstract status
 	 * @param b the default to specify if there is no annotation
 	 * @return true if the annotation contains a valid truth value expressed as text

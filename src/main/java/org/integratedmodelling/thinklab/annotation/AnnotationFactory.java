@@ -31,6 +31,7 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
+import org.integratedmodelling.thinklab.modelling.Classification;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.StringUtils;
 
@@ -161,7 +162,7 @@ public class AnnotationFactory {
 			IProperty p = null; 
 			if (useAnnotation && f.isAnnotationPresent(Property.class)) {
 				p = Thinklab.p(f.getAnnotation(Property.class).value());
-			} else {
+			} else if (!useAnnotation) {
 				p = getPropertyFromFieldName(f, main);
 			}
 			
@@ -198,6 +199,9 @@ public class AnnotationFactory {
 			return ReferenceList.list(literalType, o);
 		} 	
 		
+		if (cls.equals(Classification.class))
+			System.out.println(":ZIO");
+		
 		/*
 		 * special treatment for map entries. TODO see if we can associate the actual
 		 * Entry with a concept, although the handling of Map needs to remain special
@@ -213,6 +217,14 @@ public class AnnotationFactory {
 							objectHash);
 		}
 
+		/*
+		 * special treatment for a IConcept - we store an instance, as it
+		 * should be.
+		 */
+		if (o instanceof IConcept) {
+			return ReferenceList.list(o);
+		}
+		
 		/*
 		 * not literal. If we've seen this, just add the reference to it. Otherwise 
 		 * get a new reference, add it and work on that.
@@ -305,11 +317,11 @@ public class AnnotationFactory {
 	}
 
 	public Object instantiate(IReferenceList annotation) throws ThinklabException {
-		return instantiateInternal(annotation, new HashMap<IReferenceList,Object>());
+		return instantiateInternal(annotation, new HashMap<IReferenceList,Object>(), null);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Object instantiateInternal(IReferenceList annotation, HashMap<IReferenceList,Object> refs) 
+	private Object instantiateInternal(IReferenceList annotation, HashMap<IReferenceList,Object> refs, Class<?> forClass) 
 				throws ThinklabException {
 	
 		Object ret = null;
@@ -328,10 +340,19 @@ public class AnnotationFactory {
 		 */
 		Class<?> cls = _annotatedLiteralClass.get(concept);
 		Class<?> ocl = _javaLiteralClass.get(concept);
+		
+		if (cls == null && annotation.length() == 1 && forClass != null && IConcept.class.isAssignableFrom(forClass)) {
+			/*
+			 * we're assigning the concept itself as a literal of sorts.
+			 */
+			return concept;
+		}
+		
 		if (cls != null && !IConceptualizable.class.isAssignableFrom(cls)) {
 			
 			if (annotation.length() < 2) {
-				System.out.println("xio porco");
+				// no, it really shouldn't happen.
+				throw new ThinklabInternalErrorException("unexpected property definition in semantics. Call the police.");
 			}
 			Object o = annotation.nth(1);
 			if (o != null && ocl != null && ocl.isAssignableFrom(o.getClass())) {
@@ -477,7 +498,7 @@ public class AnnotationFactory {
 				if (refs.containsKey(odef)) {
 					obj = refs.get(odef);
 				} else {
-					obj = instantiateInternal(odef, refs);
+					obj = instantiateInternal(odef, refs, f.getType());
 				}
 				
 				try {

@@ -41,6 +41,7 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.lang.Classifier;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
@@ -190,6 +191,7 @@ public class Thinklab implements
 		registerAnnotatedClass(Pair.class, getConcept(NS.PAIR));
 		registerAnnotatedClass(Triple.class, getConcept(NS.TRIPLE));
 		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL));
+		registerAnnotatedClass(Classifier.class, getConcept(NS.CLASSIFIER));
 		
 		/*
 		 * TODO use plugin manager for this
@@ -644,7 +646,6 @@ public class Thinklab implements
 	public ISemanticObject<?> entify(IList semantics) throws ThinklabException {
 		return _km.entify(semantics);
 	}
-
 
 	public IReferenceList conceptualize(Object object) throws ThinklabException {
 		return ((KnowledgeManager)_km).conceptualize(object);

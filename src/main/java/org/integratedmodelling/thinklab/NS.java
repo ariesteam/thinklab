@@ -61,7 +61,6 @@ public class NS {
 	// observable types
 	public static final String BOOLEAN_RANKING = "thinklab:BooleanRanking";
 	public static final String ORDINAL_RANKING = "thinklab:OrdinalRanking";
-	public static final String NUMERIC_INTERVAL = "thinklab:NumericInterval";
 	public static final String ORDINAL_RANGE_MAPPING = "thinklab:OrderedRangeMapping";
 	
 	// convenience collections
@@ -123,6 +122,8 @@ public class NS {
 	public static final String OBSERVING_OBJECT = "modelling.thinklab:ObservingObject";	
 	public static final String OBSERVATION = "modelling.thinklab:Observation";
 	public static final String CLASSIFICATION = "modelling.thinklab:Classification";
+	public static final String CLASSIFIER = "modelling.thinklab:Classifier";
+	public static final String NUMERIC_INTERVAL = "modelling.thinklab:NumericInterval";
 
 	// properties for model beans
 	public static final String HAS_DEPENDENCY = "modelling.thinklab:hasDependency";
@@ -144,6 +145,7 @@ public class NS {
 	public static final String HAS_DIRECT_DATA = "modelling.thinklab:hasDirectData";
 	public static final String HAS_ALLOWED_COVERAGE = "modelling.thinklab:hasAllowedCoverage";
 	public static final String HAS_CLASSIFIER = "modelling.thinklab:hasClassifier";
+	public static final String HAS_CLASSIFICATION = "modelling.thinklab:hasClassification";
 	public static final String HAS_CONCEPT_SPACE = "modelling.thinklab:hasConceptSpace";
 
 }
