@@ -161,7 +161,7 @@ public class ModelManager implements IModelManager {
 		private PrintStream _interactiveOutput;
 
 		public Resolver(Object resource) {
-			this.resourceId = resource.toString();
+			this.resourceId = resource == null ? null : resource.toString();
 		}
 
 		/*
@@ -177,6 +177,7 @@ public class ModelManager implements IModelManager {
 		public boolean onException(Throwable e, int lineNumber)
 				throws ThinklabException {
 			errors.add(new Pair<String, Integer>(e.getMessage(), lineNumber));
+			// AGH this is called for imports, meaning resourceId may not be the one we're reading.
 			Thinklab.get().logger().error(resourceId + ": " + lineNumber + ": " + e.getMessage());
 			if (_isInteractive) {
 				_interactiveOutput.println("error: " + e.getMessage());
@@ -230,12 +231,18 @@ public class ModelManager implements IModelManager {
 					File f = new File(reference);
 
 					if (f.exists() && f.isFile() && f.canRead()) {
+						if (resourceId == null) {
+							resourceId = f.toString();
+						}
 						_timestamp = f.lastModified();
 						return new FileInputStream(f);
 					} else if (reference.contains(":/")) {
 						URL url = new URL(reference);
 						if (url.toString().startsWith("file:")) {
 							f = new File(url.getFile());
+							if (resourceId == null) {
+								resourceId = f.toString();
+							}
 							_timestamp = f.lastModified();
 						}
 						return url.openStream();
@@ -251,6 +258,9 @@ public class ModelManager implements IModelManager {
 						 */
 						f = project.findResource(reference);
 						if (f != null) {
+							if (resourceId == null) {
+								resourceId = f.toString();
+							}
 							return new FileInputStream(f);
 						}
 					}
@@ -258,9 +268,15 @@ public class ModelManager implements IModelManager {
 					f = new File(reference);
 					
 					if (f.exists() && f.isFile() && f.canRead()) {
+						if (resourceId == null) {
+							resourceId = f.toString();
+						}
 						return new FileInputStream(f);
 					} else if (reference.contains("://")) {
 						URL url = new URL(reference);						
+						if (resourceId == null) {
+							resourceId = url.toString();
+						}
 						return url.openStream();
 					}
 					
@@ -278,6 +294,9 @@ public class ModelManager implements IModelManager {
 							f = prj.findResourceForNamespace(namespace, "tql");
 							if (f != null) {
 								try {
+									if (resourceId == null) {
+										resourceId = f.toString();
+									}
 									return new FileInputStream(f);
 								} catch (FileNotFoundException e) {
 									throw new ThinklabIOException(e);
@@ -306,6 +325,9 @@ public class ModelManager implements IModelManager {
 					File f = project.findResourceForNamespace(namespace, "tql");
 					if (f != null) {
 						try {
+							if (resourceId == null) {
+								resourceId = f.toString();
+							}
 							return new FileInputStream(f);
 						} catch (FileNotFoundException e) {
 							throw new ThinklabIOException(e);
@@ -325,6 +347,9 @@ public class ModelManager implements IModelManager {
 				File f = new File(fres);
 				if (f.exists() && f.isFile() && f.canRead()) {
 					try {
+						if (resourceId == null) {
+							resourceId = f.toString();
+						}
 						return new FileInputStream(f);
 					} catch (FileNotFoundException e) {
 						throw new ThinklabIOException(e);
@@ -345,6 +370,9 @@ public class ModelManager implements IModelManager {
 						f = prj.findResourceForNamespace(namespace, "tql");
 						if (f != null) {
 							try {
+								if (resourceId == null) {
+									resourceId = f.toString();
+								}
 								return new FileInputStream(f);
 							} catch (FileNotFoundException e) {
 								throw new ThinklabIOException(e);
@@ -451,6 +479,9 @@ public class ModelManager implements IModelManager {
 				}
 				kbox.store(namespace);
 			}
+			
+			Thinklab.get().logger().info("namespace " + namespace.getId() + " created from " + namespace.getResourceUrl());
+
 		}
 
 		@Override
@@ -681,6 +712,13 @@ public class ModelManager implements IModelManager {
 				}
 			}
 			
+		}
+
+		@Override
+		public IResolver getImportResolver() {
+			Resolver ret = new Resolver(null);
+			ret.project = project;
+			return ret;
 		}
 	}
 
@@ -970,13 +1008,16 @@ public class ModelManager implements IModelManager {
 			}
 
 		} else if (f.toString().endsWith(".owl")) {
-			ns = loadFile(f.toString(), pth, project);
-		} else if (f.toString().endsWith(".tql") || f.toString().endsWith(".clj")) {			
-			ns = loadFile(f.toString(), pth, project);
+			if (!namespacesById.containsKey(pth)) {
+				ns = loadFile(f.toString(), pth, project);
+			}
+		} else if (f.toString().endsWith(".tql") || f.toString().endsWith(".clj")) {
+			if (!namespacesById.containsKey(pth)) {
+				ns = loadFile(f.toString(), pth, project);
+			}
 		}
 
-		if (ns != null) {
-			Thinklab.get().logger().info("namespace " + ns.getId() + " created from " + f);
+		if (ns != null) {			
 			ret.add(ns);
 		}
 

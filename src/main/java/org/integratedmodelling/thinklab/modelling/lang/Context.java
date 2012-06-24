@@ -73,7 +73,7 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		this._extents.putAll(context._extents);
 		this._isNull = context._isNull;
 		this._namespaceId = context._namespaceId;
-		
+		this._namespace = context._namespace;
 		initialize();
 	}
 

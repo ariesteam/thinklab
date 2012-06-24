@@ -179,6 +179,9 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 			_namespace = Thinklab.get().getNamespace(_namespaceId);
 		}
 		
+		
+		if (_namespace == null)
+			System.out.println("zarzamora");
 		/*
 		 * we only need it in models and contexts for now.
 		 */
