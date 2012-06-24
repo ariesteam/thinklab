@@ -124,12 +124,14 @@ public class NS {
 	public static final String CLASSIFICATION = "modelling.thinklab:Classification";
 	public static final String CLASSIFIER = "modelling.thinklab:Classifier";
 	public static final String NUMERIC_INTERVAL = "modelling.thinklab:NumericInterval";
+	public static final String RANKING_SCALE = "modelling.thinklab:RankingScale";
 
 	// properties for model beans
 	public static final String HAS_DEPENDENCY = "modelling.thinklab:hasDependency";
 	public static final String HAS_OBSERVABLE = "modelling.thinklab:hasObservable";
 	public static final String HAS_TIMESTAMP = "modelling.thinklab:hasTimeStamp";
 	public static final String HAS_OBSERVER = "modelling.thinklab:hasObserver";
+	public static final String HAS_OBSERVERS = "modelling.thinklab:hasObservers";
 	public static final String HAS_ID = "modelling.thinklab:hasId";
 	public static final String HAS_NAMESPACE_ID = "modelling.thinklab:hasNamespaceId";
 	public static final String HAS_EXPRESSION = "modelling.thinklab:hasExpression";
@@ -147,5 +149,8 @@ public class NS {
 	public static final String HAS_CLASSIFIER = "modelling.thinklab:hasClassifier";
 	public static final String HAS_CLASSIFICATION = "modelling.thinklab:hasClassification";
 	public static final String HAS_CONCEPT_SPACE = "modelling.thinklab:hasConceptSpace";
+	public static final String HAS_RANKING_SCALE = "modelling.thinklab:hasRankingScale";
+	public static final String HAS_RANKING_TYPE = "modelling.thinklab:hasRankingType";
+
 
 }

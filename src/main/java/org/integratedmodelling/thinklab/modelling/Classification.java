@@ -226,8 +226,7 @@ public class Classification implements IClassificationDefinition {
 	
 	@Override
 	public int getRank(IConcept concept) {
-		// TODO Auto-generated method stub
-		return 0;
+		return _ranks == null ? 0 : _ranks.get(concept);
 	}
 
 	@Override

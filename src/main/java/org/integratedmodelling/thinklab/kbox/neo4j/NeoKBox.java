@@ -44,7 +44,6 @@ import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.knowledge.SemanticQuery;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
-import org.integratedmodelling.thinklab.interfaces.storage.KboxTypeAdapter;
 import org.integratedmodelling.thinklab.kbox.KBoxResult;
 import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.integratedmodelling.thinklab.query.Query;
@@ -165,10 +164,9 @@ public class NeoKBox implements IKbox {
 		} catch (Exception e) {
 			
 			tx.failure();
-			throw new ThinklabIOException(e.getMessage());
+			throw new ThinklabIOException(e);
 	
 		} finally {
-		
 			tx.finish();
 		}
 		return ret;
@@ -226,7 +224,7 @@ public class NeoKBox implements IKbox {
 				KboxTypeAdapter adapter = _typeAdapters.get(c);
 				
 				if (adapter != null) {
-					adapter.setAndIndexProperty(node.getId(), this, p, metadata.get(key));
+					adapter.setAndIndexProperty(node, this, p, metadata.get(key));
 				}
 			}
 		}
@@ -241,7 +239,7 @@ public class NeoKBox implements IKbox {
 			throw new ThinklabUnsupportedOperationException("kbox: cannot store literal of type " +
 					s.getDirectType());
 		
-		adapter.setAndIndexProperty(node.getId(), this, p, s.demote());
+		adapter.setAndIndexProperty(node, this, p, s.demote());
 	}
 
 	@Override
@@ -691,10 +689,8 @@ public class NeoKBox implements IKbox {
 		protected abstract void setAndIndex(Node node, IProperty property, Object value) throws ThinklabException;
 
 		@Override
-		public void setAndIndexProperty(long id, IKbox kbox,
+		public void setAndIndexProperty(Node node, IKbox kbox,
 				IProperty property, Object value) throws ThinklabException {
-			
-			Node node = _db.getNodeById(id);
 			setAndIndex(node, property, value);
 		}	
 	}

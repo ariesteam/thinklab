@@ -22,7 +22,7 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinitio
 @Concept(NS.CONDITIONAL_OBSERVER)
 public class ConditionalObserver extends Observer<ConditionalObserver> implements IConditionalObserverDefinition {
 
-	@Property(NS.HAS_OBSERVER)
+	@Property(NS.HAS_OBSERVERS)
 	ArrayList<Pair<IObserver,IExpression>> _observers;
 	
 	public void addObserver(IExpressionDefinition expression, IObserverDefinition observer) {

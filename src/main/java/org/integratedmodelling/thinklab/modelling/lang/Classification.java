@@ -65,13 +65,13 @@ public class Classification extends Observer<Classification> implements IClassif
 	 * -----------------------------------------------------------------------------------
 	 */
 	public class ClassificationAccessor 
-		implements ISerialAccessor, IMediatingAccessor {
+		implements IAccessor, IMediatingAccessor {
 
 		ISerialAccessor _mediated;
 		
 		@Override
 		public IConcept getStateType() {
-			return Thinklab.DOUBLE;
+			return _classification.getConceptSpace();
 		}
 
 		@Override
@@ -87,25 +87,15 @@ public class Classification extends Observer<Classification> implements IClassif
 		
 		@Override
 		public Object mediate(Object object) throws ThinklabException {
-			
-			if (object == null || (object instanceof Number && Double.isNaN(((Number)object).doubleValue())))
-				return Double.NaN;
-			
 			return _mediated == null ?
 					object :
 					_classification.classify(object);
 		}
 
-		@Override
-		public Object getValue(int idx) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
 	}
 
 	
-	class ComputingClassificationAccessor extends ClassificationAccessor implements IComputingAccessor {
+	class ComputingClassificationAccessor extends ClassificationAccessor implements IAccessor, IComputingAccessor {
 
 		@Override
 		public void notifyDependency(ISemanticObject<?> observable, String key) {
@@ -126,6 +116,12 @@ public class Classification extends Observer<Classification> implements IClassif
 
 		@Override
 		public Object getValue(String outputKey) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Object getValue(int contextIndex) {
 			// TODO Auto-generated method stub
 			return null;
 		}

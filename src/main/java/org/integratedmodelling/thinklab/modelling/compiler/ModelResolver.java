@@ -16,6 +16,7 @@ import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
@@ -23,6 +24,7 @@ import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
+import org.integratedmodelling.thinklab.kbox.KBoxResult;
 import org.integratedmodelling.thinklab.modelling.debug.ModelGraph;
 import org.integratedmodelling.thinklab.modelling.lang.Context;
 import org.integratedmodelling.thinklab.modelling.lang.Model;
@@ -292,13 +294,15 @@ public class ModelResolver {
 			ArrayList<IModel> mods = new ArrayList<IModel>();
 
 			/*
-			 * scan models in order of decreasing quality.
+			 * scan models in order of decreasing quality and coverage.
 			 * loop until we get the best coverage; stop if/when we get to 100%
 			 * TODO log strategy
 			 */			
-			for (ISemanticObject<?> mo : getSuitableModels(observable, context)) {
+			List<ISemanticObject<?>> sm = getSuitableModels(observable, context);
+			double cover = 0.0;
+			for (int i = 0; i < sm.size(); i++ ) {
 				
-				IModel m = (IModel)mo;
+				IModel m = (IModel)sm.get(i);
 				
 				/*
 				 * resolve the model and move to the next if we can't use it
@@ -315,16 +319,20 @@ public class ModelResolver {
 					continue;
 
 				/*
+				 * extract all topologies from metadata and use them to determine
+				 * coverage
+				 */
+				IMetadata cmd = ((KBoxResult)sm).getMetadata(i);
+				cover += coverage.cover(extractTopologies(cmd));
+				
+				/*
 				 * add model to list
 				 * TODO: merge extent metadata into coverage
+				 * to accumulate coverage.
 				 */
 				mods.add(m);
 				
-				/*
-				 * compute coverage in all required dimensions, using
-				 * extent metadata; break if context is fully covered.
-				 */
-				if (coverage.isCovered(IContext.ALL_EXTENTS))
+				if (cover >= .99)
 					break;
 			}
 			
@@ -356,6 +364,18 @@ public class ModelResolver {
 		return ret;
 	}	
 	
+	private ITopologicallyComparable<?>[] extractTopologies(IMetadata cmd) {
+		
+		ArrayList<ITopologicallyComparable<?>> ret = new ArrayList<ITopologicallyComparable<?>>();
+
+		for (Object o : cmd.getValues()) {
+			if (o instanceof ITopologicallyComparable<?>)
+				ret.add((ITopologicallyComparable<?>)o);
+		}
+		
+		return ret.toArray(new ITopologicallyComparable<?>[ret.size()]);
+	}
+
 	/*
 	 * for simple handling throughout the algorithm, although later we'll just use the state as
 	 * an accessor and throw away the model.
@@ -425,7 +445,8 @@ public class ModelResolver {
 		 * 
 		 * TODO this should be either the right coverage or
 		 * no coverage at all, with a sorting criterion to ensure that those objects
-		 * that declare coverage are considered first. This way it works only with
+		 * that declare coverage are considered first and that % coverage is a 
+		 * sorting criterion. This way it works only with
 		 * data that are distributed in that same extent.
 		 */
 		for (Pair<IProperty, ITopologicallyComparable<?>> cp : coverageProperties) {
@@ -434,8 +455,7 @@ public class ModelResolver {
 
 		/*
 		 * TODO sort by criteria configured for namespace (or sensible default).
-		 */
-		
+		 */		
 		return Thinklab.get().getLookupKboxForNamespace(_namespace).query(query);
 	}
 

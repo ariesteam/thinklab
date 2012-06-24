@@ -472,6 +472,7 @@ public class ModelManager implements IModelManager {
 
 			if (Thinklab.get().getConcept(id) == null) {
 				onException(new ThinklabValidationException("concept " + id + " unknown"), line);
+				return null;
 			}
 
 			ConceptObject co = new ConceptObject();

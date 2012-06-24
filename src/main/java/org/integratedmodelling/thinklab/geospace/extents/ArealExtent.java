@@ -23,7 +23,10 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
+import org.integratedmodelling.thinklab.api.modelling.IState;
+import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
@@ -43,6 +46,90 @@ public abstract class ArealExtent extends Observation implements IExtent {
 	protected ArealExtent() {
 	}
 	
+	@Override
+	public Object getValue(int contextIndex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean contains(IExtent o) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean overlaps(IExtent o) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean intersects(IExtent o) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Object getRawData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double[] getDataAsDoubles() throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getDoubleValue(int index) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getValueCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public IState aggregate(IConcept concept) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IConcept getStateType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getMultiplicity() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public IExtent intersection(IExtent other) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IExtent union(IExtent other) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getCoverage(ITopologicallyComparable<?> obj) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 	public ArealExtent(CoordinateReferenceSystem crs, double minx, double miny, double maxx, double maxy) {
 		this.crs = crs;
 		this.envelope = new ReferencedEnvelope(minx, maxx, miny, maxy, crs);

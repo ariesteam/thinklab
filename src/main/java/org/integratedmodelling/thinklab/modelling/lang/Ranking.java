@@ -5,6 +5,7 @@ import org.integratedmodelling.lang.RankingScale;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
@@ -21,13 +22,14 @@ import org.integratedmodelling.thinklab.modelling.states.NumberState;
 @Concept(NS.RANKING_OBSERVER)
 public class Ranking extends Observer<Ranking> implements IRankingObserverDefinition {
 	
-	Type   _type = Type.RANKING;
+	@Property(NS.HAS_RANKING_TYPE)
+	int  _type = RANKING;
 
-	// default scale is unbounded
+	@Property(NS.HAS_RANKING_SCALE)
 	RankingScale _scale = new RankingScale();
 	
 	@Override
-	public Type getType() {
+	public int getType() {
 		return _type;
 	}
 
@@ -37,7 +39,7 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 	}
 
 	@Override
-	public void setType(Type type) {
+	public void setType(int type) {
 		_type = type;
 	}
 

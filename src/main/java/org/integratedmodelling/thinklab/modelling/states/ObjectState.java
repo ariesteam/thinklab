@@ -8,6 +8,8 @@ import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.interfaces.IModifiableState;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
+import org.integratedmodelling.thinklab.modelling.visualization.DisplayMetadata;
+import org.integratedmodelling.thinklab.modelling.visualization.VisualizationFactory;
 
 public class ObjectState extends Observation implements IModifiableState {
 
@@ -38,24 +40,16 @@ public class ObjectState extends Observation implements IModifiableState {
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabException {
 		
+		DisplayMetadata dm = VisualizationFactory.get().getDisplayMetadata(this);
+		
 		double[] ret = new double[_data.length];
 		for (int i = 0; i < _data.length; i++) {
-			ret[i] = toDouble(_data[i]);
+			ret[i] = 
+				(dm == null || _data[i] == null) ? 
+					Double.NaN : 
+					dm.getDisplayData(_data[i]).doubleValue();
 		}	
 		return ret;
-	}
-
-	private double toDouble(Object object) {
-
-		if (object == null)
-			return Double.NaN;
-		
-		if (object instanceof Number)
-			return ((Number)object).doubleValue();
-		
-		// TODO must use observer
-		
-		return 0;
 	}
 
 

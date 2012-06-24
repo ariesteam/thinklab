@@ -1,4 +1,4 @@
-package org.integratedmodelling.thinklab.interfaces.storage;
+package org.integratedmodelling.thinklab.kbox.neo4j;
 
 import java.util.Set;
 
@@ -6,6 +6,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IOperator;
+import org.neo4j.graphdb.Node;
 
 /*
  * Linked to a literal type to provide strategies for storage and indexing. 
@@ -21,7 +22,7 @@ public interface KboxTypeAdapter {
 	 * will be found by annotating it first.
 	 * 
 	 */
-	void setAndIndexProperty(long id, IKbox kbox, IProperty property, Object value) throws ThinklabException;
+	void setAndIndexProperty(Node node, IKbox kbox, IProperty property, Object value) throws ThinklabException;
 	
 	/**
 	 * Use whatever indexing strategy is appropriate to search and return the 

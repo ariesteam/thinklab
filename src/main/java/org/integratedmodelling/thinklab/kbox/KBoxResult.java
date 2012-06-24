@@ -38,7 +38,7 @@ public class KBoxResult extends ImmutableList<ISemanticObject<?>> {
 
 		@Override
 		public void remove() {
-			throw new UnsupportedOperationException("cannot modify read-only list");
+			throw new UnsupportedOperationException("cannot modify read-only kbox iterator");
 		}
 	}
 	
@@ -61,6 +61,17 @@ public class KBoxResult extends ImmutableList<ISemanticObject<?>> {
 		}
 	}
 	
+	/**
+	 * Get the metadata for the object, i.e. all its direct data properties, including those set by 
+	 * setStorageMetadata() if any.
+	 * 
+	 * Good thing about this one is that it doesn't have to create the object, so it can be
+	 * called relatively safely. If metadata are OK, get() can be called to create it. Any sorting
+	 * strategy built in the query will also use the metadata.
+	 * 
+	 * @param arg0
+	 * @return
+	 */
 	public IMetadata getMetadata(int arg0) {
 		return _kbox.getObjectMetadata(_results.get(arg0));
 	}

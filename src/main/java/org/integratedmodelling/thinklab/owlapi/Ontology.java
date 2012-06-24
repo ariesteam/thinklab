@@ -563,8 +563,13 @@ public class Ontology implements IOntology {
 		if (id.startsWith(getConceptSpace()))
 			ret = this.getConcept(id.substring(id.indexOf(":") + 1));
 		
-		if (ret == null)
-			ret = Thinklab.c(id);
+		if (ret == null) {
+
+			if (id.contains(":"))
+				ret = Thinklab.c(id);
+			else 
+				ret = getConcept(id);
+		}
 		
 		if (ret == null)
 			throw new ThinklabResourceNotFoundException("concept " + id + " unknown to session");
@@ -823,7 +828,7 @@ public class Ontology implements IOntology {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
 	public void define(Collection<IAxiom> axioms) throws ThinklabException {
 
@@ -843,8 +848,8 @@ public class Ontology implements IOntology {
 
 				} else if (axiom.is(IAxiom.SUBCLASS_OF)) {
 
-					IConcept p = getConcept(axiom.getArgument(1).toString());
-					IConcept c = Thinklab.get().getConcept(axiom.getArgument(0).toString());
+					IConcept p = findConcept(axiom.getArgument(1).toString());
+					IConcept c = findConcept(axiom.getArgument(0).toString());
 					OWLClass parent = (OWLClass) ((Concept)p).entity;
 					manager.addAxiom(ont, factory.getOWLSubClassAxiom(parent, (OWLClass)((Concept)c).entity));
 				}

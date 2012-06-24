@@ -42,6 +42,7 @@ import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.Classifier;
+import org.integratedmodelling.lang.RankingScale;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Literal;
 import org.integratedmodelling.thinklab.api.configuration.IConfiguration;
@@ -192,6 +193,7 @@ public class Thinklab implements
 		registerAnnotatedClass(Triple.class, getConcept(NS.TRIPLE));
 		registerAnnotatedClass(NumericInterval.class, getConcept(NS.NUMERIC_INTERVAL));
 		registerAnnotatedClass(Classifier.class, getConcept(NS.CLASSIFIER));
+		registerAnnotatedClass(RankingScale.class, getConcept(NS.RANKING_SCALE));
 		
 		/*
 		 * TODO use plugin manager for this

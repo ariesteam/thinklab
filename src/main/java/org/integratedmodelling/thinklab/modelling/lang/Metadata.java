@@ -126,5 +126,10 @@ public class Metadata extends LanguageElement<Metadata> implements IMetadataDefi
 		Object o = _data.get(field);		
 		return o != null && o instanceof IConcept ? (IConcept)o : def;
 	}
+
+	@Override
+	public Collection<Object> getValues() {
+		return _data.values();
+	}
 	
 }

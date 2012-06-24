@@ -339,7 +339,12 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		}
 		
 		for (IModel m : _models) {
-			merge(m.observe(this));
+			IObservation o = m.observe(this);
+			if (o != null) {
+				for (IState s : o.getContext().getStates())
+					addStateUnchecked(s);
+			}
+				
 		}
 		
 		_initialized = true;
@@ -421,6 +426,18 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	public IContext getParentContext() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public double cover(ITopologicallyComparable<?>[] context) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getCoverage(int extent) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	

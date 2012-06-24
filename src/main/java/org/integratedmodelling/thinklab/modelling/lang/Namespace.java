@@ -180,12 +180,12 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 
 	@Override
 	public IConcept getConcept(String s) {
-		return _ontology.getConcept(s);
+		return _ontology == null ? null : _ontology.getConcept(s);
 	}
 
 	@Override
 	public IProperty getProperty(String s) {
-		return _ontology.getProperty(s);
+		return _ontology == null ? null : _ontology.getProperty(s);
 	}
 
 	@Override

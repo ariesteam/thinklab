@@ -38,6 +38,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
+import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.gis.ThinklabRasterizer;
 import org.integratedmodelling.thinklab.geospace.interfaces.IGridMask;
@@ -552,6 +553,12 @@ public class RasterGrid extends Observation implements IExtent {
 	public Object getValue(int contextIndex) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public double getCoverage(ITopologicallyComparable<?> obj) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	

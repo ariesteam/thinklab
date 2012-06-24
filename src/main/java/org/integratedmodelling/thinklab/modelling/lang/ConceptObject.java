@@ -14,6 +14,15 @@ public class ConceptObject extends ModelObject<ConceptObject> implements IConcep
 
 	@Override
 	public String getName() {
-		return getNamespace().getId() + ":" + _id;
+		
+		/*
+		 * namespace == null only happens in error, but let it through so
+		 * we don't get a null pointer exception, and we report the error 
+		 * anyway.
+		 */
+		String ns = "UNDEFINED";
+		if (getNamespace() != null)
+			ns = getNamespace().getId();
+		return ns + ":" + _id;
 	}
 }

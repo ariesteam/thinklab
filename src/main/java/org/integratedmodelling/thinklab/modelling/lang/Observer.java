@@ -29,7 +29,6 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	@Property(NS.HAS_ACCESSOR_FUNCTION)
 	IFunctionDefinition _accessorGenerator = null;
 	
-	
 	IAccessor _accessor = null;
 	
 	/**
