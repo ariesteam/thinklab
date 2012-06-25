@@ -141,7 +141,7 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 				throw new ThinklabValidationException("function " + _accessorGenerator.getId() + " cannot be resolved");
 			Object ds = func.eval(_accessorGenerator.getParameters());
 			if (! (ds instanceof IAccessor)) {
-				throw new ThinklabValidationException("function " + _accessorGenerator.getId() + " does not return a datasource");
+				throw new ThinklabValidationException("function " + _accessorGenerator.getId() + " does not return an accessor");
 			}
 			_accessor = (IAccessor)ds;
 		}
