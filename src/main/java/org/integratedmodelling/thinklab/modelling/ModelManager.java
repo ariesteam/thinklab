@@ -177,7 +177,6 @@ public class ModelManager implements IModelManager {
 		public boolean onException(Throwable e, int lineNumber)
 				throws ThinklabException {
 			errors.add(new Pair<String, Integer>(e.getMessage(), lineNumber));
-			// AGH this is called for imports, meaning resourceId may not be the one we're reading.
 			Thinklab.get().logger().error(resourceId + ": " + lineNumber + ": " + e.getMessage());
 			if (_isInteractive) {
 				_interactiveOutput.println("error: " + e.getMessage());
@@ -395,7 +394,6 @@ public class ModelManager implements IModelManager {
 				message = "cannot read namespace " + namespace + " from resource " + reference;
 
 			throw new ThinklabResourceNotFoundException(message);
-
 		}
 
 		@Override
@@ -480,7 +478,7 @@ public class ModelManager implements IModelManager {
 				kbox.store(namespace);
 			}
 			
-			Thinklab.get().logger().info("namespace " + namespace.getId() + " created from " + namespace.getResourceUrl());
+			Thinklab.get().logger().info("namespace " + namespace.getId() + " created from " + resourceId);
 
 		}
 
@@ -722,14 +720,10 @@ public class ModelManager implements IModelManager {
 		}
 	}
 
-	private Resolver _resolver = null;
-
 	private Resolver getResolver(IProject project, Object resource) {
-		if (_resolver  == null) {
-			_resolver = new Resolver(resource);
-		}
-		_resolver.setProject(project);
-		return _resolver;
+		Resolver ret = new Resolver(resource);
+		ret.setProject(project);
+		return ret;
 	}
 
 	public Resolver getInteractiveResolver(InputStream input, PrintStream output) {

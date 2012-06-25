@@ -19,7 +19,6 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
-import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.utils.MiscUtilities;
 
 import agg.xt_basis.Version;
