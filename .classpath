@@ -349,5 +349,8 @@
 	<classpathentry kind="lib" path="lib/neo4j-udc-1.8.M02.jar"/>
 	<classpathentry kind="lib" path="lib/neo4j-spatial-0.8.jar"/>
 	<classpathentry kind="lib" path="lib/neo4j-graph-collections-0.3.jar"/>
+	<classpathentry kind="lib" path="lib/ojAlgo.jar"/>
+	<classpathentry kind="lib" path="lib/riskwiz.jar"/>
+	<classpathentry kind="lib" path="lib/smile.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
