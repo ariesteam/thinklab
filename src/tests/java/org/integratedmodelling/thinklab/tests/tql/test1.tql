@@ -19,7 +19,7 @@ namespace org.integratedmodelling.test1
 define model rainfall-global of 
 		(concept Rainfall is habitat:Rainfall)
 	as measure (measure habitat:Rainfall in m) in mm 
-		using geospace.physics:GroundElevation named elevation for rainfall:hasRunoffSlope;
+		using geospace.physics:GroundElevation named elevation;
 
 define model rainfall-local of 
 		(concept RainfallLocal is habitat:Rainfall)
@@ -30,6 +30,13 @@ define model elevation-class of ElevationClass
 		LowElevation when < 100,
 		MediumElevation when 100 to 500,
 		HighElevation when > 500;
+		
+/**
+ * test model for identifications. Should compute states for all dependencies and
+ * return a plain observation with just the observable, plus all states in the context.
+ */
+define model identification of DummySystem 
+	using elevation-class;
 		
 /*
  * ---------------------------------------------------------------------------------------------

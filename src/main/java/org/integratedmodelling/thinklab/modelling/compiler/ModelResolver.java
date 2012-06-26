@@ -22,6 +22,7 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
+import org.integratedmodelling.thinklab.api.modelling.IObservingObject.IDependency;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.kbox.KBoxResult;
@@ -195,9 +196,9 @@ public class ModelResolver {
 			/*
 			 * resolve all model dependencies and behave according to their optional status.
 			 */
-			for (Triple<Object, String, Boolean> m : model.getDependencies()) {
-				boolean opt = m.getThird();
-				IModel resolved = resolveInternal((ISemanticObject<?>)(m.getFirst()), context, models, opt || isOptional);
+			for (IDependency m : model.getDependencies()) {
+				boolean opt = m.isOptional();
+				IModel resolved = resolveInternal((ISemanticObject<?>)(m.getObservable()), context, models, opt || isOptional);
 				if (resolved == null && isOptional && !opt) {
 					return null;
 				} else {
@@ -211,15 +212,17 @@ public class ModelResolver {
 			 * resolve the dependencies of the observer. We inherit the coverage from theirs.
 			 */
 			IObserver observer = model.getObserver();
-			for (Triple<Object, String, Boolean> m : observer.getDependencies()) {
-				boolean opt = m.getThird();
-				IModel resolved = resolveInternal((ISemanticObject<?>)(m.getFirst()), context, models, opt || isOptional);
-				if (resolved == null && isOptional && !opt) {
-					return null;
-				} else {
-					/*
-					 * TODO log missing dependency
-					 */
+			if (observer != null) {
+				for (IDependency m : observer.getDependencies()) {
+					boolean opt = m.isOptional();
+					IModel resolved = resolveInternal((ISemanticObject<?>)(m.getObservable()), context, models, opt || isOptional);
+					if (resolved == null && isOptional && !opt) {
+						return null;
+					} else {
+						/*
+						 * TODO log missing dependency
+						 */
+					}
 				}
 			}
 				
@@ -227,7 +230,7 @@ public class ModelResolver {
 			 * if it has a datasource and we get here, it's a match and the observable is only to provide
 			 * semantics, we don't need to resolve it.
 			 */
-			if (model.getDatasource() == null) {
+			if (model.getDatasource() == null && observer != null) {
 				
 				/*
 				 * ask for whatever the observer needs to resolve the initial states, not necessarily
@@ -506,13 +509,13 @@ public class ModelResolver {
 		
 		graph.addVertex(model);
 
-		for (Triple<Object, String, Boolean> m : model.getDependencies()) {
+		for (IDependency m : model.getDependencies()) {
 
-			for (ISemanticObject<?> obs : getObservables(m.getFirst())) {
+			for (ISemanticObject<?> obs : getObservables(m.getObservable())) {
 				IModel dep = models.get(((SemanticObject<?>)obs).getSignature());
 				if (dep != null) {
 					buildModelGraphInternal(dep, models, graph);
-					DependencyEdge edge = new DependencyEdge(false, m.getSecond());
+					DependencyEdge edge = new DependencyEdge(false, m.getFormalName());
 					edge.observable = obs;
 					graph.addEdge(model, dep, edge);
 				}
@@ -520,19 +523,21 @@ public class ModelResolver {
 		}
 		
 		IObserver observer = model.getObserver();
-		for (Triple<Object, String, Boolean> m : observer.getDependencies()) {
-			for (ISemanticObject<?> obs : getObservables(m.getFirst())) {
-				IModel dep = models.get(((SemanticObject<?>)obs).getSignature());
-				if (dep != null) {
-					buildModelGraphInternal(dep, models, graph);
-					DependencyEdge edge = new DependencyEdge(false, m.getSecond());
-					edge.observable = obs;
-					graph.addEdge(model, dep, edge);
+		if (observer != null) {
+			for (IDependency m : observer.getDependencies()) {
+				for (ISemanticObject<?> obs : getObservables(m.getObservable())) {
+					IModel dep = models.get(((SemanticObject<?>)obs).getSignature());
+					if (dep != null) {
+						buildModelGraphInternal(dep, models, graph);
+						DependencyEdge edge = new DependencyEdge(false, m.getFormalName());
+						edge.observable = obs;
+						graph.addEdge(model, dep, edge);
+					}
 				}
 			}
 		}
 		
-		if (model.getDatasource() == null) {		
+		if (model.getDatasource() == null && observer != null) {		
 			ISemanticObject<?> obs = ((Observer<?>)observer).getFinalObservable();
 			IModel dep = models.get(((SemanticObject<?>)obs).getSignature());
 			if (dep != null) {

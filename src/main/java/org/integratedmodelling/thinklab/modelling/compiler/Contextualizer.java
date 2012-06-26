@@ -9,6 +9,7 @@ import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IContextTransformingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IMediatingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
@@ -195,9 +196,22 @@ public class Contextualizer  {
 			
 			if (accessor instanceof IParallelAccessor) {
 				/*
-				 * TODO contextualize it and run it. Then link all dependencies to
-				 * the states computed. If also
-				 * a context transformer, merge the new context in.
+				 * TODO
+				 * 
+				 * First time this is found, contextualize it as an identification and run it. 
+				 * From the second time onwards, just pick its result context from previous
+				 * storage.
+				 * 
+				 * Find the the dependency we're looking at and retrieve the corresponding
+				 * the state computed. If also a context transformer, merge the new context in.
+				 */
+			}
+			
+			if (accessor instanceof IContextTransformingAccessor) {
+				/*
+				 * TODO transform the context, which becomes the new 
+				 * current one, and attach the former one to its 
+				 * provenance records.
 				 */
 			}
 			

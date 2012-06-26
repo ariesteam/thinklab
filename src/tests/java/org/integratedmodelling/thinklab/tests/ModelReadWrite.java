@@ -92,4 +92,24 @@ public class ModelReadWrite {
 		 * TODO assert something or compare datasets
 		 */
 	}
+	
+	@Test
+	public void observe3() throws Exception {
+
+		
+		IModel model = (IModel) _ns.getModelObject("identification");
+		IContext ctx = (IContext)_ns.getModelObject("puget");
+
+		IObservation result = Thinklab.get().observe(model, ctx);
+		
+		NetCDFDataset ncds = new NetCDFDataset(result.getContext());
+		ncds.write("observe3.nc");
+		
+		System.out.println(result);
+
+		/*
+		 * TODO assert something or compare datasets
+		 */
+	}
+
 }

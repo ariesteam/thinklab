@@ -125,6 +125,7 @@ public class NS {
 	public static final String CLASSIFIER = "modelling.thinklab:Classifier";
 	public static final String NUMERIC_INTERVAL = "modelling.thinklab:NumericInterval";
 	public static final String RANKING_SCALE = "modelling.thinklab:RankingScale";
+	public static final String DEPENDENCY = "modelling.thinklab:Dependency";
 
 	// properties for model beans
 	public static final String HAS_DEPENDENCY = "modelling.thinklab:hasDependency";

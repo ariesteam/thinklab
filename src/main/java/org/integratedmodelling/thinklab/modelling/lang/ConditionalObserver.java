@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.integratedmodelling.collections.Pair;
-import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
@@ -39,10 +38,9 @@ public class ConditionalObserver extends Observer<ConditionalObserver> implement
 	}
 
 	@Override
-	public List<Triple<Object, String, Boolean>> getDependencies() {
-		ArrayList<Triple<Object, String, Boolean>> ret = 
-				new ArrayList<Triple<Object,String,Boolean>>();
-
+	public List<IDependency> getDependencies() {
+		
+		ArrayList<IDependency> ret = new ArrayList<IDependency>();
 		for (Pair<IObserver, IExpression> o : _observers)
 			ret.addAll(o.getFirst().getDependencies());
 		

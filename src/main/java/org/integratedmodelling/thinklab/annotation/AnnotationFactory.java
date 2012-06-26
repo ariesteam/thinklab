@@ -198,10 +198,7 @@ public class AnnotationFactory {
 		if (literalType != null && !(o instanceof IConceptualizable)) {
 			return ReferenceList.list(literalType, o);
 		} 	
-		
-		if (cls.equals(Classification.class))
-			System.out.println(":ZIO");
-		
+				
 		/*
 		 * special treatment for map entries. TODO see if we can associate the actual
 		 * Entry with a concept, although the handling of Map needs to remain special
@@ -509,6 +506,8 @@ public class AnnotationFactory {
 					} else if (array != null) {
 						array[n] = obj;
 					} else {
+						if (f.getType().isAssignableFrom(Boolean.class) && obj instanceof Integer)
+							obj = new Boolean(((Integer)obj) != 0);
 						f.setAccessible(true);
 						f.set(ret, obj);
 					}

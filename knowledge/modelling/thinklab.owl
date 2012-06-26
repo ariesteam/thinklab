@@ -166,6 +166,7 @@
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasObservable -->
 
     <owl:ObjectProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasObservable">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Classifier"/>
         <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Observation"/>
         <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ObservingObject"/>
     </owl:ObjectProperty>
@@ -259,6 +260,15 @@
     
 
 
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasFormalName -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasFormalName">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Dependency"/>
+        <rdfs:subPropertyOf rdf:resource="&owl;topDataProperty"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasId -->
 
     <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasId">
@@ -292,6 +302,14 @@
     <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasNumberMatch">
         <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Classifier"/>
         <rdfs:range rdf:resource="&xsd;double"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasProperty -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#hasProperty">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Dependency"/>
     </owl:DatatypeProperty>
     
 
@@ -414,6 +432,16 @@
     
 
 
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#isOptional -->
+
+    <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#isOptional">
+        <rdfs:domain rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Dependency"/>
+        <rdfs:range rdf:resource="&xsd;boolean"/>
+        <rdfs:subPropertyOf rdf:resource="&owl;topDataProperty"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#isUpperOpen -->
 
     <owl:DatatypeProperty rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#isUpperOpen">
@@ -509,6 +537,14 @@
 
     <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Context">
         <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#ModelObject"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Dependency -->
+
+    <owl:Class rdf:about="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#Dependency">
+        <rdfs:subClassOf rdf:resource="http://www.integratedmodellilng.org/ks/modelling/thinklab.owl#SyntacticElements"/>
     </owl:Class>
     
 

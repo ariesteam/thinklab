@@ -27,8 +27,10 @@ import org.integratedmodelling.thinklab.api.modelling.IObserver;
 
 /*
  * Utility class to dispatch messages to all different types of listeners without
- * writing a ridiculous amount of ugly code. Context (privately) returns one of 
- * these.
+ * writing a ridiculous amount of ugly code - just a good amount of it. Context will
+ * (privately) return one of these, never null so we don't have to check every time,
+ * and it will efficiently dispatch events only to the interested listeners if any are
+ * installed.
  */
 public class ListenerSet {
 
