@@ -13,6 +13,7 @@ import org.integratedmodelling.thinklab.api.modelling.IMediatingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
+import org.integratedmodelling.thinklab.api.modelling.IParallelAccessor;
 import org.integratedmodelling.thinklab.modelling.compiler.ModelResolver.DependencyEdge;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -191,6 +192,15 @@ public class Contextualizer  {
 		} else if (model.getObserver() != null) {
 			
 			IAccessor accessor = model.getObserver().getAccessor(context);
+			
+			if (accessor instanceof IParallelAccessor) {
+				/*
+				 * TODO contextualize it and run it. Then link all dependencies to
+				 * the states computed. If also
+				 * a context transformer, merge the new context in.
+				 */
+			}
+			
 			if (accessor != null) {
 				node = new CElem(accessor, context, model);
 				graph.addVertex(node);
