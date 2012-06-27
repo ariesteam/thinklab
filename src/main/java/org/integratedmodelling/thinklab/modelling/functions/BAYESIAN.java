@@ -17,12 +17,7 @@ public class BAYESIAN implements IExpression {
 
 	@Override
 	public Object eval(Map<String, Object> parameters) throws ThinklabException {
-
-		/*
-		 * TODO everything
-		 */
-		
-		return new BayesianAccessor();
+		return new BayesianAccessor(parameters);
 	}
 
 }

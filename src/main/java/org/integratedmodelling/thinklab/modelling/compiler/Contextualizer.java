@@ -16,6 +16,7 @@ import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IParallelAccessor;
 import org.integratedmodelling.thinklab.modelling.compiler.ModelResolver.DependencyEdge;
+import org.integratedmodelling.thinklab.modelling.lang.Model;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -119,7 +120,7 @@ public class Contextualizer  {
 		 * build the accessor graph. It may contain more than one disconnected graphs if the top model
 		 * is an identification with dependencies but no observer, so we don't store the top node.
 		 */
-		buildAccessorGraphInternal(root, graph, modelGraph, context);
+		buildAccessorGraphInternal(root, graph, modelGraph, context, new HashMap<IModel, IAccessor>());
 		
 		/*
 		 * assign registers to move values around, ensuring same observable uses same register. 
@@ -171,7 +172,8 @@ public class Contextualizer  {
 			IModel model, 
 			DirectedGraph<CElem, Dependency> graph, 
 			DirectedGraph<IModel, DependencyEdge> modelGraph, 
-			IContext context) throws ThinklabException {
+			IContext context,
+			HashMap<IModel, IAccessor> pcontexts) throws ThinklabException {
 		
 		CElem node = null;
 		
@@ -195,9 +197,8 @@ public class Contextualizer  {
 			IAccessor accessor = model.getObserver().getAccessor(context);
 			
 			if (accessor instanceof IParallelAccessor) {
+
 				/*
-				 * TODO
-				 * 
 				 * First time this is found, contextualize it as an identification and run it. 
 				 * From the second time onwards, just pick its result context from previous
 				 * storage.
@@ -205,15 +206,31 @@ public class Contextualizer  {
 				 * Find the the dependency we're looking at and retrieve the corresponding
 				 * the state computed. If also a context transformer, merge the new context in.
 				 */
+				IAccessor pcontext = pcontexts.get(model); 
+				if (pcontext == null) {
+					IModel ident = new Model(model.getObservables(), model.getDependencies());
+					IObservation obs = ident.observe(context);
+					pcontexts.put(model, new ProxyAccessor(obs.getContext()));
+				}
+				
+				node = new CElem(pcontext, context, null);
+				graph.addVertex(node);
+
+				if (accessor instanceof IContextTransformingAccessor) {
+					/*
+					 * TODO transform the context, which becomes the new 
+					 * current one, and attach the former one to its 
+					 * provenance records.
+					 */
+				}
+				
+				/*
+				 * ignore dependencies and go
+				 */
+				return node;
+				
 			}
 			
-			if (accessor instanceof IContextTransformingAccessor) {
-				/*
-				 * TODO transform the context, which becomes the new 
-				 * current one, and attach the former one to its 
-				 * provenance records.
-				 */
-			}
 			
 			if (accessor != null) {
 				node = new CElem(accessor, context, model);
@@ -242,7 +259,7 @@ public class Contextualizer  {
 				 */
 				CElem target = 
 						buildAccessorGraphInternal(
-								modelGraph.getEdgeTarget(edge), graph, modelGraph, context);
+								modelGraph.getEdgeTarget(edge), graph, modelGraph, context, pcontexts);
 				
 				/*
 				 * loop along the chain of mediation until we find the final
@@ -268,7 +285,10 @@ public class Contextualizer  {
 				/*
 				 * create accessor and notify dependency
 				 */
-				CElem target = buildAccessorGraphInternal(modelGraph.getEdgeTarget(edge), graph, modelGraph, context);
+				CElem target = 
+						buildAccessorGraphInternal(
+								modelGraph.getEdgeTarget(edge), graph, modelGraph, context, pcontexts);
+				
 				if (node != null) {
 					graph.addEdge(target, node, new Dependency(false, edge.formalName, edge.observable));
 				}

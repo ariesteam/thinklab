@@ -63,6 +63,18 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		// TODO Auto-generated constructor stub
 	}
 
+	/*
+	 * specialized constructor that will build an identification with the passed
+	 * dependencies and observables. Used by the resolver when a parallel accessor
+	 * is encountered, to compute all dependencies before its process() method is
+	 * called.
+	 */
+	public Model(List<ISemanticObject<?>> observables,
+			List<IDependency> dependencies) {
+		_observables.addAll(observables);
+		_dependencies.addAll(dependencies);
+	}
+
 	/**
 	 * Ensure that we get stored if we have a non-trivial datasource and no 
 	 * dependencies, so we can be used to resolve dangling references.

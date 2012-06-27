@@ -1,14 +1,23 @@
 package org.integratedmodelling.thinklab.modelling.bayes;
 
+import java.util.Map;
+
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IComputingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.ISerialAccessor;
+import org.integratedmodelling.thinklab.interfaces.bayes.IBayesianNetwork;
 
 public class BayesianAccessor implements ISerialAccessor, IComputingAccessor {
 
+	IBayesianNetwork _network;
+	
+	public BayesianAccessor(Map<String, Object> parameters) {
+		
+	}
+	
 	@Override
 	public IConcept getStateType() {
 		/*
@@ -19,25 +28,53 @@ public class BayesianAccessor implements ISerialAccessor, IComputingAccessor {
 
 	@Override
 	public void notifyDependency(ISemanticObject<?> observable, String key) {
-		// TODO Auto-generated method stub
+
+		/*
+		 * 
+		 */
 		
 	}
 
 	@Override
 	public void notifyExpectedOutput(ISemanticObject<?> observable, String key) {
-		// TODO Auto-generated method stub
+
+		/*
+		 * find node matching observable and the observer that interprets it.
+		 * if observable isa uncertainty, find the matching node by inspecting its
+		 * properties.
+		 */
 		
+		/*
+		 * record key for evidence matching
+		 */
 	}
 
 	@Override
 	public void process(int stateIndex) throws ThinklabException {
-		// TODO Auto-generated method stub
+
+		/*
+		 * submit evidence
+		 */
 		
+		/*
+		 * run inference
+		 */
+		
+		/*
+		 * extract values
+		 */
+		
+		/*
+		 * store last context index
+		 */
 	}
 
 	@Override
 	public void setValue(String inputKey, Object value) {
-		// TODO Auto-generated method stub
+		
+		/*
+		 * store evidence for later inference
+		 */
 		
 	}
 
