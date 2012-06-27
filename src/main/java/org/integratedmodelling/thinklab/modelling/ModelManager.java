@@ -55,6 +55,7 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IClassificationDef
 import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.ILanguageDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IModelObjectDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IPropertyDefinition;
 import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
@@ -717,6 +718,22 @@ public class ModelManager implements IModelManager {
 			Resolver ret = new Resolver(null);
 			ret.project = project;
 			return ret;
+		}
+
+		@Override
+		public boolean isNamespaceDefined(String id) {
+			return namespacesById.containsKey(id);
+		}
+
+		@Override
+		public IModelObjectDefinition resolveModelObject(String ns,
+				String object) {
+			
+			INamespace n = namespacesById.get(ns);
+			if (n != null)
+				return (IModelObjectDefinition) n.getModelObject(object);
+			
+			return null;
 		}
 	}
 
