@@ -352,5 +352,6 @@
 	<classpathentry kind="lib" path="lib/ojAlgo.jar"/>
 	<classpathentry kind="lib" path="lib/riskwiz.jar"/>
 	<classpathentry kind="lib" path="lib/smile.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

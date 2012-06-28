@@ -9,6 +9,7 @@ import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
+import org.integratedmodelling.thinklab.api.modelling.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.IComputingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IMediatingAccessor;
@@ -27,6 +28,9 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 
 	@Property(NS.HAS_RANKING_SCALE)
 	RankingScale _scale = new RankingScale();
+	
+	@Property(NS.HAS_CLASSIFICATION)
+	IClassification _discretization;
 	
 	@Override
 	public int getType() {
@@ -66,6 +70,16 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 		
 		return new RankingAccessor();
 	}
+	
+	@Override
+	public void initialize() throws ThinklabException {
+		super.initialize();
+		if (_discretization != null) {
+			((IClassificationDefinition)_discretization).initialize();
+		}
+	}
+
+
 
 	/*
 	 * -----------------------------------------------------------------------------------
@@ -158,9 +172,8 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 
 
 	@Override
-	public void setDiscretization(IClassificationDefinition classification) {
-		// TODO Auto-generated method stub
-		
+	public void setDiscretization(IClassification classification) {
+		_discretization = classification;
 	}
 
 }

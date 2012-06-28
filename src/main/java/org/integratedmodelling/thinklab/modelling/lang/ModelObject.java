@@ -7,7 +7,6 @@ import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
-import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
@@ -71,8 +70,6 @@ public abstract class ModelObject<T> extends LanguageElement<T> implements IMode
 		_namespace = (INamespace) namespace;
 	}
 	
-
-	
 	@Override
 	public void setMetadata(IMetadataDefinition metadata) {
 		_metadata = (IMetadata) metadata;
@@ -87,7 +84,6 @@ public abstract class ModelObject<T> extends LanguageElement<T> implements IMode
 	public String getId() {
 		return _id;
 	}
-
 
 	@Override
 	public void setId(String id) {
