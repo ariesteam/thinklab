@@ -412,13 +412,25 @@ public class Thinklab implements
 		return _this;
 	}
 	
+	/**
+	 * Entry point in Thinklab: call boot() before you do anything. Calling more than
+	 * once without calling shutdown() has no effect.
+	 * 
+	 * @throws ThinklabException
+	 */
 	public static void boot() throws ThinklabException {
-		_this = new Thinklab();		
-		_this.startup();
+		if (_this == null) {
+			_this = new Thinklab();		
+			_this.startup();
+		}
 	}
 	
+	/**
+	 * You must call shutdown() when you're done to ensure integrity of 
+	 * data and everything. This said, I always abort applications without
+	 * getting there and not much happens.
+	 */
 	public static void shutdown() {
-		
 		
 		if (_this != null) {
 		

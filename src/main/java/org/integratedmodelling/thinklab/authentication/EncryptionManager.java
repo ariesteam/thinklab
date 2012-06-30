@@ -67,8 +67,8 @@ public class EncryptionManager {
 
 	public EncryptionManager(String encryptionScheme, String encryptionKey)
 			throws ThinklabValidationException {
-
-		Security.addProvider(new com.sun.crypto.provider.SunJCE());
+//
+//		Security.addProvider(new com.sun.crypto.provider.SunJCE());
 		
 		if (encryptionKey == null)
 			throw new IllegalArgumentException("encryption key was null");
