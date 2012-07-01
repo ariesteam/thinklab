@@ -175,8 +175,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public boolean onException(Throwable e, int lineNumber)
-				throws ThinklabException {
+		public boolean onException(Throwable e, int lineNumber) {
 			errors.add(new Pair<String, Integer>(e.getMessage(), lineNumber));
 			Thinklab.get().logger().error(resourceId + ": " + lineNumber + ": " + e.getMessage());
 			if (_isInteractive) {
@@ -211,8 +210,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public InputStream resolveNamespace(String namespace, String reference)
-				throws ThinklabException {
+		public InputStream resolveNamespace(String namespace, String reference) {
 
 			/*
 			 * TODO
@@ -307,7 +305,7 @@ public class ModelManager implements IModelManager {
 					
 
 				} catch (Exception e) {
-					throw new ThinklabIOException(e);
+					onException( new ThinklabIOException(e), 0);
 				}
 				
 			} else if (namespace != null) {
@@ -330,7 +328,7 @@ public class ModelManager implements IModelManager {
 							}
 							return new FileInputStream(f);
 						} catch (FileNotFoundException e) {
-							throw new ThinklabIOException(e);
+							onException( new ThinklabIOException(e), 0);
 						}
 					}
 				}
@@ -352,7 +350,7 @@ public class ModelManager implements IModelManager {
 						}
 						return new FileInputStream(f);
 					} catch (FileNotFoundException e) {
-						throw new ThinklabIOException(e);
+						onException( new ThinklabIOException(e), 0);
 					}
 				}
 				
@@ -375,7 +373,7 @@ public class ModelManager implements IModelManager {
 								}
 								return new FileInputStream(f);
 							} catch (FileNotFoundException e) {
-								throw new ThinklabIOException(e);
+								onException( new ThinklabIOException(e), 0);
 							}
 						}
 					}
@@ -394,7 +392,9 @@ public class ModelManager implements IModelManager {
 			else 
 				message = "cannot read namespace " + namespace + " from resource " + reference;
 
-			throw new ThinklabResourceNotFoundException(message);
+			onException( new ThinklabResourceNotFoundException(message), 0);
+			
+			return null;
 		}
 
 		@Override
@@ -449,7 +449,7 @@ public class ModelManager implements IModelManager {
 		}
 		
 		@Override
-		public void onNamespaceDefined(INamespace namespace) throws ThinklabException {
+		public void onNamespaceDefined(INamespace namespace) {
 
 			if (errors.size() > 0) {
 				return;
@@ -459,7 +459,11 @@ public class ModelManager implements IModelManager {
 			 * at this point, this should be moot as we define everything incrementally, 
 			 * but leave it here for any final tasks we may want to implement.
 			 */
-			((Namespace)namespace).initialize();
+			try {
+				((Namespace)namespace).initialize();
+			} catch (Exception e) {
+				onException(e, 0);
+			}
 			
 			/*
 			 * TODO pop resolver context
@@ -471,12 +475,17 @@ public class ModelManager implements IModelManager {
 			 */
 			if (_storedTimestamp == 0l || _timestamp > _storedTimestamp) {
 				
-				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
-				if (_storedTimestamp != 0l) {
-					IQuery query = Queries.select(NS.NAMESPACE).restrict(NS.HAS_ID, Queries.is(namespace.getId()));
-					kbox.removeAll(query);
+				try {
+					IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
+					if (_storedTimestamp != 0l) {
+						IQuery query = Queries.select(NS.NAMESPACE).restrict(NS.HAS_ID, Queries.is(namespace.getId()));
+						kbox.removeAll(query);
+					}
+					kbox.store(namespace);
+				} catch (Exception e) {
+					// -1 flags exception that don't come from the parser
+					onException(e, -1);
 				}
-				kbox.store(namespace);
 			}
 			
 			Thinklab.get().logger().info("namespace " + namespace.getId() + " created from " + resourceId);
@@ -484,8 +493,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public void validateNamespaceForResource(String resource,
-				String namespace) throws ThinklabException {
+		public void validateNamespaceForResource(String resource, String namespace)  {
 			
 			/*
 			 * TODO
@@ -498,7 +506,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public IConceptDefinition resolveExternalConcept(String id, INamespace namespace, int line) throws ThinklabException {
+		public IConceptDefinition resolveExternalConcept(String id, INamespace namespace, int line)  {
 
 			if (Thinklab.get().getConcept(id) == null) {
 				onException(new ThinklabValidationException("concept " + id + " unknown"), line);
@@ -517,7 +525,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public IPropertyDefinition resolveExternalProperty(String id, INamespace namespace, int line) throws ThinklabException {
+		public IPropertyDefinition resolveExternalProperty(String id, INamespace namespace, int line)  {
 
 			if (Thinklab.get().getProperty(id) == null) {
 				onException(new ThinklabValidationException("concept " + id + " unknown"), line);
@@ -540,7 +548,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public void onModelObjectDefined(INamespace namespace, IModelObject ret) throws ThinklabException {
+		public void onModelObjectDefined(INamespace namespace, IModelObject ret)  {
 
 			if (errors.size() > 0) {
 				return;
@@ -550,12 +558,17 @@ public class ModelManager implements IModelManager {
 			 * actualize all knowledge so that the object is complete and we can create observables
 			 * as required.
 			 */
-			((Namespace)namespace).flushKnowledge();
-			
-			/*
-			 * this creates any remanining knowledge.
-			 */
-			((ModelObject<?>)ret).initialize();
+			try {
+
+				((Namespace)namespace).flushKnowledge();
+				/*
+				 * this creates any remanining knowledge.
+				 */
+				((ModelObject<?>)ret).initialize();
+
+			} catch (Exception e) {
+				onException(e, ret.getFirstLineNumber());
+			}
 			
 			/*
 			 * store anything that reports storage metadata.
@@ -563,7 +576,12 @@ public class ModelManager implements IModelManager {
 			IMetadata md = ((ModelObject<?>)ret).getStorageMetadata();
 			if (md != null && (_storedTimestamp == 0l || (_timestamp != 0l && _timestamp > _storedTimestamp))) {
 				ret.getMetadata().merge(md);
-				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
+				IKbox kbox = null;
+				try {
+					kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
+				} catch (ThinklabException e1) {
+					onException(e1, -1);
+				}
 				if (kbox != null) {
 					try {
 						kbox.store(ret);
@@ -650,67 +668,74 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public void handleObserveStatement(Object observable, INamespace namespace,  IContext ctx, boolean resetContext) throws ThinklabException {
+		public void handleObserveStatement(Object observable, INamespace namespace,  IContext ctx, boolean resetContext)  {
 
-			/*
-			 * actualize all knowledge so that the object is complete and we can create observables
-			 * as required.
-			 */
-			((Namespace)namespace).flushKnowledge();
 			
-			/*
-			 * switch to another context or to a new one if requested.
-			 */
-			if (ctx != null) {
-				currentContext = new Context((Context)ctx);
-			} else	if (resetContext) {
-				currentContext = new Context();
-			}
-			
-			Object obs = null;
-			if (observable instanceof IModel)
-				obs = observable;
-			else if (observable instanceof IList) {
-				obs = Thinklab.get().entify((IList)observable);
-			} else if (observable instanceof IConceptDefinition) {
-				obs = Thinklab.get().entify(PolyList.list(Thinklab.c(((IConceptDefinition)observable).getName())));
-			} else if (observable instanceof IFunctionDefinition) {
-				
+			try {
+
 				/*
-				 * must eval to extent, to be merged with current context directly.
+				 * actualize all knowledge so that the object is complete and we can create observables
+				 * as required.
 				 */
-				IFunctionDefinition function = (IFunctionDefinition)observable;
-				
-				// find function and validate parameters
-				IExpression func = Thinklab.get().resolveFunction(function.getId(), function.getParameters().keySet());
-				
-				if (func == null) {
-					throw new ThinklabValidationException("function " + function.getId() + " is unknown");
+				((Namespace)namespace).flushKnowledge();
+			
+				/*
+				 * switch to another context or to a new one if requested.
+				 */
+				if (ctx != null) {
+					currentContext = new Context((Context)ctx);
+				} else	if (resetContext) {
+					currentContext = new Context();
 				}
-				Observation o = null;
+			
+				Object obs = null;
+				if (observable instanceof IModel)
+					obs = observable;
+				else if (observable instanceof IList) {
+					obs = Thinklab.get().entify((IList)observable);
+				} else if (observable instanceof IConceptDefinition) {
+					obs = Thinklab.get().entify(PolyList.list(Thinklab.c(((IConceptDefinition)observable).getName())));
+				} else if (observable instanceof IFunctionDefinition) {
 				
-				// run function and store observation
-				try {
-					 o = (Observation) func.eval(function.getParameters());
-					 if (o == null)
-						 throw new ThinklabValidationException("function " + function.getId() + " does not return any value");
+					/*
+					 * must eval to extent, to be merged with current context directly.
+					 */
+					IFunctionDefinition function = (IFunctionDefinition)observable;
+				
+					// find function and validate parameters
+					IExpression func = Thinklab.get().resolveFunction(function.getId(), function.getParameters().keySet());
+				
+					if (func == null) {
+						throw new ThinklabValidationException("function " + function.getId() + " is unknown");
+					}
+					Observation o = null;
+				
+					// run function and store observation
+					try {
+						o = (Observation) func.eval(function.getParameters());
+						if (o == null)
+							throw new ThinklabValidationException("function " + function.getId() + " does not return any value");
 					 
-				} catch (ThinklabException e) {
-					throw new ThinklabValidationException(e);
+					} catch (ThinklabException e) {
+						throw new ThinklabValidationException(e);
+					}
+				
+					currentContext.merge(o);
+				
+					return;
+				}
+			
+				if (obs != null) {
+				
+					IObservation observation = Thinklab.get().observe(obs, currentContext);
+					if (observation != null) {
+						currentContext = observation.getContext();
+					}
 				}
 				
-				currentContext.merge(o);
-				
-				return;
+			} catch (Exception e) {
+				onException(e, -1);
 			}
-			
-			if (obs != null) {
-				IObservation observation = Thinklab.get().observe(obs, currentContext);
-				if (observation != null) {
-					currentContext = observation.getContext();
-				}
-			}
-			
 		}
 
 		@Override

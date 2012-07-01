@@ -54,7 +54,6 @@ public class REPL {
 		PrintStream w = new PrintStream(output);
 		w.println("*** Thinklab QL interpreter; enter expressions, 'exit' exits ***");
 
-		try {
 	
 			String prompt = "tql> ";
 			String curStat = "";
@@ -94,7 +93,7 @@ public class REPL {
 				/*
 				 * Exec; behave according to what is defined
 				 */
-				try {
+
 					IResolver resolver = ((ModelManager)Thinklab.get().getModelManager()).getInteractiveResolver(input, w);
 					InputStream is = new ByteArrayInputStream(curStat.getBytes());
 					INamespace ns = mg.parseInNamespace(is, USER_DEFAULT_NAMESPACE, resolver);
@@ -123,17 +122,11 @@ public class REPL {
 					}
 					
 					w.println(obj + " returned");
-					
-				} catch (ThinklabException e) {
-					w.println("*** ThinkQL error: " + e.getMessage());
-				}
+
 				
 				curStat = "";
 			}
-		} catch (Exception e) {
-			w.println("*** ThinkQL error: " + e.getMessage());
-		} finally {
-		}
+
 	}
 
 	public String readStatement() {

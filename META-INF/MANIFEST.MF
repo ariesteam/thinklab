@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: thinklab
 Bundle-SymbolicName: thinklab
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0.alpha
 Bundle-ClassPath: thinklab.jar,
  lib/agg_V1622_classes.jar,
  lib/aopalliance.jar,
@@ -507,7 +507,7 @@ Export-Package: .,
  org.xml.sax,
  org.xml.sax.ext,
  org.xml.sax.helpers
-Require-Bundle: thinklab-api;bundle-version="1.0.0",
- org.integratedmodellling.thinkql;bundle-version="1.0.0",
- org.apache.xerces;bundle-version="2.9.0"
+Require-Bundle: org.apache.xerces;bundle-version="2.9.0",
+ thinklab-api;bundle-version="1.0.0",
+ org.integratedmodelling.thinkql;bundle-version="1.0.0"
 Bundle-Vendor: org.integratedmodelling

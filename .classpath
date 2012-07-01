@@ -322,7 +322,6 @@
 	<classpathentry kind="lib" path="lib/riskwiz.jar"/>
 	<classpathentry kind="lib" path="lib/smile.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.integratedmodellling.thinkql"/>
 	<classpathentry kind="lib" path="lib/com.google.inject_3.0.0.v201203062045.jar"/>
 	<classpathentry kind="lib" path="lib/groovy-all-1.8.6.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.8.0.v20120606-0717.jar"/>
@@ -351,6 +350,6 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.xtend_1.2.0.v201206110941.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.xtend.lib_2.3.0.v201206120633.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.xtext.generator_2.3.0.v201206120633.jar"/>
-	<classpathentry kind="lib" path="classes"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.integratedmodelling.thinkql"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
