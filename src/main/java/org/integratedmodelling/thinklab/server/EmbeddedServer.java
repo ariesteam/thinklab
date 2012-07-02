@@ -1,6 +1,7 @@
 package org.integratedmodelling.thinklab.server;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Hashtable;
@@ -287,6 +288,17 @@ public class EmbeddedServer implements IServer {
 			return _e;
 		}
 		
+	}
+
+	@Override
+	public File getRequiredKnowledge() {
+		
+		/*
+		 * Copy all the knowledge dir to 
+		 */
+		
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

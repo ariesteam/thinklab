@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/tests/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="resources"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/thinklab-api"/>
 	<classpathentry kind="lib" path="lib/agg_V1622_classes.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
