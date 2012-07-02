@@ -8,15 +8,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.geotools.map.DefaultMapLayer;
-import org.integratedmodelling.list.ReferenceList;
-import org.integratedmodelling.thinklab.api.lang.IReferenceList;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.junit.Test;
 
 
@@ -28,37 +28,56 @@ import org.junit.Test;
 public class MixedTests {
 
 	 /**
-	   * List directory contents for a resource folder. Not recursive.
+	   * List directory contents into a given collection for a resource folder. Recursive.
 	   * This is basically a brute-force implementation.
 	   * Works for regular files and also JARs.
 	   * 
-	   * @author Greg Briggs
-	   * @param clazz Any java class that lives in the same place as the resources you want.
+	   * @author Greg Briggs, Ferdinando Villa
+	   * @param classLoader a classloader to use to resolve it.
+	   * @param anyResourcePath used to locate the collection/jar: a resource that we know lives in the same folder or
+	   * 	    jar of the path we look for.
 	   * @param path Should end with "/", but not start with one.
 	   * @return Just the name of each member item, not the full paths.
 	   * @throws URISyntaxException 
 	   * @throws IOException 
 	   */
-	  String[] getResourceListing(Class<?> clazz, String path) throws URISyntaxException, IOException {
+	  List<String> getResourceListing(ClassLoader classLoader, String anyResourcePath, String path) 
+			  throws Exception {
+		  return getResourceListingInternal(classLoader, anyResourcePath, path, new ArrayList<String>());
+	  }
+		  
+		  
+		  List<String> getResourceListingInternal(ClassLoader classLoader, String anyResourcePath, String path, List<String> addTo) 
+			  throws Exception {
 		  
 		  /*
 		   * right. If the resource is in some other jar as well, the first one on the classpath will be found, not
 		   * the one in the class.
 		   */
-	      URL dirURL = clazz.getClassLoader().getResource(path);
+	      URL dirURL = classLoader.getResource(anyResourcePath);
 	      
 	      if (dirURL != null && dirURL.getProtocol().equals("file")) {
-	        /* A file path: easy enough */
-	        return new File(dirURL.toURI()).list();
+
+	    	  dirURL = classLoader.getResource(path);
+	    	  if (dirURL != null) {
+	    		  for (String s : new File(dirURL.toURI()).list()) {
+	    			  File ff = MiscUtilities.resolveUrlToFile(dirURL.toURI() + "/" + s);
+	    			  if (ff.isDirectory())
+	    				getResourceListingInternal(classLoader, anyResourcePath, path + s + "/", addTo);
+	    			  else
+	    				addTo.add(path + s);
+	    		  }
+	    	  }
+	   
+	    	  return addTo;
 	      } 
 
 	      if (dirURL == null) {
-	        /* 
-	         * In case of a jar file, we can't actually find a directory.
-	         * Have to assume the same jar as clazz.
-	         */
-	        String me = clazz.getName().replace(".", "/")+".class";
-	        dirURL = clazz.getClassLoader().getResource(me);
+	    	  
+	    	  /*
+	    	   * no way
+	    	   */
+	    	  return addTo;
 	      }
 	      
 	      if (dirURL.getProtocol().equals("jar")) {
@@ -74,26 +93,26 @@ public class MixedTests {
 	            String entry = name.substring(path.length());
 	            int checkSubdir = entry.indexOf("/");
 	            if (checkSubdir >= 0) {
-	              // if it is a subdirectory, we just return the directory name
-	              entry = entry.substring(0, checkSubdir) + "/";
+	              entry = entry.substring(0, checkSubdir);
+	              getResourceListingInternal(classLoader, anyResourcePath, path + entry + "/", addTo);
+	            } else {
+	            	result.add(entry);
 	            }
-	            result.add(entry);
 	          }
 	        }
-	        return result.toArray(new String[result.size()]);
-	      } 
-	        
-	      throw new UnsupportedOperationException("Cannot list files for URL "+dirURL);
+	      }
+	      
+	      return addTo;
 	  }
 	
 	@Test
 	public void testReferenceList() throws Exception {
 
-		for (String zio : getResourceListing(this.getClass(), "knowledge/")) {
+		for (String zio : getResourceListing(this.getClass().getClassLoader(), "knowledge/thinklab.owl", "knowledge/")) {
 			System.out.println(zio);
 		}
 		
-		for (String zio : getResourceListing(DefaultMapLayer.class, "META-INF/")) {
+		for (String zio : getResourceListing(this.getClass().getClassLoader(), "org/geotools/map/DefaultMapLayer.class", "META-INF/")) {
 			System.out.println(zio);
 		}
 	}

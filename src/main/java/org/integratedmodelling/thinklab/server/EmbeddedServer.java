@@ -21,6 +21,7 @@ import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.thinklab.session.InteractiveSession;
+import org.integratedmodelling.utils.ClassUtils;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -294,11 +295,16 @@ public class EmbeddedServer implements IServer {
 	public File getRequiredKnowledge() {
 		
 		/*
-		 * Copy all the knowledge dir to 
+		 * Copy all the knowledge dir to folder in scratch dir
 		 */
+		File ret = Thinklab.get().getScratchArea("knowledge_cache");
+		
+		for (String zio : ClassUtils.getResourceListing(this.getClass().getClassLoader(), "knowledge/thinklab.owl", "knowledge/")) {
+			System.out.println(zio);
+		}
 		
 		// TODO Auto-generated method stub
-		return null;
+		return ret;
 	}
 
 
