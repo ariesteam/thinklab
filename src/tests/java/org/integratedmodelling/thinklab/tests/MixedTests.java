@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -15,9 +14,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
+import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.junit.Test;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 
 
@@ -80,11 +86,15 @@ public class MixedTests {
 	    	  return addTo;
 	      }
 	      
-	      if (dirURL.getProtocol().equals("jar")) {
+	      if (dirURL.getPath().indexOf("!") >= 0)
+	    	  dirURL = new URL(dirURL.getPath().substring(0, dirURL.getPath().indexOf("!"))); //strip out only the JAR file
+	
+	      if (dirURL.toString().endsWith(".jar")) {
 	    	  
-	        /* A JAR path */
-	        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!")); //strip out only the JAR file
-	        JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
+	    	File fuck = new File(dirURL.getFile());
+	    	if (fuck.exists()) 
+	    		System.out.println("fuck");
+	        JarFile jar = new JarFile(fuck);
 	        Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
 	        Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory
 	        while(entries.hasMoreElements()) {
@@ -108,13 +118,30 @@ public class MixedTests {
 	@Test
 	public void testReferenceList() throws Exception {
 
-		for (String zio : getResourceListing(this.getClass().getClassLoader(), "knowledge/thinklab.owl", "knowledge/")) {
-			System.out.println(zio);
-		}
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+      	.setUrls(ClasspathHelper.forPackage("knowledge"))
+      	.setScanners(new ResourcesScanner()));
 		
-		for (String zio : getResourceListing(this.getClass().getClassLoader(), "org/geotools/map/DefaultMapLayer.class", "META-INF/")) {
-			System.out.println(zio);
+		for (String of : reflections.getResources(Pattern.compile(".*\\.owl"))) {
+			System.out.println(of);
 		}
+
+		Reflections reflections2 = new Reflections(new ConfigurationBuilder()
+      	.setUrls(ClasspathHelper.forPackage("org.integratedmodelling.thinklab"))
+      	.setScanners(new SubTypesScanner()));
+
+		for (Class<?> of : reflections2.getTypesAnnotatedWith(Concept.class)) {
+			System.out.println(of);
+		}
+
+//		
+//		for (String zio : getResourceListing(this.getClass().getClassLoader(), "knowledge/thinklab.owl", "knowledge/")) {
+//			System.out.println(zio);
+//		}
+//		
+//		for (String zio : getResourceListing(this.getClass().getClassLoader(), "org/geotools/map/DefaultMapLayer.class", "META-INF/")) {
+//			System.out.println(zio);
+//		}
 	}
 		
 

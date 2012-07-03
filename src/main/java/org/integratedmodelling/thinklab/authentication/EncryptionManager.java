@@ -22,7 +22,6 @@ package org.integratedmodelling.thinklab.authentication;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.security.spec.KeySpec;
 
 import javax.crypto.Cipher;

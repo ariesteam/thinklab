@@ -85,7 +85,7 @@ import org.integratedmodelling.thinklab.plugin.ThinklabPlugin;
 import org.integratedmodelling.thinklab.project.ProjectManager;
 import org.integratedmodelling.thinklab.rest.RESTManager;
 import org.integratedmodelling.utils.ClassUtils;
-import org.integratedmodelling.utils.ClassUtils.Visitor;
+import org.integratedmodelling.utils.ClassUtils.AnnotationVisitor;
 import org.integratedmodelling.utils.template.MVELTemplate;
 import org.restlet.resource.ServerResource;
 import org.restlet.service.MetadataService;
@@ -233,38 +233,92 @@ public class Thinklab implements
 
 	private void visitAnnotations() throws ThinklabException {
 		
-		logger.info("SPERMA 1");
 		
-		/*
-		 * FIXME use asm library to find annotations without loading classes
-		 */
-		ClassUtils.visitPackage(this.getClass().getPackage().getName(), 
-				new Visitor() {
-					
+		ClassUtils.visitAnnotations(this.getClass().getPackage().getName(),
+				Literal.class,
+				new AnnotationVisitor() {
 					@Override
-					public void visit(Class<?> clls) throws ThinklabException {
-
-						for (Annotation a : clls.getAnnotations()) {
-							if (a instanceof Literal) {
-								registerLiteral(clls, (Literal)a);
-							} else if (a instanceof Concept) {
-								registerAnnotation(clls, (Concept)a);								
-							} else if (a instanceof ThinklabCommand) {
-								registerCommand(clls, (ThinklabCommand)a);
-							} else if (a instanceof RESTResourceHandler) {
-								registerRESTResource(clls, (RESTResourceHandler)a);	
-							} else if (a instanceof ListingProvider) {
-								registerListingProvider(clls, (ListingProvider)a);
-							} else if (a instanceof Function) {
-								registerFunction(clls, (Function)a);
-							} 
-						}
-						
+					public void visit(Annotation acls,
+							Class<?> target) throws ThinklabException {
+						registerLiteral(target, (Literal)acls);
 					}
-				}, 
-				this.getClassLoader());
+			});
+		
+		ClassUtils.visitAnnotations(this.getClass().getPackage().getName(),
+				Concept.class,
+				new AnnotationVisitor() {
+					@Override
+					public void visit(Annotation acls,
+							Class<?> target) throws ThinklabException {
+						registerAnnotation(target, (Concept)acls);
+					}
+			});
+		ClassUtils.visitAnnotations(this.getClass().getPackage().getName(),
+				ThinklabCommand.class,
+				new AnnotationVisitor() {
+					@Override
+					public void visit(Annotation acls,
+							Class<?> target) throws ThinklabException {
+						registerCommand(target, (ThinklabCommand)acls);
+					}
+			});
+		ClassUtils.visitAnnotations(this.getClass().getPackage().getName(),
+				RESTResourceHandler.class,
+				new AnnotationVisitor() {
+					@Override
+					public void visit(Annotation acls,
+							Class<?> target) throws ThinklabException {
+						registerRESTResource(target, (RESTResourceHandler)acls);
+					}
+			});
+		ClassUtils.visitAnnotations(this.getClass().getPackage().getName(),
+				ListingProvider.class,
+				new AnnotationVisitor() {
+					@Override
+					public void visit(Annotation acls,
+							Class<?> target) throws ThinklabException {
+						registerListingProvider(target, (ListingProvider)acls);
+					}
+			});
+		ClassUtils.visitAnnotations(this.getClass().getPackage().getName(),
+				Function.class,
+				new AnnotationVisitor() {
+					@Override
+					public void visit(Annotation acls,
+							Class<?> target) throws ThinklabException {
+						registerFunction(target, (Function)acls);
+					}
+			});
+		
+//		/*
+//		 * FIXME use asm library to find annotations without loading classes
+//		 */
+//		ClassUtils.visitPackage(this.getClass().getPackage().getName(), 
+//				new Visitor() {
+//					
+//					@Override
+//					public void visit(Class<?> clls) throws ThinklabException {
+//
+//						for (Annotation a : clls.getAnnotations()) {
+//							if (a instanceof Literal) {
+//								registerLiteral(clls, (Literal)a);
+//							} else if (a instanceof Concept) {
+//								registerAnnotation(clls, (Concept)a);								
+//							} else if (a instanceof ThinklabCommand) {
+//								registerCommand(clls, (ThinklabCommand)a);
+//							} else if (a instanceof RESTResourceHandler) {
+//								registerRESTResource(clls, (RESTResourceHandler)a);	
+//							} else if (a instanceof ListingProvider) {
+//								registerListingProvider(clls, (ListingProvider)a);
+//							} else if (a instanceof Function) {
+//								registerFunction(clls, (Function)a);
+//							} 
+//						}
+//						
+//					}
+//				}, 
+//				this.getClassLoader());
 
-		logger.info("SPERMA 2");
 
 	}
 	

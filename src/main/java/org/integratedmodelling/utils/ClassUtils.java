@@ -1,12 +1,9 @@
 package org.integratedmodelling.utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -20,6 +17,12 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.annotations.Concept;
+import org.integratedmodelling.thinklab.api.annotations.Literal;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 public class ClassUtils {
 	
@@ -32,6 +35,10 @@ public class ClassUtils {
 		 */
 		public abstract void visit(Class<?> clls) throws ThinklabException;
 		
+	}
+	
+	public static interface AnnotationVisitor {
+		public abstract void visit(Annotation acls, Class<?> target) throws ThinklabException;		
 	}
 	
 	 /**
@@ -64,7 +71,7 @@ public class ClassUtils {
 		   */
 	      URL dirURL = classLoader.getResource(anyResourcePath);
 	      
-	      if (dirURL != null && dirURL.getProtocol().equals("file")) {
+	      if (dirURL != null && dirURL.toString().endsWith("/")) {
 
 	    	  dirURL = classLoader.getResource(path);
 	    	  if (dirURL != null) {
@@ -88,11 +95,11 @@ public class ClassUtils {
 	    	  return addTo;
 	      }
 	      
-	      if (dirURL.getProtocol().equals("jar")) {
+	      if (dirURL.toString().endsWith("jar")) {
 	    	  
 	        /* A JAR path */
 	        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!")); //strip out only the JAR file
-	        JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
+	        JarFile jar = new JarFile(jarPath.toString(), false);
 	        Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
 	        Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory
 	        while(entries.hasMoreElements()) {
@@ -175,6 +182,19 @@ public class ClassUtils {
 		return ret;
 	}
 
+	
+	public static void visitAnnotations(String packageName, Class<? extends Annotation> acls, AnnotationVisitor annotationVisitor)
+				throws ThinklabException {
+		
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+			.setUrls(ClasspathHelper.forPackage(packageName))
+			.setScanners(new SubTypesScanner()));
+
+		for (Class<?> of : reflections.getTypesAnnotatedWith(acls)) {
+			annotationVisitor.visit(of.getAnnotation(acls), of);
+		}
+	}
+	
 	/**
 	 * Visit all classes in a package, using the file structure (must be unpacked). Loads the
 	 * classes in the process. Visits only member classes that are static and public.
@@ -182,6 +202,7 @@ public class ClassUtils {
 	 * @param packageName
 	 * @param visitor
 	 * @param cloader
+	 * @deprecated
 	 * @throws ThinklabException 
 	 */
 	public static void visitPackage(String packageName, Visitor visitor, ClassLoader cloader) throws ThinklabException {

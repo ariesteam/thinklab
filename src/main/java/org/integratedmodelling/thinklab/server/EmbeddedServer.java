@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Hashtable;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.integratedmodelling.interpreter.ModelGenerator;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -22,6 +24,10 @@ import org.integratedmodelling.thinklab.owlapi.Session;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.thinklab.session.InteractiveSession;
 import org.integratedmodelling.utils.ClassUtils;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -294,14 +300,22 @@ public class EmbeddedServer implements IServer {
 	@Override
 	public File getRequiredKnowledge() {
 		
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+	      	.setUrls(ClasspathHelper.forPackage("knowledge"))
+	      	.setScanners(new ResourcesScanner()));
+		
+	     for (String of : reflections.getResources(Pattern.compile(".*\\.owl"))) {
+	    	 System.out.println("zio");
+	     }
+	      
 		/*
 		 * Copy all the knowledge dir to folder in scratch dir
 		 */
 		File ret = Thinklab.get().getScratchArea("knowledge_cache");
 		
-		for (String zio : ClassUtils.getResourceListing(this.getClass().getClassLoader(), "knowledge/thinklab.owl", "knowledge/")) {
-			System.out.println(zio);
-		}
+//		for (String zio : ClassUtils.getResourceListing(this.getClass().getClassLoader(), "knowledge/thinklab.owl", "knowledge/")) {
+//			System.out.println(zio);
+//		}
 		
 		// TODO Auto-generated method stub
 		return ret;

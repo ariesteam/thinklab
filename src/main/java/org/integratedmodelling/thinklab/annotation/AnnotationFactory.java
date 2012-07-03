@@ -31,7 +31,6 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.interfaces.knowledge.datastructures.IntelligentMap;
-import org.integratedmodelling.thinklab.modelling.Classification;
 import org.integratedmodelling.utils.CamelCase;
 import org.integratedmodelling.utils.StringUtils;
 

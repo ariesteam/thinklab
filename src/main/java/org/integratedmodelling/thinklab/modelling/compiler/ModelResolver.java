@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.integratedmodelling.collections.Pair;
-import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
