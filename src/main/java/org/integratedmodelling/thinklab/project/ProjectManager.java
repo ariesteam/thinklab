@@ -169,7 +169,6 @@ public class ProjectManager implements IProjectManager {
 			_projects.add(tord.next());
 		}
 
-		
 		Thinklab.get().logger().info("project manager initialized successfully: " + _projectIndex.size() + " projects found");
 		for (File f : _projectDirectories)
 			Thinklab.get().logger().info("using " + f + 

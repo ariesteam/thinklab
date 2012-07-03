@@ -205,7 +205,9 @@ public class Thinklab implements
 		 */
 		_pluginManager.registerPluginPath(getLoadPath(SUBSPACE_PLUGINS));
 		_pluginManager.boot();
-
+		
+		logger.info("SPERMA 3");
+		
 		/*
 		 * and finally the projects
 		 */
@@ -213,6 +215,8 @@ public class Thinklab implements
 		_projectManager.setDeployDir(getWorkspace("deploy"));
 		_projectManager.boot();
 
+		logger.info("SPERMA 4");
+		
 	}
 
     public IConcept getRootConcept() {
@@ -228,6 +232,8 @@ public class Thinklab implements
 	}
 
 	private void visitAnnotations() throws ThinklabException {
+		
+		logger.info("SPERMA 1");
 		
 		/*
 		 * FIXME use asm library to find annotations without loading classes
@@ -257,6 +263,9 @@ public class Thinklab implements
 					}
 				}, 
 				this.getClassLoader());
+
+		logger.info("SPERMA 2");
+
 	}
 	
 	private void registerFunction(Class<?> cls, Function annotation) throws ThinklabException {

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: thinklab
 Bundle-SymbolicName: thinklab
-Bundle-Version: 1.0.0.alpha
+Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: thinklab.jar,
  lib/agg_V1622_classes.jar,
  lib/aopalliance.jar,
