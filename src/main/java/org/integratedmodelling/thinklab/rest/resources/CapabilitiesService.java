@@ -19,16 +19,16 @@
  */
 package org.integratedmodelling.thinklab.rest.resources;
 
-import java.util.Date;
 import java.util.HashMap;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.Version;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
+import org.integratedmodelling.thinklab.api.lang.IPrototype;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.IServer;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,11 +104,24 @@ public class CapabilitiesService extends DefaultRESTHandler {
 				 * add version, deploy time, error status etc
 				 */
 				map.put("id", p.getId());
-				map.put("id", p.getId());
-				map.put("id", p.getId());
 				
 				oret.append("projects", map);
 			}
+			
+			/*
+			 * add prototypes for all functions
+			 */
+			for (IPrototype p : ((ModelManager)(Thinklab.get().getModelManager())).getFunctionPrototypes()) {
+
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("id", p.getId());
+				map.put("mandatory", p.getMandatoryArgumentNames());
+				oret.append("functions", map);				
+			}
+			
+			/*
+			 * add prototypes for all REST commandss
+			 */
 			
 			/*
 			 * list all ontologies (local namespaces)

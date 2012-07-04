@@ -23,6 +23,7 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.rest.resources.AuthenticateService;
 import org.integratedmodelling.thinklab.rest.resources.CapabilitiesService;
 import org.integratedmodelling.thinklab.rest.resources.CheckWaitingService;
+import org.integratedmodelling.thinklab.rest.resources.ExportKnowledgeService;
 import org.integratedmodelling.thinklab.rest.resources.FileReceiveService;
 import org.integratedmodelling.thinklab.rest.resources.FileSendService;
 import org.integratedmodelling.thinklab.rest.resources.PingService;
@@ -94,7 +95,11 @@ public class RESTApplication extends Application {
 		 */
 		router.attach("/project", ProjectService.class);
 
-		
+		/*
+		 * remote project management
+		 */
+		router.attach("/export-knowledge", ExportKnowledgeService.class);
+
 		/*
 		 * configure an entry point per installed command
 		 */

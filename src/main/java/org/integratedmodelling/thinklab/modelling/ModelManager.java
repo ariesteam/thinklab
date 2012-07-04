@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.knowledge.query.IQuery;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.lang.IPrototype;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
@@ -87,6 +89,7 @@ import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.thinklab.query.Queries;
 import org.integratedmodelling.utils.CamelCase;
+import org.integratedmodelling.utils.Cast;
 import org.integratedmodelling.utils.MiscUtilities;
 
 import com.google.inject.Guice;
@@ -114,7 +117,11 @@ public class ModelManager implements IModelManager {
 	private Hashtable<String, IAgentModel> agentsById = new Hashtable<String, IAgentModel>();
 	private Hashtable<String, INamespace> namespacesById = new Hashtable<String, INamespace>();
 
-	class FunctionDescriptor {
+	/*
+	 * FIXME type handling just a stub, no optional vs. mandatory distinction, no
+	 * description.
+	 */
+	class FunctionDescriptor implements IPrototype {
 		public FunctionDescriptor(String id, String[] parameterNames,
 				Class<?> cls) {
 			this._id = id;
@@ -124,6 +131,31 @@ public class ModelManager implements IModelManager {
 		String   _id;
 		String[] _parameterNames;
 		Class<?> _class;
+
+		@Override
+		public String getId() {
+			return _id;
+		}
+		@Override
+		public IConcept getReturnType() {
+			return Thinklab.THING;
+		}
+		@Override
+		public List<String> getMandatoryArgumentNames() {
+			return Arrays.asList(_parameterNames);
+		}
+		@Override
+		public List<String> getOptionalArgumentNames() {
+			return new ArrayList<String>();
+		}
+		@Override
+		public IConcept getArgumentType(String argumentName) {
+			return Thinklab.THING;
+		}
+		@Override
+		public String getDescription() {
+			return "";
+		}
 	}
 
 	private HashMap<String, FunctionDescriptor> _functions =
@@ -1099,6 +1131,17 @@ public class ModelManager implements IModelManager {
 			return new GroovyExpressionManager();
 		
 		throw new ThinklabRuntimeException("unknown expression language: " + language);
+	}
+
+	public Collection<IPrototype> getFunctionPrototypes() {
+		
+		/*
+		 * one day I'll understand why it can't just cast the f'ing collection.
+		 */
+		ArrayList<IPrototype> ret = new ArrayList<IPrototype>();
+		for (FunctionDescriptor f :  _functions.values())
+			ret.add(f);
+		return ret;
 	}
 
 }

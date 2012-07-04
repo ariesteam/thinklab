@@ -223,6 +223,10 @@ public class Thinklab implements
         return _knowledgeRepository.getRootConcept();
     }
     
+    public KnowledgeManager getKnowledgeManager() {
+    	return _km;
+    }
+    
 	private void loadKnowledge() throws ThinklabException {
 
 		File kdir = _configuration.getScratchArea(SUBSPACE_KNOWLEDGE);
