@@ -225,10 +225,9 @@ public class Thinklab implements
     
 	private void loadKnowledge() throws ThinklabException {
 
-		File pth = _configuration.getWorkspace(SUBSPACE_KNOWLEDGE);
-		if (pth.exists()) {
-			_modelManager.loadSourceDirectory(pth, null);
-		}
+		File kdir = _configuration.getScratchArea(SUBSPACE_KNOWLEDGE);
+		_km.extractCoreOntologies(kdir);		
+		_modelManager.loadSourceDirectory(kdir, null);
 	}
 
 	private void visitAnnotations() throws ThinklabException {

@@ -153,7 +153,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 
 		/* add an autourimapper for the ontologies directory if any exists */
 		File ontologiesFolder = 
-				Thinklab.get().getLoadPath(IConfiguration.SUBSPACE_KNOWLEDGE);
+				Thinklab.get().getScratchArea(IConfiguration.SUBSPACE_KNOWLEDGE);
 			
 		if (ontologiesFolder.exists()) {
 			
@@ -173,6 +173,8 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 		 */
 		Thinklab.get().addPluginLifecycleListener(new UriPublisher());
 	}
+	
+	
 
 	/*
 	 * (non-Javadoc)

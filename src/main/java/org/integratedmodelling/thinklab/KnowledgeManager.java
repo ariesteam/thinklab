@@ -25,8 +25,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.lang.SemanticType;
@@ -42,6 +44,12 @@ import org.integratedmodelling.thinklab.api.lang.IReferenceList;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.kbox.neo4j.NeoKBox;
+import org.integratedmodelling.utils.CopyURL;
+import org.integratedmodelling.utils.MiscUtilities;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 /**
  * Main knowledge manager functionalities. Thinklab holds one of these and proxies all knowledge
@@ -296,6 +304,29 @@ public class KnowledgeManager implements IKnowledgeManager {
 	@Override
 	public IConcept getXSDMapping(String string) {
 		return _annotationFactory.getXSDMapping(string);
+	}
+	
+	public void extractCoreOntologies(File dir) throws ThinklabIOException {
+		
+		dir.mkdirs();
+		
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+      	    .setUrls(ClasspathHelper.forPackage("knowledge"))
+      	    .setScanners(new ResourcesScanner()));
+		
+		for (String of : reflections.getResources(Pattern.compile(".*\\.owl"))) {
+
+			/*
+			 * remove knowledge/ prefix for output
+			 */
+			String oof = of;
+			if (oof.startsWith("knowledge/"))
+				oof = oof.substring("knowledge/".length());
+			
+			File output = new File(dir + File.separator + oof);
+			new File(MiscUtilities.getFilePath(output.toString())).mkdirs();
+			CopyURL.copy(this.getClass().getClassLoader().getResource(of), output);
+		}
 	}
 
 }

@@ -28,6 +28,7 @@ import org.integratedmodelling.thinklab.Version;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.project.IProject;
+import org.integratedmodelling.thinklab.api.runtime.IServer;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,17 +61,11 @@ public class CapabilitiesService extends DefaultRESTHandler {
 			/*
 			 * same stuff as Ping
 			 */
-			oret.put("thinklab.version", Thinklab.get().getVersion());
-			oret.put("boot.time", Thinklab.get().getBootTime());
-			oret.put("thinklab.branch", Version.BRANCH);
-			oret.put("thinklab.status", Version.STATUS);
-			oret.put("thinklab.inst", System.getenv("THINKLAB_INST"));
-			oret.put("thinklab.home", System.getenv("THINKLAB_HOME"));
-			oret.put("current.time", new Date().getTime());
-			oret.put("memory.total", runtime.totalMemory());
-			oret.put("memory.max", runtime.maxMemory());
-			oret.put("memory.free", runtime.freeMemory());
-			oret.put("processors", runtime.availableProcessors());
+			oret.put(IServer.VERSION_STRING, Thinklab.get().getVersion());
+			oret.put(IServer.BOOT_TIME_MS, Thinklab.get().getBootTime());
+			oret.put(IServer.TOTAL_MEMORY_MB, runtime.totalMemory()/1048576);
+			oret.put(IServer.FREE_MEMORY_MB, runtime.freeMemory()/1048576);
+			oret.put(IServer.AVAILABLE_PROCESSORS, runtime.availableProcessors());
 			oret.put("admin",  isAdmin? "true" : "false");
 
 			/*

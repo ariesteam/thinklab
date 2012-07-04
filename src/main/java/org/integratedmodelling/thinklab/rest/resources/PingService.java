@@ -19,10 +19,8 @@
  */
 package org.integratedmodelling.thinklab.rest.resources;
 
-import java.util.Date;
-
 import org.integratedmodelling.thinklab.Thinklab;
-import org.integratedmodelling.thinklab.Version;
+import org.integratedmodelling.thinklab.api.runtime.IServer;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,23 +46,12 @@ public class PingService extends DefaultRESTHandler {
 		
 		try {
 
-			oret.put("thinklab.version", Thinklab.get().getVersion());
-			oret.put("thinklab.branch", Version.BRANCH);
-			oret.put("thinklab.status", Version.STATUS);
-			oret.put("thinklab.inst", System.getenv("THINKLAB_INST"));
-			oret.put("thinklab.home", System.getenv("THINKLAB_HOME"));
-			oret.put("current.time", new Date().getTime());
-			oret.put("memory.total", runtime.totalMemory());
-			oret.put("memory.max", runtime.maxMemory());
-			oret.put("memory.free", runtime.freeMemory());
-			oret.put("processors", runtime.availableProcessors());
+			oret.put(IServer.VERSION_STRING, Thinklab.get().getVersion());
+			oret.put(IServer.BOOT_TIME_MS, Thinklab.get().getBootTime());
+			oret.put(IServer.TOTAL_MEMORY_MB, runtime.totalMemory()/1048576);
+			oret.put(IServer.FREE_MEMORY_MB, runtime.freeMemory()/1048576);
+			oret.put(IServer.AVAILABLE_PROCESSORS, runtime.availableProcessors());
 			oret.put("status", DefaultRESTHandler.DONE);
-			
-			/*
-			 * TODO add anything interesting: plugins loaded, kboxes online, sessions
-			 * open/active/total, etc
-			 */
-			
 
 		} catch (JSONException e) {
 			// come on, it's a map.
