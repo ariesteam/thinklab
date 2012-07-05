@@ -96,10 +96,16 @@ public class RESTApplication extends Application {
 		router.attach("/project", ProjectService.class);
 
 		/*
-		 * remote project management
+		 * knowledge export for client initialization
 		 */
 		router.attach("/export-knowledge", ExportKnowledgeService.class);
 
+		/*
+		 * exec model statement
+		 */
+		router.attach("/execute-statement", ExportKnowledgeService.class);
+
+		
 		/*
 		 * configure an entry point per installed command
 		 */

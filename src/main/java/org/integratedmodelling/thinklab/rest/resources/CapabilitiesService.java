@@ -30,6 +30,8 @@ import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.IServer;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
+import org.integratedmodelling.thinklab.rest.RESTManager;
+import org.integratedmodelling.thinklab.rest.RESTManager.RestCommand;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
@@ -122,6 +124,10 @@ public class CapabilitiesService extends DefaultRESTHandler {
 			/*
 			 * add prototypes for all REST commandss
 			 */
+			int i = 0;
+			for (RestCommand rc : RESTManager.get().getCommandDescriptors()) {
+				oret.append("commands", rc.asArray());
+			}
 			
 			/*
 			 * list all ontologies (local namespaces)
@@ -131,18 +137,6 @@ public class CapabilitiesService extends DefaultRESTHandler {
 			for (IOntology o : Thinklab.get().getKnowledgeRepository().getOntologies()) {
 				oret.append("ontologies", new String[] {o.getConceptSpace(), o.getURI(), Long.toString(o.getLastModificationDate())});
 			}
-//			
-//			for (IProject p : ProjectFactory.get().getProjects()) {				
-//	
-//				HashMap<String, String> map = new HashMap<String, String>();
-//				
-//				/*
-//				 * TODO add stuff - version, deploy time
-//				 */
-//				map.put("id", p.getId());
-//	
-//				oret.append("projects", p.getId());
-//			}
 
 			for (IProject p : Thinklab.get().getProjects()) {
 				
@@ -154,9 +148,8 @@ public class CapabilitiesService extends DefaultRESTHandler {
 					 */
 					map.put("id", n.getId());
 					map.put("last-modified", Long.toString(n.getTimeStamp()));
-				
-
-					oret.append("namespaces", p.getId());
+					
+					oret.append("namespaces", map);
 				}
 			}
 

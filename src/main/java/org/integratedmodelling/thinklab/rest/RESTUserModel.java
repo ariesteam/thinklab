@@ -25,10 +25,21 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.interpreter.ModelGenerator;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.lang.IResolver;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.api.runtime.IUserModel;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
+import org.integratedmodelling.thinklab.modelling.lang.Context;
 import org.integratedmodelling.thinklab.owlapi.Session;
+import org.integratedmodelling.thinklab.proxy.ModellingModule;
+import org.json.JSONObject;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class RESTUserModel implements IUserModel {
 
@@ -70,7 +81,7 @@ public class RESTUserModel implements IUserModel {
 	}
 
 	@Override
-	public ISemanticObject getUser() throws ThinklabException {
+	public ISemanticObject<?> getUser() throws ThinklabException {
 
 		return null;
 		
@@ -87,4 +98,45 @@ public class RESTUserModel implements IUserModel {
 //		return ret;
 	}
 
+	/*
+	 * We have one resolver, model generator, and current context instance per user. Maybe it should be
+	 * in the session, but we have a 1-1 user-session relationship; this could eventually
+	 * become relevant if we end up having collaborative modeling sessions, where switching
+	 * from the user resolver to the session resolver would give users their own sandboxes.
+	 */
+	
+	ModelGenerator _mg = null;
+	IResolver _resolver = null;
+	IContext _currentContext = new Context();
+	
+	public ModelGenerator getModelGenerator() {
+
+		if (_mg == null) {
+			Injector injector = Guice.createInjector(new ModellingModule());
+			_mg = injector.getInstance(ModelGenerator.class);
+		}
+		return _mg;
+	}
+
+	public IResolver getResolver() {
+		if (_resolver == null) {
+			_resolver = 
+					((ModelManager)Thinklab.get().getModelManager()).
+						getInteractiveResolver(session.getInputStream(), session.getOutputStream());
+		}
+		return _resolver;
+	}
+	
+	public void mergeContext(IContext ctx) throws ThinklabException {
+		_currentContext.merge(ctx);
+	}
+	
+	public JSONObject contextToJSON(JSONObject receiver) {
+		
+		/*
+		 * TODO 
+		 */
+		
+		return receiver;
+	}
 }
