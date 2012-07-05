@@ -155,7 +155,7 @@ public class CapabilitiesService extends DefaultRESTHandler {
 
 			// getScheduler().
 			
-			oret.put("status", DefaultRESTHandler.DONE);
+			oret.put("status", IServer.OK);
 
 
 		} catch (JSONException e) {

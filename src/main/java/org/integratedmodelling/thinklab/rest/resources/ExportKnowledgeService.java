@@ -45,7 +45,7 @@ public class ExportKnowledgeService extends DefaultRESTHandler {
 				return wrap();
 			
 			Pair<File, String> fname = this.getFileName("knowledge.zip", getSession());
-			File tf = Thinklab.get().getScratchArea("_k");
+			File tf = Thinklab.get().getScratchArea("_k__tmp");
 			Thinklab.get().getKnowledgeManager().extractCoreOntologies(tf);
 			FolderZiper.zipFolder(tf.toString(), fname.getFirst().toString());
 			put("handle", fname.getSecond());

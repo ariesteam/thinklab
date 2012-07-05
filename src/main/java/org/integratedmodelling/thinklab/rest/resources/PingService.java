@@ -51,7 +51,7 @@ public class PingService extends DefaultRESTHandler {
 			oret.put(IServer.TOTAL_MEMORY_MB, runtime.totalMemory()/1048576);
 			oret.put(IServer.FREE_MEMORY_MB, runtime.freeMemory()/1048576);
 			oret.put(IServer.AVAILABLE_PROCESSORS, runtime.availableProcessors());
-			oret.put("status", DefaultRESTHandler.DONE);
+			oret.put("status", IServer.OK);
 
 		} catch (JSONException e) {
 			// come on, it's a map.

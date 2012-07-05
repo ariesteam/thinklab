@@ -131,12 +131,7 @@ public class RESTUserModel implements IUserModel {
 		_currentContext.merge(ctx);
 	}
 	
-	public JSONObject contextToJSON(JSONObject receiver) {
-		
-		/*
-		 * TODO 
-		 */
-		
-		return receiver;
+	public IContext getCurrentContext() {
+		return _currentContext;
 	}
 }

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <shortcuts>
     <skipIfNotSupported/>
+    <defaultCurrentUser/>
     <programGroup defaultName="Thinklab" location="applications"/>
+    <shortcut KdeUsername="root" applications="yes" desktop="no"
+        encoding="UTF-8" initialState="normal"
+        name="Start Thinklab server" programGroup="yes" startMenu="no"
+        startup="no" target="$INSTALL_PATH/run-server.bat" type="Application"/>
+    <shortcut KdeUsername="root" applications="yes" desktop="no"
+        encoding="UTF-8" initialState="normal"
+        name="Start Thinklab shell" programGroup="yes" startMenu="no"
+        startup="no" target="$INSTALL_PATH/run-shell.bat" type="Application"/>
 </shortcuts>

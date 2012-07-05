@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <shortcuts>
     <skipIfNotSupported/>
+    <defaultCurrentUser/>
     <programGroup defaultName="Thinklab" location="applications"/>
+    <shortcut applications="yes" desktop="no" initialState="noShow"
+        name="Start Thinklab server" programGroup="yes" startMenu="no"
+        startup="no" target="$INSTALL_PATH/run-server.bat"/>
+    <shortcut applications="yes" desktop="no" initialState="noShow"
+        name="Start Thinklab shell" programGroup="yes" startMenu="no"
+        startup="no" target="$INSTALL_PATH/run-shell.bat"/>
 </shortcuts>

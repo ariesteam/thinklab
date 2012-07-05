@@ -2,15 +2,14 @@
 <installation version="1.0">
     <info>
         <appname>Thinklab</appname>
-        <appversion>1.0rc1</appversion>
+        <appversion>1.0</appversion>
         <authors>
             <author email="" name="Ferdinando Villa"/>
             <author email="" name="Ioannis Athanasiadis"/>
-            <author email="" name="Gary W. Johnson"/>
         </authors>
         <url>http://www.integratedmodelling.org</url>
         <uninstaller name="Uninstaller.jar" write="yes"/>
-        <requiresjdk>no</requiresjdk>
+        <requiresjdk>yes</requiresjdk>
         <writeinstallationinformation>no</writeinstallationinformation>
         <pack200/>
         <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
@@ -23,10 +22,9 @@
         <langpack iso3="eng"/>
     </locale>
     <resources>
-        <res id="LicencePanel.licence" parse="yes" src="C:\Users\Ferd\git\thinklab\COPYING.txt"/>
+        <res id="LicencePanel.licence" parse="yes" src="C:\Users\Ferd\github\thinklab\COPYING.txt"/>
         <res id="shortcutSpec.xml" src="thinklab_shortcutSpec.xml"/>
         <res id="Unix_shortcutSpec.xml" src="thinklab_Unix_shortcutSpec.xml"/>
-        <res id="installer.langsel.img" src="C:\Users\Ferd\git\thinklab\thinklab.png"/>
     </resources>
     <panels>
         <panel classname="CheckedHelloPanel"/>
@@ -37,21 +35,13 @@
         <panel classname="ShortcutPanel"/>
         <panel classname="SimpleFinishPanel"/>
     </panels>
+    <variables>
+        <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+    </variables>
     <packs>
-        <pack name="Thinklab core" preselected="yes" required="yes">
-            <description/>
-            <file override="update" src="C:\Users\Ferd\git\thinklab\lib" targetdir="$INSTALL_PATH/"/>
-            <file override="update" src="C:\Users\Ferd\git\thinklab\bin" targetdir="$INSTALL_PATH/"/>
-            <file override="update"
-                src="C:\Users\Ferd\git\thinklab\plugins\org.integratedmodelling.thinklab.core" targetdir="$INSTALL_PATH/plugins"/>
-            <file override="update"
-                src="C:\Users\Ferd\git\thinklab\boot.properties" targetdir="$INSTALL_PATH/"/>
-            <file override="update"
-                src="C:\Users\Ferd\git\thinklab\COPYING.txt" targetdir="$INSTALL_PATH/"/>
-        </pack>
-        <pack name="Java 64bit" preselected="yes" required="no">
-            <description/>
-            <file override="update" src="C:\jvms\jvm6.0_64" targetdir="$INSTALL_PATH/"/>
+        <pack name="Thinklab" preselected="yes" required="yes">
+            <description>The Thinklab runtime system</description>
+            <file override="update" src="C:\Users\Ferd\github\thinklab" targetdir="$INSTALL_PATH/"/>
         </pack>
     </packs>
     <native name="ShellLink.dll" type="izpack"/>

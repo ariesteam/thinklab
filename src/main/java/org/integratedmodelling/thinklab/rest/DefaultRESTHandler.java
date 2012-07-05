@@ -36,6 +36,7 @@ import org.integratedmodelling.list.Escape;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.runtime.IServer;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.rest.interfaces.IRESTHandler;
 import org.integratedmodelling.utils.CopyURL;
@@ -76,16 +77,12 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	static public final int OBJECT = 9;
 	static public final int LIST = 10;
 	
-	// codes for getStatus()
-	static public final int DONE = 0;
-	static public final int FAIL = 1;
-	static public final int WAIT = 2;
 
 	ArrayList<String> _context = new ArrayList<String>();
 	HashMap<String, String> _query = new HashMap<String, String>();
 	String _MIME = null;
 	Date start = null;
-	int resultStatus = DONE;
+	int resultStatus = IServer.OK;
 	private ResultHolder rh = new ResultHolder();
 	
 	private ArrayList<Pair<String,String>> _downloads = 
@@ -155,7 +152,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		JSONObject ret = new JSONObject();
 		try {
 			ret.put("taskid", thread.getId()+"");
-			ret.put("status", WAIT);
+			ret.put("status", IServer.SCHEDULED);
 		} catch (JSONException e) {
 			// come on
 		}
@@ -277,6 +274,11 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 		return _query;
 	}
 	
+	public String getArgument(String id, String defvalue) throws ThinklabException {
+		String ret = getArgument(id);
+		return ret == null ? defvalue : ret;
+	}
+	
 	public String getArgument(String id) throws ThinklabException {
 		return getArguments().get(id);
 	}
@@ -297,7 +299,7 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	
 	protected void keepWaiting(String taskId) {
 		put("taskid", taskId);
-		resultStatus = WAIT;
+		resultStatus = IServer.SCHEDULED;
 	}
 	
 	/**
@@ -400,18 +402,18 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	}
 	
 	protected void fail() {
-		resultStatus = FAIL;
+		resultStatus = IServer.ERROR;
 		Thinklab.get().logger().error(this);
 	}
 
 	protected void fail(String message) {
-		resultStatus = FAIL;
+		resultStatus = IServer.ERROR;
 		error = message;
 		Thinklab.get().logger().error(message);
 	}
 
 	protected void fail(Throwable e) {
-		resultStatus = FAIL;
+		resultStatus = IServer.ERROR;
 		error = e.getMessage();
 		rh.put("exception-class", e.getClass().getCanonicalName());
 		rh.put("stack-trace", MiscUtilities.getStackTrace(e));

@@ -22,6 +22,7 @@ package org.integratedmodelling.thinklab.rest.resources;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
@@ -53,6 +54,8 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 		
 		
 		try {
+
+			boolean isLocal = Boolean.parseBoolean(getArgument("", "false")); 
 			String ns = USER_NAMESPACE_PREFIX + getSession().getID();
 			RESTUserModel um = (RESTUserModel)(getSession().getUserModel());
 			
@@ -67,9 +70,9 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 			 */
 			if (o instanceof IObservation) {
 				um.mergeContext(((IObservation) o).getContext());
+				oret = contextToJSON(um.getCurrentContext(), isLocal);
 			}
 			
-			oret = um.contextToJSON(oret);
 			
 		} catch (Exception e) {
 			fail(e);
@@ -79,6 +82,24 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 	    ret.setCharacterSet(CharacterSet.UTF_8);
 
 		return ret;
+	}
+
+	private JSONObject contextToJSON(IContext currentContext, boolean isLocal) {
+		// TODO Auto-generated method stub
+		
+		/*
+		 * create a filedataset from the context
+		 */
+		
+		/*
+		 * if not local, zip it and send it over
+		 */
+		
+		/*
+		 * otherwise just set the location of the archive in the result.
+		 */
+		
+		return null;
 	}
 	
 }

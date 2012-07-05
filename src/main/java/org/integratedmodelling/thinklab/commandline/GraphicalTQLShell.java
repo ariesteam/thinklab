@@ -52,7 +52,6 @@ import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.command.CommandParser;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
-import org.integratedmodelling.thinklab.modelling.visualization.ContextVisualizer;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.thinklab.session.InteractiveSession;
 
@@ -74,8 +73,6 @@ public class GraphicalTQLShell {
 	
 	JConsole console = null;
 	
-	private ContextVisualizer _visualizer;
-
 	File historyFile = null;
 	
 	Font inputFont = new Font("Courier", Font.BOLD, 12);

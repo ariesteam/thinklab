@@ -170,8 +170,12 @@ public class Measurement extends Observer<Measurement> implements IMeasuringObse
 
 	@Override
 	public void setDiscretization(IClassification classification) {
-		// TODO Auto-generated method stub
-		
+		_discretization = classification;
+	}
+
+	@Override
+	public IClassification getDiscretization() {
+		return _discretization;
 	}
 	
 	

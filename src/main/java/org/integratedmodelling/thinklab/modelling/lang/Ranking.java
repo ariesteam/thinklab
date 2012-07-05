@@ -142,7 +142,6 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 
 	}
 
-	
 	class ComputingRankingAccessor extends RankingAccessor implements IComputingAccessor {
 
 		@Override
@@ -170,10 +169,14 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 		
 	}
 
-
 	@Override
 	public void setDiscretization(IClassification classification) {
 		_discretization = classification;
+	}
+
+	@Override
+	public IClassification getDiscretization() {
+		return _discretization;
 	}
 
 }
