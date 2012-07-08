@@ -38,7 +38,7 @@ import org.restlet.resource.Get;
  * 
  */
 @RESTResourceHandler(id="log", description="retrieve logged information",  arguments="lines")
-public class PloadService extends DefaultRESTHandler {
+public class LogService extends DefaultRESTHandler {
 
 	@Get
 	public Representation service() throws ThinklabException {

@@ -20,11 +20,15 @@
 package org.integratedmodelling.thinklab.rest.resources;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 
+import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
+import org.integratedmodelling.thinklab.modelling.datasets.FileDataset;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.thinklab.rest.RESTUserModel;
 import org.json.JSONObject;
@@ -84,20 +88,26 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 		return ret;
 	}
 
-	private JSONObject contextToJSON(IContext currentContext, boolean isLocal) {
+	private JSONObject contextToJSON(IContext context, boolean isLocal) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
 		/*
 		 * create a filedataset from the context
 		 */
+		FileDataset fds = new FileDataset();
+		fds.setContext(context);
 		
 		/*
 		 * if not local, zip it and send it over
 		 */
+		File fdir = Thinklab.get().getTempArea(getSession().getID());
+		if (!isLocal) {
+			fdir = new File(fdir + File.separator + "ctx.zip");
+		} 
 		
-		/*
-		 * otherwise just set the location of the archive in the result.
-		 */
+		fds.persist(fdir.toString());
+		
+		
 		
 		return null;
 	}

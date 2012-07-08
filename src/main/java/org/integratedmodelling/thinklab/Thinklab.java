@@ -236,7 +236,6 @@ public class Thinklab implements
 
 	private void visitAnnotations() throws ThinklabException {
 		
-		
 		ClassUtils.visitAnnotations(this.getClass().getPackage().getName(),
 				Literal.class,
 				new AnnotationVisitor() {

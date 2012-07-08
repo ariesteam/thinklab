@@ -259,4 +259,8 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		return _expressionLanguage;
 	}
 
+	public void releaseKnowledge() {
+		Thinklab.get().getKnowledgeRepository().releaseOntology(_ontology.getConceptSpace());
+	}
+
 }

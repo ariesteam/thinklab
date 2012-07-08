@@ -893,7 +893,12 @@ public class ModelManager implements IModelManager {
 	@Override
 	public void releaseNamespace(String namespace) {
 		
+		Namespace ns = (Namespace) getNamespace(namespace);
+		
+		ns.releaseKnowledge();
+		
 		namespacesById.remove(namespace);
+		
 		ArrayList<String> toRemove = new ArrayList<String>();
 		for (String s : agentsById.keySet()) {
 			if (s.startsWith(namespace + "/")) {
