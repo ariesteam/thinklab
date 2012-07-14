@@ -81,7 +81,7 @@ public class ThinklabProject implements IProject {
 				for (IProject p : getPrerequisites()) {
 					p.load();
 				}
-				for (INamespace ns : Thinklab.get().loadSourceDirectory(getSourceDirectory(), this)) {
+				for (INamespace ns : Thinklab.get().loadSourceDirectory(new File(getLoadPath() + File.separator + getSourceDirectory()), this)) {
 					_namespaces.add(ns);
 				}
 				_loaded = true;
@@ -116,7 +116,7 @@ public class ThinklabProject implements IProject {
 	@Override
 	public File findResource(String resource) {
 
-		File ff = new File(getSourceDirectory() + File.separator + resource);
+		File ff = new File(getLoadPath() + File.separator + getSourceDirectory() + File.separator + resource);
 		if (ff.exists()) {
 			return ff;
 		}
@@ -169,8 +169,8 @@ public class ThinklabProject implements IProject {
 	}
 
 	@Override
-	public File getSourceDirectory() {
-		return getLoadPath(_properties.getProperty(SOURCE_FOLDER_PROPERTY, "src"));
+	public String getSourceDirectory() {
+		return _properties.getProperty(SOURCE_FOLDER_PROPERTY, "src");
 	}
 
 	@Override
@@ -199,7 +199,7 @@ public class ThinklabProject implements IProject {
 	public File findResourceForNamespace(String namespace, String extension) {
 		
 		String fp = namespace.replace('.', File.separatorChar);
-		File ff = new File(getSourceDirectory() + File.separator + fp + "." + extension);
+		File ff = new File(getLoadPath() + File.separator + getSourceDirectory() + File.separator + fp + "." + extension);
 		if (ff.exists()) {
 			return ff;
 		}

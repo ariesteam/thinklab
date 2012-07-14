@@ -1049,7 +1049,7 @@ public class ModelManager implements IModelManager {
 		ArrayList<INamespace> ret = new ArrayList<INamespace>();
 		HashSet<File> read = new HashSet<File>();
 
-		loadInternal(project.getSourceDirectory(), read, ret, "", project);
+		loadInternal(new File(project.getLoadPath() + File.separator + project.getSourceDirectory()), read, ret, "", project);
 
 		return ret;
 	}
