@@ -244,7 +244,7 @@ public class ProjectManager implements IProjectManager {
 	 * boot() MUST be called after calling this. 
 	 */
 	@Override
-	public void addProjectDirectory(File projectDirectory) {
+	public void registerProjectDirectory(File projectDirectory) {
 		_projectDirectories.add(projectDirectory);
 	}
 	
@@ -266,6 +266,31 @@ public class ProjectManager implements IProjectManager {
 	void notifyProjectUnloaded(IProject p) {
 		ProjectDescriptor pd = _projectIndex.get(p.getId());
 		pd.loaded = false;
+	}
+
+	@Override
+	public void loadAllProjects() throws ThinklabException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String[] registerProject(File... projectDir)
+			throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void unregisterProject(String projectId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void refreshProject(String projectId) throws ThinklabException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

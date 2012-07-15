@@ -211,7 +211,7 @@ public class Thinklab implements
 		/*
 		 * and finally the projects
 		 */
-		_projectManager.addProjectDirectory(getWorkspace(SUBSPACE_PROJECTS));
+		_projectManager.registerProjectDirectory(getWorkspace(SUBSPACE_PROJECTS));
 		_projectManager.setDeployDir(getWorkspace("deploy"));
 		_projectManager.boot();
 
@@ -830,8 +830,8 @@ public class Thinklab implements
 	}
 
 	@Override
-	public void addProjectDirectory(File projectDirectory) {
-		_projectManager.addProjectDirectory(projectDirectory);		
+	public void registerProjectDirectory(File projectDirectory) {
+		_projectManager.registerProjectDirectory(projectDirectory);		
 	}
 
 	public ISemanticObject<?> getSemanticObject(IReferenceList list, Object object) {
@@ -964,6 +964,27 @@ public class Thinklab implements
 	public IObservation observe(Object object, IContext context)
 			throws ThinklabException {
 		return _modelManager.observe(object, context);
+	}
+
+	@Override
+	public void loadAllProjects() throws ThinklabException {
+		_projectManager.loadAllProjects();
+	}
+
+	@Override
+	public String[] registerProject(File... projectDir)
+			throws ThinklabException {
+		return _projectManager.registerProject(projectDir);
+	}
+
+	@Override
+	public void unregisterProject(String projectId) {
+		_projectManager.unregisterProject(projectId);
+	}
+
+	@Override
+	public void refreshProject(String projectId) throws ThinklabException {
+		_projectManager.refreshProject(projectId);
 	}
 
 }

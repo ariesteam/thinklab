@@ -248,4 +248,16 @@ public class ThinklabProject implements IProject {
 		}
 	}
 
+	@Override
+	public boolean isLoaded() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public long getLastModificationTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
