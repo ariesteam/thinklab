@@ -721,10 +721,12 @@ public class ModelManager implements IModelManager {
 				}
 			
 				Object obs = null;
-				if (observable instanceof IModel)
+				if (observable instanceof IModel) {
 					obs = observable;
-				else if (observable instanceof IList) {
+				} else if (observable instanceof IList) {
 					obs = Thinklab.get().entify((IList)observable);
+				} else if (observable instanceof IContext) {
+					currentContext = (IContext)observable;
 				} else if (observable instanceof IConceptDefinition) {
 					obs = Thinklab.get().entify(PolyList.list(Thinklab.c(((IConceptDefinition)observable).getName())));
 				} else if (observable instanceof IFunctionDefinition) {
