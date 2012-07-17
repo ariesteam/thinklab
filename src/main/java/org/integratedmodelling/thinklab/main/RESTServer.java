@@ -55,7 +55,6 @@ public class RESTServer  {
 			Shell.runScript(s, session);
 		}
 		
-		
 		RESTManager.get().start(port);
 			
 		while (true) {
