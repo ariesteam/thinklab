@@ -62,14 +62,14 @@ public class PluginManager implements IPluginManager {
 	public void shutdown() {
 		
 		for (IThinklabPlugin plugin : _plugins) {
-			try {
+//			try {
 				for (IPluginLifecycleListener listener : _listeners) {
 					listener.onPluginUnloaded(plugin);
 				}
-				plugin.unload();
-			} catch (ThinklabException e) {
-				throw new ThinklabRuntimeException(e);
-			}
+//				plugin.unload();
+//			} catch (ThinklabException e) {
+//				throw new ThinklabRuntimeException(e);
+//			}
 		}
 		
 		_manager.shutdown();

@@ -71,15 +71,14 @@ public class ThinklabProject implements IProject {
 		}
 		return ret;
 	}
-
-	@Override
+	
 	public void load() throws ThinklabException {
 
 		if (!_loaded) {
 
 			try {	
 				for (IProject p : getPrerequisites()) {
-					p.load();
+					((ThinklabProject)p).load();
 				}
 				for (INamespace ns : Thinklab.get().loadSourceDirectory(new File(getLoadPath() + File.separator + getSourceDirectory()), this)) {
 					_namespaces.add(ns);
@@ -95,7 +94,6 @@ public class ThinklabProject implements IProject {
 		}
 	}
 
-	@Override
 	public void unload() throws ThinklabException {
 
 		if (_loaded) {
@@ -179,9 +177,7 @@ public class ThinklabProject implements IProject {
 				NS.DEFAULT_THINKLAB_ONTOLOGY_PREFIX);
 	}
 
-	@Override
-	public void addDependency(String plugin, boolean reload)
-			throws ThinklabException {
+	public void addDependency(String plugin, boolean reload) throws ThinklabException {
 
 		if (!_requisites.contains(plugin)) {
 
@@ -246,12 +242,6 @@ public class ThinklabProject implements IProject {
 		} catch (IOException e) {
 			throw new ThinklabRuntimeException(e);
 		}
-	}
-
-	@Override
-	public boolean isLoaded() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

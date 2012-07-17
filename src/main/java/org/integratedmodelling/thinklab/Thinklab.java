@@ -59,7 +59,7 @@ import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.kbox.IKbox;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
-import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
+import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
@@ -663,7 +663,7 @@ public class Thinklab implements
 		if (ns.getStorageKbox() != null) 
 			rbox = ns.getStorageKbox();
 		else if (ns.getProject() != null)
-			rbox = ns.getProject().getProperties().getProperty(IProject.STORAGE_KBOX_PROPERTY, rbox);
+			rbox = ns.getProject().getProperties().getProperty(IProject.STORAGE_NAMESPACES_PROPERTY, rbox);
 		return requireKbox(rbox);
 	}
 
@@ -680,7 +680,7 @@ public class Thinklab implements
 		if (ns.getLookupKbox() != null) 
 			rbox = ns.getLookupKbox();
 		else if (ns.getProject() != null)
-			rbox = ns.getProject().getProperties().getProperty(IProject.LOOKUP_KBOX_PROPERTY, rbox);
+			rbox = ns.getProject().getProperties().getProperty(IProject.LOOKUP_NAMESPACES_PROPERTY, rbox);
 		return requireKbox(rbox);
 	}
 
@@ -697,7 +697,7 @@ public class Thinklab implements
 		if (ns.getTrainingKbox() != null) 
 			rbox = ns.getTrainingKbox();
 		else if (ns.getProject() != null)
-			rbox = ns.getProject().getProperties().getProperty(IProject.TRAINING_KBOX_PROPERTY, rbox);
+			rbox = ns.getProject().getProperties().getProperty(IProject.TRAINING_NAMESPACES_PROPERTY, rbox);
 		return requireKbox(rbox);
 	}
 	
@@ -878,12 +878,7 @@ public class Thinklab implements
 	public IModel getModel(String s) {
 		return _modelManager.getModel(s);
 	}
-
-	@Override
-	public IAgentModel getAgentModel(String s) {
-		return _modelManager.getAgentModel(s);
-	}
-
+	
 	@Override
 	public IScenario getScenario(String s) {
 		return _modelManager.getScenario(s);
@@ -972,8 +967,7 @@ public class Thinklab implements
 	}
 
 	@Override
-	public String[] registerProject(File... projectDir)
-			throws ThinklabException {
+	public String[] registerProject(File... projectDir) {
 		return _projectManager.registerProject(projectDir);
 	}
 
@@ -985,6 +979,16 @@ public class Thinklab implements
 	@Override
 	public void refreshProject(String projectId) throws ThinklabException {
 		_projectManager.refreshProject(projectId);
+	}
+
+	@Override
+	public IResolver getResolver() {
+		return _projectManager.getResolver();
+	}
+
+	@Override
+	public IProject loadProject(String projectId) throws ThinklabException {
+		return _projectManager.loadProject(projectId);
 	}
 
 }

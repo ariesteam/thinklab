@@ -24,8 +24,8 @@ import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.interfaces.annotations.RESTResourceHandler;
+import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
-import org.integratedmodelling.utils.MiscUtilities;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
@@ -54,7 +54,7 @@ public class ProjectLoadService extends DefaultRESTHandler {
 			String project = getArgument("project");
 			IProject prj = Thinklab.get().getProject(project);
 			if (prj != null) {
-				prj.load();
+				((ThinklabProject)prj).load();
 			} else {
 				throw new ThinklabResourceNotFoundException("project " + project + " not found");
 			}

@@ -17,6 +17,7 @@ import org.integratedmodelling.exceptions.ThinklabProjectException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.factories.IProjectManager;
+import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -26,6 +27,12 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
+/**
+ * TODO clean up and refactor following example in client library
+ * 
+ * @author Ferd
+ *
+ */
 public class ProjectManager implements IProjectManager {
 
 	public class ProjectDescriptor {
@@ -204,7 +211,7 @@ public class ProjectManager implements IProjectManager {
 		if (pd != null) {
 
 			Thinklab.get().logger().info("undeploying " + pd.id + " from " + pd.file);
-			pd.project.unload();
+			((ThinklabProject)(pd.project)).unload();
 			
 			try {
 				FileUtils.deleteDirectory(pd.file);
@@ -228,7 +235,7 @@ public class ProjectManager implements IProjectManager {
 
 		ProjectDescriptor pd = _projectIndex.get(projectId);	
 
-		pd.project.unload();
+		((ThinklabProject)(pd.project)).unload();
 		Thinklab.get().logger().info("undeploying " + pd.id + " from " + pd.file);
 			
 		try {
@@ -275,8 +282,7 @@ public class ProjectManager implements IProjectManager {
 	}
 
 	@Override
-	public String[] registerProject(File... projectDir)
-			throws ThinklabException {
+	public String[] registerProject(File... projectDir) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -291,6 +297,18 @@ public class ProjectManager implements IProjectManager {
 	public void refreshProject(String projectId) throws ThinklabException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public IResolver getResolver() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IProject loadProject(String projectId) throws ThinklabException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

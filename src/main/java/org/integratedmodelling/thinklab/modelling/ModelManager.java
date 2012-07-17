@@ -39,7 +39,6 @@ import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.lang.IPrototype;
 import org.integratedmodelling.thinklab.api.lang.IResolver;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
-import org.integratedmodelling.thinklab.api.modelling.IAgentModel;
 import org.integratedmodelling.thinklab.api.modelling.ICategorizingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IClassifyingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
@@ -66,7 +65,6 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer;
 import org.integratedmodelling.thinklab.modelling.compiler.ModelResolver;
 import org.integratedmodelling.thinklab.modelling.interfaces.IExpressionContextManager;
-import org.integratedmodelling.thinklab.modelling.lang.AgentModel;
 import org.integratedmodelling.thinklab.modelling.lang.Categorization;
 import org.integratedmodelling.thinklab.modelling.lang.Classification;
 import org.integratedmodelling.thinklab.modelling.lang.ConceptObject;
@@ -89,7 +87,6 @@ import org.integratedmodelling.thinklab.project.ThinklabProject;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.thinklab.query.Queries;
 import org.integratedmodelling.utils.CamelCase;
-import org.integratedmodelling.utils.Cast;
 import org.integratedmodelling.utils.MiscUtilities;
 
 import com.google.inject.Guice;
@@ -114,7 +111,6 @@ public class ModelManager implements IModelManager {
 	private Hashtable<String, IModel> modelsById = new Hashtable<String, IModel>();
 	private Hashtable<String, IScenario> scenariosById = new Hashtable<String, IScenario>();
 	private Hashtable<String, IContext> contextsById = new Hashtable<String, IContext>();
-	private Hashtable<String, IAgentModel> agentsById = new Hashtable<String, IAgentModel>();
 	private Hashtable<String, INamespace> namespacesById = new Hashtable<String, INamespace>();
 
 	/*
@@ -649,8 +645,6 @@ public class ModelManager implements IModelManager {
 				return new Storyline();
 			} else if (cls.equals(IScenario.class)) {
 				return new Scenario();
-			} else if (cls.equals(IAgentModel.class)) {
-				return new AgentModel();
 			} else if (cls.equals(IConcept.class)) {
 				return new ConceptObject();
 			} else if (cls.equals(IProperty.class)) {
@@ -796,7 +790,7 @@ public class ModelManager implements IModelManager {
 		}
 	}
 
-	private Resolver getResolver(IProject project, Object resource) {
+	public Resolver getResolver(IProject project, Object resource) {
 		Resolver ret = new Resolver(resource);
 		ret.setProject(project);
 		return ret;
@@ -859,17 +853,6 @@ public class ModelManager implements IModelManager {
 		return ret;
 	}
 
-	public IAgentModel retrieveAgentModel(String s) {
-		return getAgentModel(s);
-	}
-
-	public IAgentModel requireAgentModel(String s) throws ThinklabException {
-		IAgentModel ret = getAgentModel(s);
-		if (ret == null)
-			throw new ThinklabResourceNotFoundException("agent model " + s + " not found");
-		return ret;
-	}
-
 	public IScenario retrieveScenario(String s) {
 		return getScenario(s);
 	}
@@ -902,15 +885,6 @@ public class ModelManager implements IModelManager {
 		namespacesById.remove(namespace);
 		
 		ArrayList<String> toRemove = new ArrayList<String>();
-		for (String s : agentsById.keySet()) {
-			if (s.startsWith(namespace + "/")) {
-				toRemove.add(s);
-			}
-		}
-		for (String s : toRemove) {
-			agentsById.remove(s);
-		}	
-		toRemove.clear();
 		for (String s : modelsById.keySet()) {
 			if (s.startsWith(namespace + "/")) {
 				toRemove.add(s);
@@ -1017,11 +991,6 @@ public class ModelManager implements IModelManager {
 	@Override
 	public IModel getModel(String s) {
 		return modelsById.get(s);
-	}
-
-	@Override
-	public IAgentModel getAgentModel(String s) {
-		return agentsById.get(s);
 	}
 
 	@Override
