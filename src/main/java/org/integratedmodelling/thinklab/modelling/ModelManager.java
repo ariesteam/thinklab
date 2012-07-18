@@ -386,24 +386,24 @@ public class ModelManager implements IModelManager {
 				 * if we get here we haven't found it, look it up in all DIRECTLY imported projects (non-recursively)
 				 */
 				if (project != null) {
-					for (IThinklabPlugin pr : project.getPrerequisites()) {
+					try {
+						for (IThinklabPlugin pr : project.getPrerequisites()) {
 						
-						Project prj = (Project)pr;
+							Project prj = (Project)pr;
 						
-						/*
-						 * lookup file here, if found return open filestream
-						 */
-						f = prj.findResourceForNamespace(namespace, "tql");
-						if (f != null) {
-							try {
+							/*
+							 * lookup file here, if found return open filestream
+							 */
+							f = prj.findResourceForNamespace(namespace, "tql");
+							if (f != null) {
 								if (resourceId == null) {
 									resourceId = f.toString();
 								}
 								return new FileInputStream(f);
-							} catch (FileNotFoundException e) {
-								onException( new ThinklabIOException(e), 0);
 							}
 						}
+					} catch (Exception e) {
+						onException(new ThinklabException(e), 0);
 					}
 				}
 			}

@@ -34,6 +34,7 @@ import org.restlet.resource.Get;
 /**
  * Manages thinklab projects at the server side (deploy, undeploy, update) using 
  * archive files sent by the client.
+ * 	
  * 
  * @author ferdinando.villa
  *
@@ -73,6 +74,36 @@ public class ProjectService extends DefaultRESTHandler {
 				Pair<File, String> fname = this.getFileName("project.zip", getSession());
 				FolderZiper.zipFolder(((Project)tp).getLoadPath().toString(), fname.getFirst().toString());
 				put("handle", fname.getSecond());
+		
+			} else if (cmd.equals("register")) {
+				
+				/*
+				 * notify that a project is waiting in a particular directory. Use instead of deploy in embedded
+				 * servers where the server filesystem is available to the client, or for special purposes.
+				 * Admits several directories separated by commas.
+				 */
+				
+				for (String s : getArgument("directory").split(",")) {
+					
+					File file = new File(s);
+					if (!file.exists() || !file.isDirectory())
+						throw new ThinklabResourceNotFoundException("directory " + file + " not found on filesystem");
+				
+					Thinklab.get().logger().info("registering project from " + file);
+					
+					Thinklab.get().registerProject(file);
+				}
+				
+			} else if (cmd.equals("load")) {
+				
+				IProject project = Thinklab.get().getProject(pluginId);
+				if (project == null) {
+					throw new ThinklabResourceNotFoundException("project " + pluginId + " not registered");
+				}
+
+				Thinklab.get().logger().info("loading project " + pluginId);
+				
+				((Project)project).load(Thinklab.get().getResolver());
 			}
 			
 		} catch (Exception e) {

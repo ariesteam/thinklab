@@ -36,7 +36,7 @@ public class Project extends HashableObject implements IProject {
 	private String[] _dependencies;
 	private boolean _loaded = false;
 	
-	IProjectManager _manager;
+	ProjectManager _manager;
 	
 	/*
 	 * these 2 are in sync
@@ -53,7 +53,7 @@ public class Project extends HashableObject implements IProject {
 	public Project(File path, IProjectManager manager) {
 		
 		_path = path;
-		_manager = manager;
+		_manager = (ProjectManager) manager;
 		_id = org.integratedmodelling.utils.MiscUtilities.getFileName(path.toString());
 		_properties = getProperties();
 		String pp = getProperties().getProperty(IProject.PREREQUISITES_PROPERTY, "");
@@ -102,14 +102,9 @@ public class Project extends HashableObject implements IProject {
 
 	private void loadDependencies(IResolver resolver) throws ThinklabException {
 
-		for (String dep : _dependencies) {
-			IProject p = _manager.getProject(dep);
-			if (p == null)
-				throw new ThinklabResourceNotFoundException(_id + ": cannot load prerequisite project " + dep);
-
-			/*
-			 * load with newly initialized resolver
-			 */
+		for (IProject p : _manager.computeDependencies(this)) {
+			if (p.equals(this))
+				continue;
 			IResolver r = resolver.getImportResolver();
 			((ModelManager.Resolver)r).setProject(p);
 			((Project)p).load(r);
