@@ -25,7 +25,7 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.project.IProject;
-import org.integratedmodelling.thinklab.project.ThinklabProject;
+import org.integratedmodelling.thinklab.project.Project;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.utils.FolderZiper;
 import org.restlet.representation.Representation;
@@ -55,7 +55,7 @@ public class ProjectService extends DefaultRESTHandler {
 				File archive = this.getFileForHandle(getArgument("handle"), true);
 				IProject p = Thinklab.get().deployProject(pluginId, archive.toURI().toURL().toString());
 				if (p != null)
-					((ThinklabProject)p).load();
+					((Project)p).load(Thinklab.get().getResolver());
 				
 			} else if (cmd.equals("undeploy")) {
 				
@@ -71,7 +71,7 @@ public class ProjectService extends DefaultRESTHandler {
 					throw new ThinklabResourceNotFoundException("project " + pluginId + " does not exist");
 
 				Pair<File, String> fname = this.getFileName("project.zip", getSession());
-				FolderZiper.zipFolder(((ThinklabProject)tp).getLoadPath().toString(), fname.getFirst().toString());
+				FolderZiper.zipFolder(((Project)tp).getLoadPath().toString(), fname.getFirst().toString());
 				put("handle", fname.getSecond());
 			}
 			

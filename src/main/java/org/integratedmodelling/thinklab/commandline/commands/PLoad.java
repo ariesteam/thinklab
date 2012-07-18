@@ -28,7 +28,7 @@ import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.command.Command;
 import org.integratedmodelling.thinklab.interfaces.annotations.ThinklabCommand;
 import org.integratedmodelling.thinklab.interfaces.commands.ICommandHandler;
-import org.integratedmodelling.thinklab.project.ThinklabProject;
+import org.integratedmodelling.thinklab.project.Project;
 
 /**
  * Start and stop the REST service.
@@ -51,7 +51,7 @@ public class PLoad implements ICommandHandler {
 		String project = command.getArgumentAsString("project");
 		IProject prj = Thinklab.get().getProject(project);
 		if (prj != null) {
-			((ThinklabProject)prj).load();
+			((Project)prj).load(Thinklab.get().getResolver());
 		} else {
 			throw new ThinklabResourceNotFoundException("project " + project + " not found");
 		}

@@ -205,18 +205,12 @@ public class Thinklab implements
 		 */
 		_pluginManager.registerPluginPath(getLoadPath(SUBSPACE_PLUGINS));
 		_pluginManager.boot();
-		
-		logger.info("SPERMA 3");
-		
+
 		/*
 		 * and finally the projects
 		 */
 		_projectManager.registerProjectDirectory(getWorkspace(SUBSPACE_PROJECTS));
-		_projectManager.setDeployDir(getWorkspace("deploy"));
-		_projectManager.boot();
 
-		logger.info("SPERMA 4");
-		
 	}
 
     public IConcept getRootConcept() {

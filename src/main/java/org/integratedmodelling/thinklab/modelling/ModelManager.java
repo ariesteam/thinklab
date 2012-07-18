@@ -83,7 +83,7 @@ import org.integratedmodelling.thinklab.modelling.lang.Storyline;
 import org.integratedmodelling.thinklab.modelling.lang.UnitDefinition;
 import org.integratedmodelling.thinklab.modelling.lang.Value;
 import org.integratedmodelling.thinklab.modelling.lang.expressions.GroovyExpressionManager;
-import org.integratedmodelling.thinklab.project.ThinklabProject;
+import org.integratedmodelling.thinklab.project.Project;
 import org.integratedmodelling.thinklab.proxy.ModellingModule;
 import org.integratedmodelling.thinklab.query.Queries;
 import org.integratedmodelling.utils.CamelCase;
@@ -162,7 +162,7 @@ public class ModelManager implements IModelManager {
 	 * @author Ferd
 	 *
 	 */
-	class Resolver implements IResolver {
+	public class Resolver implements IResolver {
 
 		ArrayList<Pair<String,Integer>> errors = new ArrayList<Pair<String,Integer>>();
 		ArrayList<Pair<String,Integer>> warnings = new ArrayList<Pair<String,Integer>>();
@@ -312,7 +312,7 @@ public class ModelManager implements IModelManager {
 					if (project != null) {
 						for (IThinklabPlugin pr : project.getPrerequisites()) {
 							
-							ThinklabProject prj = (ThinklabProject)pr;
+							Project prj = (Project)pr;
 							
 							/*
 							 * lookup file here, if found return open filestream
@@ -388,7 +388,7 @@ public class ModelManager implements IModelManager {
 				if (project != null) {
 					for (IThinklabPlugin pr : project.getPrerequisites()) {
 						
-						ThinklabProject prj = (ThinklabProject)pr;
+						Project prj = (Project)pr;
 						
 						/*
 						 * lookup file here, if found return open filestream
@@ -945,6 +945,10 @@ public class ModelManager implements IModelManager {
 
 	@Override
 	public synchronized INamespace loadFile(String resourceId, String namespaceId, IProject project) throws ThinklabException {
+		return loadFile(resourceId, namespaceId, project, getResolver(project, resourceId));
+	}
+
+	public synchronized INamespace loadFile(String resourceId, String namespaceId, IProject project, IResolver resolver) throws ThinklabException {
 
 		INamespace ret = null;
 
@@ -952,7 +956,7 @@ public class ModelManager implements IModelManager {
 
 			Injector injector = Guice.createInjector(new ModellingModule());
 			ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
-			ret = thinkqlParser.parse(resourceId, getResolver(project, resourceId));
+			ret = thinkqlParser.parse(resourceId, resolver);
 			
 			if (namespaceId != null && !namespaceId.equals(ret.getId())) {
 				throw new ThinklabValidationException(
@@ -1118,6 +1122,15 @@ public class ModelManager implements IModelManager {
 		for (FunctionDescriptor f :  _functions.values())
 			ret.add(f);
 		return ret;
+	}
+
+	/**
+	 * TODO modularize eventually (the way the client library does it).
+	 * @param fileExtension
+	 * @return
+	 */
+	public boolean canParseExtension(String fileExtension) {
+		return fileExtension.equals("tql") || fileExtension.equals("owl");
 	}
 
 }
