@@ -976,13 +976,18 @@ public class Thinklab implements
 	}
 
 	@Override
-	public IResolver getResolver() {
-		return _projectManager.getResolver();
+	public IResolver getResolver(IProject project) {
+		return _projectManager.getResolver(project);
 	}
 
 	@Override
 	public IProject loadProject(String projectId) throws ThinklabException {
 		return _projectManager.loadProject(projectId);
+	}
+
+	@Override
+	public void unloadProject(String projectId) throws ThinklabException {
+		_projectManager.unloadProject(projectId);
 	}
 
 }

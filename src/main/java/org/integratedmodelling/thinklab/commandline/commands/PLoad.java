@@ -51,7 +51,7 @@ public class PLoad implements ICommandHandler {
 		String project = command.getArgumentAsString("project");
 		IProject prj = Thinklab.get().getProject(project);
 		if (prj != null) {
-			((Project)prj).load(Thinklab.get().getResolver());
+			((Project)prj).load(Thinklab.get().getResolver(prj));
 		} else {
 			throw new ThinklabResourceNotFoundException("project " + project + " not found");
 		}

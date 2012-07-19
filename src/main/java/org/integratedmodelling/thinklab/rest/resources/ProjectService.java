@@ -54,9 +54,7 @@ public class ProjectService extends DefaultRESTHandler {
 			if (cmd.equals("deploy")) {
 
 				File archive = this.getFileForHandle(getArgument("handle"), true);
-				IProject p = Thinklab.get().deployProject(pluginId, archive.toURI().toURL().toString());
-				if (p != null)
-					((Project)p).load(Thinklab.get().getResolver());
+				Thinklab.get().deployProject(pluginId, archive.toURI().toURL().toString());
 				
 			} else if (cmd.equals("undeploy")) {
 				
@@ -102,8 +100,7 @@ public class ProjectService extends DefaultRESTHandler {
 				}
 
 				Thinklab.get().logger().info("loading project " + pluginId);
-				
-				((Project)project).load(Thinklab.get().getResolver());
+				Thinklab.get().loadProject(pluginId);
 			}
 			
 		} catch (Exception e) {

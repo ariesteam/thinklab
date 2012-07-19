@@ -3,6 +3,7 @@ package org.integratedmodelling.thinklab.modelling;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabInternalErrorException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
@@ -167,8 +169,10 @@ public class ModelManager implements IModelManager {
 		ArrayList<Pair<String,Integer>> errors = new ArrayList<Pair<String,Integer>>();
 		ArrayList<Pair<String,Integer>> warnings = new ArrayList<Pair<String,Integer>>();
 		ArrayList<Pair<String,Integer>> infos = new ArrayList<Pair<String,Integer>>();
-		String resourceId = "(not set)";
+		String resourceId = "";
 		IProject project;
+		Namespace namespace;
+		URL resourceUrl; 
 		
 		IContext currentContext = new Context();
 		
@@ -188,9 +192,12 @@ public class ModelManager implements IModelManager {
 		long _storedTimestamp = 0l;
 		private InputStream _interactiveInput;
 		private PrintStream _interactiveOutput;
+		private HashMap<String, IModelObjectDefinition> symbolTable = 
+				new HashMap<String, IModelObjectDefinition>();
 
-		public Resolver(Object resource) {
-			this.resourceId = resource == null ? null : resource.toString();
+		public Resolver(IProject project) {
+			this.project = project;
+//			this.resourceId = resource == null ? null : resource.toString();
 		}
 
 		/*
@@ -237,196 +244,197 @@ public class ModelManager implements IModelManager {
 			return true;
 		}
 
+//		@Override
+//		public InputStream resolveNamespace(String namespace, String reference) {
+//
+//			/*
+//			 * TODO
+//			 * if we have both namespace and reference, push a non-void resolver context so that next import can use
+//			 * the same location in a relative ref; pop the resolving context after the namespace has been read.
+//			 * Otherwise, push a void resolver context
+//			 */
+//
+//			/*
+//			 * reference trumps namespace; if both are specified, the name check is done later in validateNamespace
+//			 */
+//			if (reference != null) {
+//
+//				try {
+//					
+//					File f = new File(reference);
+//
+//					if (f.exists() && f.isFile() && f.canRead()) {
+//						if (resourceId == null) {
+//							resourceId = f.toString();
+//						}
+//						_timestamp = f.lastModified();
+//						return new FileInputStream(f);
+//					} else if (reference.contains(":/")) {
+//						URL url = new URL(reference);
+//						if (url.toString().startsWith("file:")) {
+//							f = new File(url.getFile());
+//							if (resourceId == null) {
+//								resourceId = f.toString();
+//							}
+//							_timestamp = f.lastModified();
+//						}
+//						return url.openStream();
+//					}
+//
+//					/*
+//					 * plugin resource has precedence even over local file with same path
+//					 */
+//					if (project != null) {
+//
+//						/*
+//						 * find file in source folder, if found return open filestream
+//						 */
+//						f = project.findResource(reference);
+//						if (f != null) {
+//							if (resourceId == null) {
+//								resourceId = f.toString();
+//							}
+//							return new FileInputStream(f);
+//						}
+//					}
+//
+//					f = new File(reference);
+//					
+//					if (f.exists() && f.isFile() && f.canRead()) {
+//						if (resourceId == null) {
+//							resourceId = f.toString();
+//						}
+//						return new FileInputStream(f);
+//					} else if (reference.contains("://")) {
+//						URL url = new URL(reference);						
+//						if (resourceId == null) {
+//							resourceId = url.toString();
+//						}
+//						return url.openStream();
+//					}
+//					
+//					/*
+//					 * if we get here we haven't found it, look it up in all DIRECTLY imported projects (non-recursively)
+//					 */
+//					if (project != null) {
+//						for (IThinklabPlugin pr : project.getPrerequisites()) {
+//							
+//							Project prj = (Project)pr;
+//							
+//							/*
+//							 * lookup file here, if found return open filestream
+//							 */
+//							f = prj.findResourceForNamespace(namespace);
+//							if (f != null) {
+//								try {
+//									if (resourceId == null) {
+//										resourceId = f.toString();
+//									}
+//									return new FileInputStream(f);
+//								} catch (FileNotFoundException e) {
+//									throw new ThinklabIOException(e);
+//								}
+//							}
+//						}
+//					}
+//					
+//
+//				} catch (Exception e) {
+//					onException( new ThinklabIOException(e), 0);
+//				}
+//				
+//			} else if (namespace != null) {
+//
+//				/*
+//				 * find resource using path corresponding to namespace, either in plugin classpath or
+//				 * relative filesystem.
+//				 */
+//
+//				if (project != null) {
+//					/*
+//					 * find file in source folder, if found return open filestream
+//					 * TODO must lookup any supported language
+//					 */
+//					File f = project.findResourceForNamespace(namespace);
+//					if (f != null) {
+//						try {
+//							if (resourceId == null) {
+//								resourceId = f.toString();
+//							}
+//							return new FileInputStream(f);
+//						} catch (FileNotFoundException e) {
+//							onException( new ThinklabIOException(e), 0);
+//						}
+//					}
+//				}
+//				
+//				String fres = namespace.replace('.', '/');	
+//
+//				/*
+//				 * TODO try with the (non-existent yet) pushed resolver context first
+//				 */
+//
+//				/*
+//				 * dumb (i.e., null resolver context)
+//				 */
+//				File f = new File(fres);
+//				if (f.exists() && f.isFile() && f.canRead()) {
+//					try {
+//						if (resourceId == null) {
+//							resourceId = f.toString();
+//						}
+//						return new FileInputStream(f);
+//					} catch (FileNotFoundException e) {
+//						onException( new ThinklabIOException(e), 0);
+//					}
+//				}
+//				
+//				/*
+//				 * if we get here we haven't found it, look it up in all DIRECTLY imported
+//				 * projects (non-recursively)
+//				 */
+//				if (project != null) {
+//					try {
+//						for (IThinklabPlugin pr : project.getPrerequisites()) {
+//						
+//							Project prj = (Project)pr;
+//						
+//							/*
+//							 * lookup file here, if found return open filestream
+//							 */
+//							f = prj.findResourceForNamespace(namespace);
+//							if (f != null) {
+//								if (resourceId == null) {
+//									resourceId = f.toString();
+//								}
+//								return new FileInputStream(f);
+//							}
+//						}
+//					} catch (Exception e) {
+//						onException(new ThinklabException(e), 0);
+//					}
+//				}
+//			}
+//
+//			/*
+//			 * throw exception here - CHECK We don't get here if it was found, but I'm unsure if this should be
+//			 * handled in the caller instead.
+//			 */
+//			String message = "";
+//			if (namespace == null)
+//				message = "cannot read model resource from " + reference;
+//			else if (reference == null) 
+//				message = "cannot find source for namespace " + namespace;
+//			else 
+//				message = "cannot read namespace " + namespace + " from resource " + reference;
+//
+//			onException( new ThinklabResourceNotFoundException(message), 0);
+//			
+//			return null;
+//		}
+
 		@Override
-		public InputStream resolveNamespace(String namespace, String reference) {
-
-			/*
-			 * TODO
-			 * if we have both namespace and reference, push a non-void resolver context so that next import can use
-			 * the same location in a relative ref; pop the resolving context after the namespace has been read.
-			 * Otherwise, push a void resolver context
-			 */
-
-			/*
-			 * reference trumps namespace; if both are specified, the name check is done later in validateNamespace
-			 */
-			if (reference != null) {
-
-				try {
-					
-					File f = new File(reference);
-
-					if (f.exists() && f.isFile() && f.canRead()) {
-						if (resourceId == null) {
-							resourceId = f.toString();
-						}
-						_timestamp = f.lastModified();
-						return new FileInputStream(f);
-					} else if (reference.contains(":/")) {
-						URL url = new URL(reference);
-						if (url.toString().startsWith("file:")) {
-							f = new File(url.getFile());
-							if (resourceId == null) {
-								resourceId = f.toString();
-							}
-							_timestamp = f.lastModified();
-						}
-						return url.openStream();
-					}
-
-					/*
-					 * plugin resource has precedence even over local file with same path
-					 */
-					if (project != null) {
-
-						/*
-						 * find file in source folder, if found return open filestream
-						 */
-						f = project.findResource(reference);
-						if (f != null) {
-							if (resourceId == null) {
-								resourceId = f.toString();
-							}
-							return new FileInputStream(f);
-						}
-					}
-
-					f = new File(reference);
-					
-					if (f.exists() && f.isFile() && f.canRead()) {
-						if (resourceId == null) {
-							resourceId = f.toString();
-						}
-						return new FileInputStream(f);
-					} else if (reference.contains("://")) {
-						URL url = new URL(reference);						
-						if (resourceId == null) {
-							resourceId = url.toString();
-						}
-						return url.openStream();
-					}
-					
-					/*
-					 * if we get here we haven't found it, look it up in all DIRECTLY imported projects (non-recursively)
-					 */
-					if (project != null) {
-						for (IThinklabPlugin pr : project.getPrerequisites()) {
-							
-							Project prj = (Project)pr;
-							
-							/*
-							 * lookup file here, if found return open filestream
-							 */
-							f = prj.findResourceForNamespace(namespace, "tql");
-							if (f != null) {
-								try {
-									if (resourceId == null) {
-										resourceId = f.toString();
-									}
-									return new FileInputStream(f);
-								} catch (FileNotFoundException e) {
-									throw new ThinklabIOException(e);
-								}
-							}
-						}
-					}
-					
-
-				} catch (Exception e) {
-					onException( new ThinklabIOException(e), 0);
-				}
-				
-			} else if (namespace != null) {
-
-				/*
-				 * find resource using path corresponding to namespace, either in plugin classpath or
-				 * relative filesystem.
-				 */
-
-				if (project != null) {
-					/*
-					 * find file in source folder, if found return open filestream
-					 * TODO must lookup any supported language
-					 */
-					File f = project.findResourceForNamespace(namespace, "tql");
-					if (f != null) {
-						try {
-							if (resourceId == null) {
-								resourceId = f.toString();
-							}
-							return new FileInputStream(f);
-						} catch (FileNotFoundException e) {
-							onException( new ThinklabIOException(e), 0);
-						}
-					}
-				}
-				
-				String fres = namespace.replace('.', '/');	
-
-				/*
-				 * TODO try with the (non-existent yet) pushed resolver context first
-				 */
-
-				/*
-				 * dumb (i.e., null resolver context)
-				 */
-				File f = new File(fres);
-				if (f.exists() && f.isFile() && f.canRead()) {
-					try {
-						if (resourceId == null) {
-							resourceId = f.toString();
-						}
-						return new FileInputStream(f);
-					} catch (FileNotFoundException e) {
-						onException( new ThinklabIOException(e), 0);
-					}
-				}
-				
-				/*
-				 * if we get here we haven't found it, look it up in all DIRECTLY imported projects (non-recursively)
-				 */
-				if (project != null) {
-					try {
-						for (IThinklabPlugin pr : project.getPrerequisites()) {
-						
-							Project prj = (Project)pr;
-						
-							/*
-							 * lookup file here, if found return open filestream
-							 */
-							f = prj.findResourceForNamespace(namespace, "tql");
-							if (f != null) {
-								if (resourceId == null) {
-									resourceId = f.toString();
-								}
-								return new FileInputStream(f);
-							}
-						}
-					} catch (Exception e) {
-						onException(new ThinklabException(e), 0);
-					}
-				}
-			}
-
-			/*
-			 * throw exception here - CHECK We don't get here if it was found, but I'm unsure if this should be
-			 * handled in the caller instead.
-			 */
-			String message = "";
-			if (namespace == null)
-				message = "cannot read model resource from " + reference;
-			else if (reference == null) 
-				message = "cannot find source for namespace " + namespace;
-			else 
-				message = "cannot read namespace " + namespace + " from resource " + reference;
-
-			onException( new ThinklabResourceNotFoundException(message), 0);
-			
-			return null;
-		}
-
-		@Override
-		public void onNamespaceDeclared(String namespaceId, INamespace namespace) {
+		public void onNamespaceDeclared() {
 			
 			if (errors.size() > 0) {
 				return;
@@ -436,7 +444,7 @@ public class ModelManager implements IModelManager {
 			 * if we have stored this namespace previously, retrieve its record and set the
 			 * previous modification date.
 			 */
-			IQuery query = Queries.select(NS.NAMESPACE).restrict(NS.HAS_ID, Queries.is(namespaceId));
+			IQuery query = Queries.select(NS.NAMESPACE).restrict(NS.HAS_ID, Queries.is(namespace.getId()));
 			try {
 				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
 				List<ISemanticObject<?>> res = kbox.query(query);
@@ -451,8 +459,8 @@ public class ModelManager implements IModelManager {
 				 */
 				if (_storedTimestamp != 0l && _timestamp > _storedTimestamp) {
 					Thinklab.get().logger().info(
-						"refreshing permanent storage for namespace " + namespaceId + " in kbox " + kbox.getUri());
-					kbox.removeAll(Queries.select(NS.MODEL).restrict(NS.HAS_NAMESPACE_ID, Queries.is(namespaceId)));
+						"refreshing permanent storage for namespace " + namespace.getId() + " in kbox " + kbox.getUri());
+					kbox.removeAll(Queries.select(NS.MODEL).restrict(NS.HAS_NAMESPACE_ID, Queries.is(namespace.getId())));
 				}
 			} catch (ThinklabException e) {
 				/*
@@ -461,23 +469,12 @@ public class ModelManager implements IModelManager {
 				 */
 			}
 			
-			if (namespacesById.get(namespaceId) != null) {
-				
-				/*
-				 * warn only for now
-				 */
-				Thinklab.get().logger().warn("warning: namespace " + namespaceId + " is being redefined");
-				releaseNamespace(namespaceId);
-			}
 
-			((Namespace)namespace).setTimeStamp(_timestamp);
-			
-			namespacesById.put(namespaceId, namespace);
 
 		}
 		
 		@Override
-		public void onNamespaceDefined(INamespace namespace) {
+		public void onNamespaceDefined() {
 
 			if (errors.size() > 0) {
 				return;
@@ -488,7 +485,7 @@ public class ModelManager implements IModelManager {
 			 * but leave it here for any final tasks we may want to implement.
 			 */
 			try {
-				((Namespace)namespace).initialize();
+				namespace.initialize();
 			} catch (Exception e) {
 				onException(e, 0);
 			}
@@ -521,20 +518,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public void validateNamespaceForResource(String resource, String namespace)  {
-			
-			/*
-			 * TODO
-			 */
-
-		}
-
-		public void setProject(IProject project) {
-			this.project = project;
-		}
-
-		@Override
-		public IConceptDefinition resolveExternalConcept(String id, INamespace namespace, int line)  {
+		public IConceptDefinition resolveExternalConcept(String id, int line)  {
 
 			if (Thinklab.get().getConcept(id) == null) {
 				onException(new ThinklabValidationException("concept " + id + " unknown"), line);
@@ -553,7 +537,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public IPropertyDefinition resolveExternalProperty(String id, INamespace namespace, int line)  {
+		public IPropertyDefinition resolveExternalProperty(String id, int line)  {
 
 			if (Thinklab.get().getProperty(id) == null) {
 				onException(new ThinklabValidationException("concept " + id + " unknown"), line);
@@ -576,7 +560,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public void onModelObjectDefined(INamespace namespace, IModelObject ret)  {
+		public void onModelObjectDefined(IModelObject ret)  {
 
 			if (errors.size() > 0) {
 				return;
@@ -588,7 +572,7 @@ public class ModelManager implements IModelManager {
 			 */
 			try {
 
-				((Namespace)namespace).flushKnowledge();
+				namespace.flushKnowledge();
 				/*
 				 * this creates any remanining knowledge.
 				 */
@@ -694,9 +678,9 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public void handleObserveStatement(Object observable, INamespace namespace,  IContext ctx, boolean resetContext)  {
+		public void handleObserveStatement(Object observable, IContext ctx, boolean resetContext,
+				int lineNumber)  {
 
-			
 			try {
 
 				/*
@@ -762,38 +746,132 @@ public class ModelManager implements IModelManager {
 				}
 				
 			} catch (Exception e) {
-				onException(e, -1);
+				onException(e, lineNumber);
 			}
 		}
 
 		@Override
-		public IResolver getImportResolver() {
-			Resolver ret = new Resolver(null);
-			ret.project = project;
+		public IResolver getImportResolver(IProject project) {
+			return new Resolver(project);
+		}
+
+		@Override
+		public INamespace getNamespace(String id, int lineNumber) {
+
+			INamespace ns = namespacesById.get(id);
+			
+			if (ns == null && this.project != null && this.project.providesNamespace(id)) {
+				
+				/*
+				 * preload it
+				 */
+				try {
+					ns = loadFile(this.project.findResourceForNamespace(id).toString(), id, this.project, this);
+				} catch (ThinklabException e) {
+					onException(e, lineNumber);
+				}
+			}
+			
+			return ns;
+		}
+
+//		@Override
+//		public IModelObjectDefinition resolveModelObject(String ns,
+//				String object) {
+//			
+//			INamespace n = namespacesById.get(ns);
+//			if (n != null)
+//				return (IModelObjectDefinition) n.getModelObject(object);
+//			
+//			return null;
+//		}
+
+		@Override
+		public IResolver getNamespaceResolver(String namespace, String resource) {
+			
+			if (namespacesById.get(namespace) != null) {
+				Thinklab.get().logger().warn("warning: namespace " + namespace + " is being redefined");
+				releaseNamespace(namespace);
+			}
+
+			/*
+			 * create namespace
+			 */
+			Namespace ns = new Namespace();
+			ns.setId(namespace);
+			ns.setResourceUrl(resource);
+
+			long timestamp = new Date().getTime();
+			URL url = null;
+			
+			/*
+			 * resolve the resource ID to an openable URL
+			 */
+			if (resource != null) {
+				
+				File f = new File(resource);
+
+				try {
+					if (f.exists() && f.isFile() && f.canRead()) {
+						timestamp = f.lastModified();
+						url = f.toURI().toURL();					
+					} else if (resource.contains(":/")) {
+						url = new URL(resource);
+						if (url.toString().startsWith("file:")) {
+							f = new File(url.getFile());
+							timestamp = f.lastModified();
+						}
+					}
+				} catch (Exception e) {
+					onException(e, -1);
+				}
+			}
+			
+			ns.setTimeStamp(timestamp);
+			
+			/*
+			 * create new resolver with same project and new namespace
+			 */
+			Resolver ret = new Resolver(project);
+			ret.namespace = ns;
+			ret.resourceId = resource;
+			ret.resourceUrl = url;
+			
+			namespacesById.put(namespace, ns);
+			
 			return ret;
 		}
 
 		@Override
-		public boolean isNamespaceDefined(String id) {
-			return namespacesById.containsKey(id);
+		public INamespaceDefinition getNamespace() {
+			return namespace;
 		}
 
 		@Override
-		public IModelObjectDefinition resolveModelObject(String ns,
-				String object) {
+		public InputStream openStream() {
 			
-			INamespace n = namespacesById.get(ns);
-			if (n != null)
-				return (IModelObjectDefinition) n.getModelObject(object);
+			if (resourceUrl == null)
+				onException(
+						new ThinklabInternalErrorException(
+							"internal error: namespace " + namespace.getId() + " has no associated resource"), -1);
+
+			try {
+				return resourceUrl.openStream();
+			} catch (IOException e) {
+				onException(e, -1);
+			}
 			
 			return null;
 		}
+
+		@Override
+		public HashMap<String, IModelObjectDefinition> getSymbolTable() {
+			return this.symbolTable;
+		}
 	}
 
-	public Resolver getResolver(IProject project, Object resource) {
-		Resolver ret = new Resolver(resource);
-		ret.setProject(project);
-		return ret;
+	public Resolver getResolver(IProject project) {
+		return new Resolver(project);
 	}
 
 	public Resolver getInteractiveResolver(InputStream input, PrintStream output) {
@@ -945,7 +1023,7 @@ public class ModelManager implements IModelManager {
 
 	@Override
 	public synchronized INamespace loadFile(String resourceId, String namespaceId, IProject project) throws ThinklabException {
-		return loadFile(resourceId, namespaceId, project, getResolver(project, resourceId));
+		return loadFile(resourceId, namespaceId, project, getResolver(project));
 	}
 
 	public synchronized INamespace loadFile(String resourceId, String namespaceId, IProject project, IResolver resolver) throws ThinklabException {
@@ -956,7 +1034,7 @@ public class ModelManager implements IModelManager {
 
 			Injector injector = Guice.createInjector(new ModellingModule());
 			ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
-			ret = thinkqlParser.parse(resourceId, resolver);
+			ret = thinkqlParser.parse(namespaceId, resourceId, resolver);
 			
 			if (namespaceId != null && !namespaceId.equals(ret.getId())) {
 				throw new ThinklabValidationException(

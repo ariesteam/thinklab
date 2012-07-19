@@ -63,7 +63,6 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 			String ns = USER_NAMESPACE_PREFIX + getSession().getID();
 			RESTUserModel um = (RESTUserModel)(getSession().getUserModel());
 			
-			
 			InputStream is = new ByteArrayInputStream(getArgument("statement").getBytes());
 			um.getModelGenerator().parseInNamespace(is, ns, um.getResolver());
 			is.close();

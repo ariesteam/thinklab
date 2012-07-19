@@ -84,6 +84,11 @@ public class TQLShell  {
 		});
 		
 
+		/*
+		 * the shell reads project from $HOME/thinklab/projects by default.
+		 */
+		Thinklab.get().registerProjectDirectory(Thinklab.get().getProjectPath());
+		
 		TQLShell shell = new TQLShell();
 		shell.initApplication(args);
 		shell.startApplication();

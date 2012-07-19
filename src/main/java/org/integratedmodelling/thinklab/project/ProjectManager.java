@@ -43,11 +43,7 @@ public class ProjectManager implements IProjectManager {
 	public void loadAllProjects() throws ThinklabException {
 
 		for (IProject p : getProjects()) {
-			if (!((Project)p).isLoaded()) {
-				IResolver resolver = getResolver();
-				((ModelManager.Resolver)resolver).setProject(p);
-				((Project)p).load(resolver);
-			}
+			((Project)p).load(getResolver(p));
 		}
 	}
 	
@@ -59,12 +55,21 @@ public class ProjectManager implements IProjectManager {
 		if (p == null)
 			throw new ThinklabResourceNotFoundException("project " + projectId + " does not exist");
 		
-		ModelManager.Resolver resolver = (ModelManager.Resolver) getResolver();
-		resolver.setProject(p);
-
-		((Project)p).load(resolver);
+		((Project)p).load(getResolver(p));
 		
 		return p;
+	}
+	
+	@Override
+	public void unloadProject(String projectId) throws ThinklabException {
+
+		IProject p = _projects.get(projectId);
+		
+		if (p == null)
+			throw new ThinklabResourceNotFoundException("project " + projectId + " does not exist");
+		
+		((Project)p).unload();
+		
 	}
 
 	@Override
@@ -145,10 +150,7 @@ public class ProjectManager implements IProjectManager {
 			((Project)project).unload();
 		}
 
-		ModelManager.Resolver resolver = (ModelManager.Resolver) getResolver();
-		resolver.setProject(project);
-
-		((Project)project).load(resolver);
+		((Project)project).load(getResolver(project));
 	}
 
 	@Override
@@ -173,8 +175,8 @@ public class ProjectManager implements IProjectManager {
 	}
 
 	@Override
-	public IResolver getResolver() {
-		return ((ModelManager)(Thinklab.get().getModelManager())).getResolver(null, null);
+	public IResolver getResolver(IProject project) {
+		return ((ModelManager)(Thinklab.get().getModelManager())).getResolver(project);
 	}
 
 	public static boolean isThinklabProject(File dir) {

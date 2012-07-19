@@ -43,7 +43,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-dbcp-1.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-digester-1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-httpclient-3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-io-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-jxpath-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-lang-2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar"/>
@@ -351,5 +350,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.xtend.lib_2.3.0.v201206120633.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.xtext.generator_2.3.0.v201206120633.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-1.4.3-20120321.180636-1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

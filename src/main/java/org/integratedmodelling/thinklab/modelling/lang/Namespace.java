@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.integratedmodelling.exceptions.ThinklabException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
@@ -16,6 +17,8 @@ import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.lang.IReferenceList;
+import org.integratedmodelling.thinklab.api.modelling.IContext;
+import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelObjectDefinition;
@@ -49,6 +52,8 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 
 	IProject _project;
 
+	IContext _coverage;
+	
 	// these shouldn't be here, but ok
 	int        _lastLineNumber = 0;
 	int        _firstLineNumber = 0;
@@ -161,8 +166,8 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	}
 
 	@Override
-	public void addImportedNamespace(INamespaceDefinition namespace) {
-		_importedNamespaces.add((INamespace)namespace);
+	public void addImportedNamespace(INamespace namespace) {
+		_importedNamespaces.add(namespace);
 	}
 
 	@Override
@@ -260,7 +265,25 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	}
 
 	public void releaseKnowledge() {
-		Thinklab.get().getKnowledgeRepository().releaseOntology(_ontology.getConceptSpace());
+		if (_ontology != null)
+			Thinklab.get().getKnowledgeRepository().releaseOntology(_ontology.getConceptSpace());
+	}
+
+	@Override
+	public IContext getCoverage() {
+		return _coverage;
+	}
+
+	@Override
+	public void addCoveredExtent(IExtent extent) {
+		if (_coverage == null) {
+			_coverage = new Context();
+		}
+		try {
+			_coverage.merge(extent);
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
 	}
 
 }
