@@ -105,7 +105,12 @@ public class Project extends HashableObject implements IProject {
 		
 		_namespaces = new ArrayList<INamespace>();
 		HashSet<File> read = new HashSet<File>();
-		loadInternal(new File(_path + File.separator + this.getSourceDirectory()), read, _namespaces, "", this, resolver);
+		
+		File sourceDir = new File(_path + File.separator + this.getSourceDirectory());
+
+		for (File f : sourceDir.listFiles()) {
+			loadInternal(f, read, _namespaces, "", this, resolver);
+		}
 		_loaded = true;
 		_isDirty = false;
 	}
@@ -133,6 +138,12 @@ public class Project extends HashableObject implements IProject {
 			
 		} else if (mman.canParseExtension(MiscUtilities.getFileExtension(f.toString()))) {
 
+			/*
+			 * already imported by someone else
+			 */
+			if (Thinklab.get().getNamespace(pth) != null)
+				return;
+			
 			INamespace ns;
 			try {
 				ns = mman.loadFile(f.toString(), pth, this, resolver);

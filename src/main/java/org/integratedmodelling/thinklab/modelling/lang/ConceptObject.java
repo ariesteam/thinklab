@@ -23,6 +23,9 @@ public class ConceptObject extends ModelObject<ConceptObject> implements IConcep
 		String ns = "UNDEFINED";
 		if (getNamespace() != null)
 			ns = getNamespace().getId();
+		else
+			System.out.println("ZIO CALAMARO.");
+		
 		return ns + ":" + _id;
 	}
 }

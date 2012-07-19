@@ -775,17 +775,6 @@ public class ModelManager implements IModelManager {
 			return ns;
 		}
 
-//		@Override
-//		public IModelObjectDefinition resolveModelObject(String ns,
-//				String object) {
-//			
-//			INamespace n = namespacesById.get(ns);
-//			if (n != null)
-//				return (IModelObjectDefinition) n.getModelObject(object);
-//			
-//			return null;
-//		}
-
 		@Override
 		public IResolver getNamespaceResolver(String namespace, String resource) {
 			
@@ -1032,21 +1021,17 @@ public class ModelManager implements IModelManager {
 
 		if (resourceId.endsWith(".tql")) {
 
+			IResolver res = resolver.getNamespaceResolver(namespaceId, resourceId);
+			
 			Injector injector = Guice.createInjector(new ModellingModule());
 			ModelGenerator thinkqlParser = injector.getInstance(ModelGenerator.class);
-			ret = thinkqlParser.parse(namespaceId, resourceId, resolver);
+			ret = thinkqlParser.parse(namespaceId, resourceId, res);
 			
 			if (namespaceId != null && !namespaceId.equals(ret.getId())) {
 				throw new ThinklabValidationException(
 						"resource "+ resourceId + " declares namespace: " + ret.getId() + 
 						" when " + namespaceId + " was expected");
 			}
-
-		} else if (resourceId.endsWith(".clj")) {
-
-			/*
-			 * TODO must rewrite the clojure modeling interface
-			 */
 
 		} else if (resourceId.endsWith(".owl")) {
 
@@ -1064,6 +1049,7 @@ public class ModelManager implements IModelManager {
 			((INamespaceDefinition)ret).setResourceUrl(resourceId);
 			((INamespaceDefinition)ret).setTimeStamp(ofile.lastModified());
 			((Namespace)ret).setOntology(ontology);
+			
 			namespacesById.put(namespaceId, ret);
 		}
 
