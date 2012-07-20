@@ -27,7 +27,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
-import org.integratedmodelling.thinklab.api.modelling.IObservation;
+import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.modelling.datasets.FileDataset;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.thinklab.rest.RESTUserModel;
@@ -38,8 +38,8 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
 /**
- * Returns server status information. Bound to the root service URL and used as an
- * handshaking command ("ping") to ensure that server is alive and well.
+ * Execute a language statement and optionally produce a visualization and/or dataset
+ * for the results.
  * 
  * @author ferdinando.villa
  *
@@ -56,25 +56,38 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 		
 		JSONObject oret = new JSONObject();
 		
-		
 		try {
 
-			boolean isLocal = Boolean.parseBoolean(getArgument("", "false")); 
+			/*
+			 * if vdir = <directory> is passed, we are asked to produce a File
+			 * visualization in the given local directory. This happens when
+			 * thinklab is being run as an embedded local server.
+			 */
+			String vdir = getArgument("visdir"); 
+			
+			/*
+			 * if visualize = true is passed, we are asked to produce a NetCDF output
+			 * and make it available for download. If vdir is also passed, we produce
+			 * the file in the given directory instead, with the name "data.nc". 
+			 */
+			boolean visualize = Boolean.parseBoolean(getArgument("visualize", "false"));
+
 			String ns = USER_NAMESPACE_PREFIX + getSession().getID();
 			RESTUserModel um = (RESTUserModel)(getSession().getUserModel());
 			
-			InputStream is = new ByteArrayInputStream(getArgument("statement").getBytes());
+			String statement = getArgument("statement");
+			InputStream is = new ByteArrayInputStream(statement.getBytes());
 			um.getModelGenerator().parseInNamespace(is, ns, um.getResolver());
 			is.close();
+			
 			IModelObject o = um.getResolver().getLastProcessedObject(); 
 
 			/*
 			 * turn the context into enough JSON to satisfy the client.
 			 */
-			if (o instanceof IObservation) {
-				um.mergeContext(((IObservation) o).getContext());
-				oret = contextToJSON(um.getCurrentContext(), isLocal);
-			}
+			oret = contextToJSON(
+					((ModelManager.Resolver)um.getResolver()).getCurrentContext(), 
+					visualize);
 			
 			
 		} catch (Exception e) {
@@ -88,7 +101,6 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 	}
 
 	private JSONObject contextToJSON(IContext context, boolean isLocal) throws ThinklabException {
-		// TODO Auto-generated method stub
 		
 		/*
 		 * create a filedataset from the context
@@ -99,14 +111,12 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 		/*
 		 * if not local, zip it and send it over
 		 */
-		File fdir = Thinklab.get().getTempArea(getSession().getID());
+		File fdir = Thinklab.get().getTempArea(getSession().getWorkspace());
 		if (!isLocal) {
 			fdir = new File(fdir + File.separator + "ctx.zip");
 		} 
 		
 		fds.persist(fdir.toString());
-		
-		
 		
 		return null;
 	}

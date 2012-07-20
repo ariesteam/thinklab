@@ -170,7 +170,7 @@ public class ModelManager implements IModelManager {
 		Namespace namespace;
 		URL resourceUrl; 
 		
-		IContext currentContext = new Context();
+		IContext currentContext = null;
 		
 		/* this will be set to the resource's timestamp if the namespace is read 
 		 * from a resource whose timestamp can be determined. Otherwise any
@@ -203,6 +203,7 @@ public class ModelManager implements IModelManager {
 			_isInteractive = true;
 			_interactiveInput = input;
 			_interactiveOutput = output;
+			currentContext = new Context();
 		}
 
 		@Override
@@ -500,9 +501,10 @@ public class ModelManager implements IModelManager {
 				 * switch to another context or to a new one if requested.
 				 */
 				if (ctx != null) {
-					currentContext = new Context((Context)ctx);
+					((Context)currentContext).clear();
+					currentContext.merge(ctx);
 				} else	if (resetContext) {
-					currentContext = new Context();
+					((Context)currentContext).clear();
 				}
 			
 				Object obs = null;
@@ -511,7 +513,8 @@ public class ModelManager implements IModelManager {
 				} else if (observable instanceof IList) {
 					obs = Thinklab.get().entify((IList)observable);
 				} else if (observable instanceof IContext) {
-					currentContext = (IContext)observable;
+					((Context)currentContext).clear();
+					currentContext.merge((IContext)observable);
 				} else if (observable instanceof IConceptDefinition) {
 					obs = Thinklab.get().entify(PolyList.list(Thinklab.c(((IConceptDefinition)observable).getName())));
 				} else if (observable instanceof IFunctionDefinition) {
@@ -548,7 +551,7 @@ public class ModelManager implements IModelManager {
 				
 					IObservation observation = Thinklab.get().observe(obs, currentContext);
 					if (observation != null) {
-						currentContext = observation.getContext();
+						currentContext.merge(observation.getContext());
 					}
 				}
 				
@@ -559,7 +562,12 @@ public class ModelManager implements IModelManager {
 
 		@Override
 		public IResolver getImportResolver(IProject project) {
-			return new Resolver(project);
+			Resolver ret = new Resolver(project);
+			ret._interactiveInput = _interactiveInput;
+			ret._interactiveOutput = _interactiveOutput;
+			ret._isInteractive = _isInteractive;
+			ret.currentContext = currentContext;
+			return ret;
 		}
 
 		@Override
@@ -585,7 +593,10 @@ public class ModelManager implements IModelManager {
 		@Override
 		public IResolver getNamespaceResolver(String namespace, String resource) {
 			
-			if (namespacesById.get(namespace) != null) {
+			/*
+			 * in interactive use, we allow the namespace to be defined incrementally
+			 */
+			if (namespacesById.get(namespace) != null && !isInteractive()) {
 				Thinklab.get().logger().warn("warning: namespace " + namespace + " is being redefined");
 				releaseNamespace(namespace);
 			}
@@ -593,33 +604,46 @@ public class ModelManager implements IModelManager {
 			/*
 			 * create namespace
 			 */
-			Namespace ns = new Namespace();
-			ns.setId(namespace);
-			ns.setResourceUrl(resource);
-
+			Namespace ns = (Namespace) (isInteractive() ? namespacesById.get(namespace) : null);
 			long timestamp = new Date().getTime();
 			URL url = null;
 			
-			/*
-			 * resolve the resource ID to an openable URL
-			 */
-			if (resource != null) {
+			if (ns == null) {
 				
-				File f = new File(resource);
+				ns = new Namespace();
+				ns.setId(namespace);
+				ns.setResourceUrl(resource);
+			
+				/*
+				 * resolve the resource ID to an openable URL
+				 */
+				if (resource != null) {
+				
+					File f = new File(resource);
 
-				try {
-					if (f.exists() && f.isFile() && f.canRead()) {
-						timestamp = f.lastModified();
-						url = f.toURI().toURL();					
-					} else if (resource.contains(":/")) {
-						url = new URL(resource);
-						if (url.toString().startsWith("file:")) {
-							f = new File(url.getFile());
+					try {
+						if (f.exists() && f.isFile() && f.canRead()) {
 							timestamp = f.lastModified();
+							url = f.toURI().toURL();					
+						} else if (resource.contains(":/")) {
+							url = new URL(resource);
+							if (url.toString().startsWith("file:")) {
+								f = new File(url.getFile());
+								timestamp = f.lastModified();
+							}
 						}
+					} catch (Exception e) {
+						onException(e, -1);
 					}
-				} catch (Exception e) {
-					onException(e, -1);
+				}
+				
+				if (isInteractive()) {
+					/*
+					 * define NS for the context so it won't complain
+					 */
+					((Context)currentContext).setNamespace(ns);
+				} else {
+					namespacesById.put(namespace, ns);
 				}
 			}
 			
@@ -632,8 +656,10 @@ public class ModelManager implements IModelManager {
 			ret.namespace = ns;
 			ret.resourceId = resource;
 			ret.resourceUrl = url;
-			
-			namespacesById.put(namespace, ns);
+			ret._interactiveInput = _interactiveInput;
+			ret._interactiveOutput = _interactiveOutput;
+			ret._isInteractive = _isInteractive;
+			ret.currentContext = currentContext;
 			
 			return ret;
 		}
@@ -663,6 +689,10 @@ public class ModelManager implements IModelManager {
 		@Override
 		public HashMap<String, IModelObjectDefinition> getSymbolTable() {
 			return this.symbolTable;
+		}
+
+		public IContext getCurrentContext() {
+			return currentContext;
 		}
 	}
 

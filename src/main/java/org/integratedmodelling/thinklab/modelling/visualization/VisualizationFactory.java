@@ -2,7 +2,6 @@ package org.integratedmodelling.thinklab.modelling.visualization;
 
 import org.integratedmodelling.thinklab.api.modelling.IClassifyingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IMeasuringObserver;
-import org.integratedmodelling.thinklab.api.modelling.IRankingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.lang.Classification;
 

@@ -131,7 +131,4 @@ public class RESTUserModel implements IUserModel {
 		_currentContext.merge(ctx);
 	}
 	
-	public IContext getCurrentContext() {
-		return _currentContext;
-	}
 }

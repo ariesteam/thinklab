@@ -79,6 +79,21 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 
 	public Context() {}
 	
+	public void clear() {
+		this._models.clear();
+		this._observations.clear();
+		this._order.clear();
+		this._states.clear();
+		this._extents.clear();
+		this._isNull = false;
+		this._initialized = false;
+		try {
+			initialize();
+		} catch (ThinklabException e) {
+			// won't happen on an empty context
+		}
+	}
+	
 	public void addStateUnchecked(IState state) {
 		_states.put(state.getObservable(), state);
 	}

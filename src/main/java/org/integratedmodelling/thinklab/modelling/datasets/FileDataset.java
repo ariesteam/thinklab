@@ -14,7 +14,6 @@ import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.utils.FolderZiper;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.Zipper;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;

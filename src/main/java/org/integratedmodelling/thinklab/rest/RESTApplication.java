@@ -23,6 +23,7 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.rest.resources.AuthenticateService;
 import org.integratedmodelling.thinklab.rest.resources.CapabilitiesService;
 import org.integratedmodelling.thinklab.rest.resources.CheckWaitingService;
+import org.integratedmodelling.thinklab.rest.resources.ExecuteStatementService;
 import org.integratedmodelling.thinklab.rest.resources.ExportKnowledgeService;
 import org.integratedmodelling.thinklab.rest.resources.FileReceiveService;
 import org.integratedmodelling.thinklab.rest.resources.FileSendService;
@@ -103,7 +104,7 @@ public class RESTApplication extends Application {
 		/*
 		 * exec model statement
 		 */
-		router.attach("/execute-statement", ExportKnowledgeService.class);
+		router.attach("/execute-statement", ExecuteStatementService.class);
 
 		
 		/*

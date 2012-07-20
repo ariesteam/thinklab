@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.utils.image;
+package org.integratedmodelling.thinklab.modelling.visualization;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,6 +25,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import org.integratedmodelling.exceptions.ThinklabValidationException;
+import org.integratedmodelling.utils.image.ImageUtil;
 
 /**
  * Contour line plot for gridded data. 

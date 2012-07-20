@@ -18,7 +18,7 @@
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.integratedmodelling.utils.image;
+package org.integratedmodelling.thinklab.modelling.visualization;
 
 import java.awt.Color;
 import java.awt.image.IndexColorModel;
@@ -30,11 +30,12 @@ import java.util.Collections;
 
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.utils.image.ImageUtil;
 
 /**
  * this is a wrapper around IndexColorModel, just for convenience
- * @author Sergey Krivov
- *
+ * @author Sergey Krivov the wrapper
+ * @author Ferdinando Villa the rest
  */
 public class ColorMap {
 	

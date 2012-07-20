@@ -47,8 +47,8 @@ import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
+import org.integratedmodelling.thinklab.modelling.visualization.ColorMap;
 import org.integratedmodelling.utils.MiscUtilities;
-import org.integratedmodelling.utils.image.ColorMap;
 import org.integratedmodelling.utils.image.ImageUtil;
 
 import com.vividsolutions.jts.geom.Coordinate;

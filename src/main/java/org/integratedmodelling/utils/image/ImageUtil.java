@@ -40,6 +40,8 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
+import org.integratedmodelling.thinklab.modelling.visualization.ColorMap;
+
 /**
  * @author Sergey Krivov
  * 
