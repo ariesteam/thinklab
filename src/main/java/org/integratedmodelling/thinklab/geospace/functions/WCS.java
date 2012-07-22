@@ -7,7 +7,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.geospace.implementations.data.WCSGridDataSource;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 
-@Function(id="wcs", parameterNames= { "service", "id" })
+@Function(id="wcs", parameterNames= { "service", "id", "no-data"})
 public class WCS implements IExpression {
 
 	@Override

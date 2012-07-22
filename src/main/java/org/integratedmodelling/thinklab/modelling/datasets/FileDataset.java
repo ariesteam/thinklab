@@ -8,6 +8,7 @@ import org.integratedmodelling.collections.ContextIndex;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataset;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
@@ -16,6 +17,8 @@ import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.modelling.lang.Context;
+import org.integratedmodelling.thinklab.visualization.DisplayAdapter;
+import org.integratedmodelling.thinklab.visualization.VisualizationFactory;
 import org.integratedmodelling.thinklab.visualization.geospace.GeoImageFactory;
 import org.integratedmodelling.utils.image.ImageUtil;
 
@@ -61,8 +64,8 @@ public class FileDataset implements IDataset {
 	public FileDataset() {
 	}
 	
-	public FileDataset(Context ctx) {
-		setContext(ctx);
+	public FileDataset(IContext context) {
+		setContext(context);
 	}
 
 	public void setThumbnailBoxSize(int x, int y) {
@@ -157,14 +160,22 @@ public class FileDataset implements IDataset {
 			 */
 		}
 		
-		int i = 0;
 		for (final IState s : _context.getStates()) {
 			
-
 			/*
 			 * produce images, set name in index
 			 */
+			DisplayAdapter da = VisualizationFactory.get().getDisplayAdapter(s);
 			
+			String thf = da.getMediaFile(new File(locDir + File.separator + "thumbnails"), _tboxX, _tboxY);
+			String imf = da.getMediaFile(new File(locDir + File.separator + "images"), _iboxX, _iboxY);
+			
+			if (thf != null && imf != null)
+				_index.addState(
+						getDisplayID(s.getObservable()), 
+						thf, imf, 
+						getDisplayLabel(s.getObservable()), 
+						s.getObservable());
 		}
 		
 		/*
@@ -188,4 +199,12 @@ public class FileDataset implements IDataset {
 
 	}
 
+	public String getDisplayID(ISemanticObject<?> observable) {
+		return observable.getDirectType().toString();
+	}
+
+	public String getDisplayLabel(ISemanticObject<?> observable) {
+		return observable.getDirectType().getLocalName().toString();
+	}
+	
 }

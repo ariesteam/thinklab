@@ -77,6 +77,11 @@ public class Classification implements IClassificationDefinition {
 	private IConceptDefinition _cSpaceDef;
 	private ArrayList<Pair<IConceptDefinition,IClassifier>> _cdefs =
 			new ArrayList<Pair<IConceptDefinition,IClassifier>>();
+
+	private ArrayList<IConcept> _conceptOrder = new ArrayList<IConcept>();
+	private ArrayList<String> _codeConceptOrder = new ArrayList<String>();
+
+	private double[] _distributionBreakpoints;
 	
 	private static HashMap<IConcept,String> orderMap =
 		new HashMap<IConcept, String>();
@@ -183,6 +188,7 @@ public class Classification implements IClassificationDefinition {
 			throw new ThinklabRuntimeException(e);
 		}
 		if (pd != null) {
+			this._distributionBreakpoints = pd.getFirst();
 			if (pd.getSecond()[0] != null) {
 				rnk = pd.getSecond();
 			}
@@ -191,6 +197,10 @@ public class Classification implements IClassificationDefinition {
 		this._ranks = rankConcepts(_cSpace);
 		
 		if (rnk != null) {	
+			
+			this._conceptOrder = new ArrayList<IConcept>();
+			for (IConcept r : rnk)
+				this._conceptOrder.add(r);
 			
 			/*
 			 * recompute ranks as requested and substitute
@@ -201,10 +211,20 @@ public class Classification implements IClassificationDefinition {
 				ret.put(r, new Integer(start++));
 			this._ranks = ret;
 		}
+		
+		/*
+		 * if we couldn't sort the concepts according to semantics, use the
+		 * declaration order in the definition.
+		 */
+		if (this._conceptOrder.size() == 0 && this._codeConceptOrder.size() > 0) {
+			for (String cn : _codeConceptOrder)
+				this._conceptOrder.add(Thinklab.c(cn));
+		}
 	}
 	
 	public void addClassifier(IClassifier classifier, IConcept concept) {
 		_classifiers.add(new Pair<IClassifier,IConcept>(classifier, concept));
+		_codeConceptOrder.add(concept.toString());
 	}
 
 	@Override
@@ -237,20 +257,21 @@ public class Classification implements IClassificationDefinition {
 
 	@Override
 	public double[] getDistributionBreakpoints() {
-		// TODO Auto-generated method stub
-		return null;
+		return this._distributionBreakpoints;
 	}
 
 	@Override
 	public List<IClassifier> getClassifiers() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<IClassifier> ret = new ArrayList<IClassifier>();
+		for (Pair<IClassifier, IConcept> p : _classifiers) {
+			ret.add(p.getFirst());
+		}
+		return ret;
 	}
 
 	@Override
 	public List<IConcept> getConceptOrder() {
-		// TODO Auto-generated method stub
-		return null;
+		return _conceptOrder;
 	}
 	
 	// --- tough stuff below ----------------------------------------------------
@@ -525,25 +546,10 @@ public class Classification implements IClassificationDefinition {
 		return ret;
 	}
 
-	public static void loadPredefinedOrderings(Properties properties) throws ThinklabException {
-		
-		String propertyPrefix = "thinklab.ordering.";
-		int ln = propertyPrefix.length();
-		for (Object k : properties.keySet()) {
-			if (k.toString().startsWith(propertyPrefix)) {
-				String cString = k.toString().substring(ln);
-				cString = cString.replaceAll("-",":");
-				IConcept kconc = Thinklab.c(cString);
-				orderMap.put(kconc, properties.getProperty(k.toString()));
-			}
-		}
-	}
-
 	@Override
 	public IConcept getConceptSpace() {
 		return _cSpace;
 	}
-
 
 	@Override
 	public void setLineNumbers(int startLine, int endLine) {
@@ -566,7 +572,8 @@ public class Classification implements IClassificationDefinition {
 
 	@Override
 	public void addClassifier(IConceptDefinition concept, IClassifier classifier) {
-		this._cdefs .add(new Pair<IConceptDefinition, IClassifier>(concept, classifier));
+		this._cdefs.add(new Pair<IConceptDefinition, IClassifier>(concept, classifier));
+		_codeConceptOrder.add(concept.getName());
 	}
 
 
@@ -574,6 +581,16 @@ public class Classification implements IClassificationDefinition {
 	public void setConceptSpace(IConceptDefinition concept, Type typeHint) {
 		this._cSpaceDef = concept;
 		this._typeHint = typeHint;
+	}
+
+	@Override
+	public boolean hasZeroRank() {
+		return _hasZeroCategory;
+	}
+
+	@Override
+	public boolean isCategorical() {
+		return _type.equals(Type.UNORDERED);
 	}
 
 }

@@ -80,7 +80,6 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 			um.getModelGenerator().parseInNamespace(is, ns, um.getResolver());
 			is.close();
 			
-			IModelObject o = um.getResolver().getLastProcessedObject(); 
 			Context ctx = (Context)((ModelManager.Resolver)um.getResolver()).getCurrentContext();
 			
 			if (visualize && ctx != null && !ctx.isEmpty()) {

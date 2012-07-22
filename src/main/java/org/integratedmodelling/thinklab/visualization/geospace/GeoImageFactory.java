@@ -47,6 +47,9 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.api.modelling.IExtent;
+import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
+import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.visualization.ColorMap;
 import org.integratedmodelling.utils.MiscUtilities;
@@ -648,13 +651,13 @@ public class GeoImageFactory {
 	 * @param mapHeight
 	 * @return <width, height> of the largest map that fits in the viewport without distorsion.
 	 */
-	public static Pair<Integer, Integer> getPlotSize(int viewportWidth, int viewportHeight, int mapWidth, int mapHeight) {
+	public static Pair<Integer, Integer> getPlotSize(int viewportWidth, int viewportHeight, Number mapWidth, Number mapHeight) {
 
 		int x = viewportWidth, y = viewportHeight;
-		double image_aspect_ratio = (double)mapWidth / (double)mapHeight;
+		double image_aspect_ratio = mapWidth.doubleValue() / mapHeight.doubleValue();
 
 			// largest side of image must fit within corresponding side of viewport
-			if (mapWidth > mapHeight) {
+			if (mapWidth.doubleValue() > mapHeight.doubleValue()) {
 				x = viewportWidth;
 				y = (int)(((double)x) / image_aspect_ratio);
 				if (y > viewportHeight) {
@@ -690,6 +693,22 @@ public class GeoImageFactory {
 		
 		String wname = MiscUtilities.getURLBaseName(url.toString());
 		worldImages.put(wname, url);
+		
+	}
+
+	public static Pair<Integer, Integer> getPlotSize(int viewportWidth, int viewportHeight, IExtent space) {
+
+		if (space instanceof GridExtent) {
+			return getPlotSize(
+					viewportWidth, viewportHeight, 
+					((GridExtent)space).getXCells(), ((GridExtent)space).getYCells());
+		} else if (space instanceof ArealExtent) {
+			return getPlotSize(
+					viewportWidth, viewportHeight, 
+					((ArealExtent)space).getEnvelope().getWidth(), ((ArealExtent)space).getEnvelope().getWidth());
+		}
+		
+		return null;
 		
 	}
 }

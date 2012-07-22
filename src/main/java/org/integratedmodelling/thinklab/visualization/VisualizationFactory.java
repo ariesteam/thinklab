@@ -20,17 +20,15 @@ public class VisualizationFactory {
 	 * @param state
 	 * @return
 	 */
-	public DisplayMetadata getDisplayMetadata(IState state) {
+	public DisplayAdapter getDisplayAdapter(IState state) {
 		
 		if (state.getObserver() instanceof IClassifyingObserver) {
-			return new ClassificationDisplayMetadata(state);			
+			return new ClassificationDisplayAdapter(state);			
 		} else if (state.getObserver() instanceof IMeasuringObserver && 
 					((IMeasuringObserver)(state.getObserver())).getDiscretization() != null) {
 			
 		}
 		
-		return new DisplayMetadata(state);
+		return new DisplayAdapter(state);
 	}
-	
-	
 }

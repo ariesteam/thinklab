@@ -74,7 +74,11 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		this._isNull = context._isNull;
 		this._namespaceId = context._namespaceId;
 		this._namespace = context._namespace;
-		initialize();
+		this._isNull = context._isNull;
+		this._initialized = context._initialized;
+		this._observations.addAll(context._observations);
+		this._generatorFunctions.addAll(context._generatorFunctions);
+		this._models.addAll(_models);
 	}
 
 	public Context() {}
@@ -250,6 +254,9 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 			 * TODO must be a state with a datasource that we can redefine
 			 * for this context, or a model we can recompute in this context.
 			 */
+			if (observation instanceof IState) {
+				_states.put(observation.getObservable(), (IState)observation);
+			}
 		}
 		
 		sort();

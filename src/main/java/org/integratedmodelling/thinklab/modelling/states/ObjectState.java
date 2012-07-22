@@ -3,23 +3,28 @@ package org.integratedmodelling.thinklab.modelling.states;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.modelling.IClassification;
+import org.integratedmodelling.thinklab.api.modelling.IClassifyingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.interfaces.IModifiableState;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
-import org.integratedmodelling.thinklab.visualization.DisplayMetadata;
-import org.integratedmodelling.thinklab.visualization.VisualizationFactory;
+import org.integratedmodelling.thinklab.modelling.random.IndexedCategoricalDistribution;
 
 public class ObjectState extends Observation implements IModifiableState {
 
 	Object[] _data;
+	IClassification _classification;
 	
 	public ObjectState(ISemanticObject<?> observable, IContext context, IObserver observer) {
 		_data = new Object[context.getMultiplicity()];
 		setObservable(observable);
 		setContext(context);
 		setObserver(observer);
+		if (observer instanceof IClassifyingObserver) {
+			_classification = ((IClassifyingObserver)observer).getClassification();
+		}
 	}
 
 	
@@ -40,14 +45,9 @@ public class ObjectState extends Observation implements IModifiableState {
 	@Override
 	public double[] getDataAsDoubles() throws ThinklabException {
 		
-		DisplayMetadata dm = VisualizationFactory.get().getDisplayMetadata(this);
-		
 		double[] ret = new double[_data.length];
 		for (int i = 0; i < _data.length; i++) {
-			ret[i] = 
-				(dm == null || _data[i] == null) ? 
-					Double.NaN : 
-					dm.getDisplayData(_data[i]).doubleValue();
+			ret[i] = getDoubleValue(i);					
 		}	
 		return ret;
 	}
@@ -55,8 +55,25 @@ public class ObjectState extends Observation implements IModifiableState {
 
 	@Override
 	public double getDoubleValue(int index) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return 0;
+
+		Object o = _data[index];
+		
+		if (o != null) {
+			
+			if (_classification != null && o instanceof IConcept) {
+				return _classification.getRank((IConcept)o);
+			}
+
+			if (o instanceof Number)
+				return ((Number)o).doubleValue();
+			
+			if (o instanceof IndexedCategoricalDistribution) {
+				return ((IndexedCategoricalDistribution)o).getMean();
+			}
+			
+		}
+
+		return Double.NaN;
 	}
 
 	@Override

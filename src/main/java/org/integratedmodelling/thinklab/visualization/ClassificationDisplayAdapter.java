@@ -6,11 +6,11 @@ import org.integratedmodelling.thinklab.api.modelling.IClassification;
 import org.integratedmodelling.thinklab.api.modelling.IClassifyingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 
-public class ClassificationDisplayMetadata extends DisplayMetadata {
+public class ClassificationDisplayAdapter extends DisplayAdapter {
 
 	IClassification _classification;
 	
-	public ClassificationDisplayMetadata(IState state) {
+	public ClassificationDisplayAdapter(IState state) {
 		
 		super(state);
 		
@@ -27,13 +27,12 @@ public class ClassificationDisplayMetadata extends DisplayMetadata {
 	}
 
 	@Override
-	public Number getDisplayData(Object object) {
+	protected Number getDisplayData(Object object) {
 		
 		/*
 		 * TODO handle the rest 
-		 */
-		
-		return _classification.getRank((IConcept)object);
+		 */		
+		return object == null ? null : _classification.getRank((IConcept)object);
 	}
 
 }

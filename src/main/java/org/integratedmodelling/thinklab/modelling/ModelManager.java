@@ -63,6 +63,7 @@ import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.api.runtime.ISession;
 import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer;
 import org.integratedmodelling.thinklab.modelling.compiler.ModelResolver;
+import org.integratedmodelling.thinklab.modelling.datasets.FileDataset;
 import org.integratedmodelling.thinklab.modelling.interfaces.IExpressionContextManager;
 import org.integratedmodelling.thinklab.modelling.lang.Categorization;
 import org.integratedmodelling.thinklab.modelling.lang.Classification;
@@ -552,6 +553,11 @@ public class ModelManager implements IModelManager {
 					IObservation observation = Thinklab.get().observe(obs, currentContext);
 					if (observation != null) {
 						currentContext.merge(observation.getContext());
+						/*
+						 * trick to visualize only if we're using the shell
+						 */
+						if (_interactiveInput != null)
+							visualizeContext(currentContext);
 					}
 				}
 				
@@ -698,6 +704,16 @@ public class ModelManager implements IModelManager {
 
 	public Resolver getResolver(IProject project) {
 		return new Resolver(project);
+	}
+
+	public void visualizeContext(IContext context) {
+		
+		FileDataset dset = new FileDataset(context);
+		try {
+			dset.persist(Thinklab.get().getWorkspace("context").toString());
+		} catch (ThinklabException e) {
+			Thinklab.get().logger().warn("error visualizing context: " + e.getMessage());
+		}
 	}
 
 	public Resolver getInteractiveResolver(InputStream input, PrintStream output) {

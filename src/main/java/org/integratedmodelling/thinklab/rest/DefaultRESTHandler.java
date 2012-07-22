@@ -415,8 +415,8 @@ public abstract class DefaultRESTHandler extends ServerResource implements IREST
 	protected void fail(Throwable e) {
 		resultStatus = IServer.ERROR;
 		error = e.getMessage();
-		rh.put("exception-class", e.getClass().getCanonicalName());
-		rh.put("stack-trace", MiscUtilities.getStackTrace(e));
+		rh.put(IServer.EXCEPTION_CLASS, e.getClass().getCanonicalName());
+		rh.put(IServer.STACK_TRACE, MiscUtilities.getStackTrace(e));
 		Thinklab.get().logger().error(this, e);
 	}
 	
