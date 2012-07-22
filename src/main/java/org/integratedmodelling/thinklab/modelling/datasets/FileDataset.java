@@ -148,7 +148,7 @@ public class FileDataset implements IDataset {
 					ContextIndex.SPACE_ID, space.getMultiplicity(), 
 					"thumbnails" + File.separator + "space.png", 
 					"images" + File.separator + "space.png",
-					space.getDomainConcept().toString());
+					"Spatial coverage");
 			
 		} /* TODO other space extents */
 		
@@ -173,7 +173,8 @@ public class FileDataset implements IDataset {
 			if (thf != null && imf != null)
 				_index.addState(
 						getDisplayID(s.getObservable()), 
-						thf, imf, 
+						"thumbnails" + File.separator + thf, 
+						"images" + File.separator + imf, 
 						getDisplayLabel(s.getObservable()), 
 						s.getObservable());
 		}

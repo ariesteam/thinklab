@@ -42,6 +42,7 @@ public class DisplayAdapter extends Metadata {
 	 */
 	public static final String RASTER = "DisplayAdapter.RASTER";
 	public static final String CONTOUR = "DisplayAdapter.CONTOUR";
+	public static final String HISTOGRAM = "DisplayAdapter.HISTOGRAM";
 	public static final String SATELLITE_IMAGE = "DisplayAdapter.SATELLITE_IMAGE";
 	public static final String NO_BACKGROUND = "DisplayAdapter.NO_BACKGROUND";
 	
@@ -126,7 +127,9 @@ public class DisplayAdapter extends Metadata {
 	}
 	
 	private String getFileBaseName() {
-		return this.state.getObservable().getDirectType().toString().replace(':', '_').toLowerCase();
+		return 
+			this.state.getObservable().getDirectType().toString().
+				replace(':', '_').replace('.', '_').toLowerCase();
 	}
 	
 	private String makeMapTimeseries(File directory, int viewportWidth,
