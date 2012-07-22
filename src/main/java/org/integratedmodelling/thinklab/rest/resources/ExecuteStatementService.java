@@ -23,14 +23,17 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
 import org.integratedmodelling.thinklab.modelling.datasets.FileDataset;
+import org.integratedmodelling.thinklab.modelling.lang.Context;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.thinklab.rest.RESTUserModel;
+import org.integratedmodelling.utils.FolderZiper;
 import org.json.JSONObject;
 import org.restlet.data.CharacterSet;
 import org.restlet.ext.json.JsonRepresentation;
@@ -54,16 +57,7 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 	@Get
 	public Representation service() {
 		
-		JSONObject oret = new JSONObject();
-		
 		try {
-
-			/*
-			 * if vdir = <directory> is passed, we are asked to produce a File
-			 * visualization in the given local directory. This happens when
-			 * thinklab is being run as an embedded local server.
-			 */
-			String vdir = getArgument("visdir"); 
 			
 			/*
 			 * if visualize = true is passed, we are asked to produce a NetCDF output
@@ -71,7 +65,13 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 			 * the file in the given directory instead, with the name "data.nc". 
 			 */
 			boolean visualize = Boolean.parseBoolean(getArgument("visualize", "false"));
+			boolean localserv = Boolean.parseBoolean(getArgument("islocal",   "false"));
 
+			int thW = Integer.parseInt(getArgument("thumbnailWidth", ""+FileDataset.DEFAULT_THUMBNAIL_WIDTH));
+			int thH = Integer.parseInt(getArgument("thumbnailHeight", ""+FileDataset.DEFAULT_THUMBNAIL_HEIGHT));
+			int imW = Integer.parseInt(getArgument("imageWidth", ""+FileDataset.DEFAULT_IMAGE_WIDTH));
+			int imH = Integer.parseInt(getArgument("imageHeight", ""+FileDataset.DEFAULT_IMAGE_HEIGHT));
+			
 			String ns = USER_NAMESPACE_PREFIX + getSession().getID();
 			RESTUserModel um = (RESTUserModel)(getSession().getUserModel());
 			
@@ -81,44 +81,43 @@ public class ExecuteStatementService extends DefaultRESTHandler {
 			is.close();
 			
 			IModelObject o = um.getResolver().getLastProcessedObject(); 
-
-			/*
-			 * turn the context into enough JSON to satisfy the client.
-			 */
-			oret = contextToJSON(
-					((ModelManager.Resolver)um.getResolver()).getCurrentContext(), 
-					visualize);
+			Context ctx = (Context)((ModelManager.Resolver)um.getResolver()).getCurrentContext();
 			
+			if (visualize && ctx != null && !ctx.isEmpty()) {
+
+				/*
+				 * create a filedataset from the context
+				 */
+				FileDataset fds = new FileDataset(ctx);
+			
+				fds.setThumbnailBoxSize(thW, thH);
+				fds.setImageBoxSize(imW, imH);
+				
+				/*
+				 * persist in temp dir
+				 */
+				File fdir = Thinklab.get().getTempArea(getSession().getWorkspace());
+				fds.persist(fdir.toString());
+				
+				/*
+				 * if local, send the location directly; otherwise zip things up and 
+				 * make available for download.
+				 */
+				if (localserv) {
+					put("location", fdir.toString());
+				} else {
+					Pair<File, String> fname = this.getFileName("context.zip", getSession());
+					FolderZiper.zipFolder(fdir.toString(), fname.getFirst().toString());
+					addDownload(fname.getSecond(), fname.getFirst().toString());
+				}
+				
+			}
 			
 		} catch (Exception e) {
 			fail(e);
 		}
 		
-		JsonRepresentation ret = new JsonRepresentation(oret);
-	    ret.setCharacterSet(CharacterSet.UTF_8);
-
-		return ret;
-	}
-
-	private JSONObject contextToJSON(IContext context, boolean isLocal) throws ThinklabException {
-		
-		/*
-		 * create a filedataset from the context
-		 */
-		FileDataset fds = new FileDataset();
-		fds.setContext(context);
-		
-		/*
-		 * if not local, zip it and send it over
-		 */
-		File fdir = Thinklab.get().getTempArea(getSession().getWorkspace());
-		if (!isLocal) {
-			fdir = new File(fdir + File.separator + "ctx.zip");
-		} 
-		
-		fds.persist(fdir.toString());
-		
-		return null;
+		return wrap();
 	}
 	
 }

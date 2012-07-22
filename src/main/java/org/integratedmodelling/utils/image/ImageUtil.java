@@ -40,7 +40,7 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
-import org.integratedmodelling.thinklab.modelling.visualization.ColorMap;
+import org.integratedmodelling.thinklab.visualization.ColorMap;
 
 /**
  * @author Sergey Krivov

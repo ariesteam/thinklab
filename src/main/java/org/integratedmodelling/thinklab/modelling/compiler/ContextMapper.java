@@ -22,11 +22,11 @@ package org.integratedmodelling.thinklab.modelling.compiler;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.integratedmodelling.collections.MultidimensionalCursor;
+import org.integratedmodelling.collections.Ticker;
+import org.integratedmodelling.collections.MultidimensionalCursor.StorageOrdering;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.multidimensional.MultidimensionalCursor;
-import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
-import org.integratedmodelling.multidimensional.Ticker;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
@@ -65,7 +65,7 @@ public class ContextMapper  {
 	int currentOverall = 0;
 	int current = 0;
 	ArrayList<IConcept> changed = null;
-	org.integratedmodelling.multidimensional.Ticker ticker = new Ticker();
+	org.integratedmodelling.collections.Ticker ticker = new Ticker();
 	
 	/**
 	 * When a cursor over the dimensions of a context is needed, this one should be used

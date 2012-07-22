@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.integratedmodelling.thinklab.geospace.visualization;
+package org.integratedmodelling.thinklab.visualization.geospace;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -42,12 +42,13 @@ import org.geotools.data.wms.WMSUtils;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.data.wms.request.GetMapRequest;
 import org.geotools.data.wms.response.GetMapResponse;
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.modelling.visualization.ColorMap;
+import org.integratedmodelling.thinklab.visualization.ColorMap;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.integratedmodelling.utils.image.ImageUtil;
 
@@ -93,6 +94,12 @@ public class GeoImageFactory {
 
 	private static WebMapServer _wms = null;
 	private int _wms_index = -1;
+
+	private String[] wmsServers = new String[] {
+			"http://geoposer.com:443/server/services/ve.xml",
+			"http://terraservice.net/ogccapabilities.ashx",
+			"http://onearth.jpl.nasa.gov/wms.cgi?request=GetCapabilities"
+	};
 	
 	private HashMap<String, URL> worldImages = new HashMap<String, URL>();
 	
@@ -128,6 +135,23 @@ public class GeoImageFactory {
 
 			if (_wms != null) {
 				break;
+			}
+		}
+		
+		if (_wms == null) {
+			/*
+			 * try defaults
+			 */
+			for (String s : wmsServers) {
+				try {
+					WebMapServer wms = new WebMapServer(new URL(s));
+					if (wms != null) {
+						_wms = wms;
+						break;
+					}
+				} catch (Exception e) {
+					/* just try the next */
+				}				
 			}
 		}
 		
@@ -281,7 +305,9 @@ public class GeoImageFactory {
 	/**
 	 * Return an image of the world with a shape drawn on it. Flags control the
 	 * rendering mode. Default is a hollow shape in red outline, touching the borders
-	 * of the image.
+	 * of the image. Uses WMS servers configured in, trying hard-coded defaults if not
+	 * configured or configured badly, and resorts to static image if one was provided
+	 * before declaring defeat.
 	 * 
 	 * @param shape
 	 * @param width
@@ -612,6 +638,45 @@ public class GeoImageFactory {
 		
 	}
 
+	/**
+	 * Define the plot size for the given map dimensions that ensures
+	 * that a map drawing of the area fits maximally within a viewport.
+	 * 
+	 * @param viewportWidth
+	 * @param viewportHeight
+	 * @param mapWidth
+	 * @param mapHeight
+	 * @return <width, height> of the largest map that fits in the viewport without distorsion.
+	 */
+	public static Pair<Integer, Integer> getPlotSize(int viewportWidth, int viewportHeight, int mapWidth, int mapHeight) {
+
+		int x = viewportWidth, y = viewportHeight;
+		double image_aspect_ratio = (double)mapWidth / (double)mapHeight;
+
+			// largest side of image must fit within corresponding side of viewport
+			if (mapWidth > mapHeight) {
+				x = viewportWidth;
+				y = (int)(((double)x) / image_aspect_ratio);
+				if (y > viewportHeight) {
+					// reduce further
+					double fc = (double)viewportHeight/(double)y;
+					x = (int)((double)x*fc);
+					y = (int)((double)y*fc);
+				}
+			} else {
+				y = viewportHeight;
+				x = (int)(((double)y) * image_aspect_ratio);
+				if (x > viewportWidth) {
+					// reduce further
+					double fc = (double)viewportWidth/(double)x;
+					x = (int)((double)x*fc);
+					y = (int)((double)y*fc);
+				}
+			}
+
+		return new Pair<Integer, Integer>(x, y);
+	}
+	
 	public static GeoImageFactory get() {
 
 		if (_instance == null) {

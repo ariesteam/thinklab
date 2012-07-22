@@ -7,12 +7,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.integratedmodelling.collections.MultidimensionalCursor;
 import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.collections.MultidimensionalCursor.StorageOrdering;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
-import org.integratedmodelling.multidimensional.MultidimensionalCursor;
-import org.integratedmodelling.multidimensional.MultidimensionalCursor.StorageOrdering;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
@@ -453,6 +453,10 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	public double getCoverage(int extent) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public boolean isEmpty() {
+		return _isNull || (_extents.size() == 0 && _states.size() == 0);
 	}
 
 	

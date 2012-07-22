@@ -2,48 +2,69 @@ package org.integratedmodelling.thinklab.modelling.datasets;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
-import org.integratedmodelling.common.ISerializable;
+import org.integratedmodelling.collections.ContextIndex;
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataset;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.utils.FolderZiper;
-import org.integratedmodelling.utils.MiscUtilities;
+import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
+import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
+import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
+import org.integratedmodelling.thinklab.modelling.lang.Context;
+import org.integratedmodelling.thinklab.visualization.geospace.GeoImageFactory;
+import org.integratedmodelling.utils.image.ImageUtil;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
- * A dataset residing on the filesystem, with an index, pre-visualized objects and options to package it
- * in an archive file. The index is a dataindex bean, serialized using Xstream.
+ * A dataset residing in a directory on the filesystem, with an index, pre-visualized objects, a full NetCDF
+ * for grids and any other non-grid data in subdirectories. Index is a serialized ContextIndex
+ * bean from the API library.
  * 
  * File structure after persist() is called:
  * 
  * <main dir>
- *      index.xml // use to reconstruct the index bean
+ *      index.xml // use to reconstruct the ContextIndex bean
+ *
  * 		thumbnails/
  * 			th_n.png*
+ *
  *      images/
- *          im_n.png*
- *      data/
- *      	d_n.xxx // any necessary data format.
+ *          im_n.xxx*
+ *
+ *      data.nc  // netcdf file with all grid data
+ *      
+ *      data/ xxx  // any additional non-grid data file (e.g. shapefiles), indexed in netcdf attributes.
  *      
  * @author Ferd
  *
  */
 public class FileDataset implements IDataset {
 
+	public static final int DEFAULT_THUMBNAIL_WIDTH = 360;
+	public static final int DEFAULT_THUMBNAIL_HEIGHT = 180;
+	public static final int DEFAULT_IMAGE_WIDTH = 800;
+	public static final int DEFAULT_IMAGE_HEIGHT = 600;
+
 	IContext _context;
-	Index _index = new Index();
+	ContextIndex _index = new ContextIndex();
 	
 	int _tboxX = 40, _tboxY = 40;
 	int _iboxX = 580, _iboxY = 580;
 	
+	public FileDataset() {
+	}
+	
+	public FileDataset(Context ctx) {
+		setContext(ctx);
+	}
+
 	public void setThumbnailBoxSize(int x, int y) {
 		_tboxX = x;
 		_tboxY = y;
@@ -59,14 +80,8 @@ public class FileDataset implements IDataset {
 		String getObservableDefinition();
 	}
 	
-	public static class Index {
-		int nStates;
-		ArrayList<Object> extents = new ArrayList<Object>();
-		ArrayList<Object> states = new ArrayList<Object>();
-	}
-	
 	@Override
-	public void setContext(IContext context) throws ThinklabException {
+	public void setContext(IContext context)  {
 		_context = context;
 	}
 
@@ -75,57 +90,81 @@ public class FileDataset implements IDataset {
 		return _context;
 	}
 
+	public ContextIndex getIndex() {
+		return _index;
+	}
+	
 	@Override
 	public String persist(String location) throws ThinklabException {
 		
 		if (_context == null)
 			return null;
 		
-		_index.nStates = _context.getMultiplicity();
+		_index.setMultiplicity(_context.getMultiplicity());
 		
-		/*
-		 * location must be a directory or a zip file. If zip, 
-		 * record it and create a temp directory. If not, create
-		 * dir if necessary and check that it's writable.
-		 */
 		File locDir = new File(location);
-		if (location.endsWith(".zip")) {
-			locDir = MiscUtilities.getPath(location);
-		}
 		locDir.mkdirs();
 		
+		new File(locDir + File.separator + "images").mkdirs();
+		new File(locDir + File.separator + "thumbnails").mkdirs();
+		
 		/*
-		 * compile index
+		 * create the NetCDF for anything that can be stored in it.
+		 * TODO this should not whine about non-grid data, but return
+		 * a list of states that could not be serialized in it.
+		 * 
+		 * TODO switch to CFdataset when it's ready.
 		 */
+		new NetCDFDataset(_context).write(locDir + File.separator + "data.nc");
+		_index.setDataFile("data.nc");
 		
 		/*
 		 * serialize extents
 		 */
-		for (IExtent e : _context.getExtents()) {
-			if (e instanceof ISerializable) {
-				_index.extents.add(((ISerializable)e).getSerializableBean());
-			} else {
-				_index.extents.add(e);
-			}
+		IExtent space = _context.getSpace();
+		if (space instanceof GridExtent) {
+			
+			ShapeValue shape = ((GridExtent)space).getShape();
+			Pair<Integer, Integer> pst = GeoImageFactory.getPlotSize(_tboxX, _tboxY, 
+					((GridExtent)space).getXCells(), ((GridExtent)space).getYCells());
+			Pair<Integer, Integer> psi = GeoImageFactory.getPlotSize(_iboxX, _iboxY, 
+					((GridExtent)space).getXCells(), ((GridExtent)space).getYCells());
+
+			/*
+			 * TODO use a raster image function that paints the actual grid
+			 */
+			ImageUtil.saveImage(
+					GeoImageFactory.get().getImagery(shape.getEnvelope(), shape, pst.getFirst(), pst.getSecond(), 0),
+					locDir + File.separator + "thumbnails" + File.separator + "space.png");
+		
+			ImageUtil.saveImage(
+					GeoImageFactory.get().getImagery(shape.getEnvelope(), shape, psi.getFirst(), psi.getSecond(), 0),
+					locDir + File.separator + "images" + File.separator + "space.png");
+			
+			_index.addExtent(
+					ContextIndex.SPACE_ID, space.getMultiplicity(), 
+					"thumbnails" + File.separator + "space.png", 
+					"images" + File.separator + "space.png",
+					space.getDomainConcept().toString());
+			
+		} /* TODO other space extents */
+		
+		IExtent time = _context.getTime();
+		if (time != null && time.getMultiplicity() > 1) {
+		
+			/*
+			 * TODO create image of time grid if multiple - should be easy.
+			 */
 		}
 		
 		int i = 0;
 		for (final IState s : _context.getStates()) {
 			
-			if (s instanceof ISerializable) {
-				_index.states.add(((ISerializable)s).getSerializableBean());
-			} else {
-				_index.states.add(s);
-			}
 
 			/*
-			 * produce images
+			 * produce images, set name in index
 			 */
 			
-			
-			/*
-			 * produce datasets
-			 */
 		}
 		
 		/*
@@ -139,14 +178,7 @@ public class FileDataset implements IDataset {
 			throw new ThinklabIOException(e1);
 		}
 		
-		
-		/*
-		 * if location is zip, zip things up
-		 */
-		if (location.endsWith(".zip")) {
-			FolderZiper.zipFolder(locDir.toString(), location);
-		}
-		
+				
 		return location;
 	}
 

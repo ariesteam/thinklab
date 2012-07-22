@@ -1,9 +1,8 @@
-package org.integratedmodelling.thinklab.modelling.visualization;
+package org.integratedmodelling.thinklab.visualization;
 
 import org.integratedmodelling.thinklab.api.modelling.IClassifyingObserver;
 import org.integratedmodelling.thinklab.api.modelling.IMeasuringObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.modelling.lang.Classification;
 
 public class VisualizationFactory {
 
@@ -24,14 +23,13 @@ public class VisualizationFactory {
 	public DisplayMetadata getDisplayMetadata(IState state) {
 		
 		if (state.getObserver() instanceof IClassifyingObserver) {
-			return new ClassificationDisplayMetadata((((Classification)(state.getObserver())).getClassification()));			
+			return new ClassificationDisplayMetadata(state);			
 		} else if (state.getObserver() instanceof IMeasuringObserver && 
 					((IMeasuringObserver)(state.getObserver())).getDiscretization() != null) {
 			
 		}
-					
 		
-		return new DisplayMetadata();
+		return new DisplayMetadata(state);
 	}
 	
 	

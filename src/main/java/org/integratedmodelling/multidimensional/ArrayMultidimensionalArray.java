@@ -21,6 +21,8 @@ package org.integratedmodelling.multidimensional;
 
 import java.util.Iterator;
 
+import org.integratedmodelling.collections.MultidimensionalCursor;
+import org.integratedmodelling.collections.MultidimensionalCursor.StorageOrdering;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 
 public class ArrayMultidimensionalArray {

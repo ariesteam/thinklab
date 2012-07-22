@@ -8,8 +8,8 @@ import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.modelling.interfaces.IModifiableState;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
-import org.integratedmodelling.thinklab.modelling.visualization.DisplayMetadata;
-import org.integratedmodelling.thinklab.modelling.visualization.VisualizationFactory;
+import org.integratedmodelling.thinklab.visualization.DisplayMetadata;
+import org.integratedmodelling.thinklab.visualization.VisualizationFactory;
 
 public class ObjectState extends Observation implements IModifiableState {
 

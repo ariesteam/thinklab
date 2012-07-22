@@ -18,7 +18,7 @@
    along with Thinklab.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.integratedmodelling.thinklab.modelling.visualization;
+package org.integratedmodelling.thinklab.visualization;
 
 import java.awt.Color;
 import java.awt.image.IndexColorModel;
