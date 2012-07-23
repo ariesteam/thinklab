@@ -35,7 +35,7 @@ public class Project extends HashableObject implements IProject {
 	 * Number of loaded projects that reference this one, including ourselves. Unloading a 
 	 * project that references this will unload this only if the decremented count drops to 0. 
 	 */
-	int _refcount = 0;
+//	int _refcount = 0;
 
 	Properties _properties = null;
 	private ArrayList<INamespace> _namespaces = new ArrayList<INamespace>();
@@ -84,17 +84,17 @@ public class Project extends HashableObject implements IProject {
 
 	public void load(IResolver resolver) throws ThinklabException {
 
-		if (isLoaded() && isDirty())
+		if (isLoaded()/* && isDirty()*/)
 			unload();
 		
-		_refcount ++;
+//		_refcount ++;
 		
 		/*
 		 * if we haven't been unloaded, we didn't need to so we don't need
 		 * loading, either.
 		 */
-		if (isLoaded())
-			return;
+//		if (isLoaded())
+//			return;
 		
 		for (IProject p : _manager.computeDependencies(this)) {
 			if (p.equals(this))
@@ -172,9 +172,9 @@ public class Project extends HashableObject implements IProject {
 			((Project)p).unload();
 		}
 		
-		_refcount --;
-		
-		if (_refcount == 0) {
+//		_refcount --;
+//		
+//		if (_refcount == 0) {
 		
 			for (INamespace ns : _namespaces) {
 				Thinklab.get().releaseNamespace(ns.getId());
@@ -183,7 +183,7 @@ public class Project extends HashableObject implements IProject {
 			_namespaces.clear();
 			_resourcesInError.clear();
 			_loaded = false;
-		}
+//		}
 	}
 
 	@Override
@@ -432,5 +432,27 @@ public class Project extends HashableObject implements IProject {
 	
 	public String toString() {
 		return "[thinklab project: " + _id + "]";
+	}
+	
+	@Override
+	public List<String> getUserResourceFolders() {
+
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		for (File f : _path.listFiles()) {
+			if (f.isDirectory() &&
+				!f.equals(new File(_path + File.separator + getSourceDirectory())) &&
+				!isManagedDirectory(
+						MiscUtilities.getFileName(f.toString()))) {
+				ret.add(MiscUtilities.getFileBaseName(f.toString()));
+			}
+		}
+		
+		return ret;
+	}
+
+	private boolean isManagedDirectory(String fileName) {
+		// TODO add any other necessary files
+		return fileName.startsWith(".");
 	}
 }
