@@ -209,6 +209,11 @@ public class ModelManager implements IModelManager {
 
 		@Override
 		public boolean onException(Throwable e, int lineNumber) {
+
+			/*
+			 * TODO add error directly to namespace if ns isn't null and interactive is false.
+			 */
+			
 			errors.add(new Pair<String, Integer>(e.getMessage(), lineNumber));
 			Thinklab.get().logger().error(resourceId + ": " + lineNumber + ": " + e.getMessage());
 			if (_isInteractive) {
@@ -224,6 +229,11 @@ public class ModelManager implements IModelManager {
 		
 		@Override
 		public boolean onWarning(String warning, int lineNumber) {
+
+			/*
+			 * TODO add warning directly to namespace
+			 */
+			
 			warnings.add(new Pair<String, Integer>(warning, lineNumber));
 			Thinklab.get().logger().warn(resourceId + ": " + lineNumber + ": " + warning);
 			if (_isInteractive) {
@@ -277,9 +287,6 @@ public class ModelManager implements IModelManager {
 				 * do nothing
 				 */
 			}
-			
-
-
 		}
 		
 		@Override
@@ -874,6 +881,8 @@ public class ModelManager implements IModelManager {
 
 		if (resourceId.endsWith(".tql")) {
 
+			Thinklab.get().logger().info("loading " + resourceId + " for " + namespaceId);
+			
 			IResolver res = resolver.getNamespaceResolver(namespaceId, resourceId);
 			
 			Injector injector = Guice.createInjector(new ModellingModule());
@@ -887,6 +896,8 @@ public class ModelManager implements IModelManager {
 			}
 
 		} else if (resourceId.endsWith(".owl")) {
+
+			Thinklab.get().logger().info("loading " + resourceId + " for " + namespaceId);
 
 			File ofile = new File(resourceId);
 			try {

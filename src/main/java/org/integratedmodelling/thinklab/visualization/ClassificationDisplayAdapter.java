@@ -14,8 +14,8 @@ public class ClassificationDisplayAdapter extends DisplayAdapter {
 		
 		super(state);
 		
-		if (state.getObserver() instanceof IClassifyingObserver)
-			throw new ThinklabRuntimeException("internal error: classification display metadata used on a non-classification");
+		if (!(state.getObserver() instanceof IClassifyingObserver)) 
+			throw new ThinklabRuntimeException("internal error: classification display metadata used on a non-classification: " + state.getObserver());
 		
 		_classification = ((IClassifyingObserver)(state.getObserver())).getClassification();
 

@@ -573,7 +573,6 @@ public class Classification implements IClassificationDefinition {
 	@Override
 	public void addClassifier(IConceptDefinition concept, IClassifier classifier) {
 		this._cdefs.add(new Pair<IConceptDefinition, IClassifier>(concept, classifier));
-		_codeConceptOrder.add(concept.getName());
 	}
 
 

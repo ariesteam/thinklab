@@ -851,7 +851,7 @@ public class Ontology implements IOntology {
 					IConcept p = findConcept(axiom.getArgument(1).toString());
 					IConcept c = findConcept(axiom.getArgument(0).toString());
 					OWLClass parent = (OWLClass) ((Concept)p).entity;
-					manager.addAxiom(ont, factory.getOWLSubClassAxiom(parent, (OWLClass)((Concept)c).entity));
+					manager.addAxiom(ont, factory.getOWLSubClassAxiom((OWLClass)((Concept)c).entity, parent));
 				}
 				
 				/* TODO etc */

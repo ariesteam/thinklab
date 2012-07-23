@@ -79,8 +79,6 @@ public class Ranking extends Observer<Ranking> implements IRankingObserverDefini
 		}
 	}
 
-
-
 	/*
 	 * -----------------------------------------------------------------------------------
 	 * accessor - it's always a mediator, either to another measurement or to a datasource
