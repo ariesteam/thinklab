@@ -1,11 +1,13 @@
 package org.integratedmodelling.thinklab.modelling.lang;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 import org.integratedmodelling.collections.Pair;
+import org.integratedmodelling.collections.Triple;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.NS;
@@ -313,4 +315,18 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		return _errors.size() > 0;
 	}
 
+	@Override
+	public Collection<Triple<Integer, String, Integer>> getErrors() {
+
+		List<Triple<Integer, String, Integer>> ret = new ArrayList<Triple<Integer,String,Integer>>();
+		for (Pair<String, Integer> e : _errors) {
+			ret.add(new Triple<Integer, String, Integer>(0, e.getFirst(), e.getSecond()));
+		}
+		return ret;
+	}
+
+	@Override
+	public Collection<Pair<String, Integer>> getWarnings() {
+		return _warnings;
+	}
 }

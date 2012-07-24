@@ -215,7 +215,7 @@ public class ModelManager implements IModelManager {
 				namespace.addError(0, e.getMessage(), lineNumber);
 			}
 			Thinklab.get().logger().error(resourceId + ": " + lineNumber + ": " + e.getMessage());
-			if (_isInteractive) {
+			if (_interactiveOutput != null) {
 				_interactiveOutput.println("error: " + e.getMessage());
 			}
 			return true;
