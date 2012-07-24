@@ -163,8 +163,6 @@ public class ModelManager implements IModelManager {
 	 */
 	public class Resolver implements IResolver {
 
-		ArrayList<Pair<String,Integer>> errors = new ArrayList<Pair<String,Integer>>();
-		ArrayList<Pair<String,Integer>> warnings = new ArrayList<Pair<String,Integer>>();
 		ArrayList<Pair<String,Integer>> infos = new ArrayList<Pair<String,Integer>>();
 		String resourceId = "";
 		IProject project;
@@ -211,10 +209,11 @@ public class ModelManager implements IModelManager {
 		public boolean onException(Throwable e, int lineNumber) {
 
 			/*
-			 * TODO add error directly to namespace if ns isn't null and interactive is false.
+			 * add error directly to namespace if ns isn't null and interactive is false.
 			 */
-			
-			errors.add(new Pair<String, Integer>(e.getMessage(), lineNumber));
+			if (namespace != null && e instanceof ThinklabException) {
+				namespace.addError(0, e.getMessage(), lineNumber);
+			}
 			Thinklab.get().logger().error(resourceId + ": " + lineNumber + ": " + e.getMessage());
 			if (_isInteractive) {
 				_interactiveOutput.println("error: " + e.getMessage());
@@ -231,10 +230,12 @@ public class ModelManager implements IModelManager {
 		public boolean onWarning(String warning, int lineNumber) {
 
 			/*
-			 * TODO add warning directly to namespace
+			 * add warning directly to namespace
 			 */
-			
-			warnings.add(new Pair<String, Integer>(warning, lineNumber));
+			if (namespace != null) {
+				namespace.addWarning(warning, lineNumber);
+			}
+
 			Thinklab.get().logger().warn(resourceId + ": " + lineNumber + ": " + warning);
 			if (_isInteractive) {
 				_interactiveOutput.println("warning: " + warning);
@@ -255,7 +256,7 @@ public class ModelManager implements IModelManager {
 		@Override
 		public void onNamespaceDeclared() {
 			
-			if (errors.size() > 0) {
+			if (namespace.hasErrors()) {
 				return;
 			}
 			
@@ -292,7 +293,7 @@ public class ModelManager implements IModelManager {
 		@Override
 		public void onNamespaceDefined() {
 
-			if (errors.size() > 0) {
+			if (namespace.hasErrors()) {
 				return;
 			}
 			
@@ -378,7 +379,7 @@ public class ModelManager implements IModelManager {
 		@Override
 		public void onModelObjectDefined(IModelObject ret)  {
 
-			if (errors.size() > 0) {
+			if (ret.getNamespace().hasErrors()) {
 				return;
 			}
 

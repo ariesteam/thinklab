@@ -115,10 +115,10 @@ public class Project extends HashableObject implements IProject {
 		_isDirty = false;
 	}
 
-	private boolean isDirty() {
-		return _isDirty ;
-	}
-
+//	private boolean isDirty() {
+//		return _isDirty ;
+//	}
+//
 
 	private void loadInternal(File f, HashSet<File> read, ArrayList<INamespace> ret, String path,
 			IProject project, IResolver resolver) throws ThinklabException {

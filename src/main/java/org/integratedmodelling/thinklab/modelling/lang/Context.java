@@ -8,19 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.integratedmodelling.collections.MultidimensionalCursor;
-import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.collections.MultidimensionalCursor.StorageOrdering;
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
+import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
 import org.integratedmodelling.thinklab.api.listeners.IListener;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
@@ -48,7 +48,11 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	
 	ArrayList<IExtent> _order = new ArrayList<IExtent>();
 	HashMap<IConcept, IExtent> _extents = new HashMap<IConcept, IExtent>();
-	HashMap<ISemanticObject<?>, IState> _states = new HashMap<ISemanticObject<?>, IState>();
+	
+	/*
+	 * states are indexed by observable signature
+	 */
+	HashMap<String, IState> _states = new HashMap<String, IState>();
 	
 	boolean _isNull = false;
 	
@@ -99,7 +103,9 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	}
 	
 	public void addStateUnchecked(IState state) {
-		_states.put(state.getObservable(), state);
+		_states.put(
+				((SemanticObject<?>)(state.getObservable())).getSignature(), 
+				state);
 	}
 	
 	/**
@@ -238,33 +244,35 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		return true;
 	}
 
-
 	@Override
-	public IState getState(IConcept observable) {
-		return _states.get(observable);
-	}
-
-	@Override
-	public void merge(IObservation observation) throws ThinklabException {
+	public void merge(Object observation) throws ThinklabException {
 
 		if (observation instanceof IExtent) {
 			mergeExtent((IExtent)observation);
-		} else {
+		} else if (observation instanceof IContext) {
+			mergeContext((IContext)observation);
+		} else if (observation instanceof IState) {
 			/*
-			 * TODO must be a state with a datasource that we can redefine
-			 * for this context, or a model we can recompute in this context.
+			 * TODO should check that the extents match
 			 */
 			if (observation instanceof IState) {
-				_states.put(observation.getObservable(), (IState)observation);
+				addStateUnchecked((IState)observation);
+			}
+		} else {
+			
+			/*
+			 * observe the thing, merge results
+			 */
+			IObservation res = Thinklab.get().observe(observation, this);
+			if (res != null) {
+				merge(res.getContext());
 			}
 		}
 		
 		sort();
 
 	}
-
-	@Override
-	public void merge(IContext context) throws ThinklabException {
+	public void mergeContext(IContext context) throws ThinklabException {
 
 		_order.clear(); // in case we have nothing in the context
 

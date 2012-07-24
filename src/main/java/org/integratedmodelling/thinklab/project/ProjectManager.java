@@ -120,11 +120,22 @@ public class ProjectManager implements IProjectManager {
 	}
 
 	@Override
-	public String[] registerProject(File... projectDir)  {
+	public String[] registerProject(File... projectDir) throws ThinklabException  {
 		
 		String[] ret = new String[projectDir.length];
 		
 		for (int i = 0; i < projectDir.length; i++) {
+
+			String projectId = MiscUtilities.getFileName(projectDir[i].toString());
+			IProject project = _projects.get(projectId);
+
+			if (project != null) {
+				if (((Project)project).isLoaded()) {
+					unloadProject(projectId);
+				}
+				unregisterProject(projectId);
+			}
+			
 			IProject p = new Project(projectDir[i], this);
 			ret[i] = p.getId();
 			_projects.put(p.getId(), p);
@@ -154,7 +165,7 @@ public class ProjectManager implements IProjectManager {
 	}
 
 	@Override
-	public void registerProjectDirectory(File projectDirectory)  {
+	public void registerProjectDirectory(File projectDirectory) throws ThinklabException  {
 
 		/*
 		 * register all projects in configured directory

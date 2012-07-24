@@ -97,7 +97,14 @@ public class Registry {
 	protected void removeConceptSpace(String cs) {
 		URI uri = cs2uri.get(cs);
 		cs2uri.remove(cs);
-		uri2cs.remove(uri);
+		if (uri != null) {
+			/*
+			 * TODO this happens when unloading namespaces that come from non-OWL thinklab
+			 * files. It shouldn't be null but it is - FIXME properly register the URI
+			 * for those as well.
+			 */
+			uri2cs.remove(uri);
+		}
 	}
 
 	/**

@@ -824,7 +824,7 @@ public class Thinklab implements
 	}
 
 	@Override
-	public void registerProjectDirectory(File projectDirectory) {
+	public void registerProjectDirectory(File projectDirectory) throws ThinklabException {
 		_projectManager.registerProjectDirectory(projectDirectory);		
 	}
 
@@ -961,7 +961,7 @@ public class Thinklab implements
 	}
 
 	@Override
-	public String[] registerProject(File... projectDir) {
+	public String[] registerProject(File... projectDir) throws ThinklabException {
 		return _projectManager.registerProject(projectDir);
 	}
 

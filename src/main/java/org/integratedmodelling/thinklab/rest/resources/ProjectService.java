@@ -28,6 +28,7 @@ import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.project.Project;
 import org.integratedmodelling.thinklab.rest.DefaultRESTHandler;
 import org.integratedmodelling.utils.FolderZiper;
+import org.integratedmodelling.utils.MiscUtilities;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
@@ -83,12 +84,13 @@ public class ProjectService extends DefaultRESTHandler {
 				
 				for (String s : getArgument("directory").split(",")) {
 					
+					
 					File file = new File(s);
 					if (!file.exists() || !file.isDirectory())
 						throw new ThinklabResourceNotFoundException("directory " + file + " not found on filesystem");
-				
-					Thinklab.get().logger().info("registering project from " + file);
-					
+
+					String projectId = MiscUtilities.getFileName(s);
+					Thinklab.get().logger().info("registering project " + projectId + " from " + file);
 					Thinklab.get().registerProject(file);
 				}
 				

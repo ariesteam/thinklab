@@ -1,5 +1,7 @@
 package org.integratedmodelling.thinklab.modelling.datasets;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -13,10 +15,8 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataset;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IState;
-import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
-import org.integratedmodelling.thinklab.modelling.lang.Context;
 import org.integratedmodelling.thinklab.visualization.DisplayAdapter;
 import org.integratedmodelling.thinklab.visualization.VisualizationFactory;
 import org.integratedmodelling.thinklab.visualization.geospace.GeoImageFactory;
@@ -132,14 +132,27 @@ public class FileDataset implements IDataset {
 					((GridExtent)space).getXCells(), ((GridExtent)space).getYCells());
 			Pair<Integer, Integer> psi = GeoImageFactory.getPlotSize(_iboxX, _iboxY, 
 					((GridExtent)space).getXCells(), ((GridExtent)space).getYCells());
-
+			Pair<Integer, Integer> psk = GeoImageFactory.getPlotSize(16, 16, 
+					((GridExtent)space).getXCells(), ((GridExtent)space).getYCells());
 			/*
 			 * TODO use a raster image function that paints the actual grid
 			 */
+			BufferedImage thumbnail = 
+					GeoImageFactory.get().getImagery(shape.getEnvelope(), shape, pst.getFirst(), pst.getSecond(), 0);
+			
 			ImageUtil.saveImage(
-					GeoImageFactory.get().getImagery(shape.getEnvelope(), shape, pst.getFirst(), pst.getSecond(), 0),
+					thumbnail,
 					locDir + File.separator + "thumbnails" + File.separator + "space.png");
 		
+			/*
+			 * make an icon out of that
+			 */
+//			Image image = new BufferedImage(psk.getFirst(), psk.getSecond(), BufferedImage.TYPE_INT_RGB);
+//			image.getGraphics().drawImage(thumbnail, 0, 0, 16, 16, null);
+//			ImageUtil.saveImage(
+//					GeoImageFactory.get().getImagery(shape.getEnvelope(), shape, psi.getFirst(), psi.getSecond(), 0),
+//					locDir + File.separator + "icons" + File.separator + "space.png");
+
 			ImageUtil.saveImage(
 					GeoImageFactory.get().getImagery(shape.getEnvelope(), shape, psi.getFirst(), psi.getSecond(), 0),
 					locDir + File.separator + "images" + File.separator + "space.png");
@@ -167,6 +180,9 @@ public class FileDataset implements IDataset {
 			 */
 			DisplayAdapter da = VisualizationFactory.get().getDisplayAdapter(s);
 			
+			/*
+			 * TODO make an icon too - not easy with the current call logics.
+			 */
 			String thf = da.getMediaFile(new File(locDir + File.separator + "thumbnails"), _tboxX, _tboxY);
 			String imf = da.getMediaFile(new File(locDir + File.separator + "images"), _iboxX, _iboxY);
 			

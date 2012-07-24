@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.NS;
@@ -21,6 +22,7 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
 import org.integratedmodelling.thinklab.api.modelling.IModelObject;
 import org.integratedmodelling.thinklab.api.modelling.INamespace;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelObjectDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefinition;
 import org.integratedmodelling.thinklab.api.project.IProject;
@@ -47,6 +49,9 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	
 	HashMap<String, IModelObject> _namedObjects = new HashMap<String, IModelObject>();
 	
+	ArrayList<Pair<String, Integer>> _errors = new ArrayList<Pair<String,Integer>>();
+	ArrayList<Pair<String, Integer>> _warnings = new ArrayList<Pair<String,Integer>>();
+	
 	IOntology _ontology;
 	String _resourceUrl;
 
@@ -59,6 +64,8 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	int        _firstLineNumber = 0;
 	
 	private int _nextAxiom;
+
+	private IConceptDefinition _agentType;
 
 	public Namespace(IReferenceList list) {
 		super(list);
@@ -284,6 +291,26 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		} catch (ThinklabException e) {
 			throw new ThinklabRuntimeException(e);
 		}
+	}
+
+	@Override
+	public void setAgentConcept(IConceptDefinition agentConcept) {
+		this._agentType = agentConcept;
+	}
+
+	@Override
+	public void addWarning(String warning, int lineNumber) {	
+		_warnings.add(new Pair<String, Integer>(warning, lineNumber));
+	}
+	
+	@Override
+	public void addError(int errorCode, String errorMessage, int lineNumber) {
+		this._errors.add(new Pair<String, Integer>(errorMessage, lineNumber));
+	}
+
+	@Override
+	public boolean hasErrors() {
+		return _errors.size() > 0;
 	}
 
 }
