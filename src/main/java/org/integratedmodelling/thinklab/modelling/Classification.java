@@ -25,12 +25,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import org.integratedmodelling.collections.NumericInterval;
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.collections.Triple;
-import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.lang.Classifier;
@@ -40,6 +38,7 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IClassifier;
+import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IClassificationDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
 
@@ -362,7 +361,7 @@ public class Classification implements IClassificationDefinition {
 			/*
 			 * we don't allow ordered range mappings to have disjoint intervals
 			 */
-			if (typeIs(Type.ORDERED_RANGE_MAPPING) || observable.is(Thinklab.ORDERED_RANGE_MAPPING)
+			if (typeIs(Type.RANGE_DISCRETIZATION) || observable.is(Thinklab.ORDERED_RANGE_MAPPING)
 					&& Double.compare(pd.getFirst(), last) != 0) {
 				throw new ThinklabValidationException(
 						"disjoint intervals for ordered range mapping of "
@@ -459,14 +458,14 @@ public class Classification implements IClassificationDefinition {
 		}
 			
 		} else if ( typeIs(Type.ORDERED_RANKING) ||
-				typeIs(Type.ORDERED_RANGE_MAPPING) ||
+				typeIs(Type.RANGE_DISCRETIZATION) ||
 				type.is(Thinklab.ORDINAL_RANKING) ||
 				type.is(Thinklab.ORDERED_RANGE_MAPPING)) {
 
 			if (typeIs(Type.ORDERED_RANKING) || type.is(Thinklab.ORDINAL_RANKING))
 				_type = Type.ORDERED_RANKING;
 			else
-				_type = Type.ORDERED_RANGE_MAPPING;
+				_type = Type.RANGE_DISCRETIZATION;
 
 			isRanking = true;
 
@@ -590,6 +589,24 @@ public class Classification implements IClassificationDefinition {
 	@Override
 	public boolean isCategorical() {
 		return _type.equals(Type.UNORDERED);
+	}
+
+	@Override
+	public void notifyObserver(IObserver observer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Type getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setTypeHint(Type type) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

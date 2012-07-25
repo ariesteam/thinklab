@@ -110,6 +110,7 @@ public class FileDataset implements IDataset {
 		
 		new File(locDir + File.separator + "images").mkdirs();
 		new File(locDir + File.separator + "thumbnails").mkdirs();
+		new File(locDir + File.separator + "icons").mkdirs();
 		
 		/*
 		 * create the NetCDF for anything that can be stored in it.
@@ -147,11 +148,11 @@ public class FileDataset implements IDataset {
 			/*
 			 * make an icon out of that
 			 */
-//			Image image = new BufferedImage(psk.getFirst(), psk.getSecond(), BufferedImage.TYPE_INT_RGB);
-//			image.getGraphics().drawImage(thumbnail, 0, 0, 16, 16, null);
-//			ImageUtil.saveImage(
-//					GeoImageFactory.get().getImagery(shape.getEnvelope(), shape, psi.getFirst(), psi.getSecond(), 0),
-//					locDir + File.separator + "icons" + File.separator + "space.png");
+			Image image = new BufferedImage(psk.getFirst(), psk.getSecond(), BufferedImage.TYPE_INT_RGB);
+			image.getGraphics().drawImage(thumbnail, 0, 0, 16, 16, null);
+			ImageUtil.saveImage(
+					GeoImageFactory.get().getImagery(shape.getEnvelope(), shape, psi.getFirst(), psi.getSecond(), 0),
+					locDir + File.separator + "icons" + File.separator + "space.png");
 
 			ImageUtil.saveImage(
 					GeoImageFactory.get().getImagery(shape.getEnvelope(), shape, psi.getFirst(), psi.getSecond(), 0),
