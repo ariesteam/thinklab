@@ -10,6 +10,7 @@ import java.util.List;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.annotation.SemanticObject;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IComputingAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
@@ -23,6 +24,7 @@ import org.integratedmodelling.thinklab.modelling.compiler.Contextualizer.Depend
 import org.integratedmodelling.thinklab.modelling.debug.ModelGraph;
 import org.integratedmodelling.thinklab.modelling.interfaces.IModifiableState;
 import org.integratedmodelling.thinklab.modelling.lang.Context;
+import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
 import org.integratedmodelling.utils.NameGenerator;
 import org.jgrapht.DirectedGraph;
@@ -56,7 +58,8 @@ public class CompiledModel {
 		/*
 		 * TODO remove --debug
 		 */
-		new ModelGraph(graph).dump(false);
+		((Metadata)(context.getMetadata())).put(
+				IMetadata.MODEL_ACCESSOR_GRAPH, new ModelGraph(graph).dump(false));
 
 	}
 

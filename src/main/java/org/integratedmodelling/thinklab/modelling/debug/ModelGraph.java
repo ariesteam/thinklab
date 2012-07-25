@@ -27,7 +27,7 @@ public class ModelGraph {
 		this.graph = graph;
 	}
 	
-	public void dump(boolean reverse) throws ThinklabResourceNotFoundException {
+	public String dump(boolean reverse) throws ThinklabResourceNotFoundException {
 		
 		GraphViz ziz = new GraphViz();
 		ziz.loadGraph(graph, new NodePropertiesProvider() {
@@ -97,7 +97,7 @@ public class ModelGraph {
 			
 		}, reverse);
 		
-		System.out.println(ziz.getDotSource());
+		return ziz.getDotSource();
 	}
 
 }

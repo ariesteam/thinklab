@@ -11,6 +11,7 @@ import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataset;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
@@ -113,6 +114,13 @@ public class FileDataset implements IDataset {
 		new File(locDir + File.separator + "icons").mkdirs();
 		
 		/*
+		 * if there is a DOT source for the model graph, save it in the index.
+		 */
+		if (_context.getMetadata().get(IMetadata.MODEL_ACCESSOR_GRAPH) != null) {
+			_index.setModelGraph(_context.getMetadata().getString(IMetadata.MODEL_ACCESSOR_GRAPH));
+		}
+		
+		/*
 		 * create the NetCDF for anything that can be stored in it.
 		 * TODO this should not whine about non-grid data, but return
 		 * a list of states that could not be serialized in it.
@@ -135,6 +143,7 @@ public class FileDataset implements IDataset {
 					((GridExtent)space).getXCells(), ((GridExtent)space).getYCells());
 			Pair<Integer, Integer> psk = GeoImageFactory.getPlotSize(16, 16, 
 					((GridExtent)space).getXCells(), ((GridExtent)space).getYCells());
+
 			/*
 			 * TODO use a raster image function that paints the actual grid
 			 */

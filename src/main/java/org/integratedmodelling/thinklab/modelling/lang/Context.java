@@ -282,6 +282,8 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		for (IState s : context.getStates()) {
 			merge(s);
 		}
+		
+		_metadata.merge(context.getMetadata());
 	}
 
 	@Override
