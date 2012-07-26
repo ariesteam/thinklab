@@ -97,6 +97,10 @@ public abstract class RegularRasterGridDataSource implements IDataSource {
 		if (_coverage == null) {
 			_coverage = readData();
 		}
+		
+		if (!_preMatched)
+			_finalExtent = getFinalExtent(context);
+		
 		return new RasterGridAccessor();
 	}
 

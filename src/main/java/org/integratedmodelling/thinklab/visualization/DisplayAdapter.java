@@ -360,6 +360,13 @@ public class DisplayAdapter extends Metadata {
 		if (this.isUnknown)
 			return idata;
 
+		/*
+		 * if the theoretical range is 0 but the values are not, we only have
+		 * one non-zero or non-unknown value. We must account for that.
+		 */
+		boolean singleValue = 
+				this.theoreticalRange[0] == this.theoreticalRange[1] && this.theoreticalRange[0] != 0;
+		
 		int imin = 0, imax = 0;
 		for (int i = 0; i < len; i++) {
 
@@ -367,11 +374,13 @@ public class DisplayAdapter extends Metadata {
 				idata[i] = 0;
 			else {
 				idata[i] = 
-					(classification != null && !isContinuous) ? 
+					singleValue ? 
+					(Double.isNaN(ddata[i]) || ddata[i] == 0 ? 0 : 1) :
+					((classification != null && !isContinuous) ? 
 						((int) ddata[i] - this.displayDataOffset) : 
 						(int) (((ddata[i] - this.theoreticalRange[0]) / 
 									(this.theoreticalRange[1] - this.theoreticalRange[0])) * 
-									(this.displayLevelsCount - 1));
+									(this.displayLevelsCount - 1)));
 			}
 
 			if (i == 0) {
