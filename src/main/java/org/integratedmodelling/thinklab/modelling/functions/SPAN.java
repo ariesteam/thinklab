@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 import org.integratedmodelling.thinklab.modelling.span.SPANAccessor;
 
@@ -14,14 +15,15 @@ import org.integratedmodelling.thinklab.modelling.span.SPANAccessor;
 public class SPAN implements IExpression {
 
 	@Override
-	public String getLanguage() {
-		return "TQL";
-	}
-
-	@Override
 	public Object eval(Map<String, Object> parameters) throws ThinklabException {
 		// TODO everything
 		return new SPANAccessor();
+	}
+
+	@Override
+	public void setProjectContext(IProject project) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

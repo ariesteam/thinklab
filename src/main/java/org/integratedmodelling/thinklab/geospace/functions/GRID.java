@@ -5,6 +5,7 @@ import java.util.Map;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.geospace.literals.PolygonValue;
 import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
@@ -14,12 +15,6 @@ import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 	{ "x", "y", "shape", "crs", "resolution", "location", 
 	  "center", "nwCorner", "swCorner", "neCorner", "seCorner"})
 public class GRID implements IExpression {
-
-	@Override
-	public String getLanguage() {
-		// TODO Auto-generated method stub
-		return "TQL";
-	}
 
 	@Override
 	public Object eval(Map<String, Object> parameters) throws ThinklabValidationException, ThinklabException {
@@ -64,6 +59,12 @@ public class GRID implements IExpression {
 		}
 		
 		return ret;
+	}
+
+	@Override
+	public void setProjectContext(IProject project) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

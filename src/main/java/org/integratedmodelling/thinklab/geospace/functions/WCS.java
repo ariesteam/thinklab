@@ -4,17 +4,12 @@ import java.util.Map;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
+import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.geospace.implementations.data.WCSGridDataSource;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 
 @Function(id="wcs", parameterNames= { "service", "id", "no-data"})
 public class WCS implements IExpression {
-
-	@Override
-	public String getLanguage() {
-		// TODO Auto-generated method stub
-		return "TQL";
-	}
 
 	@Override
 	public Object eval(Map<String, Object> parameters) throws ThinklabException {
@@ -31,6 +26,12 @@ public class WCS implements IExpression {
 		}
 		
 		return new WCSGridDataSource(service, id, new double[]{noData});
+	}
+
+	@Override
+	public void setProjectContext(IProject project) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

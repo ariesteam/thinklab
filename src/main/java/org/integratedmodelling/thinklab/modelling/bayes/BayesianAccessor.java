@@ -1,6 +1,6 @@
 package org.integratedmodelling.thinklab.modelling.bayes;
 
-import java.util.Map;
+import java.io.File;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -13,16 +13,31 @@ import org.integratedmodelling.thinklab.interfaces.bayes.IBayesianNetwork;
 public class BayesianAccessor implements ISerialAccessor, IComputingAccessor {
 
 	IBayesianNetwork _network;
+	String importFile;
+	File workspace;
+	boolean _initialized = false;
 	
-	public BayesianAccessor(Map<String, Object> parameters) {
-		
+	public BayesianAccessor(String importFile, File workspace) {
+		this.importFile = importFile;
+		this.workspace = workspace;
+	}
+
+	public void initialize() throws ThinklabException {
+		if (!_initialized) {
+			_network = 
+				BayesianFactory.get().
+					createBayesianNetwork(importFile + File.separator + workspace);
+			
+			/*
+			 * TODO compile all support information
+			 */
+			
+			_initialized = true;
+		}
 	}
 	
 	@Override
-	public IConcept getStateType() {
-		/*
-		 * TODO this is actually a DISCRETE_PROBABILITY_DISTRIBUTION which I don't have yet
-		 */
+	public IConcept getStateType() {		
 		return Thinklab.NUMBER;
 	}
 
@@ -52,6 +67,8 @@ public class BayesianAccessor implements ISerialAccessor, IComputingAccessor {
 	@Override
 	public void process(int stateIndex) throws ThinklabException {
 
+		initialize();
+		
 		/*
 		 * submit evidence
 		 */

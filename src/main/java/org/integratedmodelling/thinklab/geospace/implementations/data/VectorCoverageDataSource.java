@@ -19,165 +19,85 @@
  */
 package org.integratedmodelling.thinklab.geospace.implementations.data;
 
-import java.util.HashMap;
-
 import org.integratedmodelling.exceptions.ThinklabException;
-import org.integratedmodelling.exceptions.ThinklabRuntimeException;
+import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.thinklab.api.modelling.IAccessor;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
 import org.integratedmodelling.thinklab.geospace.coverage.ICoverage;
+import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
-import org.integratedmodelling.thinklab.geospace.extents.ShapeExtent;
-import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 
 /**
  * @author Ferdinando
  */
-public class VectorCoverageDataSource implements IDataSource {
-
+public abstract class VectorCoverageDataSource implements IDataSource {
 
 	protected ICoverage coverage = null;
-
-	/* same here - these are overall extents that we need to conform to */
-	private GridExtent gridExtent;
-	private ShapeExtent shapeExtent;
-
-	protected MVELExpression transformation;
 	
-//	@Override
-//	public void initialize(IInstance i) throws ThinklabException {
-//
-//		// these are compulsory
-//		String sourceURL = null;
-//		String valueAttr = null;
-//		String filterExpression = null;
-//
-//		// these are only needed if we use an external attribute table
-//		String dataURL = null;
-//		String sourceAttr = null;
-//		String targetAttr = null;
+	/**
+	 * This must ensure that coverage contains a valid vector coverage.
+	 * 
+	 * @throws ThinklabException
+	 */
+	protected abstract void initialize() throws ThinklabException;
+	
+//	public Object getValue(int index, Object[] parameters) {
 //		
-//		// read requested parameters from properties
-//		for (IRelationship r : i.getRelationships()) {
-//			
-//			if (r.isLiteral()) {
-//				
-//				if (r.getProperty().equals(Geospace.COVERAGE_SOURCE_URL)) {
-//					sourceURL = URLUtils.resolveUrl(
-//							r.getValue().toString(),
-//							Geospace.get().getProperties());
-//				} else if (r.getProperty().equals(Geospace.HAS_SOURCE_LINK_ATTRIBUTE)) {
-//					sourceAttr = r.getValue().toString();
-//				} else if (r.getProperty().equals(Geospace.HAS_TARGET_LINK_ATTRIBUTE)) {
-//					targetAttr = r.getValue().toString();
-//				} else if (r.getProperty().equals(Geospace.HAS_VALUE_ATTRIBUTE)) {
-//					valueAttr = r.getValue().toString();
-//				} else if (r.getProperty().equals(Geospace.HAS_ATTRIBUTE_URL)) {
-//					dataURL = r.getValue().toString();
-//				} else if (r.getProperty().equals(Geospace.HAS_FILTER_PROPERTY)) {
-//					filterExpression = r.getValue().toString();
-//				} else if (r.getProperty().equals(Geospace.HAS_TRANSFORMATION_EXPRESSION)) {
-//					this.transformation = new MVELExpression(r.getValue().toString());
-//				}
-//			}
-//		}
-//
-//		// check data
-//		if (sourceURL == null || valueAttr == null)
-//			throw new ThinklabValidationException("vector coverage: specifications are invalid (source url or value attribute missing)");
-//
-//		if (dataURL != null && ( sourceAttr == null || targetAttr == null))
-//			throw new ThinklabValidationException("vector coverage: specifications are invalid (no link attributes for external data table)");
-//
+//		Object ret = null;
 //		try {
-//
-//			Properties p = new Properties();
-//			p.setProperty(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, valueAttr);
+//			ret = coverage.getSubdivisionValue(
+//					index, 
+//					gridExtent == null ? shapeExtent : gridExtent);
 //			
-//			if (dataURL != null) {
-//				p.setProperty(CoverageFactory.ATTRIBUTE_URL_PROPERTY, dataURL);
-//				p.setProperty(CoverageFactory.SOURCE_LINK_ATTRIBUTE_PROPERTY, sourceAttr);
-//				p.setProperty(CoverageFactory.TARGET_LINK_ATTRIBUTE_PROPERTY, targetAttr);
+//			if (this.transformation != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
+//				HashMap<String, Object> parms = new HashMap<String, Object>();
+//				parms.put("self", ret);
+//				ret = this.transformation.eval(parms);
 //			}
 //			
-//			if (filterExpression != null) {
-//				p.setProperty(CoverageFactory.CQL_FILTER_PROPERTY, filterExpression);
-//			}
+//			/*
+//			 * TODO if there's any table linked, use the result as
+//			 * a key into it.
+//			 */
 //			
-//			this.coverage = 
-//				CoverageFactory.requireCoverage(new URL(sourceURL), p);
-//			
-//		} catch (MalformedURLException e) {
-//			throw new ThinklabIOException(e);
+//		} catch (ThinklabException e) {
+//			throw new ThinklabRuntimeException(e);
 //		}
+//		return ret;
 //	}
-//
-//	public Object getInitialValue() {
-//		return null;
-//	}
-//
-//	@Override
-//	public void validate(IInstance i) throws ThinklabException {
-//
-//		if (coverage != null) {
-//			
-//		} else {	
-//			// TODO we should support inline data
-//			throw new ThinklabValidationException("vector datasource: no coverage specified");		
-//		}
-//	}
-
-//	@Override
-	public Object getValue(int index, Object[] parameters) {
-		
-		Object ret = null;
-		try {
-			ret = coverage.getSubdivisionValue(
-					index, 
-					gridExtent == null ? shapeExtent : gridExtent);
-			
-			if (this.transformation != null && ret != null && !(ret instanceof Double && Double.isNaN((Double)ret)) ) {
-				HashMap<String, Object> parms = new HashMap<String, Object>();
-				parms.put("self", ret);
-				ret = this.transformation.eval(parms);
-			}
-			
-			/*
-			 * TODO if there's any table linked, use the result as
-			 * a key into it.
-			 */
-			
-		} catch (ThinklabException e) {
-			throw new ThinklabRuntimeException(e);
-		}
-		return ret;
-	}
 
 	@Override
 	public IAccessor getAccessor(IContext context) throws ThinklabException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-//	@Override
-//	public IDataSource transform(IDatasourceTransformation transformation)
-//			throws ThinklabException {
-//		
-//		IDataSource ret = this;
-//		
-//		if (transformation instanceof Rasterize) {
-//			gridExtent = ((Rasterize)transformation).getExtent();
-//			gridExtent.requireActivationLayer(true);
-//			coverage = coverage.requireMatch(gridExtent, true);
-//			coverage.loadData();
-//			ret = new RegularRasterGridDataSource(coverage, gridExtent, this.transformation);
-//		} else {
-//			throw new ThinklabValidationException(
-//					"vector datasource: don't know how to deal with " + transformation);
-//		}
-//		
-//		return ret;
-//	}
+		initialize();
+		
+		if (context.getSpace() instanceof GridExtent) {
+			ICoverage cov = coverage.requireMatch((ArealExtent) context.getSpace(), true);
+			RegularRasterGridDataSource ds = new RegularRasterGridDataSource(cov, (GridExtent) context.getSpace()) {
+				
+				@Override
+				protected ICoverage readData() throws ThinklabException {
+					return _coverage;
+				}
+				
+				@Override
+				protected GridExtent getFinalExtent(IContext context)
+						throws ThinklabException {
+					return _finalExtent;
+				}
+			};
+			
+			return ds.getAccessor(context);
+			
+		} else {
+			
+			/*
+			 * TODO accessor for vectors - may need to do the monster conversion if
+			 * the context's shapes are different
+			 */
+			throw new ThinklabUnsupportedOperationException("vector accessors not there yet, please be patient");
+		}
+	}
 
 }

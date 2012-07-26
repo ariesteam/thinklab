@@ -35,7 +35,14 @@ import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 public abstract class RegularRasterGridDataSource implements IDataSource {
 
 	protected ICoverage _coverage = null;
-	private GridExtent _finalExtent = null;
+	protected GridExtent _finalExtent = null;
+	/*
+	 * set in specialized constructor when we supply it with a coverage that is
+	 * already matched to the final context of use. This happens when a datasource
+	 * is created to provide an accessor for another that has transformed the
+	 * original coverage.
+	 */
+	private boolean _preMatched = false;
 	
 	public RegularRasterGridDataSource() {
 	}
@@ -43,6 +50,8 @@ public abstract class RegularRasterGridDataSource implements IDataSource {
 	public RegularRasterGridDataSource(ICoverage coverage,
 			GridExtent gridExtent) {
 		this._coverage = coverage;
+		this._finalExtent = gridExtent;
+		this._preMatched = true;
 	}
 
 	public Object getValue(int index) {
@@ -88,7 +97,6 @@ public abstract class RegularRasterGridDataSource implements IDataSource {
 		if (_coverage == null) {
 			_coverage = readData();
 		}
-		_finalExtent = getFinalExtent(context);	
 		return new RasterGridAccessor();
 	}
 
@@ -132,7 +140,7 @@ public abstract class RegularRasterGridDataSource implements IDataSource {
 		@Override
 		public Object getValue(int overallContextIndex) {
 			
-			if (isFirst) {
+			if (isFirst && !_preMatched) {
 				try {
 					_coverage = _coverage.requireMatch(_finalExtent, false);
 				} catch (ThinklabException e) {

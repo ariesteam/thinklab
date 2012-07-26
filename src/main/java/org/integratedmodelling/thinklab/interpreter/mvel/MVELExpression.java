@@ -27,6 +27,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.lang.IParseable;
+import org.integratedmodelling.thinklab.api.project.IProject;
 import org.mvel2.MVEL;
 
 /**
@@ -75,8 +76,10 @@ public class MVELExpression implements IExpression, IParseable {
 	}
 
 	@Override
-	public String getLanguage() {
-		return "MVEL";
+	public void setProjectContext(IProject project) {
+		// TODO Auto-generated method stub
+		
 	}
+
 
 }

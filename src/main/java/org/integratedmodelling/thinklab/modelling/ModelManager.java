@@ -373,7 +373,9 @@ public class ModelManager implements IModelManager {
 		@Override
 		public IExpression resolveFunction(String functionId,
 				Collection<String> parameterNames) {
-			return ModelManager.this.resolveFunction(functionId, parameterNames);
+			IExpression ret = ModelManager.this.resolveFunction(functionId, parameterNames);
+			ret.setProjectContext(project);
+			return ret;
 		}
 
 		@Override

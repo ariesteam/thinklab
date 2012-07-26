@@ -25,61 +25,100 @@ import java.util.Properties;
 
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
-import org.integratedmodelling.thinklab.NS;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.annotations.Concept;
-import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
-import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.geospace.coverage.CoverageFactory;
-import org.integratedmodelling.thinklab.interpreter.mvel.MVELExpression;
 
 @Concept("geospace:WFSDataSource")
 public class WFSCoverageDataSource extends VectorCoverageDataSource {
 
-	public void initialize(ISemanticObject i) throws ThinklabException {
-
-		Properties p = new Properties();
-		p.putAll(Thinklab.get().getProperties());
-		ISemanticObject server = i.get(Thinklab.p(NS.GEOSPACE_HAS_SERVICE_URL));
-		String covId = i.get(Thinklab.p(NS.GEOSPACE_HAS_COVERAGE_ID)).toString();
-		if (server != null)
-			p.put(CoverageFactory.WFS_SERVICE_PROPERTY, server.toString());
-		p.put(CoverageFactory.COVERAGE_ID_PROPERTY, covId);
-		ISemanticObject attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_VALUE_ATTRIBUTE));
-		if (attr != null)
-			p.put(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, attr.toString());
-		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_VALUE_TYPE));
-		if (attr != null)
-			p.put(CoverageFactory.VALUE_TYPE_PROPERTY, attr.toString());
-		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_VALUE_EXPRESSION));
-		if (attr != null)
-			p.put(CoverageFactory.VALUE_EXPRESSION_PROPERTY, attr.toString());
-		attr = i.get(Thinklab.p(NS.GEOSPACE_HAS_VALUE_DEFAULT));
-		if (attr != null)
-			p.put(CoverageFactory.VALUE_DEFAULT_PROPERTY, attr.toString());
-		attr = i.get(Thinklab.p(Geospace.HAS_FILTER_PROPERTY));
-		if (attr != null)
-			p.put(CoverageFactory.CQL_FILTER_PROPERTY, attr.toString());
-		attr = i.get(Thinklab.p(Geospace.HAS_TRANSFORMATION_EXPRESSION));
-		if (attr != null)
-			this.transformation = new MVELExpression(attr.toString());
+	/**
+	 * WFS service URL
+	 */
+	String server;
 	
-		URL url;
-		try {
-			url = new URL(
+	/**
+	 * Coverage ID.
+	 */
+	String covId;
+	
+	/**
+	 * attribute containing the data we want. If no attribute, it's 0/1 for
+	 * presence/absence.
+	 */
+	String attr;
+	
+	/**
+	 * CQL expression to filter features if requested
+	 */
+	String filter;
+	
+	Properties properties = new Properties();
+	boolean initialized = false;
+	
+	/**
+	 * 
+	 * @param service the WFS service URL. Cannot be null.
+	 * @param id the coverage ID. 
+	 * @param attribute
+	 * @param filter
+	 * @param valueType
+	 * @param valueDefault
+	 */
+	public WFSCoverageDataSource(
+			String service, String id, 
+			String attribute, 
+			String filter,
+			String valueType,
+			String valueDefault) {
+
+		this.server = service;
+		this.covId = id;
+		this.attr = attribute;
+		this.filter = filter;
+
+		
+		properties.put(CoverageFactory.WFS_SERVICE_PROPERTY, server);
+		properties.put(CoverageFactory.COVERAGE_ID_PROPERTY, covId);
+		
+		if (attr != null)
+			properties.put(CoverageFactory.VALUE_ATTRIBUTE_PROPERTY, attr);
+		if (valueType != null)
+			properties.put(CoverageFactory.VALUE_TYPE_PROPERTY, valueType);
+		if (valueDefault != null)
+			properties.put(CoverageFactory.VALUE_DEFAULT_PROPERTY, valueDefault);
+		if (filter != null)
+			properties.put(CoverageFactory.CQL_FILTER_PROPERTY, filter);
+	}
+	
+	@Override
+	public void initialize() throws ThinklabException {
+		
+		if (!initialized) {
+		
+			/*
+			 * TODO check if we still want that - seems ugly
+			 */
+			properties.putAll(Thinklab.get().getProperties());
+	
+			URL url;
+			try {
+				url = new URL(
 					(server == null ?  
-							"http://127.0.0.1:8080/geoserver/wfs" :  //$NON-NLS-1$
-							server.toString()) + 
-					"?coverage="  + covId +  //$NON-NLS-1$
-					"?VERSION=1.1.0" + //$NON-NLS-1$
-					"?attribute=" + (attr == null ? "NONE" : attr.toString())); //$NON-NLS-1$ //$NON-NLS-2$
+							"http://127.0.0.1:8080/geoserver/wfs" :  
+							server) + 
+					"?coverage="  + covId +  
+					"?VERSION=1.1.0" + 
+					"?attribute=" + (attr == null ? "NONE" : attr.toString()));
 			
-		} catch (MalformedURLException e) {
-			throw new ThinklabIOException(e);
+			} catch (MalformedURLException e) {
+				throw new ThinklabIOException(e);
+			}
+		
+			this.coverage = CoverageFactory.requireCoverage(url, properties);
+			this.coverage.setName(covId);
+		
+			initialized = true;
 		}
-		
-		this.coverage = CoverageFactory.requireCoverage(url, p);
-		this.coverage.setName(covId);
-		
 	}
 }
