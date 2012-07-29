@@ -13,7 +13,7 @@ import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IExpressionDefinition;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionCall;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
 import org.integratedmodelling.thinklab.modelling.interfaces.IChainingAccessor;
 
@@ -24,7 +24,7 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	IObserver _mediated = null;
 	
 	@Property(NS.HAS_ACCESSOR_FUNCTION)
-	IFunctionDefinition _accessorGenerator = null;
+	IFunctionCall _accessorGenerator = null;
 	
 	IAccessor _accessor = null;
 	
@@ -110,7 +110,7 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 	}
 
 	@Override
-	public void setAccessorGeneratorFunction(IFunctionDefinition function) {
+	public void setAccessorGeneratorFunction(IFunctionCall function) {
 		_accessorGenerator = function;
 	}
 
@@ -126,17 +126,9 @@ public abstract class Observer<T> extends ObservingObject<T> implements IObserve
 		 * define our mediated object if any - may be an observable to
 		 * mediate, or an explicitly mediated observer (which has its
 		 * own observer).
-		 */
-		
+		 */		
 		if (_accessorGenerator != null) {
-			
-			IExpression func = 
-					Thinklab.get().resolveFunction(
-							_accessorGenerator.getId(), 
-							_accessorGenerator.getParameters().keySet());
-			if (func == null)
-				throw new ThinklabValidationException("function " + _accessorGenerator.getId() + " cannot be resolved");
-			Object ds = func.eval(_accessorGenerator.getParameters());
+			Object ds = _accessorGenerator.call();
 			if (! (ds instanceof IAccessor)) {
 				throw new ThinklabValidationException("function " + _accessorGenerator.getId() + " does not return an accessor");
 			}

@@ -29,7 +29,7 @@ import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IContextDefinition;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionCall;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.geospace.Geospace;
 import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
@@ -42,7 +42,7 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	ArrayList<IModel> _models = new ArrayList<IModel>();
 	
 	@Property(NS.HAS_EXTENT_FUNCTION)
-	ArrayList<IFunctionDefinition> _generatorFunctions = new ArrayList<IFunctionDefinition>();
+	ArrayList<IFunctionCall> _generatorFunctions = new ArrayList<IFunctionCall>();
 	
 	ArrayList<IObservation> _observations = new ArrayList<IObservation>();
 	
@@ -313,7 +313,7 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 	}
 
 	@Override
-	public void addObservationGeneratorFunction(IFunctionDefinition function) throws ThinklabValidationException {
+	public void addObservationGeneratorFunction(IFunctionCall function) throws ThinklabValidationException {
 		_generatorFunctions.add(function);
 	}
 	
@@ -332,19 +332,13 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 		 */
 		_namespaceId = _namespace.getId();
 
-		for (IFunctionDefinition function : _generatorFunctions) {
+		for (IFunctionCall function : _generatorFunctions) {
 			
-			// find function and validate parameters
-			IExpression func = Thinklab.get().resolveFunction(function.getId(), function.getParameters().keySet());
-			
-			if (func == null) {
-				throw new ThinklabValidationException("function " + function.getId() + " is unknown");
-			}
 			Observation o = null;
 			
 			// run function and store observation
 			try {
-				 o = (Observation) func.eval(function.getParameters());
+				 o = (Observation) function.call();
 				 if (o == null)
 					 throw new ThinklabValidationException("function " + function.getId() + " does not return any value");
 				 

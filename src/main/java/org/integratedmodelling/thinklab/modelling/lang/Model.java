@@ -20,7 +20,7 @@ import org.integratedmodelling.thinklab.api.modelling.IModel;
 import org.integratedmodelling.thinklab.api.modelling.IObservation;
 import org.integratedmodelling.thinklab.api.modelling.IObserver;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IExpressionDefinition;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionCall;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IObserverDefinition;
 import org.integratedmodelling.thinklab.interfaces.IStorageMetadataProvider;
@@ -35,7 +35,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	IObserver _observer;
 	
 	@Property(NS.HAS_DATASOURCE_DEFINITION)
-	IFunctionDefinition _datasourceDefinition;
+	IFunctionCall _datasourceDefinition;
 
 	@Property(NS.HAS_INLINE_STATE)
 	Object _inlineState;
@@ -170,7 +170,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	}
 
 	@Override
-	public void setDatasourceGeneratorFunction(IFunctionDefinition function) {
+	public void setDatasourceGeneratorFunction(IFunctionCall function) {
 		_datasourceDefinition = function;
 	}
 
@@ -201,13 +201,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 
 		if (_datasourceDefinition != null) {
 			
-			IExpression func = 
-					Thinklab.get().resolveFunction(
-							_datasourceDefinition.getId(), 
-							_datasourceDefinition.getParameters().keySet());
-			if (func == null)
-				throw new ThinklabValidationException("function " + _datasourceDefinition.getId() + " cannot be resolved");
-			Object ds = func.eval(_datasourceDefinition.getParameters());
+			Object ds = _datasourceDefinition.call();
 			if (! (ds instanceof IDataSource)) {
 				throw new ThinklabValidationException("function " + _datasourceDefinition.getId() + " does not return a datasource");
 			}

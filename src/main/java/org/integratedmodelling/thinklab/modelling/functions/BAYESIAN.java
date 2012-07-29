@@ -8,13 +8,17 @@ import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 import org.integratedmodelling.thinklab.modelling.bayes.BayesianAccessor;
 
-@Function(id="bayesian", parameterNames={"import"})
+@Function(id="bayesian", parameterNames={"import", "method"})
 public class BAYESIAN implements IExpression {
 
 	private IProject project;
 
 	@Override
 	public Object eval(Map<String, Object> parameters) throws ThinklabException {
+		
+		if (project == null || !parameters.containsKey("import"))
+			return null;
+		
 		return new BayesianAccessor(parameters.get("import").toString(), project.getLoadPath());
 	}
 

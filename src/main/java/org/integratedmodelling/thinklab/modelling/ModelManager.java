@@ -54,7 +54,7 @@ import org.integratedmodelling.thinklab.api.modelling.IUnit;
 import org.integratedmodelling.thinklab.api.modelling.IValuingObserver;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IClassificationDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionDefinition;
+import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionCall;
 import org.integratedmodelling.thinklab.api.modelling.parsing.ILanguageDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IModelObjectDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefinition;
@@ -192,7 +192,6 @@ public class ModelManager implements IModelManager {
 
 		public Resolver(IProject project) {
 			this.project = project;
-//			this.resourceId = resource == null ? null : resource.toString();
 		}
 
 		/*
@@ -370,13 +369,12 @@ public class ModelManager implements IModelManager {
 			return co;
 		}
 
-		@Override
-		public IExpression resolveFunction(String functionId,
-				Collection<String> parameterNames) {
-			IExpression ret = ModelManager.this.resolveFunction(functionId, parameterNames);
-			ret.setProjectContext(project);
-			return ret;
-		}
+//		public IExpression resolveFunction(String functionId,
+//				Collection<String> parameterNames) {
+//			IExpression ret = ModelManager.this.resolveFunction(functionId, parameterNames);
+//			ret.setProjectContext(project);
+//			return ret;
+//		}
 
 		@Override
 		public void onModelObjectDefined(IModelObject ret)  {
@@ -390,7 +388,6 @@ public class ModelManager implements IModelManager {
 			 * as required.
 			 */
 			try {
-
 				namespace.flushKnowledge();
 				/*
 				 * this creates any remanining knowledge.
@@ -458,7 +455,7 @@ public class ModelManager implements IModelManager {
 				return new UnitDefinition();
 			} else if (cls.equals(IMetadata.class)) {
 				return new Metadata();
-			} else if (cls.equals(IFunctionDefinition.class)) {
+			} else if (cls.equals(IFunctionCall.class)) {
 				return new FunctionDefinition();
 			} else if (cls.equals(IClassificationDefinition.class)) {
 				return new org.integratedmodelling.thinklab.modelling.Classification();
@@ -477,17 +474,17 @@ public class ModelManager implements IModelManager {
 			return ModelManager.generateId(o);
 		}
 
-		@Override
-		public Object runFunction(IFunctionDefinition function) {
-			IExpression f = resolveFunction(function.getId(), function.getParameters().keySet());
-			if (f != null) {
-				try {
-					return f.eval(function.getParameters());
-				} catch (ThinklabException e) {
-				}
-			}
-			return null;
-		}
+//		@Override
+//		public Object runFunction(IFunctionDefinition function) {
+//			IExpression f = resolveFunction(function.getId(), function.getParameters().keySet());
+//			if (f != null) {
+//				try {
+//					return f.eval(function.getParameters());
+//				} catch (ThinklabException e) {
+//				}
+//			}
+//			return null;
+//		}
 
 		@Override
 		public IModelObject getLastProcessedObject() {
@@ -528,27 +525,21 @@ public class ModelManager implements IModelManager {
 					currentContext.merge((IContext)observable);
 				} else if (observable instanceof IConceptDefinition) {
 					obs = Thinklab.get().entify(PolyList.list(Thinklab.c(((IConceptDefinition)observable).getName())));
-				} else if (observable instanceof IFunctionDefinition) {
+				} else if (observable instanceof IFunctionCall) {
 				
 					/*
 					 * must eval to extent, to be merged with current context directly.
 					 */
-					IFunctionDefinition function = (IFunctionDefinition)observable;
+					IFunctionCall function = (IFunctionCall)observable;
 				
-					// find function and validate parameters
-					IExpression func = Thinklab.get().resolveFunction(function.getId(), function.getParameters().keySet());
-				
-					if (func == null) {
-						throw new ThinklabValidationException("function " + function.getId() + " is unknown");
-					}
 					Observation o = null;
 				
 					// run function and store observation
 					try {
-						o = (Observation) func.eval(function.getParameters());
-						if (o == null)
+						Object obj = (Observation) function.call();
+						if ( !(obj instanceof Observation))
 							throw new ThinklabValidationException("function " + function.getId() + " does not return any value");
-					 
+						o  = (Observation) obj;
 					} catch (ThinklabException e) {
 						throw new ThinklabValidationException(e);
 					}
@@ -710,6 +701,24 @@ public class ModelManager implements IModelManager {
 		public IContext getCurrentContext() {
 			return currentContext;
 		}
+
+		@Override
+		public IProject getProject() {
+			return project;
+		}
+
+//		@Override
+//		public IExpression resolveFunction(String functionId,
+//				Collection<String> parameterNames) {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+
+		@Override
+		public boolean validateFunctionCall(IFunctionCall ret) {
+			// TODO check function agains known prototypes
+			return true;
+		}
 	}
 
 	public Resolver getResolver(IProject project) {
@@ -742,19 +751,15 @@ public class ModelManager implements IModelManager {
 		return _defaultModelNamespace;
 	}
 	
-	@Override
-	public IExpression resolveFunction(String functionId, Collection<String> parameterNames) {
+	public IExpression getExpressionForFunctionCall(IFunctionCall functionCall) throws ThinklabInternalErrorException {
 
-		/*
-		 * TODO see if we want to check or validate parameters
-		 */
 		IExpression exp = null;
-		FunctionDescriptor fd = _functions.get(functionId);
+		FunctionDescriptor fd = _functions.get(functionCall.getId());
 		if (fd != null) {
 			try {
 				exp = (IExpression) fd._class.newInstance();
 			} catch (Exception e) {
-				throw new ThinklabRuntimeException(e);
+				throw new ThinklabInternalErrorException(e);
 			}
 		}
 		return exp;

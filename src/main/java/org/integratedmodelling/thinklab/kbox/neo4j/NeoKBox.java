@@ -998,4 +998,14 @@ public class NeoKBox implements IKbox {
 		return ret;
 	}
 
+	@Override
+	public List<Long> queryIDs(IQuery query) throws ThinklabException {
+		
+		if (query != null && !(query instanceof Query)) {
+			throw new ThinklabUnsupportedOperationException("query type not supported: " + query);
+		}
+		
+		return queryObjects((Query) query);
+	}
+
 }

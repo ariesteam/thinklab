@@ -938,12 +938,6 @@ public class Thinklab implements
 	}
 
 	@Override
-	public IExpression resolveFunction(String functionId,
-			Collection<String> parameterNames) {
-		return _modelManager.resolveFunction(functionId, parameterNames);
-	}
-
-	@Override
 	public Collection<INamespace> loadSourceDirectory(File sourcedir, IProject project)
 			throws ThinklabException {
 		return _modelManager.loadSourceDirectory(sourcedir, project);
