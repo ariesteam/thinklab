@@ -14,7 +14,7 @@ import org.integratedmodelling.thinklab.api.project.IProject;
 import org.integratedmodelling.thinklab.modelling.ModelManager;
 
 @Concept(NS.FUNCTION_DEFINITION)
-public class FunctionDefinition extends ModelObject<FunctionDefinition> implements IFunctionCall {
+public class FunctionCall extends ModelObject<FunctionCall> implements IFunctionCall {
 
 	@Property(NS.HAS_TYPE)
 	String _type;
@@ -31,7 +31,7 @@ public class FunctionDefinition extends ModelObject<FunctionDefinition> implemen
 	}
 
 	@Override
-	public FunctionDefinition demote() {
+	public FunctionCall demote() {
 		return this;
 	}
 

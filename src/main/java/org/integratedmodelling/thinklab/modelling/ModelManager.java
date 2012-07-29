@@ -69,7 +69,7 @@ import org.integratedmodelling.thinklab.modelling.lang.Categorization;
 import org.integratedmodelling.thinklab.modelling.lang.Classification;
 import org.integratedmodelling.thinklab.modelling.lang.ConceptObject;
 import org.integratedmodelling.thinklab.modelling.lang.Context;
-import org.integratedmodelling.thinklab.modelling.lang.FunctionDefinition;
+import org.integratedmodelling.thinklab.modelling.lang.FunctionCall;
 import org.integratedmodelling.thinklab.modelling.lang.Measurement;
 import org.integratedmodelling.thinklab.modelling.lang.Metadata;
 import org.integratedmodelling.thinklab.modelling.lang.Model;
@@ -456,7 +456,7 @@ public class ModelManager implements IModelManager {
 			} else if (cls.equals(IMetadata.class)) {
 				return new Metadata();
 			} else if (cls.equals(IFunctionCall.class)) {
-				return new FunctionDefinition();
+				return new FunctionCall();
 			} else if (cls.equals(IClassificationDefinition.class)) {
 				return new org.integratedmodelling.thinklab.modelling.Classification();
 			}

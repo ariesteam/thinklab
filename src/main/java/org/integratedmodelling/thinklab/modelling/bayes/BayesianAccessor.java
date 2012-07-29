@@ -23,6 +23,7 @@ public class BayesianAccessor implements ISerialAccessor, IComputingAccessor {
 	}
 
 	public void initialize() throws ThinklabException {
+		
 		if (!_initialized) {
 			_network = 
 				BayesianFactory.get().
