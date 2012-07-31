@@ -48,6 +48,7 @@ public class BayesianAccessor implements ISerialAccessor, IComputingAccessor {
 		/*
 		 * 
 		 */
+		System.out.println("ZIO PEPERONE");
 		
 	}
 
@@ -60,6 +61,7 @@ public class BayesianAccessor implements ISerialAccessor, IComputingAccessor {
 		 * properties.
 		 */
 		
+		System.out.println("ZIO POLLAIOLO");
 		/*
 		 * record key for evidence matching
 		 */
@@ -93,6 +95,7 @@ public class BayesianAccessor implements ISerialAccessor, IComputingAccessor {
 		/*
 		 * store evidence for later inference
 		 */
+		System.out.println("ZIO PESTAMERDE");
 		
 	}
 

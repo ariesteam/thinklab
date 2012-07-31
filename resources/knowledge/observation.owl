@@ -34,6 +34,12 @@
       <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
     </rdfs:subClassOf>
   </owl:Class>
+  <owl:Class rdf:ID="Uncertainty">
+    <rdfs:comment>An observable that specifies the uncertainty relative to an observation of another.</rdfs:comment>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="ModeledObservable"/>
+    </rdfs:subClassOf>
+  </owl:Class>
   <owl:Class rdf:ID="Identification">
     <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
     >A direct observation that just identifies an object (or a concept) directly in a specified context. Its does not need an explicit conceptual model or value model because the observation space is the same as the observable and the data source, and it is the observed object itself. It does not use comparison with known quantities or properties.

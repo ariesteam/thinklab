@@ -12,6 +12,7 @@ import org.integratedmodelling.thinklab.api.annotations.Concept;
 import org.integratedmodelling.thinklab.api.annotations.Property;
 import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
+import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.thinklab.api.modelling.IContext;
 import org.integratedmodelling.thinklab.api.modelling.IDataSource;
@@ -170,7 +171,7 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 	}
 
 	@Override
-	public void setDatasourceGeneratorFunction(IFunctionCall function) {
+	public void setObservableFunction(IFunctionCall function, String formalName) {
 		_datasourceDefinition = function;
 	}
 
@@ -202,11 +203,18 @@ public class Model extends ObservingObject<Model> implements IModelDefinition {
 		if (_datasourceDefinition != null) {
 			
 			Object ds = _datasourceDefinition.call();
-			if (! (ds instanceof IDataSource)) {
-				throw new ThinklabValidationException("function " + _datasourceDefinition.getId() + " does not return a datasource");
+			if (ds instanceof IDataSource) {
+				_datasource = (IDataSource)ds;
+			} else if (ds instanceof IList) {
+				/**
+				 * TODO this must be systematic in addObservable, turned to object in a loop in 
+				 * all objects at initialization, handling obs names properly
+				 */
+				addObservable((IList)ds, null);
+			} else {
+				throw new ThinklabValidationException(
+						"function " + _datasourceDefinition.getId() + " does not return a datasource or a valid observable");
 			}
-			_datasource = (IDataSource)ds;
-				
 		} else if (_inlineState != null) {
 			_datasource = new ConstantDataSource(_inlineState);
 

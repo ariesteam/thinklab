@@ -369,13 +369,6 @@ public class ModelManager implements IModelManager {
 			return co;
 		}
 
-//		public IExpression resolveFunction(String functionId,
-//				Collection<String> parameterNames) {
-//			IExpression ret = ModelManager.this.resolveFunction(functionId, parameterNames);
-//			ret.setProjectContext(project);
-//			return ret;
-//		}
-
 		@Override
 		public void onModelObjectDefined(IModelObject ret)  {
 
@@ -473,18 +466,6 @@ public class ModelManager implements IModelManager {
 		public String generateId(IModelObject o) {
 			return ModelManager.generateId(o);
 		}
-
-//		@Override
-//		public Object runFunction(IFunctionDefinition function) {
-//			IExpression f = resolveFunction(function.getId(), function.getParameters().keySet());
-//			if (f != null) {
-//				try {
-//					return f.eval(function.getParameters());
-//				} catch (ThinklabException e) {
-//				}
-//			}
-//			return null;
-//		}
 
 		@Override
 		public IModelObject getLastProcessedObject() {
@@ -707,16 +688,9 @@ public class ModelManager implements IModelManager {
 			return project;
 		}
 
-//		@Override
-//		public IExpression resolveFunction(String functionId,
-//				Collection<String> parameterNames) {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-
 		@Override
 		public boolean validateFunctionCall(IFunctionCall ret) {
-			// TODO check function agains known prototypes
+			// TODO check function against known prototypes
 			return true;
 		}
 	}

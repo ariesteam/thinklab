@@ -32,6 +32,8 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	ArrayList<ISemanticObject<?>> _observables = 
 			new ArrayList<ISemanticObject<?>>();
 
+	ArrayList<String> _observableNames = new ArrayList<String>();
+	
 	protected boolean _initialized = false;
 	String _observableCName;
 
@@ -83,9 +85,10 @@ public abstract class ObservingObject<T> extends ModelObject<T> implements IObse
 	ArrayList<IList> _observableDefs = new ArrayList<IList>();
 	
 	@Override
-	public void addObservable(IList instance) {
+	public void addObservable(IList instance, String formalName) {
 		_observableCName = instance.first().toString();
 		_observableDefs.add(instance);
+		_observableNames.add(formalName);
 	}
 	
 	@Override

@@ -188,7 +188,6 @@ public class DisplayAdapter extends Metadata {
 			
 			} else if (type.equals(CONTOUR)) {
 			
-
 				int cols = space.getXCells();
 				int rows = space.getYCells();
 

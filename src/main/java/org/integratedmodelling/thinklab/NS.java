@@ -153,5 +153,8 @@ public class NS {
 	public static final String HAS_RANKING_SCALE = "modelling.thinklab:hasRankingScale";
 	public static final String HAS_RANKING_TYPE = "modelling.thinklab:hasRankingType";
 
+	// observation 
+	public static final String UNCERTAINTY = "observation:Uncertainty";
+
 
 }

@@ -626,7 +626,6 @@ Export-Package: .,
  org.integratedmodelling.thinklab.kbox.sql.postgres;uses:="org.integratedmodelling.thinklab.kbox.sql",
  org.integratedmodelling.thinklab.literals;uses:="org.integratedmodelling.thinklab.annotation,org.integratedmodelling.thinklab.api.lang,org.integratedmodelling.thinklab.api.knowledge",
  org.integratedmodelling.thinklab.main;uses:="org.integratedmodelling.thinklab.api.runtime",
- org.integratedmodelling.thinklab.metadata,
  org.integratedmodelling.thinklab.modelling;
   uses:="org.integratedmodelling.thinklab.api.lang,
    org.integratedmodelling.thinklab.api.project,
