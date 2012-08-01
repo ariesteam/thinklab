@@ -48,6 +48,7 @@ import org.semanticweb.owl.vocab.OWLRDFVocabulary;
  * @author Ioannis N. Athanasiadis
  */
 public abstract class Knowledge implements IKnowledge, IResource {
+	
 	protected enum OWLType {
 		CLASS, DATAPROPERTY, OBJECTPROPERTY, INDIVIDUAL
 	}
@@ -62,7 +63,6 @@ public abstract class Knowledge implements IKnowledge, IResource {
 	public static FileKnowledgeRepository KR() {
 		return (FileKnowledgeRepository) Thinklab.get().getKnowledgeRepository();
 	}
-
 	
 	public Knowledge(OWLEntity entity, OWLType type) {
 		this.entity = entity;

@@ -44,10 +44,10 @@ import org.semanticweb.owl.model.OWLIndividual;
 public class Relationship  {
 
 	public IProperty property = null;
-	public ISemanticObject     literal  = null;
+	public ISemanticObject<?>     literal  = null;
 	public OWLIndividual object;
 	
-	public Relationship(IProperty p, ISemanticObject v) {
+	public Relationship(IProperty p, ISemanticObject<?> v) {
 		property = p;
 		literal = v;
 	}
@@ -111,7 +111,7 @@ public class Relationship  {
 		return property;
 	}
 
-	public ISemanticObject getValue() {
+	public ISemanticObject<?> getValue() {
 		return literal;
 	}
 	

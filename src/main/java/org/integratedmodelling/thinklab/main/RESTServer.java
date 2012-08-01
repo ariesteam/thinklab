@@ -29,6 +29,14 @@ public class RESTServer  {
 		
 		for (String s : args) {
 			
+			/*
+			 * ignore options. FIXME substitute this with an actual command line
+			 * scanner - this is only good for switches and will make a mess if
+			 * an option has arguments.
+			 */
+			if (s.startsWith("-"))
+				continue;
+			
 			// FIXME?
 			// temporary fix - the first arg in cl is the main class name, but
 			// that doesn't apply when running through the JVM API so just 
@@ -70,6 +78,7 @@ public class RESTServer  {
 
 		Thinklab.boot();
 		
+
 		String ept = System.getenv("THINKLAB_REST_PORT");
 		if (ept == null)
 			ept = "8182";
@@ -77,6 +86,12 @@ public class RESTServer  {
 		/*
 		 * TODO process command line options
 		 */
+		for (String arg : args) {
+			if ("--clear".equals(arg)) {
+				Thinklab.get().logger().info("--clear option found: clearing kbox thinklab");
+				Thinklab.get().dropKbox("thinklab");
+			}
+		}
 		
 		final int port = Integer.parseInt(ept);
 

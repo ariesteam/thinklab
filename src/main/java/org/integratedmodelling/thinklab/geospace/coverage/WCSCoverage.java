@@ -56,6 +56,19 @@ public class WCSCoverage extends AbstractRasterCoverage {
 	// read from kvp in coverage keywords
 	Properties properties = new Properties();
 	
+	public WCSCoverage(String serviceID, String coverageID) throws ThinklabException {
+
+		this.wcsService = serviceID;
+		this.layerName = coverageID;
+		
+		URL durl = buildDescribeUrl(coverageID);
+		
+		System.out.println("accessing: " + durl);
+		XMLDocument desc = new XMLDocument(durl);		
+		parseDescriptor(desc);
+		
+	}
+	
 	/**
 	 * This constructor reads the WCS coverage descriptor and initializes all fields from it. Data are
 	 * not loaded until loadData(), so the coverage is null.
