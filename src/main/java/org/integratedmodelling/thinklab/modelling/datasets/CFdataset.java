@@ -452,7 +452,7 @@ public class CFdataset implements IDataset {
 		
 		String ret = obs.getLocalName() + "_" + obs.getConceptSpace();
 		ret = ret.replace('.','_');
-		if (obs.is("geospace.physics:Altitude")) {
+		if (obs.is(Thinklab.c("geospace.physics:Altitude"))) {
 			ret = "Altitude";
 		}
 		return ret;

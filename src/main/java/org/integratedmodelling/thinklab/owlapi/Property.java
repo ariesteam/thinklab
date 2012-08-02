@@ -27,6 +27,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.semanticweb.owl.inference.OWLReasonerAdapter;
 import org.semanticweb.owl.model.OWLDataProperty;
 import org.semanticweb.owl.model.OWLDataPropertyExpression;
@@ -343,5 +344,11 @@ public class Property extends Knowledge implements IProperty {
 		 * TODO use reasoner as appropriate
 		 */
 		return p.equals(this) || getAllParents().contains(p);
+	}
+
+	@Override
+	public IMetadata getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

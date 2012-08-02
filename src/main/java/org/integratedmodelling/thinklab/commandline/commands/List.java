@@ -46,15 +46,15 @@ public class List implements ICommandHandler {
 		session.getOutputStream().println("Listing ontology " + ont);
 
 		session.getOutputStream().println("\nConcepts:");
-		for (IConcept i : ont.getConcepts()) {
-			session.getOutputStream().println("\t" + i.toString()
-					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
-		}
-		session.getOutputStream().println("\nProperties:");
-		for (IProperty i : ont.getProperties()) {
-			session.getOutputStream().println("\t" + i.toString()
-					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
-		}
+//		for (IConcept i : ont.getConcepts()) {
+//			session.getOutputStream().println("\t" + i.toString()
+//					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
+//		}
+//		session.getOutputStream().println("\nProperties:");
+//		for (IProperty i : ont.getProperties()) {
+//			session.getOutputStream().println("\t" + i.toString()
+//					+ ":\t" + i.getLabel() + "\t" + i.getDescription());
+//		}
 //		session.getOutputStream().println("\nInstances:");
 //		for (IInstance i : ont.getInstances()) {
 //			session.getOutputStream().println("\t" + i.toString()
@@ -94,7 +94,7 @@ public class List implements ICommandHandler {
 
 		session.getOutputStream().println("Concept URI is " + c.getURI());
 
-		session.getOutputStream().println(c.getDescription());
+//		session.getOutputStream().println(c.getDescription());
 
 		session.getOutputStream().println("  Properties:");
 		for (IProperty r : c.getAllProperties()) {
@@ -106,7 +106,7 @@ public class List implements ICommandHandler {
 	void listProperty(IProperty p, listmode l, ISession outputWriter) {
 
 		outputWriter.getOutputStream().println("Property URI is " + p.getURI());
-		outputWriter.getOutputStream().println(p.getDescription());
+//		outputWriter.getOutputStream().println(p.getDescription());
 
 		outputWriter.getOutputStream().println("  Domain:");
 		outputWriter.getOutputStream().println("    " + p.getDomain());

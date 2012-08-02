@@ -43,6 +43,7 @@ import org.integratedmodelling.thinklab.api.knowledge.IKnowledge;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.lang.IList;
+import org.integratedmodelling.thinklab.api.metadata.IMetadata;
 import org.integratedmodelling.utils.NameGenerator;
 import org.semanticweb.owl.io.OWLXMLOntologyFormat;
 import org.semanticweb.owl.model.AddAxiom;
@@ -923,6 +924,12 @@ public class Ontology implements IOntology {
 //		/*
 //		 * TODO - for now: ignore inverse properties, equivalent classes
 //		 */
+	}
+
+	@Override
+	public IMetadata getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

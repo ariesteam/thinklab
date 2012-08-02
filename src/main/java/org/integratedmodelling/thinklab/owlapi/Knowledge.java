@@ -310,7 +310,6 @@ public abstract class Knowledge implements IKnowledge, IResource {
 		return null;
 	}
 	
-	@Override
 	public String getAnnotation(String property) {
 		IProperty p = Thinklab.p(property);
 		try {
