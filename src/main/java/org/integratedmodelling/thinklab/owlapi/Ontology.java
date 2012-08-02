@@ -393,7 +393,7 @@ public class Ontology implements IOntology {
 //	}
 
 	@Override
-	public boolean write(URI physicalURI) throws ThinklabException {
+	public boolean write(String physicalURI) throws ThinklabException {
 
 		boolean ret = true;
 		if (physicalURI == null) {
@@ -411,7 +411,7 @@ public class Ontology implements IOntology {
 		
 		try {
 			Knowledge.KR().manager.
-				saveOntology(ont, new OWLXMLOntologyFormat(), physicalURI);
+				saveOntology(ont, new OWLXMLOntologyFormat(), new URI(physicalURI));
 		} catch (Exception e) {
 			throw new ThinklabIOException(e);
 		}
@@ -532,7 +532,6 @@ public class Ontology implements IOntology {
 		return ret;
 	}
 
-	@Override
 	public boolean isAnonymous() {
 		return ont.getURI().toString().startsWith(FileKnowledgeRepository.DEFAULT_TEMP_URI);
 	}
@@ -577,7 +576,6 @@ public class Ontology implements IOntology {
 		return ret;
 	}
 	
-	@Override
 	public IConcept createConcept(IList list) throws ThinklabException {
 		
 		Concept ret = null;
@@ -775,7 +773,6 @@ public class Ontology implements IOntology {
 		return this;
 	}
 
-	@Override
 	public IConcept createConcept(String localName, IConcept[] parents) throws ThinklabException {
 
 		OWLOntologyManager manager = Knowledge.KR().manager;
@@ -823,12 +820,6 @@ public class Ontology implements IOntology {
 		return ret;
 	}
 
-	@Override
-	public IList asList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	@Override
 	public void define(Collection<IAxiom> axioms) throws ThinklabException {
 

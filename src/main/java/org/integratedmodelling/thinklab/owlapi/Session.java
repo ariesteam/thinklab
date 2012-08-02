@@ -123,7 +123,7 @@ public class Session implements ISession {
 		/* serialize to OWL and import the temporary doc into the knowledge base */
 		try {
 			File f = File.createTempFile("jimt", ".owl");
-			ontology.write(f.toURI());
+			ontology.write(f.toURI().toString());
 			Thinklab.get().getKnowledgeRepository().importOntology(f.toURL(), name, false);
 		} catch (IOException e) {
 			throw new ThinklabIOException("can't create temporary ontology in filesystem");
