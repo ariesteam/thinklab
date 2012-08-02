@@ -135,7 +135,7 @@ public class CapabilitiesService extends DefaultRESTHandler {
 			 * return namespace, URI and last modification date as a long
 			 */
 			for (IOntology o : Thinklab.get().getKnowledgeRepository().getOntologies()) {
-				oret.append("ontologies", new String[] {o.getConceptSpace(), o.getURI(), Long.toString(o.getLastModificationDate())});
+				oret.append("ontologies", new String[] {o.getConceptSpace(), o.getURI(), "-1"});
 			}
 
 			for (IProject p : Thinklab.get().getProjects()) {
