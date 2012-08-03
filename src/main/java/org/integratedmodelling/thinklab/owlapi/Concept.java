@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabResourceNotFoundException;
 import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -119,10 +118,10 @@ public class Concept extends Knowledge implements IConcept {
 	 * 
 	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getParent()
 	 */
-	public IConcept getParent() throws ThinklabException {
+	public IConcept getParent()  {
 		Collection<IConcept> pp = getParents();
 		if (pp.size() > 1) {
-			throw new ThinklabException("Concept " + getSemanticType()
+			throw new ThinklabRuntimeException("Concept " + getSemanticType()
 					+ " has more than one parent");
 		}
 		return pp.iterator().next();
@@ -233,12 +232,7 @@ public class Concept extends Knowledge implements IConcept {
 		}
 		return props;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.integratedmodelling.thinklab.interfaces.IConcept#getAnnotationProperties()
-	 */
+	
 	public Collection<IProperty> getAnnotationProperties() {
 		// where are we searching? In all ontologies...
 		Set<OWLOntology> ontologies = KR().manager.getOntologies();
@@ -461,12 +455,7 @@ public class Concept extends Knowledge implements IConcept {
 			if (ret.size() > 0)
 				break;
 
-			try {
-				conc = conc.getParent();
-			} catch (ThinklabException e) {
-				// FIXME this should follow all parents  recursively, not loop and ignore the other parents.
-				conc = null;
-			}
+			conc = conc.getParent();
 		}
 		
 		if (ret.size() == 0)
@@ -819,6 +808,12 @@ public class Concept extends Knowledge implements IConcept {
 
 	@Override
 	public IMetadata getMetadata() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int[] getCardinality(IProperty property) {
 		// TODO Auto-generated method stub
 		return null;
 	}

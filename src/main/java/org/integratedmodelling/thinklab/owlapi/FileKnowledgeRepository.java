@@ -197,6 +197,7 @@ public class FileKnowledgeRepository implements IKnowledgeRepository {
 //				// + " " + ex.getMessage());
 //			}
 //		}
+		
 		/*
 		 * either connect to a configured DIG reasoner, or use a simple transitive one.
 		 */
