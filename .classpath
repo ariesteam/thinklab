@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/xstream-1.4.3-20120321.180636-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/tests/java"/>
@@ -295,6 +297,15 @@
 	<classpathentry exported="true" kind="lib" path="lib/pipes-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jpf-tools.jar"/>
 	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/JPF 1.5"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.core-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.discovery-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.ermi-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.javascript-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.json-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.lipermi-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.xmlrpc-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gremlin-groovy-2.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gremlin-java-2.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/pipes-2.0.0.jar"/>
@@ -340,8 +351,5 @@
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.xtend_1.2.0.v201206110941.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.xtend.lib_2.3.0.v201206120633.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.xtext.generator_2.3.0.v201206120633.jar"/>
-	<classpathentry kind="lib" path="lib/xstream-1.4.3-20120321.180636-1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="lib/jspf.core-1.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

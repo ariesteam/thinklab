@@ -52,7 +52,6 @@ import org.integratedmodelling.thinklab.api.factories.IPluginManager;
 import org.integratedmodelling.thinklab.api.factories.IProjectManager;
 import org.integratedmodelling.thinklab.api.knowledge.IAxiom;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
-import org.integratedmodelling.thinklab.api.knowledge.IExpression;
 import org.integratedmodelling.thinklab.api.knowledge.IOntology;
 import org.integratedmodelling.thinklab.api.knowledge.IProperty;
 import org.integratedmodelling.thinklab.api.knowledge.ISemanticObject;
@@ -69,6 +68,7 @@ import org.integratedmodelling.thinklab.api.modelling.IScenario;
 import org.integratedmodelling.thinklab.api.plugin.IPluginLifecycleListener;
 import org.integratedmodelling.thinklab.api.plugin.IThinklabPlugin;
 import org.integratedmodelling.thinklab.api.project.IProject;
+import org.integratedmodelling.thinklab.api.runtime.IServer;
 import org.integratedmodelling.thinklab.command.CommandDeclaration;
 import org.integratedmodelling.thinklab.command.CommandManager;
 import org.integratedmodelling.thinklab.configuration.Configuration;
@@ -223,7 +223,7 @@ public class Thinklab implements
     
 	private void loadKnowledge() throws ThinklabException {
 
-		File kdir = _configuration.getScratchArea(SUBSPACE_KNOWLEDGE);
+		File kdir = _configuration.getWorkspace(IServer.KNOWLEDGE_STORAGE_AREA);
 		_km.extractCoreOntologies(kdir);		
 		_modelManager.loadSourceDirectory(kdir, null);
 	}
@@ -285,37 +285,6 @@ public class Thinklab implements
 						registerFunction(target, (Function)acls);
 					}
 			});
-		
-//		/*
-//		 * FIXME use asm library to find annotations without loading classes
-//		 */
-//		ClassUtils.visitPackage(this.getClass().getPackage().getName(), 
-//				new Visitor() {
-//					
-//					@Override
-//					public void visit(Class<?> clls) throws ThinklabException {
-//
-//						for (Annotation a : clls.getAnnotations()) {
-//							if (a instanceof Literal) {
-//								registerLiteral(clls, (Literal)a);
-//							} else if (a instanceof Concept) {
-//								registerAnnotation(clls, (Concept)a);								
-//							} else if (a instanceof ThinklabCommand) {
-//								registerCommand(clls, (ThinklabCommand)a);
-//							} else if (a instanceof RESTResourceHandler) {
-//								registerRESTResource(clls, (RESTResourceHandler)a);	
-//							} else if (a instanceof ListingProvider) {
-//								registerListingProvider(clls, (ListingProvider)a);
-//							} else if (a instanceof Function) {
-//								registerFunction(clls, (Function)a);
-//							} 
-//						}
-//						
-//					}
-//				}, 
-//				this.getClassLoader());
-
-
 	}
 	
 	private void registerFunction(Class<?> cls, Function annotation) throws ThinklabException {
