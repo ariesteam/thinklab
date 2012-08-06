@@ -932,4 +932,14 @@ public class Ontology implements IOntology {
 		return null;
 	}
 
+	@Override
+	public int getConceptCount() {
+		return concepts.size();
+	}
+
+	@Override
+	public int getPropertyCount() {
+		return properties.size();
+	}
+
 }

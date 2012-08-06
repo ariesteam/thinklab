@@ -136,6 +136,7 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		this._ontology = ontology;
 	}
 
+	@Override
 	public IOntology getOntology() {
 		return _ontology;
 	}
@@ -313,6 +314,11 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	@Override
 	public boolean hasErrors() {
 		return _errors.size() > 0;
+	}
+
+	@Override
+	public boolean hasWarnings() {
+		return _warnings.size() > 0;
 	}
 
 	@Override
