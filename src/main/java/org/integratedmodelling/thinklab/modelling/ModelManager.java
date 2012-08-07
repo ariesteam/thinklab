@@ -265,7 +265,7 @@ public class ModelManager implements IModelManager {
 			 */
 			IQuery query = Queries.select(NS.NAMESPACE).restrict(NS.HAS_ID, Queries.is(namespace.getId()));
 			try {
-				IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
+				IKbox kbox = Thinklab.get().requireKbox(Thinklab.DEFAULT_KBOX);
 				List<ISemanticObject<?>> res = kbox.query(query);
 				if (res.size() > 0) {
 					Namespace ns = (Namespace)res.get(0);
@@ -317,7 +317,7 @@ public class ModelManager implements IModelManager {
 			if (_storedTimestamp == 0l || _timestamp > _storedTimestamp) {
 				
 				try {
-					IKbox kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
+					IKbox kbox = Thinklab.get().requireKbox(Thinklab.DEFAULT_KBOX);
 					if (_storedTimestamp != 0l) {
 						IQuery query = Queries.select(NS.NAMESPACE).restrict(NS.HAS_ID, Queries.is(namespace.getId()));
 						kbox.removeAll(query);
@@ -399,7 +399,7 @@ public class ModelManager implements IModelManager {
 				ret.getMetadata().merge(md);
 				IKbox kbox = null;
 				try {
-					kbox = Thinklab.get().getStorageKboxForNamespace(namespace);
+					kbox = Thinklab.get().requireKbox(Thinklab.DEFAULT_KBOX);
 				} catch (ThinklabException e1) {
 					onException(e1, -1);
 				}

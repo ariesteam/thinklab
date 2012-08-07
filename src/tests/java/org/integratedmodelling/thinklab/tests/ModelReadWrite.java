@@ -36,7 +36,7 @@ public class ModelReadWrite {
 	@Test
 	public void testKbox() throws Exception {
 
-		IKbox kbox = Thinklab.get().getStorageKboxForNamespace(_ns);
+		IKbox kbox = Thinklab.get().requireKbox(Thinklab.DEFAULT_KBOX);
 		
 		/*
 		 * find models that observe rainfall
@@ -58,7 +58,6 @@ public class ModelReadWrite {
 	@Test
 	public void observe1() throws Exception {
 
-		
 		IModel model = (IModel) _ns.getModelObject("rainfall-global");
 		IContext ctx = (IContext)_ns.getModelObject("puget");
 
@@ -76,7 +75,6 @@ public class ModelReadWrite {
 
 	@Test
 	public void observe2() throws Exception {
-
 		
 		IModel model = (IModel) _ns.getModelObject("elevation-class");
 		IContext ctx = (IContext)_ns.getModelObject("puget");

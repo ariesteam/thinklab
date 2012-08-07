@@ -458,7 +458,7 @@ public class ModelResolver {
 		/*
 		 * TODO sort by criteria configured for namespace (or sensible default).
 		 */		
-		return Thinklab.get().getLookupKboxForNamespace(_namespace).query(query);
+		return Thinklab.get().requireKbox(Thinklab.DEFAULT_KBOX).query(query);
 	}
 
 	/**

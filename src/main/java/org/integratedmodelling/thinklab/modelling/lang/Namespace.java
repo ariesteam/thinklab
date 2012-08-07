@@ -39,9 +39,9 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	@Property(NS.HAS_ID)
 	String _id;
 	
-	String _trainingKbox = null;
-	String _storageKbox = null;
-	String _lookupKbox = null;
+	ArrayList<String> _trainingNamespaces = new ArrayList<String>();
+	ArrayList<String> _lookupNamespaces = new ArrayList<String>();
+	
 	String _expressionLanguage = ModelManager.DEFAULT_EXPRESSION_LANGUAGE;
 	
 	ArrayList<IModelObject> _modelObjects = new ArrayList<IModelObject>();
@@ -132,6 +132,7 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		return _timeStamp;
 	}
 
+	@Override
 	public void setOntology(IOntology ontology) {
 		this._ontology = ontology;
 	}
@@ -233,36 +234,6 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 		_firstLineNumber = startLine;
 		_lastLineNumber  = endLine;
 	}
-	
-	@Override
-	public void setStorageKbox(String kboxUri) {
-		_storageKbox = kboxUri;
-	}
-
-	@Override
-	public void setTrainingKbox(String kboxUri) {
-		_trainingKbox = kboxUri;
-	}
-
-	@Override
-	public String getStorageKbox() {
-		return _storageKbox;
-	}
-
-	@Override
-	public String getTrainingKbox() {
-		return _trainingKbox;
-	}
-	
-	@Override
-	public void setLookupKbox(String kboxUri) {
-		_lookupKbox = kboxUri;
-	}
-	
-	@Override
-	public String getLookupKbox() {
-		return _lookupKbox;
-	}
 
 	@Override
 	public void setExpressionLanguage(String language) {
@@ -335,4 +306,25 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	public Collection<Pair<String, Integer>> getWarnings() {
 		return _warnings;
 	}
+	
+	@Override
+	public List<String> getTrainingNamespaces() {
+		return _trainingNamespaces;
+	}
+	
+	@Override
+	public List<String> getLookupNamespaces() {
+		return _lookupNamespaces;
+	}
+	
+	@Override
+	public void addLookupNamespace(String tns) {
+		_lookupNamespaces.add(tns);
+	}
+	
+	@Override
+	public void addTrainingNamespace(String tns) {
+		_trainingNamespaces.add(tns);
+	}
+
 }
