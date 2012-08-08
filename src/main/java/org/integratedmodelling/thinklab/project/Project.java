@@ -146,9 +146,12 @@ public class Project extends HashableObject implements IProject {
 			
 			INamespace ns;
 			try {
+				System.out.println("READING NAMESPACE " + pth + " FROM " + f);
 				ns = mman.loadFile(f.toString(), pth, this, resolver);
-				if (ns != null) 
-					ret.add(ns);
+				if (ns != null) {
+					ret.add(ns);	
+					System.out.println("READ NAMESPACE " + ns.getId() + " FROM " + f);
+				}
 			} catch (ThinklabException e) {
 				_resourcesInError.add(f);
 				_errors.add(e.getMessage());
