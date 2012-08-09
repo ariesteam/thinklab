@@ -339,9 +339,13 @@ public class Context extends ModelObject<Context> implements IContextDefinition 
 			// run function and store observation
 			try {
 				 o = (Observation) function.call();
-				 if (o == null)
-					 throw new ThinklabValidationException("function " + function.getId() + " does not return any value");
-				 
+				 if (o == null) {
+					 /*
+					  * TODO put back - demo only
+					  */
+					 continue;
+					 //throw new ThinklabValidationException("function " + function.getId() + " does not return any value");
+				 }
 			} catch (ThinklabException e) {
 				throw new ThinklabValidationException(e);
 			}

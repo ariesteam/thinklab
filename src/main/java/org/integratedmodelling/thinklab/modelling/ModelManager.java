@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.integratedmodelling.collections.Pair;
@@ -56,7 +57,6 @@ import org.integratedmodelling.thinklab.api.modelling.parsing.IClassificationDef
 import org.integratedmodelling.thinklab.api.modelling.parsing.IConceptDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IFunctionCall;
 import org.integratedmodelling.thinklab.api.modelling.parsing.ILanguageDefinition;
-import org.integratedmodelling.thinklab.api.modelling.parsing.IModelObjectDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.INamespaceDefinition;
 import org.integratedmodelling.thinklab.api.modelling.parsing.IPropertyDefinition;
 import org.integratedmodelling.thinklab.api.project.IProject;
@@ -187,7 +187,7 @@ public class ModelManager implements IModelManager {
 		long _storedTimestamp = 0l;
 		private InputStream _interactiveInput;
 		private PrintStream _interactiveOutput;
-		private HashMap<String, Object> symbolTable = new HashMap<String, Object>();
+
 
 		public Resolver(IProject project) {
 			this.project = project;
@@ -390,6 +390,9 @@ public class ModelManager implements IModelManager {
 				onException(e, ret.getFirstLineNumber());
 			}
 			
+			if (!isGeneratedId(ret.getId()))
+				namespace.getSymbolTable().put(ret.getId(), ret);
+
 			/*
 			 * store anything that reports storage metadata.
 			 */
@@ -674,8 +677,8 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public HashMap<String, Object> getSymbolTable() {
-			return this.symbolTable;
+		public Map<String, Object> getSymbolTable() {
+			return this.namespace.getSymbolTable();
 		}
 
 		public IContext getCurrentContext() {
@@ -691,6 +694,11 @@ public class ModelManager implements IModelManager {
 		public boolean validateFunctionCall(IFunctionCall ret) {
 			// TODO check function against known prototypes
 			return true;
+		}
+
+		@Override
+		public void defineSymbol(String id, Object value, int lineNumber) {
+			namespace.getSymbolTable().put(id, value);
 		}
 	}
 

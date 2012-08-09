@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.integratedmodelling.collections.Pair;
 import org.integratedmodelling.collections.Triple;
@@ -49,6 +50,12 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	ArrayList<INamespace> _importedNamespaces = new ArrayList<INamespace>();
 	HashSet<IAxiom> _axiomHash = new HashSet<IAxiom>();
 	
+	HashMap<String, Object> _symbolTable = new HashMap<String, Object>();
+	
+	/*
+	 * use symbol table filled in by the parser instead
+	 */
+	@Deprecated
 	HashMap<String, IModelObject> _namedObjects = new HashMap<String, IModelObject>();
 	
 	ArrayList<Pair<String, Integer>> _errors = new ArrayList<Pair<String,Integer>>();
@@ -76,6 +83,11 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	public Namespace() {
 	}
 
+	@Override
+	public Map<String, Object> getSymbolTable() {
+		return _symbolTable;
+	}
+	
 	/**
 	 * Exec all axioms accumulated so far to actualize gathered knowledge.
 	 * @throws ThinklabException 
@@ -184,9 +196,6 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	@Override
 	public void addModelObject(IModelObjectDefinition modelObject) {
 		_modelObjects.add((IModelObject)modelObject);
-		if (!isAnonymous(modelObject)) {
-			_namedObjects.put(modelObject.getId(), modelObject);
-		}
 	}
 
 	@Override
@@ -211,6 +220,11 @@ public class Namespace extends SemanticObject<INamespace> implements INamespaceD
 	
 	@Override
 	public IModelObject getModelObject(String mod) {
+
+		Object o = _symbolTable.get(mod);
+		if (o instanceof IModelObject)
+			return (IModelObject)o;
+		
 		return _namedObjects.get(mod);
 	}
 

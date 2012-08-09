@@ -54,12 +54,12 @@ public class SHAPE implements IExpression {
 			/*
 			 * get shape(s) from an external source - shapefile or other
 			 */
-			Properties p = new Properties();
-			URL url = MiscUtilities.getURLForResource(parameters.get("url").toString());
-			VectorCoverage vc = (VectorCoverage) CoverageFactory.getCoverage(url, p);
-			for (ShapeValue sh : vc) {
-				return sh;
-			}
+//			Properties p = new Properties();
+//			URL url = MiscUtilities.getURLForResource(parameters.get("url").toString());
+//			VectorCoverage vc = (VectorCoverage) CoverageFactory.getCoverage(url, p);
+//			for (ShapeValue sh : vc) {
+//				return sh;
+//			}
 		}
 		
 		return ret;

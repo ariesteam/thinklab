@@ -53,9 +53,22 @@ public class FunctionCall extends ModelObject<FunctionCall> implements IFunction
 	public Object call() throws ThinklabException {
 		ModelManager mm = (ModelManager) Thinklab.get().getModelManager();
 		IExpression exp = mm.getExpressionForFunctionCall(this);
+		
+		/*
+		 * evaluate parameters if necessary
+		 */
+		HashMap<String, Object> parms = new HashMap<String, Object>();
+		for (String s : _parameters.keySet()) {
+			Object val = _parameters.get(s);
+			if (val instanceof FunctionCall) {
+				val = ((FunctionCall)val).call();
+			}
+			parms.put(s, val);
+		}
+		
 		if (exp != null) {
 			exp.setProjectContext(_project);
-			return exp.eval(_parameters);
+			return exp.eval(parms);
 		}
 		return null;
 	}
