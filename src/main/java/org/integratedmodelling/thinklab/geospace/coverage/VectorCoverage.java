@@ -22,6 +22,7 @@ package org.integratedmodelling.thinklab.geospace.coverage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -37,6 +38,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabIOException;
+import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabUnsupportedOperationException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.Thinklab;
@@ -47,6 +49,7 @@ import org.integratedmodelling.thinklab.geospace.extents.ArealExtent;
 import org.integratedmodelling.thinklab.geospace.extents.GridExtent;
 import org.integratedmodelling.thinklab.geospace.feature.AttributeTable;
 import org.integratedmodelling.thinklab.geospace.gis.ThinklabRasterizer;
+import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.utils.MiscUtilities;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -57,7 +60,9 @@ import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-public class VectorCoverage implements ICoverage {
+import com.vividsolutions.jts.geom.Geometry;
+
+public class VectorCoverage implements ICoverage, Iterable<ShapeValue> {
 
 	private FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
 	CoordinateReferenceSystem crs = null;
@@ -95,6 +100,36 @@ public class VectorCoverage implements ICoverage {
 	 */
 	private float fillValue = Float.NaN;
 
+	class ShapeIterator implements Iterator<ShapeValue> {
+
+		private FeatureIterator<SimpleFeature> it;
+
+		ShapeIterator() throws ThinklabException {
+			this.it = getFeatureIterator(null, (String[])null);
+		}
+		
+		@Override
+		public boolean hasNext() {	
+			return it.hasNext();
+		}
+
+		@Override
+		public ShapeValue next() {
+			
+			SimpleFeature feature = it.next();
+
+			/*
+			 * TODO add all attributes as metadata
+			 */
+			return new ShapeValue((Geometry)feature.getDefaultGeometry(), getCoordinateReferenceSystem());
+		}
+
+		@Override
+		public void remove() {
+			// come on
+		}
+		
+	}
 	
 	public VectorCoverage(URL url, String valueField, boolean validate) throws ThinklabException {
 		
@@ -528,5 +563,14 @@ public class VectorCoverage implements ICoverage {
 	public ReferencedEnvelope getEnvelope() {
 		return new ReferencedEnvelope(boundingBox);
 	}
+	
+	@Override
+	public Iterator<ShapeValue> iterator() {
+		try {
+			return new ShapeIterator();
+		} catch (ThinklabException e) {
+			throw new ThinklabRuntimeException(e);
+		}
+	};
 
 }

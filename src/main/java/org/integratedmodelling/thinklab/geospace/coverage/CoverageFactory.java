@@ -89,16 +89,21 @@ public class CoverageFactory {
 	public static final String CQL_FILTER_PROPERTY = "geospace.feature.filter";
 	public static final String TRANSFORMATION_EXPRESSION = "transformation.expression";
 	
-	static Hashtable<String, ICoverage> coverages = 
-		new Hashtable<String, ICoverage>();
+	/*
+	 * TODO check this stuff - memory leaks seem to be waiting here.
+	 */
+//	static Hashtable<String, ICoverage> coverages = 
+//		new Hashtable<String, ICoverage>();
 	
 	/*
 	 * we cache the featurecollections read from URLs and the attribute
 	 * tables read from URLs (e.g. CSV) or from shapefiles. Our own featurecollection
 	 * may or may not come from here.
+	 * 
+	 * TODO check this stuff - looks like memory leaks waiting to happen.
 	 */
-	private static Hashtable<String, FeatureCollection<SimpleFeatureType, SimpleFeature>> featureCollections = 
-		new Hashtable<String, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
+//	private static Hashtable<String, FeatureCollection<SimpleFeatureType, SimpleFeature>> featureCollections = 
+//		new Hashtable<String, FeatureCollection<SimpleFeatureType, SimpleFeature>>();
 
 	private static Hashtable<String, AttributeTable> dataCollections = 
 		new Hashtable<String, AttributeTable>();
@@ -296,12 +301,12 @@ public class CoverageFactory {
 		 * must define the link field in the properties
 		 */
 		
-		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = 
-			featureCollections.get(url.toString());
+		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = null;
+//			featureCollections.get(url.toString());
 		ReferencedEnvelope envelope = null;
 		FeatureSource<SimpleFeatureType, SimpleFeature> fc1 = null;
 		
-		if (fc == null) {
+//		if (fc == null) {
 		
 		    Map<String, Object> connect = new HashMap<String,Object>();
 		    connect.put( "url", url );
@@ -317,7 +322,7 @@ public class CoverageFactory {
 				throw new ThinklabIOException(e);
 			}
 			
-		}
+//		}
 
 		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
 		String valType = properties.getProperty(VALUE_TYPE_PROPERTY);
@@ -394,13 +399,13 @@ public class CoverageFactory {
 		
 		if (url.toString().startsWith("http:")) {
 		
-			/* 
-			 * we don't read coverages directly from web-based files; interpret as
-			 * a WFS call
-			 */
-			ret = coverages.get(url.toString());
+//			/* 
+//			 * we don't read coverages directly from web-based files; interpret as
+//			 * a WFS call
+//			 */
+//			ret = coverages.get(url.toString());
 			
-			if (ret == null) {
+//			if (ret == null) {
 				
 				ArrayList<ICoverage> cret = readWFS(url, properties);
 				for (ICoverage c : cret) {	
@@ -408,13 +413,13 @@ public class CoverageFactory {
 						ret = c;
 					}
 				}
-			}
+//			}
 			
 		} else {
 		
-			ret = coverages.get(url.toString());
-		
-			if (ret == null) {
+//			ret = coverages.get(url.toString());
+//		
+//			if (ret == null) {
 				
 				ArrayList<ICoverage> cret = readResource(url, properties);
 				for (ICoverage c : cret) {	
@@ -422,7 +427,7 @@ public class CoverageFactory {
 						ret = c;
 					}
 				}
-			}
+//			}
 		}
 		return ret;
 	}
@@ -460,10 +465,10 @@ public class CoverageFactory {
 			
 			cret = readRaster(resUrl, properties);
 
-			/* store all bands as separate coverages so we don't read them again. */
-			for (ICoverage c : cret) {			
-				coverages.put(c.getSourceUrl(), c);
-			}
+//			/* store all bands as separate coverages so we don't read them again. */
+//			for (ICoverage c : cret) {			
+//				coverages.put(c.getSourceUrl(), c);
+//			}
 
 		} else if (Arrays.binarySearch(supportedVectorExtensions, ext) >= 0) {
 			

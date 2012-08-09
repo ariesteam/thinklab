@@ -187,8 +187,7 @@ public class ModelManager implements IModelManager {
 		long _storedTimestamp = 0l;
 		private InputStream _interactiveInput;
 		private PrintStream _interactiveOutput;
-		private HashMap<String, IModelObjectDefinition> symbolTable = 
-				new HashMap<String, IModelObjectDefinition>();
+		private HashMap<String, Object> symbolTable = new HashMap<String, Object>();
 
 		public Resolver(IProject project) {
 			this.project = project;
@@ -675,7 +674,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public HashMap<String, IModelObjectDefinition> getSymbolTable() {
+		public HashMap<String, Object> getSymbolTable() {
 			return this.symbolTable;
 		}
 
