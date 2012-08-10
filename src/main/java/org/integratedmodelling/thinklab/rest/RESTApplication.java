@@ -27,6 +27,7 @@ import org.integratedmodelling.thinklab.rest.resources.ExecuteStatementService;
 import org.integratedmodelling.thinklab.rest.resources.ExportKnowledgeService;
 import org.integratedmodelling.thinklab.rest.resources.FileReceiveService;
 import org.integratedmodelling.thinklab.rest.resources.FileSendService;
+import org.integratedmodelling.thinklab.rest.resources.ManagerService;
 import org.integratedmodelling.thinklab.rest.resources.PingService;
 import org.integratedmodelling.thinklab.rest.resources.ProjectService;
 import org.integratedmodelling.thinklab.rest.resources.SendResourceService;
@@ -106,6 +107,10 @@ public class RESTApplication extends Application {
 		 */
 		router.attach("/execute-statement", ExecuteStatementService.class);
 
+		/*
+		 * manager services
+		 */
+		router.attach("/manager", ManagerService.class);
 		
 		/*
 		 * configure an entry point per installed command

@@ -230,12 +230,7 @@ public class GridExtent extends ArealExtent
 					shape.getCRS());
 		}
 		
-//		System.out.println("TRAN-M: " + env);
-//		System.out.println("TRAN-U: " + this.envelope);
-		
 		this.setResolution(x, y);
-		
-//		System.out.println("CELL SIZE: pre-transform " + width/x + "," + height/y + ", post " + getCellWidthMeters() + "," + getCellHeightMeters());
 		
 		activationLayer = ThinklabRasterizer.createMask(shape, this);
 
@@ -714,12 +709,6 @@ public class GridExtent extends ArealExtent
 		}
 	}
 
-//
-//	public IExtent or(IExtent myExtent) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
 	public IExtent getAggregatedExtent() {
 		return new ShapeExtent((ShapeValue) getFullExtentValue());
 	}
@@ -1057,59 +1046,6 @@ public class GridExtent extends ArealExtent
 		ArealExtent e = (ArealExtent) o;
 		return getBoundingBox().getGeometry().intersects(e.getBoundingBox().getGeometry());
 	}
-
-//	@Override
-//	public IList conceptualize() throws ThinklabException {
-//		
-//		return PolyList.listNotNull(
-//				Thinklab.c(NS.GRID_EXTENT),
-//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINX), envelope.getMinX()),
-//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXX), envelope.getMaxX()),
-//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MINY), envelope.getMinY()),
-//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_MAXY), envelope.getMaxY()),
-//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_CRSCODE), Geospace.getCRSIdentifier(crs, true)),
-//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_XDIVS), xDivs),
-//				PolyList.list(Thinklab.p(NS.GEOSPACE_HAS_YDIVS), yDivs),
-//				(shape == null ? 
-//						null :
-//						PolyList.list(NS.GEOSPACE_HAS_SHAPE, shape)));
-//	}
-//
-//	@Override
-//	public void define(IList conceptualization) throws ThinklabException {
-//
-//		double xmax, xmin, ymax, ymin;
-//		int xdivs, ydivs;
-//		String crsId;
-//		ShapeValue shp = null;
-//		
-//		for (Object o : conceptualization.toArray()) {
-//			if (o instanceof IList) {
-//				IProperty p = (IProperty)((IList)o).first();
-//				if (p.equals(NS.GEOSPACE_HAS_MAXX)) {
-//					xmax = (Double) ((IList)o).nth(1);
-//				} else if (p.equals(NS.GEOSPACE_HAS_MAXY)) {
-//					ymax = (Double) ((IList)o).nth(1);
-//				} else if (p.equals(NS.GEOSPACE_HAS_MINX)) {
-//					xmin = (Double) ((IList)o).nth(1);
-//				} else if (p.equals(NS.GEOSPACE_HAS_MINY)) {
-//					ymin = (Double) ((IList)o).nth(1);
-//				} else if (p.equals(NS.GEOSPACE_HAS_CRSCODE)) {
-//					crsId = (String) ((IList)o).nth(1);
-//				} else if (p.equals(NS.GEOSPACE_HAS_XDIVS)) {
-//					xdivs = (Integer) ((IList)o).nth(1);
-//				} else if (p.equals(NS.GEOSPACE_HAS_YDIVS)) {
-//					ydivs = (Integer) ((IList)o).nth(1);
-//				} else if (p.equals(NS.GEOSPACE_HAS_SHAPE)) {
-//					shp = (ShapeValue) ((IList)o).nth(1);
-//				} 
-//			}
-//		}
-//		
-//		/*
-//		 * TODO setup
-//		 */
-//	}
 
 	@Override
 	public void addStorageMetadata(IMetadata metadata) {
