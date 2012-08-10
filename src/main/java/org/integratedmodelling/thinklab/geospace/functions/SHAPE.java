@@ -18,7 +18,7 @@ import org.integratedmodelling.thinklab.geospace.literals.ShapeValue;
 import org.integratedmodelling.thinklab.interfaces.annotations.Function;
 import org.integratedmodelling.utils.MiscUtilities;
 
-@Function(id="shape", parameterNames= { "wkt", "url", "shape", "crs" })
+@Function(id="shape", parameterNames= { "wkt", "url", "service", "shape", "crs", "id", "filter" })
 public class SHAPE implements IExpression {
 	
 	IProject   project;
@@ -49,13 +49,34 @@ public class SHAPE implements IExpression {
 
 		if (shape != null) {
 			ret = new ShapeExtent(shape);
-		} else if (parameters.containsKey("url")) {
+		} else if (parameters.containsKey("service") && parameters.containsKey("id")) {
 
 			/*
-			 * get shape(s) from an external source - shapefile or other
+			 * get shape(s) from WFS source - shapefile or other
 			 */
+			String id = parameters.get("id").toString();
+			String filter = parameters.containsKey("filter") ? parameters.get("filter").toString() : null;
 			Properties p = new Properties();
+			if (filter != null) {
+				p.setProperty(CoverageFactory.CQL_FILTER_PROPERTY, filter);
+			}
+			
+			/*
+			 * TODO other properties - also in the "url" case
+			 */
+			
+			URL url = MiscUtilities.getURLForResource(parameters.get("service").toString());
+			if (url != null) {
+				VectorCoverage vc = (VectorCoverage) CoverageFactory.getCoverage(url, id, p);
+				for (ShapeValue sh : vc) {
+					return sh.transform(Geospace.getCRSFromID(crs));
+				}
+			}
+			
+		} else if (parameters.containsKey("url")) {
+			
 			URL url = null;
+			
 			if (this.project != null && this.project.findResource(parameters.get("url").toString()) != null) {
 				try {
 					url = this.project.findResource(parameters.get("url").toString()).toURI().toURL();
@@ -67,7 +88,7 @@ public class SHAPE implements IExpression {
 			}
 			
 			if (url != null) {
-				VectorCoverage vc = (VectorCoverage) CoverageFactory.getCoverage(url, p);
+				VectorCoverage vc = (VectorCoverage) CoverageFactory.getCoverage(url, null, null);
 				for (ShapeValue sh : vc) {
 					return sh.transform(Geospace.getCRSFromID(crs));
 				}

@@ -19,7 +19,7 @@ public class GRID implements IExpression {
 	@Override
 	public Object eval(Map<String, Object> parameters) throws ThinklabValidationException, ThinklabException {
 		
-		PolygonValue shape = null;
+		ShapeValue shape = null;
 		
 		/*
 		 * resolution is either explicit (x [, y]) or implicit (resolution)
@@ -39,7 +39,7 @@ public class GRID implements IExpression {
 		 */
 		if (parameters.containsKey("shape")) {
 			if (parameters.get("shape") instanceof ShapeValue) {
-				shape = (PolygonValue) parameters.get("shape");
+				shape = (ShapeValue) parameters.get("shape");
 			} else {
 				shape = new PolygonValue(parameters.get("shape").toString());
 			}

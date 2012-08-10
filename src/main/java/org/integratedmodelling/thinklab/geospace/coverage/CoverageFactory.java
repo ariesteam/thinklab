@@ -230,13 +230,20 @@ public class CoverageFactory {
 		return ret;
 	}
 	
-	public static ArrayList<ICoverage> readWFS(URL url, Properties properties) throws ThinklabException {
+	public static ArrayList<ICoverage> readWFS(URL url, String coverageId, Properties properties) throws ThinklabException {
 		
 		ArrayList<ICoverage> ret = new ArrayList<ICoverage>();
 		ICoverage coverage = null;
 		
 		String wfsService = 
-			properties.getProperty(WFS_SERVICE_PROPERTY);
+				url == null ?
+						properties.getProperty(WFS_SERVICE_PROPERTY) :
+						url.toString();
+		String covId = 
+				coverageId == null ?
+						properties.getProperty(COVERAGE_ID_PROPERTY) :
+						coverageId;
+						
 		Integer wfsTimeout = 
 			Integer.parseInt(properties.getProperty(WFS_TIMEOUT_PROPERTY, "100000"));
 		Integer wfsBufsize = 
@@ -245,7 +252,7 @@ public class CoverageFactory {
 		String valAttr = properties.getProperty(VALUE_ATTRIBUTE_PROPERTY);
 		String valType = properties.getProperty(VALUE_TYPE_PROPERTY);
 		String valDef = properties.getProperty(VALUE_DEFAULT_PROPERTY);
-		String covId = properties.getProperty(COVERAGE_ID_PROPERTY);
+
 		String filter = properties.getProperty(CQL_FILTER_PROPERTY);
 		String valexpr = properties.getProperty(VALUE_EXPRESSION_PROPERTY);
 		
@@ -393,9 +400,12 @@ public class CoverageFactory {
 	 * @return
 	 * @throws ThinklabException
 	 */
-	public static ICoverage getCoverage(URL url, Properties properties) throws ThinklabException {
+	public static ICoverage getCoverage(URL url, String coverageId, Properties properties) throws ThinklabException {
 		
 		ICoverage ret = null;
+		if (properties == null) {
+			properties = new Properties();
+		}
 		
 		if (url.toString().startsWith("http:")) {
 		
@@ -407,7 +417,7 @@ public class CoverageFactory {
 			
 //			if (ret == null) {
 				
-				ArrayList<ICoverage> cret = readWFS(url, properties);
+				ArrayList<ICoverage> cret = readWFS(url, coverageId, properties);
 				for (ICoverage c : cret) {	
 					if (c.getSourceUrl().equals(url.toString())) {
 						ret = c;
@@ -513,7 +523,7 @@ public class CoverageFactory {
 
 	public static ICoverage requireCoverage(URL url, Properties properties) throws ThinklabException {
 	
-		ICoverage ret = getCoverage(url, properties);
+		ICoverage ret = getCoverage(url, null, properties);
 		
 		if (ret == null)
 			throw new ThinklabIOException("CoverageFactory: coverage " + url + " cannot be read");

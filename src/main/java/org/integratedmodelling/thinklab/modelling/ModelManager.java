@@ -698,6 +698,8 @@ public class ModelManager implements IModelManager {
 
 		@Override
 		public void defineSymbol(String id, Object value, int lineNumber) {
+			
+			System.out.println("putting symbol " + id + " in ns " + namespace.getId());
 			namespace.getSymbolTable().put(id, value);
 		}
 	}
