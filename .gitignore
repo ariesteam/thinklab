@@ -3,3 +3,4 @@ plugins/versions.properties
 /logs
 classes
 jpf-boot-error.txt
+bin/
