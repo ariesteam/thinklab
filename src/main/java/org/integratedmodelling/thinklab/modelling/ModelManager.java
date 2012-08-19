@@ -477,7 +477,7 @@ public class ModelManager implements IModelManager {
 		}
 
 		@Override
-		public void handleObserveStatement(Object observable, IContext ctx, boolean resetContext,
+		public void handleObserveStatement(Object observable, IContext ctx,
 				int lineNumber)  {
 
 			try {
@@ -494,9 +494,7 @@ public class ModelManager implements IModelManager {
 				if (ctx != null) {
 					((Context)currentContext).clear();
 					currentContext.merge(ctx);
-				} else	if (resetContext) {
-					((Context)currentContext).clear();
-				}
+				} 
 			
 				Object obs = null;
 				if (observable instanceof IModel) {

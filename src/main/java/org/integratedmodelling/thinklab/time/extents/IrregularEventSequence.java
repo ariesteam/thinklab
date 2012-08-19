@@ -39,6 +39,7 @@ import org.integratedmodelling.exceptions.ThinklabException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
+import org.integratedmodelling.thinklab.api.modelling.ISchedule;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.modelling.lang.Observation;
@@ -181,6 +182,12 @@ public class IrregularEventSequence extends Observation implements IExtent {
 	public double getCoverage(ITopologicallyComparable<?> obj) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public ISchedule getSchedule() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

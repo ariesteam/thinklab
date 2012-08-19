@@ -25,6 +25,7 @@ import org.integratedmodelling.exceptions.ThinklabRuntimeException;
 import org.integratedmodelling.exceptions.ThinklabValidationException;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
+import org.integratedmodelling.thinklab.api.modelling.ISchedule;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -395,6 +396,12 @@ public abstract class ArealExtent extends Observation implements IExtent {
 	@Override
 	public boolean isTemporallyDistributed() {
 		return false;
+	}
+
+	@Override
+	public ISchedule getSchedule() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

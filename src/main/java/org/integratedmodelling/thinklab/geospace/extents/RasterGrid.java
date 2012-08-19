@@ -37,6 +37,7 @@ import org.integratedmodelling.thinklab.Thinklab;
 import org.integratedmodelling.thinklab.api.knowledge.IConcept;
 import org.integratedmodelling.thinklab.api.lang.IList;
 import org.integratedmodelling.thinklab.api.modelling.IExtent;
+import org.integratedmodelling.thinklab.api.modelling.ISchedule;
 import org.integratedmodelling.thinklab.api.modelling.IState;
 import org.integratedmodelling.thinklab.api.modelling.ITopologicallyComparable;
 import org.integratedmodelling.thinklab.geospace.Geospace;
@@ -559,6 +560,12 @@ public class RasterGrid extends Observation implements IExtent {
 	public double getCoverage(ITopologicallyComparable<?> obj) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public ISchedule getSchedule() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	
