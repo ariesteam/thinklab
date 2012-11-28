@@ -463,9 +463,9 @@ public class BayesianTransformer
 				
 				for (int is = 0; is < pstorage[s].data.getValueCount(); is++)
 					outputState.setValue(is, pstorage[s].data.getValue(is));
-			} else {
+			} //else {
 				ret.addState(pstorage[s].data);
-			}
+//			}
 		}
 
 		return ret;

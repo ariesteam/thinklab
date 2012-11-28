@@ -32,6 +32,7 @@ import org.integratedmodelling.corescience.ObservationFactory;
 import org.integratedmodelling.corescience.compiler.Compiler;
 import org.integratedmodelling.corescience.compiler.Contextualizer;
 import org.integratedmodelling.corescience.exceptions.ThinklabContextualizationException;
+import org.integratedmodelling.corescience.implementations.datasources.MemObjectContextualizedDatasource;
 import org.integratedmodelling.corescience.implementations.observations.ContingencyMerger;
 import org.integratedmodelling.corescience.implementations.observations.Observation;
 import org.integratedmodelling.corescience.interfaces.IContext;
@@ -1019,6 +1020,8 @@ public class ObservationContext implements IObservationContext, IContext {
 			return;
 		
 		for (IConcept c : other.getStateObservables()) {
+			if (states.get(c) != null && !(states.get(c) instanceof MemObjectContextualizedDatasource))
+				continue;
 			states.put(c, other.getState(c));
 		}
 		
@@ -1038,7 +1041,7 @@ public class ObservationContext implements IObservationContext, IContext {
 	 */
 	public void addState(IState state) {
 		
-		if (!states.containsKey(state.getObservableClass())) {
+		if (!states.containsKey(state.getObservableClass()) || states.get(state.getObservableClass()) instanceof MemObjectContextualizedDatasource) {
 			states.put(state.getObservableClass(), state);
 		} else {
 //			CoreScience.get().logger().

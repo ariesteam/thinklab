@@ -107,8 +107,6 @@ public abstract class ThinkcapCometComponent extends ThinkcapComponent {
 				if (!_desktop.isServerPushEnabled()) 
 					_desktop.enableServerPush(false);
 			}
-			
-			System.out.println("STOPPING POLLING THREAD FUCK");
 		}
 	}
 	
