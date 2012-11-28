@@ -195,23 +195,24 @@ public class WCSCoverage extends AbstractRasterCoverage {
 		   * keywords: recognize KVP and instantiate properties from them
 		   */
 		  n = desc.findNode("keywords", "wcs");
-		  i = 0; next = (Node)n.getFirstChild();
-		  while ((child = next) != null) {
+		  if (n != null) {
+			  i = 0; next = (Node)n.getFirstChild();
+			  while ((child = next) != null) {
 				 
-			  next = child.getNextSibling(); 
-			  if (child.getNodeName().endsWith("keyword")) {
-				String kw = XMLDocument.getNodeValue(child).trim();
-				String[] zoz = kw.split("\\ ");
-				for (String kz : zoz) {
-					if (kz.contains("=")) {
-						String[] kvp = kz.split("=");
-						if (kvp.length == 2)
-							properties.put(kvp[0], kvp[1]);
-					}
-				}
+				  next = child.getNextSibling(); 
+				  if (child.getNodeName().endsWith("keyword")) {
+					  String kw = XMLDocument.getNodeValue(child).trim();
+					  String[] zoz = kw.split("\\ ");
+					  for (String kz : zoz) {
+						  if (kz.contains("=")) {
+							  String[] kvp = kz.split("=");
+							  if (kvp.length == 2)
+								  properties.put(kvp[0], kvp[1]);
+						  }
+					  }
+				  }
 			  }
 		  }
-		  
 		  this.xCellSize = (x2 - x1)/(sx2 - sx1);
 		  this.yCellSize = (y2 - y1)/(sy2 - sy1);
 			
