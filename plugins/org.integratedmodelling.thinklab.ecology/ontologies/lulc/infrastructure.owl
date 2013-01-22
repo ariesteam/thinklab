@@ -194,6 +194,30 @@
     
 
 
+    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#ParkInfrastructureNoCottages -->
+
+    <owl:Class rdf:about="&infrastructure;ParkInfrastructureNoCottages">
+        <rdfs:subClassOf rdf:resource="&infrastructure;EnvironmentalInfrastructure"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#ParkInfrastructureNoCottagesAbsent -->
+
+    <owl:Class rdf:about="&infrastructure;ParkInfrastructureNoCottagesAbsent">
+        <rdfs:subClassOf rdf:resource="&infrastructure;ParkInfrastructureNoCottages"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#ParkInfrastructureNoCottagesPresent -->
+
+    <owl:Class rdf:about="&infrastructure;ParkInfrastructureNoCottagesPresent">
+        <rdfs:subClassOf rdf:resource="&infrastructure;ParkInfrastructureNoCottages"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.integratedmodelling.org/ks/lulc/infrastructure.owl#ParkInfrastructurePresent -->
 
     <owl:Class rdf:about="&infrastructure;ParkInfrastructurePresent">
