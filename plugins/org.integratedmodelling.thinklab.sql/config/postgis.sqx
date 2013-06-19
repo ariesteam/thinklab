@@ -74,7 +74,7 @@
 			<sql-null-literal>NULL</sql-null-literal>
 			<sql-type create-method="statement">
 				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'POINT', 2); 
-				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname gist_geometry_ops);
+				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname);
 			</sql-type>
 		</type>
 
@@ -82,7 +82,7 @@
 			<sql-null-literal>NULL</sql-null-literal>
 			<sql-type create-method="statement">
 				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'LINE', 2); 
-				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname	gist_geometry_ops);
+				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname);
 			</sql-type>
 		</type>
 
@@ -90,8 +90,7 @@
 			<sql-null-literal>NULL</sql-null-literal>
 			<sql-type create-method="statement">
 				SELECT AddGeometryColumn(current_schema()::text, '$tablename','$fieldname', 4326, 'MULTIPOINT', 2); 
-				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname
-				gist_geometry_ops);
+				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname);
 			</sql-type>
 		</type>
 
@@ -99,7 +98,7 @@
 			<sql-null-literal>NULL</sql-null-literal>
 			<sql-type create-method="statement">
 				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'MULTILINE', 2); 
-				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname gist_geometry_ops);
+				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname);
 			</sql-type>
 		</type>
 
@@ -107,7 +106,7 @@
 			<sql-null-literal>NULL</sql-null-literal>
 			<sql-type create-method="statement">
 				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'POLYGON', 2); 
-				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname gist_geometry_ops);
+				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname);
 			</sql-type>
 		</type>
 
@@ -115,7 +114,7 @@
 			<sql-null-literal>NULL</sql-null-literal>
 			<sql-type create-method="statement">
 				SELECT AddGeometryColumn(current_schema()::text, '$tablename', '$fieldname', 4326, 'MULTIPOLYGON', 2); 
-				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname gist_geometry_ops);
+				CREATE INDEX i_$tablename_$fieldname ON $tablename USING GIST ($fieldname);
 			</sql-type>
 		</type>
 
