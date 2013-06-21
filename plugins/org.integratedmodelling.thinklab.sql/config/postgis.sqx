@@ -8,25 +8,25 @@
 		<type name="geospace:SpatialRecord">
 
 			<sql-literal-format use-plugin="no">
-				GeometryFromText('$$', $srid)
+				ST_GeomFromText('$$', $srid)
 			</sql-literal-format>
 			
 			<sql-operator imt-name="bb-overlaps" operator-type="infix"
 				sql-translation="&amp;&amp;">
 				<argument type="thinklab-core:Text"
-					template="GeometryFromText('$$',$srid)" />
+					template="ST_GeomFromText('$$',$srid)" />
 			</sql-operator>
 
 			<sql-operator imt-name="overlaps" operator-type="function"
 				sql-translation="overlaps">
 				<argument type="thinklab-core:Text"
-					template="GeometryFromText('$$',$srid)" />
+					template="ST_GeomFromText('$$',$srid)" />
 			</sql-operator>
 
 			<sql-operator imt-name="contains" operator-type="function"
 				sql-translation="contains">
 				<argument type="thinklab-core:Text"
-					template="GeometryFromText('$$',$srid)" />
+					template="ST_GeomFromText('$$',$srid)" />
 			</sql-operator>
 
 			<sql-operator imt-name="empty" operator-type="function"
@@ -35,37 +35,37 @@
 			<sql-operator imt-name="equals" operator-type="function"
 				sql-translation="equals">
 				<argument type="thinklab-core:Text"
-					template="GeometryFromText('$$',$srid)" />
+					template="ST_GeomFromText('$$',$srid)" />
 			</sql-operator>
 
 			<sql-operator imt-name="disjoint" operator-type="function"
 				sql-translation="disjoint">
 				<argument type="thinklab-core:Text"
-					template="GeometryFromText('$$',$srid)" />
+					template="ST_GeomFromText('$$',$srid)" />
 			</sql-operator>
 
 			<sql-operator imt-name="intersects" operator-type="function"
 				sql-translation="intersects">
 				<argument type="thinklab-core:Text"
-					template="GeometryFromText('$$',$srid)" />
+					template="ST_GeomFromText('$$',$srid)" />
 			</sql-operator>
 
 			<sql-operator imt-name="touches" operator-type="function"
 				sql-translation="touches">
 				<argument type="thinklab-core:Text"
-					template="GeometryFromText('$$',$srid)" />
+					template="ST_GeomFromText('$$',$srid)" />
 			</sql-operator>
 
 			<sql-operator imt-name="crosses" operator-type="function"
 				sql-translation="crosses">
 				<argument type="thinklab-core:Text"
-					template="GeometryFromText('$$',$srid)" />
+					template="ST_GeomFromText('$$',$srid)" />
 			</sql-operator>
 
 			<sql-operator imt-name="within" operator-type="function"
 				sql-translation="within">
 				<argument type="thinklab-core:Text"
-					template="GeometryFromText('$$',$srid)" />
+					template="ST_GeomFromText('$$',$srid)" />
 			</sql-operator>
 
 		</type>
